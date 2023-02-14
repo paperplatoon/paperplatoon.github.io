@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pokemon the spire</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+
+<body>
+    <div class="flex-container" id="stats">
+        <div id="playerStats">
+
+
+        </div>
+
+        <div id="playerDeckPile" class="pile">Current Deck
+            <div id="deckDiv"> </div>
+        </div>
+
+        <div id="opponents"></div>
+    </div>
+
+    <div id="stateJSON">
+    </div>
+    <button id="shuffleDrawButton">Start Encounter</button>
+    <button id="startTurnButton">start turn</button>
+    <button id="endTurnButton">End Turn</button>
+    <button id="resetButton">Reset</button>
+
+
+    <div class="flex-container" id="cardScreenSection">
+    <div id="drawPile" class="pile">
+        <p>Draw Pile
+        </p>
+        <div id="drawDiv"></div>
+
+    </div>
+    <div id="handContainer2"> </div>
+    <div id="handContainer"> </div>
+    <div id="discardPile" class="pile">Discard Pile
+        <div id="discardDiv"></div>
+    </div>
+    </div>
+    <script src="main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/immer/9.0.16/immer.umd.development.min.js"></script>
+</body>
+</html>

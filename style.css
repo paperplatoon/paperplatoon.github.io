@@ -1,0 +1,133 @@
+#stats {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid black;
+  margin: 1vw;
+}
+
+.chosen {
+  background: yellow;
+}
+
+#opponentHealthBlock {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hide {
+  display: none;
+}
+
+.move {
+  border: 1px dashed;
+  line-height: 0.6;
+  padding: 0.1vh 0.1vw;
+}
+
+.targeted {
+    border: 2px dashed red;
+}
+
+#playerStats {
+  color: green;
+  padding: 1vh;
+  border: 1px solid green;
+  width: 15vw;
+}
+
+#opponents {
+  color: red;
+  border: 1px solid red;
+  padding: 1vh;
+  width: 75vw;
+  display: flex;
+  justify-content: space-between;
+}
+
+.energy-cost {
+  color: brown;
+}
+
+#cardScreenSection {
+  height: 35vh;
+  width: 96vw;
+  border: 1px solid green;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  padding: 2vw 0;
+}
+
+#drawDiv,
+#discardDiv,
+#deckDiv {
+  color: black;
+  background-color: rgb(237, 221, 224);
+  height: 80vh;
+  width: 80vw;
+  position: fixed;
+  top: 10vh;
+  left: 10vw;
+}
+
+#drawPile #drawDiv,
+#discardPile #discardDiv,
+#playerDeckPile #deckDiv {
+  display: none;
+}
+
+#drawPile:hover #drawDiv,
+#discardPile:hover #discardDiv,
+#playerDeckPile:hover #deckDiv {
+  animation: fadeIn 1s;
+  display: block;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.pile {
+  width: 8vw;
+  height: 8vh;
+  border: 1px dashed red;
+  vertical-align: middle;
+  margin: 12vh 1vw;
+  padding: 1vw;
+}
+
+.card {
+  border: 1px solid black;
+  margin: 1%;
+  padding: 0.1%;
+  width: 15vw;
+  height: 20vh;
+  float: left;
+  font-size: 70%;
+}
+
+.fire-energy {
+  background-color: rgba(222, 9, 9, 0.393);
+}
+
+.water-energy {
+  background-color: rgba(1, 29, 240, 0.393);
+}
+
+.playable {
+  border: 3px solid grey;
+}
+
+#handContainer2 {
+  width: 70vw;
+  display: flex;
+  padding: 5vh 0vw;
+  border: 1px dashed blue;
+  justify-content: space-around;
+}
