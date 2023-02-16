@@ -47,56 +47,56 @@
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 //action for each of these takes a state and returns a new state
 
-function dealOpponentDamage(stateObj, damageNumber, attackNumber=1) {
+function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1) {
   let toChangeState = immer.produce(stateObj, (newState) => {
-    calculatedDamage = ((damageNumber + newState.playerMonster.strength)*attackNumber);
+    calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
     if (newState.opponentMonster[newState.targetedMonster].encounterBlock == 0) {
-        newState.opponentMonster[newState.targetedMonster].currentHP -= calculatedDamage;
+      newState.opponentMonster[newState.targetedMonster].currentHP -= calculatedDamage;
     } else if (newState.opponentMonster[newState.targetedMonster].encounterBlock >= calculatedDamage) {
-        newState.opponentMonster[newState.targetedMonster].encounterBlock -= calculatedDamage;
+      newState.opponentMonster[newState.targetedMonster].encounterBlock -= calculatedDamage;
     } else {
       newState.opponentMonster[newState.targetedMonster].currentHP -= (calculatedDamage - newState.opponentMonster[newState.targetedMonster].encounterBlock);
       newState.opponentMonster[newState.targetedMonster].encounterBlock = 0;
     }
-    });
+  });
   return toChangeState;
 }
 
-function dealPlayerDamage(stateObj, damageNumber, monsterIndex=0, attackNumber=1) {
+function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, attackNumber = 1) {
   let toChangeState = immer.produce(stateObj, (newState) => {
-    calculatedDamage = ((damageNumber + newState.opponentMonster[monsterIndex].strength)*attackNumber);
+    calculatedDamage = ((damageNumber + newState.opponentMonster[monsterIndex].strength) * attackNumber);
     if (newState.playerMonster.encounterBlock == 0) {
-        newState.playerMonster.currentHP -= calculatedDamage;
+      newState.playerMonster.currentHP -= calculatedDamage;
     } else if (newState.playerMonster.encounterBlock >= calculatedDamage) {
-        newState.playerMonster.encounterBlock -= calculatedDamage;
+      newState.playerMonster.encounterBlock -= calculatedDamage;
     } else {
       newState.playerMonster.currentHP -= (calculatedDamage - newState.playerMonster.encounterBlock);
       newState.playerMonster.encounterBlock = 0;
     }
-    });
+  });
   return toChangeState;
 }
 
 let Cards = {
   fireEnergy: {
     name: "Fire Energy",
-    text: (state) => { 
+    text: (state) => {
       return `. Gain 1 energy`
     },
     minReq: -99,
     cardType: "fireEnergy",
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => {
-        newState.playerMonster.encounterEnergy += 1; 
-         
+      let toChangeState = immer.produce(state, (newState) => {
+        newState.playerMonster.encounterEnergy += 1;
+
       })
       return toChangeState;
     }
   },
-  
-    kindle: {
+
+  kindle: {
     name: "kindle",
-    text: (state) => { 
+    text: (state) => {
       return `Deal ${1 + state.playcountKindle + state.playerMonster.strength} damage. Gain 1 energy. All kindles deal one more damage this combat`;
     },
     minReq: -99,
@@ -104,8 +104,8 @@ let Cards = {
     //takes the state object, declares a toChangeState which takes immer.produce
     //and returns a new state reflecting the changes
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => { 
-        let tempState = dealOpponentDamage(newState, (1+newState.playcountKindle));
+      let toChangeState = immer.produce(state, (newState) => {
+        let tempState = dealOpponentDamage(newState, (1 + newState.playcountKindle));
         newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
         newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
         newState.playerMonster.encounterEnergy += 1;
@@ -118,25 +118,25 @@ let Cards = {
   test: {
     name: "Wind Up",
     minReq: -99,
-    text: (state) => { 
+    text: (state) => {
       return `Gain five energy`
     },
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => { 
+      let toChangeState = immer.produce(state, (newState) => {
         newState.playerMonster.encounterEnergy += 5;
       })
       return toChangeState;
     }
   },
-  
+
   explode: {
     name: "Explode",
-    text: (state) => { 
+    text: (state) => {
       return `Spend all your energy to deal ${(5 + state.playerMonster.strength) + "*" + state.playerMonster.encounterEnergy} damage.`
     },
     minReq: 0,
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => { 
+      let toChangeState = immer.produce(state, (newState) => {
         let tempState = dealOpponentDamage(newState, 5, newState.playerMonster.encounterEnergy);
         newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
         newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
@@ -145,37 +145,37 @@ let Cards = {
       return toChangeState;
     }
   },
-  
+
   withdraw: {
     name: "Withdraw",
-    text: (state) => {return `Spend 1 energy. Gain ${(6 + state.playerMonster.strength)} block`},
+    text: (state) => { return `Spend 1 energy. Gain ${(6 + state.playerMonster.strength)} block` },
     minReq: 1,
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => { 
+      let toChangeState = immer.produce(state, (newState) => {
         newState.playerMonster.encounterBlock += (6 + state.playerMonster.strength);
         newState.playerMonster.encounterEnergy -= 1;
       })
       return toChangeState;
     }
   },
-  
+
   mediumheal: {
     name: "Medium Heal",
-    text: (state) => {return "Spend 2 energy. Gain 9 HP"},
+    text: (state) => { return "Spend 2 energy. Gain 9 HP" },
     minReq: 2,
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => { 
+      let toChangeState = immer.produce(state, (newState) => {
         newState.playerMonster.currentHP += 9;
         newState.playerMonster.encounterEnergy -= 2;
       })
       return toChangeState;
     }
   },
-  
+
 
   gainstrength: {
     name: "Gain Strength",
-    text: (state) => { 
+    text: (state) => {
       return `Spend 4 energy. Gain 1 strength permanently`;
     },
     minReq: 4,
@@ -183,50 +183,50 @@ let Cards = {
     //takes the state object, declares a toChangeState which takes immer.produce
     //and returns a new state reflecting the changes
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => { 
+      let toChangeState = immer.produce(state, (newState) => {
         newState.playerMonster.strength += 1;
         newState.playerMonster.encounterEnergy -= 4;
       })
       return toChangeState;
     }
   },
-  
+
   siphon: {
     name: "Siphon",
-    text: (state) => {return "Drain 1 energy from your opponent and give it to yourself"},
+    text: (state) => { return "Drain 1 energy from your opponent and give it to yourself" },
     minReq: 0,
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => { 
+      let toChangeState = immer.produce(state, (newState) => {
         if (newState.opponentMonster[newState.targetedMonster].encounterEnergy > 0) {
           newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 1;
           newState.playerMonster.encounterEnergy += 1;
-          
-        }    
+
+        }
       })
       //changeState(toChangeState);
       return toChangeState;
     }
   },
-  
+
   essencedrain: {
     name: "Essence Drain",
-    text: (state) => {return "Spend 3 energy to drain 2 energy from your opponent. Draw 2 cards"},
+    text: (state) => { return "Spend 3 energy to drain 2 energy from your opponent. Draw 2 cards" },
     minReq: 3,
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => { 
+      let toChangeState = immer.produce(state, (newState) => {
         newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 2;
         newState.playerMonster.encounterEnergy -= 3;
       })
       return toChangeState;
     }
   },
-  
+
   fireball: {
     name: "Fireball",
-    text: (state) => {return `Spend 2 energy. Deal ${(7 + state.playerMonster.strength)} damage twice`},
+    text: (state) => { return `Spend 2 energy. Deal ${(7 + state.playerMonster.strength)} damage twice` },
     minReq: 2,
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => {
+      let toChangeState = immer.produce(state, (newState) => {
         let tempState = dealOpponentDamage(newState, 7, 2);
         newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
         newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
@@ -240,14 +240,14 @@ let Cards = {
 let Cards1 = {
   waterEnergy: {
     name: "Water Energy",
-    text: (state) => { 
+    text: (state) => {
       return `Gain 1 energy`
     },
     minReq: -99,
     cardType: "waterEnergy",
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => {
-        newState.playerMonster.encounterEnergy += 1;  
+      let toChangeState = immer.produce(state, (newState) => {
+        newState.playerMonster.encounterEnergy += 1;
       })
       return toChangeState;
     }
@@ -255,14 +255,14 @@ let Cards1 = {
 
   cloakingFog: {
     name: "Cloaking Fog",
-    text: (state) => { 
+    text: (state) => {
       return `Spend 2 energy. Gain ${16 + state.playerMonster.dex} block`
     },
     minReq: 2,
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => {
+      let toChangeState = immer.produce(state, (newState) => {
         newState.playerMonster.encounterBlock += (16 + state.playerMonster.dex);
-        newState.playerMonster.encounterEnergy -= 1;   
+        newState.playerMonster.encounterEnergy -= 1;
       })
       return toChangeState;
     }
@@ -270,12 +270,12 @@ let Cards1 = {
 
   bodySlam: {
     name: "Body Slam",
-    text: (state) => { 
+    text: (state) => {
       return `Spend 1 energy. Deal damage equal to your block`
     },
     minReq: 1,
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => {
+      let toChangeState = immer.produce(state, (newState) => {
         newState.playerMonster.encounterEnergy -= 1;
         let tempState = dealOpponentDamage(newState, newState.playerMonster.encounterBlock, 1);
         newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
@@ -287,12 +287,12 @@ let Cards1 = {
 
   tackle: {
     name: "Tackle",
-    text: (state) => { 
+    text: (state) => {
       return `Spend 1 energy. Deal ${(7 + state.playerMonster.strength)} damage`
     },
     minReq: 1,
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => {
+      let toChangeState = immer.produce(state, (newState) => {
         newState.playerMonster.encounterEnergy -= 1;
         let tempState = dealOpponentDamage(newState, 7, 1);
         newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
@@ -304,10 +304,10 @@ let Cards1 = {
 
   withdraw: {
     name: "Withdraw",
-    text: (state) => {return "Spend 1 energy. Gain 6 block"},
+    text: (state) => { return "Spend 1 energy. Gain 6 block" },
     minReq: 1,
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => { 
+      let toChangeState = immer.produce(state, (newState) => {
         newState.playerMonster.encounterBlock += 6;
         newState.playerMonster.encounterEnergy -= 1;
       })
@@ -317,7 +317,7 @@ let Cards1 = {
 
   gainDex: {
     name: "Study the Way",
-    text: (state) => { 
+    text: (state) => {
       return `Spend 4 energy. Gain 1 dexterity permanently`;
     },
     minReq: 4,
@@ -325,7 +325,7 @@ let Cards1 = {
     //takes the state object, declares a toChangeState which takes immer.produce
     //and returns a new state reflecting the changes
     action: (state) => {
-      let toChangeState = immer.produce(state , (newState) => { 
+      let toChangeState = immer.produce(state, (newState) => {
         newState.playerMonster.dex += 1;
         newState.playerMonster.encounterEnergy -= 4;
       })
@@ -380,11 +380,11 @@ let Monsters = {
         action: (state, monsterIndex) => {
           let toChangeState = immer.produce(state, (newState) => {
             newState.opponentMonster[monsterIndex].encounterEnergy += 3;
-            newState.opponentMonster[monsterIndex].encounterBlock += 4;                 
-        })
-        return toChangeState;
-      }
-    },
+            newState.opponentMonster[monsterIndex].encounterBlock += 4;
+          })
+          return toChangeState;
+        }
+      },
       {
         name: "Fury Strike",
         cost: "3",
@@ -396,14 +396,14 @@ let Monsters = {
             let tempState = dealPlayerDamage(newState, 7, monsterIndex);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-        })
-        return toChangeState;
-      }
-    },
-  ]
+          })
+          return toChangeState;
+        }
+      },
+    ]
   },
-  
-   testMonster3: {
+
+  testMonster3: {
     name: "test 3",
     type: "fire",
     encounterEnergy: 0,
@@ -430,8 +430,8 @@ let Monsters = {
       Cards.siphon,
     ],
   },
-  
-   testMonster4: {
+
+  testMonster4: {
     name: "test 4",
     type: "water",
     encounterEnergy: 0,
@@ -441,25 +441,25 @@ let Monsters = {
     strength: 0,
     dex: 0,
     moves: [
-       {
+      {
         name: "Down the Drain",
         cost: "0",
         text: "Deal 10 damage. Recover 6 health. Gain 3 energy",
         minReq: 0,
-         action: (state, monsterIndex) => {
+        action: (state, monsterIndex) => {
           let toChangeState = immer.produce(state, (newState) => {
             newState.opponentMonster[monsterIndex].encounterEnergy += 3;
             if (newState.opponentMonster[monsterIndex].currentHP < (newState.opponentMonster[monsterIndex].maxHP - 6)) {
               newState.opponentMonster[monsterIndex].currentHP += 6;
             } else {
               newState.opponentMonster[monsterIndex].currentHP = newState.opponentMonster[monsterIndex].maxHP;
-            };          
+            };
             newState.playerMonster.currentHP -= 10;
-        })
-        return toChangeState;
-      }
-    },
-      
+          })
+          return toChangeState;
+        }
+      },
+
       {
         name: "Aqua Shield",
         cost: "6",
@@ -469,12 +469,12 @@ let Monsters = {
           let toChangeState = immer.produce(state, (newState) => {
             newState.opponentMonster[monsterIndex].encounterEnergy += 4;
             newState.opponentMonster[monsterIndex].currentHP += 5;
-            newState.playerMonster.currentHP -=20;
-        })
-        return toChangeState;
-      }
-    },
-      
+            newState.playerMonster.currentHP -= 20;
+          })
+          return toChangeState;
+        }
+      },
+
       {
         name: "Aqua Blast",
         cost: "10",
@@ -488,126 +488,126 @@ let Monsters = {
           return toChangeState;
         }
       }
-  ]
- },
+    ]
+  },
 
- testMonster5: {
-  name: "test 5",
-  type: "water",
-  maxHP: 70,
-  encounterEnergy: 0,
-  opponentMoveIndex: false,
-  currentHP: 70,
-  strength: 0,
-  dex: 0,
-  moves: [
-    {
-      name: "Down the Drain",
-      cost: "0",
-      text: "Deal 5 damage. Remove 2 of your energy. Gain 3 energy",
-      minReq: 0,
-      action: (state, monsterIndex) => {
-        let toChangeState = immer.produce(state, (newState) => {
-          newState.opponentMonster[monsterIndex].encounterEnergy += 3;
-          if (newState.playerMonster.encounterEnergy >= 2 ) {
-            newState.playerMonster.encounterEnergy -= 2;
-          } else {
-            newState.playerMonster.encounterEnergy = 0;
-          };          
-          newState.playerMonster.currentHP -= 5;
-      })
-      return toChangeState;
-    }
-  },
-    {
-      name: "Aqua Shield",
-      cost: "6",
-      text: "Deal 10 damage. Gain 10 HP. Gain 4 energy",
-      minReq: 6,
-      action: (state, monsterIndex) => {
-        let toChangeState = immer.produce(state, (newState) => {
-          newState.opponentMonster[monsterIndex].encounterEnergy += 4;
-          newState.opponentMonster[monsterIndex].currentHP += 10;
-          newState.playerMonster.currentHP -=10;
-      })
-      return toChangeState;
-    }
-  },
-    
-    {
-      name: "Aqua Blast",
-      cost: "10",
-      text: "Deal 35 damage. Use all energy.",
-      minReq: 10,
-      action: (state, monsterIndex) => {
-        let toChangeState = immer.produce(state, (newState) => {
-          newState.playerMonster.currentHP -= 35;
-          newState.opponentMonster[monsterIndex].encounterEnergy = 0;
-        })
-        return toChangeState;
+  testMonster5: {
+    name: "test 5",
+    type: "water",
+    maxHP: 70,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: 70,
+    strength: 0,
+    dex: 0,
+    moves: [
+      {
+        name: "Down the Drain",
+        cost: "0",
+        text: "Deal 5 damage. Remove 2 of your energy. Gain 3 energy",
+        minReq: 0,
+        action: (state, monsterIndex) => {
+          let toChangeState = immer.produce(state, (newState) => {
+            newState.opponentMonster[monsterIndex].encounterEnergy += 3;
+            if (newState.playerMonster.encounterEnergy >= 2) {
+              newState.playerMonster.encounterEnergy -= 2;
+            } else {
+              newState.playerMonster.encounterEnergy = 0;
+            };
+            newState.playerMonster.currentHP -= 5;
+          })
+          return toChangeState;
+        }
+      },
+      {
+        name: "Aqua Shield",
+        cost: "6",
+        text: "Deal 10 damage. Gain 10 HP. Gain 4 energy",
+        minReq: 6,
+        action: (state, monsterIndex) => {
+          let toChangeState = immer.produce(state, (newState) => {
+            newState.opponentMonster[monsterIndex].encounterEnergy += 4;
+            newState.opponentMonster[monsterIndex].currentHP += 10;
+            newState.playerMonster.currentHP -= 10;
+          })
+          return toChangeState;
+        }
+      },
+
+      {
+        name: "Aqua Blast",
+        cost: "10",
+        text: "Deal 35 damage. Use all energy.",
+        minReq: 10,
+        action: (state, monsterIndex) => {
+          let toChangeState = immer.produce(state, (newState) => {
+            newState.playerMonster.currentHP -= 35;
+            newState.opponentMonster[monsterIndex].encounterEnergy = 0;
+          })
+          return toChangeState;
+        }
       }
-    }
-   
-]
-},
 
-testMonster6: {
-  name: "test 6",
-  type: "water",
-  maxHP: 30,
-  encounterEnergy: 0,
-  opponentMoveIndex: false,
-  currentHP: 30,
-  strength: 0,
-  dex: 0,
-  moves: [
-    {
-      name: "Charging Strike",
-      cost: "0",
-      text: "Deal 4 damage. Gain 1 energy",
-      minReq: 0,
-      action: (state, monsterIndex) => {
-        let toChangeState = immer.produce(state, (newState) => {
-          newState.opponentMonster[monsterIndex].encounterEnergy += 1;
-          let tempState = dealPlayerDamage(newState, 4, monsterIndex);
-          newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-          newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;                
-      })
-      return toChangeState;
-    }
-  },
-    {
-      name: "Erect Barrier",
-      cost: "2",
-      text: "Gain 2 energy. Deal 8 damage.",
-      minReq: 2,
-      action: (state, monsterIndex) => {
-        let toChangeState = immer.produce(state, (newState) => {
-          newState.opponentMonster[monsterIndex].encounterEnergy += 2;
-          let tempState = dealPlayerDamage(newState, 8, monsterIndex);
-          newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-          newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-      })
-      return toChangeState;
-    }
+    ]
   },
 
-  {
-    name: "Total Vacation",
-    cost: "10",
-    text: "Spend all energy. Deal 24 damage.",
-    minReq: 10,
-    action: (state, monsterIndex) => {
-      let toChangeState = immer.produce(state, (newState) => {
-        newState.opponentMonster[monsterIndex].encounterEnergy = 0;
-        let tempState = dealPlayerDamage(newState, 24, monsterIndex);
-        newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-        newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-    })
-    return toChangeState;
-  }
-},
-  ]
+  testMonster6: {
+    name: "test 6",
+    type: "water",
+    maxHP: 30,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: 30,
+    strength: 0,
+    dex: 0,
+    moves: [
+      {
+        name: "Charging Strike",
+        cost: "0",
+        text: "Deal 4 damage. Gain 1 energy",
+        minReq: 0,
+        action: (state, monsterIndex) => {
+          let toChangeState = immer.produce(state, (newState) => {
+            newState.opponentMonster[monsterIndex].encounterEnergy += 1;
+            let tempState = dealPlayerDamage(newState, 4, monsterIndex);
+            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
+          })
+          return toChangeState;
+        }
+      },
+      {
+        name: "Erect Barrier",
+        cost: "2",
+        text: "Gain 2 energy. Deal 8 damage.",
+        minReq: 2,
+        action: (state, monsterIndex) => {
+          let toChangeState = immer.produce(state, (newState) => {
+            newState.opponentMonster[monsterIndex].encounterEnergy += 2;
+            let tempState = dealPlayerDamage(newState, 8, monsterIndex);
+            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
+          })
+          return toChangeState;
+        }
+      },
+
+      {
+        name: "Total Vacation",
+        cost: "10",
+        text: "Spend all energy. Deal 24 damage.",
+        minReq: 10,
+        action: (state, monsterIndex) => {
+          let toChangeState = immer.produce(state, (newState) => {
+            newState.opponentMonster[monsterIndex].encounterEnergy = 0;
+            let tempState = dealPlayerDamage(newState, 24, monsterIndex);
+            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
+          })
+          return toChangeState;
+        }
+      },
+    ]
   },
 
   testMonster7: {
@@ -638,16 +638,56 @@ testMonster6: {
   }
 };
 
+let potentialMonsterChoices = [Monsters.testMonster3, Monsters.testMonster7];
+
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // - - - - - -  - - - - -Creating the State - - - - - -  - - - - -
+
+//need to add a class that's visible; currently, deckDiv only displays when hovered over
+function renderChooseMonster(stateObj) {
+  document.getElementById("deckDiv").innerHTML = ""
+  let monsterChoiceDiv = document.createElement("Div");
+  monsterChoiceDiv.classList.add("monster-choice-window");
+  document.getElementById("deckDiv").appendChild(monsterChoiceDiv);
+
+  potentialMonsterChoices.forEach(function (monsterObj, index) {
+    let monsterDiv = document.createElement("Div");
+    monsterDiv.id = index;
+    monsterDiv.classList.add("monster-to-choose");
+    let monsterName = document.createElement("H3");
+    let monsterChoiceButton = document.createElement("Button");
+
+    monsterName.textContent = monsterObj.name;
+    monsterChoiceButton.textContent = "Choose"
+
+    monsterChoiceButton.addEventListener("click", function () {
+      chooseThisMonster(stateObj, index);
+    });
+
+    monsterDiv.append(monsterName, monsterChoiceButton);
+    document.getElementById("deckDiv").appendChild(monsterDiv);
+    })
+};
+
+
+
+function chooseThisMonster(stateObj, index) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerMonster = potentialMonsterChoices[index];
+  })
+  changeState(stateObj);
+  console.log("the players monster is " + stateObj.playerMonster.name);
+  return stateObj;
+}
+
 let gameStartState = {
   playerMonster: Monsters.testMonster3,
-  opponentMonster: [Monsters.testMonster6, Monsters.testMonster2],
-  showJSON: false
+  opponentMonster: [Monsters.testMonster6, Monsters.testMonster2]
 };
 
 const Status = {
-  OutOfCombat: "out of combat",
+  ChoosingMonster: "Choosing monster",
+  EncounterRewards: "Battle Rewards",
   InEncounter: "in encounter",
   WonEncounter: "won encounter",
   Death: "You died",
@@ -662,8 +702,7 @@ const setupState = {
   playcountKindle: 0
 };
 
-const initialState = setUpEncounter(setupState);
-let state = { ...initialState };
+
 
 function changeState(newStateObj) {
   console.log("you're changing the state");
@@ -687,7 +726,7 @@ function handleDeaths(stateObj) {
       //newState.status = Status.wonEncounter;
       newState = resetAfterEncounter(state);
     }
-  
+
     if (state.playerMonster.current <= 0) {
       // all monsters are dead
       console.log("we deads");
@@ -696,7 +735,7 @@ function handleDeaths(stateObj) {
     }
   })
   // check if all opponents are dead
-  
+
   return toChangeState;
 };
 
@@ -705,28 +744,38 @@ function pause(timeValue) {
   return new Promise(res => setTimeout(res, timeValue))
 }
 
-  
+
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // - - - - - -  - - - - - Game Set-up  - - - - - -  - - - - -
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+//Game Logic
+function fullGame() {
+  
+}
+
+const initialState = setUpEncounter(setupState);
+let state = { ...initialState };
+renderChooseMonster(state);
+//renderScreen(state);
+
 
 //Encounter Set-up
 function setUpEncounter(stateObj) {
   console.log("setting up encounter");
-  let newState = {...stateObj};
-    newState.playerMonster.encounterBlock = 0;
-    newState.encounterDeck = [...stateObj.playerDeck];
-    newState.encounterDraw = [...stateObj.playerDeck];
-    newState.encounterHand =  [];
-    newState.encounterDiscard =  [];
-    newState.targetedMonster = 0;
-    newState.playerMonster.encounterEnergy = 0;
-    newState.opponentMonster.forEach(function (monster, index) {
-      newState.opponentMonster[index].encounterEnergy = 0;
-      newState.opponentMonster[index].encounterBlock = 0;
-    })
-    return newState;
+  let newState = { ...stateObj };
+  newState.playerMonster.encounterBlock = 0;
+  newState.encounterDeck = [...stateObj.playerDeck];
+  newState.encounterDraw = [...stateObj.playerDeck];
+  newState.encounterHand = [];
+  newState.encounterDiscard = [];
+  newState.targetedMonster = 0;
+  newState.playerMonster.encounterEnergy = 0;
+  newState.opponentMonster.forEach(function (monster, index) {
+    newState.opponentMonster[index].encounterEnergy = 0;
+    newState.opponentMonster[index].encounterBlock = 0;
+  })
+  return newState;
 };
 
 
@@ -778,7 +827,7 @@ function drawACard(stateObj) {
     }
 
     // draw a card if possible
-    let testState 
+    let testState
     let topCard = newState.encounterDraw.shift();
     if (!topCard) {
       console.log("all cards are in play or something");
@@ -803,7 +852,7 @@ function drawAHand(stateObj) {
       }
     }
   });
-  return toChangeState; 
+  return toChangeState;
 }
 
 
@@ -811,7 +860,7 @@ function playACard(stateObj, cardIndexInHand) {
   console.log("triggering playACard");
   let card = stateObj.encounterHand[cardIndexInHand];
   let toChangeState = card.action(stateObj, cardIndexInHand);
-  let toChangeState2 = immer.produce(toChangeState, (newState) => {  
+  let toChangeState2 = immer.produce(toChangeState, (newState) => {
     if (card.exhaust == true) {
       console.log("you're exhausting " + card.name);
       newState.encounterHand.splice(cardIndexInHand, 1);
@@ -819,19 +868,19 @@ function playACard(stateObj, cardIndexInHand) {
       newState.encounterDiscard.push(card);
       newState.encounterHand.splice(cardIndexInHand, 1);
     }
-    
+
   })
   let toChangeState3 = handleDeaths(toChangeState2)
   changeState(toChangeState3);
- }
+}
 
- function targetThisMonster(stateObj, monsterIndex) {
-    let toChangeState = immer.produce(stateObj, (newState) => {
-        newState.targetedMonster = monsterIndex;
-    })
+function targetThisMonster(stateObj, monsterIndex) {
+  let toChangeState = immer.produce(stateObj, (newState) => {
+    newState.targetedMonster = monsterIndex;
+  })
 
-    changeState(toChangeState);
- }
+  changeState(toChangeState);
+}
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // - - - - - -  - - - - - Rendering - - - - - -  - - - - -
@@ -854,16 +903,16 @@ function renderStats(stateObj) {
   let playerStrengthText = document.createElement("H2");
   let playerBlockText = document.createElement("H2");
   playerHPText.textContent = stateObj.playerMonster.name +
-  " HP: " +
-  stateObj.playerMonster.currentHP +
-  "/" +
-  stateObj.playerMonster.maxHP;
+    " HP: " +
+    stateObj.playerMonster.currentHP +
+    "/" +
+    stateObj.playerMonster.maxHP;
   playerEnergyText.textContent = "Energy: " + stateObj.playerMonster.encounterEnergy;
   playerStrengthText.textContent = "Strength: " + stateObj.playerMonster.strength;
   playerBlockText.textContent = "Block: " + stateObj.playerMonster.encounterBlock;
   document.getElementById("playerStats").append(playerHPText, playerBlockText, playerEnergyText, playerStrengthText);
-    
-    
+
+
 }
 
 //render player's hand
@@ -925,64 +974,63 @@ function renderCardPile(cardArrayObj, divStringName) {
 }
 
 function renderOpponents(stateObj) {
-    document.getElementById("opponents").innerHTML = "";
-    stateObj.opponentMonster.forEach(function (monsterObj, index) {
-        let monsterDiv = document.createElement("Div");
-        monsterDiv.classList.add("monster");
-        monsterDiv.id = index;
-        
-        let monsterStatsDiv = document.createElement("Div");
-        let monsterName = document.createElement("H2");
-        let monsterHP = document.createElement("H3");
-        let monsterEncounterEnergy = document.createElement("H3");
-        let monsterEncounterBlock = document.createElement("H3");
-        monsterEncounterBlock.textContent = "Block: " + monsterObj.encounterBlock;
-        monsterName.textContent = monsterObj.name;
-        monsterHP.textContent = " HP: " +
-        monsterObj.currentHP +
-        "/" +
-        monsterObj.maxHP;
-        monsterEncounterEnergy.textContent = "Energy: " + monsterObj.encounterEnergy;
-        monsterStatsDiv.append(monsterName, monsterHP, monsterEncounterEnergy, monsterEncounterBlock);
-        if (stateObj.targetedMonster == index) {
-            monsterDiv.classList.add("targeted");
-        } else {
-            let targetButton = document.createElement("Button");
-            targetButton.textContent = "Target";
-            targetButton.addEventListener("click", function () {
-                targetThisMonster(stateObj, index);
-              });
-            monsterStatsDiv.append(targetButton);
-        }
-        monsterDiv.append(monsterStatsDiv);
+  document.getElementById("opponents").innerHTML = "";
+  stateObj.opponentMonster.forEach(function (monsterObj, index) {
+    let monsterDiv = document.createElement("Div");
+    monsterDiv.classList.add("monster");
+    monsterDiv.id = index;
 
-        let opponentMoveListDiv = document.createElement("Div");
+    let monsterStatsDiv = document.createElement("Div");
+    let monsterName = document.createElement("H2");
+    let monsterHP = document.createElement("H3");
+    let monsterEncounterEnergy = document.createElement("H3");
+    let monsterEncounterBlock = document.createElement("H3");
+    monsterEncounterBlock.textContent = "Block: " + monsterObj.encounterBlock;
+    monsterName.textContent = monsterObj.name;
+    monsterHP.textContent = " HP: " +
+      monsterObj.currentHP +
+      "/" +
+      monsterObj.maxHP;
+    monsterEncounterEnergy.textContent = "Energy: " + monsterObj.encounterEnergy;
+    monsterStatsDiv.append(monsterName, monsterHP, monsterEncounterEnergy, monsterEncounterBlock);
+    if (stateObj.targetedMonster == index) {
+      monsterDiv.classList.add("targeted");
+    } else {
+      let targetButton = document.createElement("Button");
+      targetButton.textContent = "Target";
+      targetButton.addEventListener("click", function () {
+        targetThisMonster(stateObj, index);
+      });
+      monsterStatsDiv.append(targetButton);
+    }
+    monsterDiv.append(monsterStatsDiv);
 
-        monsterObj.moves.forEach(function (moveObj, index) {
-            let moveDiv = document.createElement("Div");
-            moveDiv.id = index;
-            moveDiv.classList.add("move");
-            if (index === monsterObj.opponentMoveIndex) {
-            moveDiv.classList.add("chosen");
-            }
-            let moveName = document.createElement("H3");
-            let moveText = document.createElement("P");
-            let moveCost = document.createElement("P");
-            moveName.textContent = moveObj.name;
-            moveText.textContent = moveObj.text;
-            moveCost.textContent = "Energy cost: " + moveObj.cost;
-            moveCost.classList.add("energy-cost");
-            moveDiv.append(moveName, moveText, moveCost);
-            opponentMoveListDiv.appendChild(moveDiv);
-        });
+    let opponentMoveListDiv = document.createElement("Div");
 
-        monsterDiv.appendChild(opponentMoveListDiv);
-        document.getElementById("opponents").append(monsterDiv);
-
+    monsterObj.moves.forEach(function (moveObj, index) {
+      let moveDiv = document.createElement("Div");
+      moveDiv.id = index;
+      moveDiv.classList.add("move");
+      if (index === monsterObj.opponentMoveIndex) {
+        moveDiv.classList.add("chosen");
+      }
+      let moveName = document.createElement("H3");
+      let moveText = document.createElement("P");
+      let moveCost = document.createElement("P");
+      moveName.textContent = moveObj.name;
+      moveText.textContent = moveObj.text;
+      moveCost.textContent = "Energy cost: " + moveObj.cost;
+      moveCost.classList.add("energy-cost");
+      moveDiv.append(moveName, moveText, moveCost);
+      opponentMoveListDiv.appendChild(moveDiv);
     });
+
+    monsterDiv.appendChild(opponentMoveListDiv);
+    document.getElementById("opponents").append(monsterDiv);
+
+  });
 }
 
-let Json2 = false;
 
 function renderScreen(stateObj) {
   renderStats(stateObj);
@@ -994,7 +1042,7 @@ function renderScreen(stateObj) {
   renderOpponents(stateObj);
 }
 
-renderScreen(state);
+
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // - - - - - -  - - - - - Function Assignment - - - - - -  - - - - -
@@ -1013,12 +1061,7 @@ function changeJSON() {
 }
 
 
-// document.getElementById("pickMove").onclick = function () {
-//   pickMove(state);
-// };
-// document.getElementById("playCurrentMove").onclick = function () {
-//   playOpponentMove(state);
-// };
+//GAME LOGIC - should only execute if in the "encounter" screen
 document.getElementById("shuffleDrawButton").onclick = function () {
   startEncounter(state);
 };
@@ -1034,19 +1077,20 @@ document.getElementById("resetButton").onclick = resetState;
 
 
 
+
 //needs to return when it reaches the first playable move to prevent it from always playing the last move
 //chooses a random number based on the length of the opponent' moves and highlights it
 function pickMove(stateObj) {
   let toChangeState = immer.produce(stateObj, (newState) => {
     newState.opponentMonster.forEach(function (monsterObj, index) {
-        for (var i = 0; i < monsterObj.moves.length; i++) {
-            if (monsterObj.encounterEnergy >= monsterObj.moves[i].minReq) {
-                newState.opponentMonster[index].opponentMoveIndex = i;
-                console.log(monsterObj.name + "picks " + monsterObj.moves[i].name);
-            }
-        }  
+      for (var i = 0; i < monsterObj.moves.length; i++) {
+        if (monsterObj.encounterEnergy >= monsterObj.moves[i].minReq) {
+          newState.opponentMonster[index].opponentMoveIndex = i;
+          console.log(monsterObj.name + "picks " + monsterObj.moves[i].name);
+        }
+      }
     });
-   });
+  });
   //changeState(toChangeState);
   return toChangeState;
 }
@@ -1056,29 +1100,29 @@ function playOpponentMove(stateObj) {
   //each opponent Monster plays its own move
   stateObj.opponentMonster.forEach(function (monsterObj, index) {
     const move = monsterObj.moves[monsterObj.opponentMoveIndex];
-     //move.action also take a state object and returns a state object, so newState gets updated
-     stateObj = move.action(stateObj, index);
+    //move.action also take a state object and returns a state object, so newState gets updated
+    stateObj = move.action(stateObj, index);
   });
   return stateObj;
- }
+}
 
- function playOpponentMove2(stateObj) {
+function playOpponentMove2(stateObj) {
   let toChangeState = immer.produce(stateObj, (newState) => {
     newState.opponentMonster.forEach(function (monsterObj, index) {
       const move = monsterObj.moves[monsterObj.opponentMoveIndex];
-       //move.action also take a state object and returns a state object, so newState gets updated
-       newState = move.action(newState, index);
+      //move.action also take a state object and returns a state object, so newState gets updated
+      newState = move.action(newState, index);
     })
   });
   return toChangeState;
- }
+}
 
 
 function discardHand(stateObj) {
-   let toChangeState = immer.produce(stateObj, (newState) => {
-     newState.encounterDiscard = newState.encounterDiscard.concat(newState.encounterHand);
-     newState.encounterHand = [];
-   });
+  let toChangeState = immer.produce(stateObj, (newState) => {
+    newState.encounterDiscard = newState.encounterDiscard.concat(newState.encounterHand);
+    newState.encounterHand = [];
+  });
   return toChangeState;
 }
 
@@ -1095,8 +1139,8 @@ function startTurn(stateObj) {
 
 function shuffleDraw(stateObj) {
   let toChangeState = immer.produce(stateObj, (newState) => {
-     newState.encounterDraw = shuffleArray(newState.encounterDraw);
-   });
+    newState.encounterDraw = shuffleArray(newState.encounterDraw);
+  });
   //changeState(toChangeState);
   return toChangeState;
 }
@@ -1109,7 +1153,7 @@ function startEncounter(stateObj) {
 }
 
 //if you flip the order of this around, discard works, but not playing the move
-function endTurn(stateObj) {
+async function endTurn(stateObj) {
   stateObj = discardHand(stateObj);
   stateObj = immer.produce(stateObj, (newState) => {
     newState.opponentMonster.forEach(function (monsterObj, index) {
@@ -1117,9 +1161,19 @@ function endTurn(stateObj) {
     })
   });
   stateObj = pickMove(stateObj);
+  changeState(stateObj);
+  await pause(500);
   stateObj = playOpponentMove(stateObj);
   changeState(stateObj);
-  
+  await pause(500);
+
+  stateObj = pickMove(stateObj);
+  stateObj = immer.produce(stateObj, (draft) => {
+    draft.playerMonster.encounterBlock = 0;
+  })
+  stateObj = drawAHand(stateObj);
+  changeState(stateObj);
+
 }
 
 
