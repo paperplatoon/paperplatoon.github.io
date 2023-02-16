@@ -148,11 +148,11 @@ let Cards = {
 
   withdraw: {
     name: "Withdraw",
-    text: (state) => { return `Spend 1 energy. Gain ${(6 + state.playerMonster.strength)} block` },
+    text: (state) => { return `Spend 1 energy. Gain ${(6 + state.playerMonster.dex)} block` },
     minReq: 1,
     action: (state) => {
       let toChangeState = immer.produce(state, (newState) => {
-        newState.playerMonster.encounterBlock += (6 + state.playerMonster.strength);
+        newState.playerMonster.encounterBlock += (6 + state.playerMonster.dex);
         newState.playerMonster.encounterEnergy -= 1;
       })
       return toChangeState;
@@ -304,11 +304,11 @@ let Cards1 = {
 
   withdraw: {
     name: "Withdraw",
-    text: (state) => { return "Spend 1 energy. Gain 6 block" },
+    text: (state) => { return `Spend 1 energy. Gain ${(6 + state.playerMonster.dex)} block` },
     minReq: 1,
     action: (state) => {
       let toChangeState = immer.produce(state, (newState) => {
-        newState.playerMonster.encounterBlock += 6;
+        newState.playerMonster.encounterBlock += (6 + state.playerMonster.dex);
         newState.playerMonster.encounterEnergy -= 1;
       })
       return toChangeState;
@@ -643,12 +643,12 @@ let potentialMonsterChoices = [Monsters.testMonster3, Monsters.testMonster7];
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // - - - - - -  - - - - -Creating the State - - - - - -  - - - - -
 
-//need to add a class that's visible; currently, deckDiv only displays when hovered over
+
 function renderChooseMonster(stateObj) {
-  document.getElementById("deckDiv").innerHTML = ""
+  document.getElementById("playerStats").innerHTML = ""
   let monsterChoiceDiv = document.createElement("Div");
   monsterChoiceDiv.classList.add("monster-choice-window");
-  document.getElementById("deckDiv").appendChild(monsterChoiceDiv);
+  document.getElementById("playerStats").appendChild(monsterChoiceDiv);
 
   potentialMonsterChoices.forEach(function (monsterObj, index) {
     let monsterDiv = document.createElement("Div");
@@ -665,7 +665,7 @@ function renderChooseMonster(stateObj) {
     });
 
     monsterDiv.append(monsterName, monsterChoiceButton);
-    document.getElementById("deckDiv").appendChild(monsterDiv);
+    document.getElementById("playerStats").appendChild(monsterDiv);
     })
 };
 
@@ -674,16 +674,17 @@ function renderChooseMonster(stateObj) {
 function chooseThisMonster(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster = potentialMonsterChoices[index];
+    newState.status = Status.InEncounter;
   })
-  changeState(stateObj);
+  stateObj = setUpFirstEncounter(stateObj);
   console.log("the players monster is " + stateObj.playerMonster.name);
+  console.log("the players deck is " + stateObj.encounterDeck);
+  console.log("the players draw is " + stateObj.encounterDraw);
+  console.log("the players discard is " + stateObj.encounterDiscard);
+
+  changeState(stateObj);
   return stateObj;
 }
-
-let gameStartState = {
-  playerMonster: Monsters.testMonster3,
-  opponentMonster: [Monsters.testMonster6, Monsters.testMonster2]
-};
 
 const Status = {
   ChoosingMonster: "Choosing monster",
@@ -694,13 +695,16 @@ const Status = {
   InTown: "In Town"
 };
 
-const setupState = {
-  ...gameStartState,
-  playerDeck: gameStartState.playerMonster.startingDeck,
-  status: Status.InEncounter,
+let gameStartState = {
+  playerMonster: false,
+  opponentMonster: [Monsters.testMonster6, Monsters.testMonster2],
+  status: Status.ChoosingMonster,
   opponentChosenMoveIndex: false,
   playcountKindle: 0
 };
+
+
+
 
 
 
@@ -750,32 +754,36 @@ function pause(timeValue) {
 // - - - - - -  - - - - - Game Set-up  - - - - - -  - - - - -
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 //Game Logic
-function fullGame() {
-  
-}
 
-const initialState = setUpEncounter(setupState);
-let state = { ...initialState };
-renderChooseMonster(state);
+
+let state = {...gameStartState};
+renderScreen(state);
+//renderChooseMonster(state);
+//const initialState = setUpEncounter(setupState);
+//let state = { ...initialState };
+
 //renderScreen(state);
 
 
 //Encounter Set-up
-function setUpEncounter(stateObj) {
-  console.log("setting up encounter");
-  let newState = { ...stateObj };
-  newState.playerMonster.encounterBlock = 0;
-  newState.encounterDeck = [...stateObj.playerDeck];
-  newState.encounterDraw = [...stateObj.playerDeck];
-  newState.encounterHand = [];
-  newState.encounterDiscard = [];
-  newState.targetedMonster = 0;
-  newState.playerMonster.encounterEnergy = 0;
-  newState.opponentMonster.forEach(function (monster, index) {
-    newState.opponentMonster[index].encounterEnergy = 0;
-    newState.opponentMonster[index].encounterBlock = 0;
+function setUpFirstEncounter(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    console.log("setting up encounter");
+    newState.playerMonster.encounterBlock = 0;
+    newState.encounterDeck = [...stateObj.playerMonster.startingDeck];
+    newState.encounterDraw = [...stateObj.playerMonster.startingDeck];
+    newState.encounterHand = [];
+    newState.playerDeck = [...stateObj.playerMonster.startingDeck];
+    newState.encounterDiscard = [];
+    newState.targetedMonster = 0;
+    newState.playerMonster.encounterEnergy = 0;
+    newState.opponentMonster.forEach(function (monster, index) {
+      newState.opponentMonster[index].encounterEnergy = 0;
+      newState.opponentMonster[index].encounterBlock = 0;
   })
-  return newState;
+  })
+
+  return stateObj;
 };
 
 
@@ -1033,13 +1041,19 @@ function renderOpponents(stateObj) {
 
 
 function renderScreen(stateObj) {
-  renderStats(stateObj);
-  renderJSON(stateObj);
-  renderHand(stateObj);
-  renderCardPile(stateObj.encounterDraw, "drawDiv");
-  renderCardPile(stateObj.encounterDiscard, "discardDiv");
-  renderCardPile(stateObj.playerDeck, "deckDiv");
-  renderOpponents(stateObj);
+  if (stateObj.status == Status.ChoosingMonster) {
+      renderChooseMonster(stateObj);
+      document.getElementById("opponents").innerHTML = "";
+  } else {
+    renderStats(stateObj);
+    renderJSON(stateObj);
+    renderHand(stateObj);
+    renderCardPile(stateObj.encounterDraw, "drawDiv");
+    renderCardPile(stateObj.encounterDiscard, "discardDiv");
+    renderCardPile(stateObj.playerDeck, "deckDiv");
+    renderOpponents(stateObj);
+  }
+  
 }
 
 
@@ -1050,13 +1064,7 @@ function renderScreen(stateObj) {
 
 //assign function to button
 function resetState() {
-  let newState = initialState;
-  changeState(newState);
-}
-
-function changeJSON() {
-  let newState = { ...state };
-  newState.showJSON = !newState.showJSON;
+  let newState = gameStartState;
   changeState(newState);
 }
 
