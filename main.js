@@ -133,6 +133,23 @@ let fireCardPool = {
   explode: {
     name: "Explode",
     text: (state) => {
+      return `Spend all your energy to deal ${(5 + state.playerMonster.strength) + "*" + state.playerMonster.encounterEnergy} damage.`
+    },
+    minReq: 0,
+    action: (state) => {
+      let toChangeState = immer.produce(state, (newState) => {
+        let tempState = dealOpponentDamage(newState, 5, newState.playerMonster.encounterEnergy);
+        newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
+        newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
+        newState.playerMonster.encounterEnergy = 0;
+      })
+      return toChangeState;
+    }
+  },
+
+  devExplode: {
+    name: "Explode",
+    text: (state) => {
       return `Spend all your energy to deal ${(30 + state.playerMonster.strength) + "*" + state.playerMonster.encounterEnergy} damage.`
     },
     minReq: 0,
@@ -218,6 +235,8 @@ let fireCardPool = {
         newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 2;
         newState.playerMonster.encounterEnergy -= 3;
       })
+      toChangeState = drawACard(toChangeState);
+      toChangeState = drawACard(toChangeState);
       return toChangeState;
     }
   },
@@ -563,8 +582,8 @@ let opponentMonsters = {
 
 
 let playerMonsters = {
-  flames: {
-    name: "Flames",
+  devCheat: {
+    name: "Testing Mode",
     type: "fire",
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -578,11 +597,9 @@ let playerMonsters = {
       fireCardPool.fireEnergy,
       fireCardPool.fireEnergy,
       fireCardPool.fireEnergy,
-      fireCardPool.fireEnergy,
-      fireCardPool.fireEnergy,
       fireCardPool.kindle,
-      fireCardPool.simpleheal,
-      fireCardPool.explode,
+      fireCardPool.devExplode,
+      fireCardPool.devExplode,
       fireCardPool.gainstrength,
       fireCardPool.siphon,
     ],
@@ -651,7 +668,7 @@ opponentMonsterArray = Object.values(opponentMonsters);
 fireCardArray = Object.values(fireCardPool);
 waterCardArray = Object.values(waterCardPool);
 
-let potentialMonsterChoices = [playerMonsters.charles, playerMonsters.whirlies];
+let potentialMonsterChoices = [playerMonsters.charles, playerMonsters.whirlies, playerMonsters.devCheat];
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // - - - - - -  - - - - -Creating the State - - - - - -  - - - - -
@@ -1167,15 +1184,10 @@ function resetState() {
 document.getElementById("shuffleDrawButton").onclick = function () {
   startEncounter(state);
 };
-document.getElementById("startTurnButton").onclick = function () {
-  startTurn(state);
-};
-
 document.getElementById("endTurnButton").onclick = function () {
   endTurn(state);
 };
-document.getElementById("resetButton").onclick = resetState;
-//document.getElementById("drawHandButton").onclick = drawAHand;
+//document.getElementById("resetButton").onclick = resetState;
 
 
 

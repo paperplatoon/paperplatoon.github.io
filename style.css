@@ -20,8 +20,12 @@
 
 .move {
   border: 1px dashed;
-  line-height: 0.6;
-  padding: 0.1vh 0.1vw;
+  line-height: 0.2;
+  padding: 0.05vh 0.05vw;
+}
+
+.monster {
+  border: 0.5px dashed black;
 }
 
 .targeted {
@@ -38,11 +42,14 @@
 #opponents {
   color: red;
   border: 1px solid red;
-  padding: 1vh;
+  padding: 0.1vh;
   width: 75vw;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  font-size: 60%;
 }
+
+
 
 .energy-cost {
   color: brown;
