@@ -10,6 +10,7 @@
 //add a mark that makes an enemy take 2x damage ??
 //
 
+//setUpEncounter block is undefined because opponentMonster hasn't been set yet
 
 
 
@@ -77,7 +78,7 @@ function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, attackNumber
   return toChangeState;
 }
 
-let Cards = {
+let fireCardPool = {
   fireEnergy: {
     name: "Fire Energy",
     text: (state) => {
@@ -132,12 +133,12 @@ let Cards = {
   explode: {
     name: "Explode",
     text: (state) => {
-      return `Spend all your energy to deal ${(5 + state.playerMonster.strength) + "*" + state.playerMonster.encounterEnergy} damage.`
+      return `Spend all your energy to deal ${(30 + state.playerMonster.strength) + "*" + state.playerMonster.encounterEnergy} damage.`
     },
     minReq: 0,
     action: (state) => {
       let toChangeState = immer.produce(state, (newState) => {
-        let tempState = dealOpponentDamage(newState, 5, newState.playerMonster.encounterEnergy);
+        let tempState = dealOpponentDamage(newState, 30, newState.playerMonster.encounterEnergy);
         newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
         newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
         newState.playerMonster.encounterEnergy = 0;
@@ -237,7 +238,7 @@ let Cards = {
   }
 };
 
-let Cards1 = {
+let waterCardPool = {
   waterEnergy: {
     name: "Water Energy",
     text: (state) => {
@@ -337,33 +338,9 @@ let Cards1 = {
 }
 
 //need to split minReq and Cost separately, because some moves can be played with negative costs; or for X-cost moves
-let Monsters = {
-  testMonster1: {
-    name: "test 1",
-    type: "fire",
-    encounterEnergy: 0,
-    opponentMoveIndex: false,
-    maxHP: 50,
-    currentHP: 50,
-    strength: 0,
-    dex: 0,
-    startingDeck: [
-      Cards.fireEnergy,
-      Cards.fireEnergy,
-      Cards.fireEnergy,
-      Cards.fireEnergy,
-      Cards.fireEnergy,
-      Cards.fireEnergy,
-      Cards.kindle,
-      Cards.simpleheal,
-      Cards.explode,
-      Cards.gainstrength,
-      Cards.siphon,
-    ],
-  },
-
-  testMonster2: {
-    name: "test 2",
+let opponentMonsters = {
+  opponent1: {
+    name: "Mr Bubbles",
     type: "water",
     maxHP: 25,
     encounterEnergy: 0,
@@ -403,36 +380,8 @@ let Monsters = {
     ]
   },
 
-  testMonster3: {
-    name: "test 3",
-    type: "fire",
-    encounterEnergy: 0,
-    opponentMoveIndex: false,
-    maxHP: 50,
-    currentHP: 50,
-    strength: 0,
-    dex: 0,
-    startingDeck: [
-      //6 energy
-      Cards.fireEnergy,
-      Cards.fireEnergy,
-      Cards.fireEnergy,
-      Cards.fireEnergy,
-      Cards.kindle,
-      Cards.kindle,
-      //7 attacks
-      Cards.explode,
-      Cards.gainstrength,
-      Cards.withdraw,
-      Cards.withdraw,
-      Cards.fireball,
-      Cards.withdraw,
-      Cards.siphon,
-    ],
-  },
-
-  testMonster4: {
-    name: "test 4",
+  opponent2: {
+    name: "Mrs Bubbles",
     type: "water",
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -491,7 +440,7 @@ let Monsters = {
     ]
   },
 
-  testMonster5: {
+  opponent3: {
     name: "test 5",
     type: "water",
     maxHP: 70,
@@ -551,8 +500,8 @@ let Monsters = {
     ]
   },
 
-  testMonster6: {
-    name: "test 6",
+  opponent4: {
+    name: "Mrs Bubbles",
     type: "water",
     maxHP: 30,
     encounterEnergy: 0,
@@ -610,9 +559,68 @@ let Monsters = {
     ]
   },
 
-  testMonster7: {
-    name: "test 7",
+}
+
+
+let playerMonsters = {
+  flames: {
+    name: "Flames",
+    type: "fire",
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    cardPool: fireCardPool,
+    maxHP: 50,
+    currentHP: 50,
+    strength: 0,
+    dex: 0,
+    startingDeck: [
+      fireCardPool.fireEnergy,
+      fireCardPool.fireEnergy,
+      fireCardPool.fireEnergy,
+      fireCardPool.fireEnergy,
+      fireCardPool.fireEnergy,
+      fireCardPool.fireEnergy,
+      fireCardPool.kindle,
+      fireCardPool.simpleheal,
+      fireCardPool.explode,
+      fireCardPool.gainstrength,
+      fireCardPool.siphon,
+    ],
+  },
+
+  charles: {
+    name: "Charles",
+    type: "fire",
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    cardPool: fireCardPool,
+    maxHP: 50,
+    currentHP: 50,
+    strength: 0,
+    dex: 0,
+    startingDeck: [
+      //6 energy
+      fireCardPool.fireEnergy,
+      fireCardPool.fireEnergy,
+      fireCardPool.fireEnergy,
+      fireCardPool.fireEnergy,
+      fireCardPool.kindle,
+      fireCardPool.kindle,
+      //7 attacks
+      fireCardPool.explode,
+      fireCardPool.gainstrength,
+      fireCardPool.withdraw,
+      fireCardPool.withdraw,
+      fireCardPool.fireball,
+      fireCardPool.withdraw,
+      fireCardPool.siphon,
+    ],
+  },
+
+  whirlies: {
+    name: "Whirlies",
     type: "Water",
+    cardPool: waterCardPool,
     encounterEnergy: 0,
     opponentMoveIndex: false,
     maxHP: 50,
@@ -621,24 +629,29 @@ let Monsters = {
     dex: 0,
     startingDeck: [
       //6 energy
-      Cards1.waterEnergy,
-      Cards1.waterEnergy,
-      Cards1.waterEnergy,
-      Cards1.waterEnergy,
-      Cards1.waterEnergy,
-      Cards1.waterEnergy,
+      waterCardPool.waterEnergy,
+      waterCardPool.waterEnergy,
+      waterCardPool.waterEnergy,
+      waterCardPool.waterEnergy,
+      waterCardPool.waterEnergy,
+      waterCardPool.waterEnergy,
       //6 attacks
-      Cards.withdraw,
-      Cards.withdraw,
-      Cards.withdraw,
-      Cards1.tackle,
-      Cards1.bodySlam,
-      Cards1.gainDex
+      waterCardPool.withdraw,
+      waterCardPool.withdraw,
+      waterCardPool.withdraw,
+      waterCardPool.tackle,
+      waterCardPool.bodySlam,
+      waterCardPool.gainDex
     ]
   }
 };
 
-let potentialMonsterChoices = [Monsters.testMonster3, Monsters.testMonster7];
+playerMonsterArray = Object.values(playerMonsters);
+opponentMonsterArray = Object.values(opponentMonsters);
+fireCardArray = Object.values(fireCardPool);
+waterCardArray = Object.values(waterCardPool);
+
+let potentialMonsterChoices = [playerMonsters.charles, playerMonsters.whirlies];
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // - - - - - -  - - - - -Creating the State - - - - - -  - - - - -
@@ -661,7 +674,7 @@ function renderChooseMonster(stateObj) {
     monsterChoiceButton.textContent = "Choose"
 
     monsterChoiceButton.addEventListener("click", function () {
-      chooseThisMonster(stateObj, index);
+    chooseThisMonster(stateObj, index);
     });
 
     monsterDiv.append(monsterName, monsterChoiceButton);
@@ -669,22 +682,92 @@ function renderChooseMonster(stateObj) {
     })
 };
 
-
-
 function chooseThisMonster(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster = potentialMonsterChoices[index];
     newState.status = Status.InEncounter;
   })
-  stateObj = setUpFirstEncounter(stateObj);
-  console.log("the players monster is " + stateObj.playerMonster.name);
-  console.log("the players deck is " + stateObj.encounterDeck);
-  console.log("the players draw is " + stateObj.encounterDraw);
-  console.log("the players discard is " + stateObj.encounterDiscard);
-
+  stateObj = setUpEncounter(stateObj);
   changeState(stateObj);
   return stateObj;
 }
+
+
+function fisherYatesShuffle(arrayObj) {
+  let arrayCopy = [...arrayObj];
+  for (x = arrayCopy.length-1; x > 0; x--) { 
+    let y = Math.floor(Math.random() * (x)); 
+    let temp = arrayCopy[x] 
+    arrayCopy[x] = arrayCopy[y] 
+    arrayCopy[y] = temp 
+ } 
+ return arrayCopy;
+}
+
+function renderChooseCardReward(stateObj) {
+  document.getElementById("handContainer2").innerHTML = "";
+  document.getElementById("opponents").innerHTML = "";
+
+  let cardChoiceDiv = document.createElement("Div");
+  cardChoiceDiv.classList.add("card-choice-window");
+  document.getElementById("handContainer2").appendChild(cardChoiceDiv);
+
+
+  let shuffledCardPool = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
+  let sampledCardPool = shuffledCardPool.slice(0, 3);
+
+  sampledCardPool.forEach(function (cardObj, index) {
+    let cardDiv = document.createElement("Div");
+    cardDiv.classList.add("card");
+    let cardName = document.createElement("H3");
+    let cardText = document.createElement("P");
+    let chooseButton = document.createElement("Button");   
+    chooseButton.addEventListener("click", function () {
+        chooseThisCard(sampledCardPool[index], stateObj, index);
+      });   
+    chooseButton.textContent = "Choose";
+    if (cardObj.cardType == "fireEnergy") {
+      cardDiv.classList.add("fire-energy");
+    }
+    if (cardObj.cardType == "waterEnergy") {
+      cardDiv.classList.add("water-energy");
+    }
+    cardName.textContent = cardObj.name;
+    cardText.textContent = cardObj.text(stateObj, index);
+    cardDiv.append(cardName, cardText, chooseButton);
+    document.getElementById("handContainer2").appendChild(cardDiv);
+  });
+
+  let skipButton = document.createElement("Button");
+  skipButton.addEventListener("click", function () {
+    skipCards(stateObj);
+  }); 
+  skipButton.textContent = "Skip";
+  document.getElementById("handContainer2").appendChild(skipButton);
+
+};
+
+function skipCards(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.status = Status.InEncounter;
+  })
+  stateObj = setUpEncounter(stateObj);
+  changeState(stateObj);
+  return stateObj;
+}
+
+function chooseThisCard(cardObj, stateObj, index) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerDeck.push(cardObj);
+    newState.status = Status.InEncounter;
+  })
+  stateObj = setUpEncounter(stateObj);
+  changeState(stateObj);
+  return stateObj;
+}
+
+
+
 
 const Status = {
   ChoosingMonster: "Choosing monster",
@@ -697,7 +780,7 @@ const Status = {
 
 let gameStartState = {
   playerMonster: false,
-  opponentMonster: [Monsters.testMonster6, Monsters.testMonster2],
+  opponentMonster: [opponentMonsters.opponent4, opponentMonsters.opponent1],
   status: Status.ChoosingMonster,
   opponentChosenMoveIndex: false,
   playcountKindle: 0
@@ -727,15 +810,15 @@ function handleDeaths(stateObj) {
     });
     if (newState.opponentMonster.length == 0) {
       console.log("all opponents dead");
-      //newState.status = Status.wonEncounter;
-      newState = resetAfterEncounter(state);
+      newState.status = Status.EncounterRewards;
+      //newState = resetAfterEncounter(state);
     }
 
-    if (state.playerMonster.current <= 0) {
+    if (newState.playerMonster.current <= 0) {
       // all monsters are dead
       console.log("we deads");
       //newState.status = Status.lostEncounter;
-      newState = resetAfterEncounter(state);
+      newState = resetAfterEncounter(newState);
     }
   })
   // check if all opponents are dead
@@ -758,29 +841,39 @@ function pause(timeValue) {
 
 let state = {...gameStartState};
 renderScreen(state);
-//renderChooseMonster(state);
-//const initialState = setUpEncounter(setupState);
-//let state = { ...initialState };
 
-//renderScreen(state);
 
 
 //Encounter Set-up
-function setUpFirstEncounter(stateObj) {
+//setUpEncounter block is undefined because opponentMonster hasn't been set yet
+function setUpEncounter(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     console.log("setting up encounter");
     newState.playerMonster.encounterBlock = 0;
-    newState.encounterDeck = [...stateObj.playerMonster.startingDeck];
-    newState.encounterDraw = [...stateObj.playerMonster.startingDeck];
+    newState.opponentMonster = [opponentMonsters.opponent1, opponentMonsters.opponent4];
     newState.encounterHand = [];
-    newState.playerDeck = [...stateObj.playerMonster.startingDeck];
     newState.encounterDiscard = [];
+    if (!stateObj.playerDeck) {
+      console.log("player has no playerDeck")
+      newState.playerDeck = [...stateObj.playerMonster.startingDeck];
+      newState.encounterDeck = [...stateObj.playerMonster.startingDeck];
+      newState.encounterDraw = [...stateObj.playerMonster.startingDeck];
+    } else {
+      console.log("player had playerDeck")
+      newState.encounterDeck = [...stateObj.playerDeck];
+      newState.encounterDraw = [...stateObj.playerDeck];
+    }
     newState.targetedMonster = 0;
     newState.playerMonster.encounterEnergy = 0;
+    console.log(newState.opponentMonster);
+  });
+
+  stateObj = immer.produce(stateObj, (newState) => {
     newState.opponentMonster.forEach(function (monster, index) {
+      console.log("triggering the block/energy opponent loop")
       newState.opponentMonster[index].encounterEnergy = 0;
       newState.opponentMonster[index].encounterBlock = 0;
-  })
+    })
   })
 
   return stateObj;
@@ -1041,9 +1134,11 @@ function renderOpponents(stateObj) {
 
 
 function renderScreen(stateObj) {
-  if (stateObj.status == Status.ChoosingMonster) {
-      renderChooseMonster(stateObj);
-      document.getElementById("opponents").innerHTML = "";
+  if (!stateObj.playerMonster) {
+    renderChooseMonster(stateObj);
+    document.getElementById("opponents").innerHTML = "";
+  } else if (stateObj.status == Status.EncounterRewards) {
+      renderChooseCardReward(stateObj);
   } else {
     renderStats(stateObj);
     renderJSON(stateObj);
@@ -1053,7 +1148,6 @@ function renderScreen(stateObj) {
     renderCardPile(stateObj.playerDeck, "deckDiv");
     renderOpponents(stateObj);
   }
-  
 }
 
 
@@ -1094,7 +1188,7 @@ function pickMove(stateObj) {
       for (var i = 0; i < monsterObj.moves.length; i++) {
         if (monsterObj.encounterEnergy >= monsterObj.moves[i].minReq) {
           newState.opponentMonster[index].opponentMoveIndex = i;
-          console.log(monsterObj.name + "picks " + monsterObj.moves[i].name);
+          console.log(monsterObj.name + " picks " + monsterObj.moves[i].name);
         }
       }
     });
