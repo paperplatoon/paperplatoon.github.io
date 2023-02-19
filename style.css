@@ -34,9 +34,14 @@
 
 #playerStats {
   color: green;
-  padding: 1vh;
   border: 1px solid green;
   width: 15vw;
+  font-size: 50%;
+}
+
+img {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 #opponents {
