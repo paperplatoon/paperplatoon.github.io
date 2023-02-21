@@ -35,6 +35,24 @@ let fireCardPool = {
         return toChangeState;
       }
     },
+
+    flameUp: {
+      name: "Flame Up",
+      text: (state) => {
+        return `Gain 1 energy. +1 strength this turn`;
+      },
+      minReq: -99,
+      cardType: "fireEnergy",
+      //takes the state object, declares a toChangeState which takes immer.produce
+      //and returns a new state reflecting the changes
+      action: (state) => {
+        let toChangeState = immer.produce(state, (newState) => {
+          newState.playerMonster.encounterEnergy += 1;
+          newState.playerMonster.turnStrength += 1;
+        })
+        return toChangeState;
+      }
+    },
   
     test: {
       name: "Wind Up",
@@ -297,7 +315,7 @@ let fireCardPool = {
       action: (state) => {
         let toChangeState = immer.produce(state, (newState) => {
           newState.playerMonster.encounterBlock += (20 + newState.playerMonster.dex+ newState.playerMonster.turnDex);
-          newState.playerMonster.encounterEnergy -= 1;
+          newState.playerMonster.encounterEnergy -= 2;
         })
         return toChangeState;
       }

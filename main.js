@@ -1,46 +1,36 @@
 //import clone from "https://cdn.skypack.dev/clone@2.1.2";
 //NEXT STEPS
-//ONCE HAND IS DRAWN, CAN NO LONGER AFFECT PLAYER 1 HP
-
-//TO-DO
-//figure out how to set opponent block to 0
-//add a card that doubles your next attack value
-//add a "isNextAttackDoubled" property to monsters
-//add a function that plays at end of turn that counts down poison, temp strength/dex, mark (2x)
-//add a mark that makes an enemy take 2x damage ??
-//
-
-
-
-
-
-//DONE
-//changed more functions to take and return state objects instead of calling changeState
-//added support for multiple enemies (targeting, cards, moves)
-//
-
-
-//make card order matter more like vulnerable or discard
-//make players choose between more damage for energy now?
-//can partially solve thru multiple enemies but will need a real game mechanic
 //CARDS THAT NEED A TURN COMBO COUNTER TO BE AT A CERTAIN AMOUNT BEFORE PLAYING
 //PUTS DECK BUILDING LIMITATION - can only have so many multi combo cards
 
+//TO-DO
+//change enemy attacks to take a state object and render dynamic text
+
+
+//add in a monster flag that, if true, does not set block to 0 between cards
+//add in a card that allows you to keep block between turns
+
+//add a card that doubles your next attack value
+//add a "isNextAttackDoubled" property to monsters
+//add a mark that makes an enemy take 2x damage ??
+//add in gold rewards for combat fights
+//add in a shop 
 
 //MANA - figure out images, add to cards, add costs to moves
 //add css backgrounds to moves and cards based on what their type is?
 
 
-//START-TURN  FUNCTION
-//opponent monster gains its turnGain energy
-//loop through opponent's moves to  determine which  one meets the energy reqs
-//if one does, choose that move and set it as cuurrentMove in the state
-//render some OpponentMove function that renders icons
-//drawHand for the player
 
-//opponentMove updates state.incomingDamage and state.upcomingEnemyBlock
-//some kind of render  function that  renders  icons for both
-//BUT only if greater than 0
+
+//DONE
+//add in a screen to remove cards
+//add in a renderDivs function that deletes and recreates all the divs
+
+
+
+
+
+
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // - - - - - -  - - - - - Creating Monsters & Cards - - - - - -  - - - - -
@@ -92,10 +82,10 @@ let potentialMonsterChoices = [playerMonsters.charles, playerMonsters.whirlies, 
 
 
 function renderChooseMonster(stateObj) {
-  document.getElementById("playerStats").innerHTML = ""
+  document.getElementById("app").innerHTML = ""
   let monsterChoiceDiv = document.createElement("Div");
   monsterChoiceDiv.classList.add("monster-choice-window");
-  document.getElementById("playerStats").appendChild(monsterChoiceDiv);
+  document.getElementById("app").appendChild(monsterChoiceDiv);
 
   potentialMonsterChoices.forEach(function (monsterObj, index) {
     let monsterDiv = document.createElement("Div");
@@ -112,7 +102,7 @@ function renderChooseMonster(stateObj) {
     });
 
     monsterDiv.append(monsterName, monsterChoiceButton);
-    document.getElementById("playerStats").appendChild(monsterDiv);
+    document.getElementById("app").appendChild(monsterDiv);
     })
 };
 
@@ -139,12 +129,11 @@ function fisherYatesShuffle(arrayObj) {
 }
 
 function renderChooseCardReward(stateObj) {
-  document.getElementById("handContainer2").innerHTML = "";
-  document.getElementById("opponents").innerHTML = "";
+  document.getElementById("app").innerHTML = "";
 
   let cardChoiceDiv = document.createElement("Div");
   cardChoiceDiv.classList.add("card-choice-window");
-  document.getElementById("handContainer2").appendChild(cardChoiceDiv);
+  document.getElementById("app").appendChild(cardChoiceDiv);
 
 
   let shuffledCardPool = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
@@ -169,7 +158,7 @@ function renderChooseCardReward(stateObj) {
     cardName.textContent = cardObj.name;
     cardText.textContent = cardObj.text(stateObj, index);
     cardDiv.append(cardName, cardText, chooseButton);
-    document.getElementById("handContainer2").appendChild(cardDiv);
+    document.getElementById("app").appendChild(cardDiv);
   });
 
   let skipButton = document.createElement("Button");
@@ -177,7 +166,7 @@ function renderChooseCardReward(stateObj) {
     skipCards(stateObj);
   }); 
   skipButton.textContent = "Skip";
-  document.getElementById("handContainer2").appendChild(skipButton);
+  document.getElementById("app").appendChild(skipButton);
 
 };
 
@@ -193,6 +182,16 @@ function skipCards(stateObj) {
 function chooseThisCard(cardObj, stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerDeck.push(cardObj);
+    newState.status = Status.RemovingCards;
+  })
+  //stateObj = setUpEncounter(stateObj);
+  changeState(stateObj);
+  return stateObj;
+}
+
+function removeCard(stateObj, index) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerDeck.splice(index, 1);
     newState.status = Status.InEncounter;
   })
   stateObj = setUpEncounter(stateObj);
@@ -208,6 +207,7 @@ const Status = {
   EncounterRewards: "Battle Rewards",
   InEncounter: "in encounter",
   WonEncounter: "won encounter",
+  RemovingCards: "choose a card to remove",
   Death: "You died",
   InTown: "In Town"
 };
@@ -281,11 +281,13 @@ renderScreen(state);
 //Encounter Set-up
 //setUpEncounter block is undefined because opponentMonster hasn't been set yet
 function setUpEncounter(stateObj) {
+  //shuffle monster array and pick two randomly
   let opponentMonsterArray = Object.values(opponentMonsters);
   let potentialOpponents = fisherYatesShuffle(opponentMonsterArray);
   stateObj = immer.produce(stateObj, (newState) => {
     console.log("setting up encounter");
     newState.playerMonster.encounterBlock = 0;
+    //pick first two monsters from shuffled array
     newState.opponentMonster = [potentialOpponents[0], potentialOpponents[1]];
     newState.encounterHand = [];
     newState.encounterDiscard = [];
@@ -427,36 +429,69 @@ function targetThisMonster(stateObj, monsterIndex) {
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // - - - - - -  - - - - - Rendering - - - - - -  - - - - -
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-function renderJSON(stateObj) {
-  document.getElementById("stateJSON").innerHTML = "";
-  if (state.showJSON === true) {
-    document
-      .getElementById("stateJSON")
-      .append(JSON.stringify(simpleState(stateObj), null, 2));
-  }
-}
-
 //Render the player's stats
 function renderStats(stateObj) {
   document.getElementById("playerStats").innerHTML = "";
 
-  let playerHPText = document.createElement("H3");
+  let playerHPandBlockText = document.createElement("H3");
   let playerEnergyText = document.createElement("p");
-  let playerStrengthText = document.createElement("p");
-  let playerBlockText = document.createElement("p");
-  playerHPText.textContent = stateObj.playerMonster.name +
+  let playerStrengthandDexText = document.createElement("p");
+  playerHPandBlockText.textContent = stateObj.playerMonster.name +
     " HP: " +
     stateObj.playerMonster.currentHP +
     "/" +
-    stateObj.playerMonster.maxHP;
+    stateObj.playerMonster.maxHP +
+    " Block: " +
+    stateObj.playerMonster.encounterBlock;
   playerEnergyText.textContent = "Energy: " + stateObj.playerMonster.encounterEnergy;
-  playerStrengthText.textContent = "Strength: " + stateObj.playerMonster.strength;
-  playerBlockText.textContent = "Block: " + stateObj.playerMonster.encounterBlock;
-  document.getElementById("playerStats").append(playerHPText, playerBlockText, playerEnergyText, playerStrengthText);
+  playerStrengthandDexText.textContent = "Strength: " + (stateObj.playerMonster.strength+stateObj.playerMonster.turnStrength) + " Dex: " + (stateObj.playerMonster.dex+stateObj.playerMonster.turnDex);
+  document.getElementById("playerStats").append(playerHPandBlockText, playerEnergyText, playerStrengthandDexText);
 
   let avatar = document.createElement('img');
   avatar.src = 'fireMonster.png';
   document.getElementById('playerStats').appendChild(avatar);
+}
+
+function renderDivs(stateObj) {
+  document.getElementById("app").innerHTML = `
+  <div class="flex-container" id="stats">
+    <div id="playerStats">
+
+
+    </div>
+
+    <div id="playerDeckPile" class="pile">Current Deck
+        <div id="deckDiv"> </div>
+    </div>
+
+    <div id="opponents"></div>
+  </div>
+
+  </div>
+  <button id="shuffleDrawButton">Start Encounter</button>
+  <button id="endTurnButton">End Turn</button>
+  <!-- <button id="resetButton">Reset</button> -->
+
+
+  <div class="flex-container" id="cardScreenSection">
+  <div id="drawPile" class="pile">
+    <p>Draw Pile
+    </p>
+    <div id="drawDiv"></div>
+
+  </div>
+  <div id="handContainer2"> </div>
+  <div id="handContainer"> </div>
+  <div id="discardPile" class="pile">Discard Pile
+    <div id="discardDiv"></div>
+  </div>
+</div>`;
+document.getElementById("shuffleDrawButton").onclick = function () {
+  startEncounter(state);
+};
+document.getElementById("endTurnButton").onclick = function () {
+  endTurn(state);
+};
 
 }
 
@@ -518,26 +553,49 @@ function renderCardPile(cardArrayObj, divStringName) {
   }
 }
 
+function renderRemoveCard(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  stateObj.playerDeck.forEach(function (cardObj, index) {
+    let cardDiv = document.createElement("Div");
+      cardDiv.id = index;
+      cardDiv.classList.add("card");
+      let cardName = document.createElement("H3");
+      let cardText = document.createElement("P");
+      let cardButton = document.createElement("Button");
+      cardButton.addEventListener("click", function () {
+        removeCard(stateObj, index);
+      });
+      cardButton.textContent = "Remove";
+      if (cardObj.cardType == "fireEnergy") {
+        cardDiv.classList.add("fire-energy");
+      }
+      if (cardObj.cardType == "waterEnergy") {
+        cardDiv.classList.add("water-energy");
+      }
+      cardName.textContent = cardObj.name;
+      cardText.textContent = cardObj.text(stateObj, index);
+      cardDiv.append(cardName, cardText, cardButton);
+      document.getElementById("app").appendChild(cardDiv);
+  })
+};
+
 function renderOpponents(stateObj) {
   document.getElementById("opponents").innerHTML = "";
   stateObj.opponentMonster.forEach(function (monsterObj, index) {
     let monsterDiv = document.createElement("Div");
     monsterDiv.classList.add("monster");
     monsterDiv.id = index;
-
     let monsterStatsDiv = document.createElement("Div");
     let monsterName = document.createElement("H2");
-    let monsterHP = document.createElement("H3");
+    let monsterStrengthAndDex = document.createElement("H3");
+    let monsterHPandBlockText = document.createElement("H3");
     let monsterEncounterEnergy = document.createElement("H3");
-    let monsterEncounterBlock = document.createElement("H3");
-    monsterEncounterBlock.textContent = "Block: " + monsterObj.encounterBlock;
+    monsterHPandBlockText.textContent =  " HP: " + monsterObj.currentHP +
+    "/" + monsterObj.maxHP + " Block: " + monsterObj.encounterBlock;
     monsterName.textContent = monsterObj.name;
-    monsterHP.textContent = " HP: " +
-      monsterObj.currentHP +
-      "/" +
-      monsterObj.maxHP;
     monsterEncounterEnergy.textContent = "Energy: " + monsterObj.encounterEnergy;
-    monsterStatsDiv.append(monsterName, monsterHP, monsterEncounterEnergy, monsterEncounterBlock);
+    monsterStrengthAndDex.textContent = "Strength: " + monsterObj.strength + " Dex: " + monsterObj.dex;
+    monsterStatsDiv.append(monsterName, monsterHPandBlockText, monsterEncounterEnergy, monsterStrengthAndDex);
     if (stateObj.targetedMonster == index) {
       monsterDiv.classList.add("targeted");
     } else {
@@ -580,12 +638,13 @@ function renderOpponents(stateObj) {
 function renderScreen(stateObj) {
   if (!stateObj.playerMonster) {
     renderChooseMonster(stateObj);
-    document.getElementById("opponents").innerHTML = "";
   } else if (stateObj.status == Status.EncounterRewards) {
       renderChooseCardReward(stateObj);
+  } else if (stateObj.status == Status.RemovingCards) {
+    renderRemoveCard(stateObj);
   } else {
+    renderDivs(stateObj);
     renderStats(stateObj);
-    renderJSON(stateObj);
     renderHand(stateObj);
     renderCardPile(stateObj.encounterDraw, "drawDiv");
     renderCardPile(stateObj.encounterDiscard, "discardDiv");
@@ -608,12 +667,7 @@ function resetState() {
 
 
 //GAME LOGIC - should only execute if in the "encounter" screen
-document.getElementById("shuffleDrawButton").onclick = function () {
-  startEncounter(state);
-};
-document.getElementById("endTurnButton").onclick = function () {
-  endTurn(state);
-};
+
 //document.getElementById("resetButton").onclick = resetState;
 
 
@@ -669,15 +723,6 @@ function discardHand(stateObj) {
 
 
 ////ONE TURN
-function startTurn(stateObj) {
-  let state1 = pickMove(stateObj);
-  state1 = immer.produce(state1, (draft) => {
-    draft.playerMonster.encounterBlock = 0;
-  })
-  let toChangeState = drawAHand(state1);
-  changeState(toChangeState);
-}
-
 function shuffleDraw(stateObj) {
   let toChangeState = immer.produce(stateObj, (newState) => {
     newState.encounterDraw = shuffleArray(newState.encounterDraw);

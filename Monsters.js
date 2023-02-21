@@ -129,13 +129,13 @@ let opponentMonsters = {
   
         {
           name: "Granite Skin",
-          cost: "3",
-          text: "Gain 10 block. Gain 2 energy",
-          minReq: 3,
+          cost: "2",
+          text: "Gain 15 block. Gain 2 energy",
+          minReq: 2,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
               newState.opponentMonster[monsterIndex].encounterEnergy += 2;
-              newState.opponentMonster[monsterIndex].encounterBlock += 10;
+              newState.opponentMonster[monsterIndex].encounterBlock += 15;
             })
             return toChangeState;
           }
@@ -162,10 +162,10 @@ let opponentMonsters = {
     opponent4: {
       name: "Skydancer",
       type: "air",
-      maxHP: 15,
+      maxHP: 20,
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      currentHP: 15,
+      currentHP: 20,
       strength: 0,
       dex: 0,
       moves: [
@@ -311,16 +311,16 @@ let opponentMonsters = {
         fireCardPool.fireEnergy,
         fireCardPool.fireEnergy,
         fireCardPool.fireEnergy,
-        fireCardPool.kindle,
-        fireCardPool.kindle,
+        fireCardPool.flameUp,
+        fireCardPool.flameUp,
         //7 attacks
         fireCardPool.explode,
         fireCardPool.gainstrength,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
-        fireCardPool.flamingStrike,
-        fireCardPool.flamingStrike
+        fireCardPool.tackle,
+        fireCardPool.tackle
       ],
     },
   
