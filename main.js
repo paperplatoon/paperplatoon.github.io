@@ -10,7 +10,6 @@
 //add a mark that makes an enemy take 2x damage ??
 //
 
-//setUpEncounter block is undefined because opponentMonster hasn't been set yet
 
 
 
@@ -50,7 +49,10 @@
 
 function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1) {
   let toChangeState = immer.produce(stateObj, (newState) => {
-    calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
+    let calculatedDamage = ((damageNumber + newState.playerMonster.strength + newState.playerMonster.turnStrength) * attackNumber);
+    if (newState.opponentMonster[newState.targetedMonster].hunted == true) {
+      calculatedDamage *=2;
+    }
     if (newState.opponentMonster[newState.targetedMonster].encounterBlock == 0) {
       newState.opponentMonster[newState.targetedMonster].currentHP -= calculatedDamage;
     } else if (newState.opponentMonster[newState.targetedMonster].encounterBlock >= calculatedDamage) {
@@ -212,7 +214,7 @@ const Status = {
 
 let gameStartState = {
   playerMonster: false,
-  opponentMonster: [opponentMonsters.opponent4, opponentMonsters.opponent1],
+  opponentMonster: [opponentMonsters.opponent1, opponentMonsters.opponent2],
   status: Status.ChoosingMonster,
   opponentChosenMoveIndex: false,
   playcountKindle: 0
@@ -279,12 +281,15 @@ renderScreen(state);
 //Encounter Set-up
 //setUpEncounter block is undefined because opponentMonster hasn't been set yet
 function setUpEncounter(stateObj) {
+  let opponentMonsterArray = Object.values(opponentMonsters);
+  let potentialOpponents = fisherYatesShuffle(opponentMonsterArray);
   stateObj = immer.produce(stateObj, (newState) => {
     console.log("setting up encounter");
     newState.playerMonster.encounterBlock = 0;
-    newState.opponentMonster = [opponentMonsters.opponent1, opponentMonsters.opponent4];
+    newState.opponentMonster = [potentialOpponents[0], potentialOpponents[1]];
     newState.encounterHand = [];
     newState.encounterDiscard = [];
+    newState.playcountKindle = 0;
     if (!stateObj.playerDeck) {
       console.log("player has no playerDeck")
       newState.playerDeck = [...stateObj.playerMonster.startingDeck];
@@ -301,10 +306,14 @@ function setUpEncounter(stateObj) {
   });
 
   stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerMonster.turnStrength = 0;
+    newState.playerMonster.turnDex = 0;
     newState.opponentMonster.forEach(function (monster, index) {
       console.log("triggering the block/energy opponent loop")
       newState.opponentMonster[index].encounterEnergy = 0;
       newState.opponentMonster[index].encounterBlock = 0;
+      newState.opponentMonster[index].strength = 0;
+      newState.opponentMonster[index].dex = 0;
     })
   })
 
@@ -684,6 +693,18 @@ function startEncounter(stateObj) {
   changeState(toChangeState);
 }
 
+function endTurnIncrement(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerMonster.turnStrength = 0;
+    newState.playerMonster.turnDex = 0;
+    newState.opponentMonster.forEach(function (monsterObj, index) {
+      monsterObj.hunted = false;
+    })
+    newState.turnDouble = false;
+  })
+  return stateObj;
+}
+
 //if you flip the order of this around, discard works, but not playing the move
 async function endTurn(stateObj) {
   stateObj = discardHand(stateObj);
@@ -692,6 +713,7 @@ async function endTurn(stateObj) {
       monsterObj.encounterBlock = 0;
     })
   });
+  stateObj = endTurnIncrement(stateObj);
   stateObj = pickMove(stateObj);
   changeState(stateObj);
   await pause(500);
