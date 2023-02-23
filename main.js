@@ -430,22 +430,32 @@ function targetThisMonster(stateObj, monsterIndex) {
 // - - - - - -  - - - - - Rendering - - - - - -  - - - - -
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 //Render the player's stats
-function renderStats(stateObj) {
+function renderPlayerMonster(stateObj) {
   document.getElementById("playerStats").innerHTML = "";
+  let topRowDiv = document.createElement("Div");
+  topRowDiv.classList.add("monster-top-row");
 
-  let playerHPandBlockText = document.createElement("H3");
-  let playerEnergyText = document.createElement("p");
-  let playerStrengthandDexText = document.createElement("p");
-  playerHPandBlockText.textContent = stateObj.playerMonster.name +
-    " HP: " +
-    stateObj.playerMonster.currentHP +
-    "/" +
-    stateObj.playerMonster.maxHP +
-    " Block: " +
-    stateObj.playerMonster.encounterBlock;
+  let playerName = document.createElement("H3");
+  playerName.textContent = stateObj.playerMonster.name;
+  playerName.classList.add("monster-name")
+  let playerHP = document.createElement("H3");
+  playerHP.textContent = stateObj.playerMonster.currentHP + "/" + stateObj.playerMonster.maxHP;
+  playerHP.classList.add("monster-hp");
+  let playerBlock = document.createElement("H3");
+  playerBlock.textContent = stateObj.playerMonster.encounterBlock;
+  playerBlock.classList.add("monster-block");
+
+  topRowDiv.appendChild(playerName);
+  topRowDiv.appendChild(playerHP);
+  topRowDiv.appendChild(playerBlock);
+  document.getElementById("playerStats").appendChild(topRowDiv);
+
+  let playerEnergyText = document.createElement("H4");
+  let playerStrengthandDexText = document.createElement("H4");
   playerEnergyText.textContent = "Energy: " + stateObj.playerMonster.encounterEnergy;
   playerStrengthandDexText.textContent = "Strength: " + (stateObj.playerMonster.strength+stateObj.playerMonster.turnStrength) + " Dex: " + (stateObj.playerMonster.dex+stateObj.playerMonster.turnDex);
-  document.getElementById("playerStats").append(playerHPandBlockText, playerEnergyText, playerStrengthandDexText);
+  document.getElementById("playerStats").appendChild(playerEnergyText)
+  document.getElementById("playerStats").appendChild(playerStrengthandDexText);
 
   let avatar = document.createElement('img');
   avatar.src = 'fireMonster.png';
@@ -585,17 +595,35 @@ function renderOpponents(stateObj) {
     let monsterDiv = document.createElement("Div");
     monsterDiv.classList.add("monster");
     monsterDiv.id = index;
-    let monsterStatsDiv = document.createElement("Div");
-    let monsterName = document.createElement("H2");
-    let monsterStrengthAndDex = document.createElement("H3");
-    let monsterHPandBlockText = document.createElement("H3");
-    let monsterEncounterEnergy = document.createElement("H3");
-    monsterHPandBlockText.textContent =  " HP: " + monsterObj.currentHP +
-    "/" + monsterObj.maxHP + " Block: " + monsterObj.encounterBlock;
+
+    let monsterStatsDiv = document.createElement("Div");  
+    monsterStatsDiv.classList.add("monster-top-row");
+
+    let monsterName = document.createElement("H3");
     monsterName.textContent = monsterObj.name;
+    monsterName.classList.add("monster-name")
+    let monsterHP = document.createElement("H3");
+    monsterHP.textContent = monsterObj.currentHP + "/" + monsterObj.maxHP;
+    monsterHP.classList.add("monster-hp");
+    let monsterBlock = document.createElement("H3");
+    monsterBlock.textContent = monsterObj.encounterBlock;
+    monsterBlock.classList.add("monster-block");
+
+    monsterStatsDiv.appendChild(monsterName);
+    monsterStatsDiv.appendChild(monsterHP);
+    monsterStatsDiv.appendChild(monsterBlock);
+    monsterDiv.appendChild(monsterStatsDiv);
+    
+    let monsterStatsSecond = document.createElement("Div");
+    monsterStatsSecond.classList.add("monster-top-row");
+
+    let monsterStrengthAndDex = document.createElement("H4");
+    let monsterEncounterEnergy = document.createElement("H4");
     monsterEncounterEnergy.textContent = "Energy: " + monsterObj.encounterEnergy;
     monsterStrengthAndDex.textContent = "Strength: " + monsterObj.strength + " Dex: " + monsterObj.dex;
-    monsterStatsDiv.append(monsterName, monsterHPandBlockText, monsterEncounterEnergy, monsterStrengthAndDex);
+    monsterStatsSecond.append(monsterEncounterEnergy, monsterStrengthAndDex);
+
+    monsterDiv.appendChild(monsterStatsSecond);
     if (stateObj.targetedMonster == index) {
       monsterDiv.classList.add("targeted");
     } else {
@@ -604,9 +632,9 @@ function renderOpponents(stateObj) {
       targetButton.addEventListener("click", function () {
         targetThisMonster(stateObj, index);
       });
-      monsterStatsDiv.append(targetButton);
+      monsterDiv.append(targetButton);
     }
-    monsterDiv.append(monsterStatsDiv);
+
 
     let opponentMoveListDiv = document.createElement("Div");
 
@@ -644,7 +672,7 @@ function renderScreen(stateObj) {
     renderRemoveCard(stateObj);
   } else {
     renderDivs(stateObj);
-    renderStats(stateObj);
+    renderPlayerMonster(stateObj);
     renderHand(stateObj);
     renderCardPile(stateObj.encounterDraw, "drawDiv");
     renderCardPile(stateObj.encounterDiscard, "discardDiv");

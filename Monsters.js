@@ -236,27 +236,26 @@ let opponentMonsters = {
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
               newState.opponentMonster[monsterIndex].encounterEnergy += 1;
-              newState.opponentMonster[monsterIndex].strength += 5;
               let tempState = dealPlayerDamage(newState, 5, monsterIndex);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-              
+              newState.opponentMonster[monsterIndex].strength += 5;
             })
             return toChangeState;
           }
         },
         {
           name: "Heat Discharge",
-          cost: "2",
+          cost: "3",
           text: "Spend 2 energy. Deal strength damage to the enemy twice.",
-          minReq: 2,
+          minReq: 3,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
               let tempState = dealPlayerDamage(newState, 0, monsterIndex, 2);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
               newState.opponentMonster[monsterIndex].encounterBlock += 5;
-              newState.opponentMonster[monsterIndex].encounterEnergy += 2;
+              newState.opponentMonster[monsterIndex].encounterEnergy -= 3;
             })
             return toChangeState;
           }

@@ -1,13 +1,20 @@
+
+
 #stats {
   display: flex;
   justify-content: space-between;
   border: 1px solid black;
-  margin: 1vw;
+  height: 60vh;
 }
 
-.chosen {
-  background: yellow;
+#stats h4 {
+  margin-block-start: 0.1em;
+  margin-block-end: 0.1em;
 }
+
+/* * { border: 1px solid black; } */
+
+
 
 #opponentHealthBlock {
   display: flex;
@@ -22,10 +29,70 @@
   border: 1px dashed;
   line-height: 0.2;
   padding: 0.05vh 0.05vw;
+  border-radius: 0.6vw;
+}
+
+.chosen {
+  background: rgba(255, 255, 0, 0.3);
+  border: 2px dashed silver;
 }
 
 .monster {
-  border: 0.5px dashed black;
+  border: 0.2px solid red;
+  border-radius: 1vw;
+  min-width: 20vw;
+}
+
+.monster-hp {
+  display:inline-block;
+  aspect-ratio: 1;
+  border-image: radial-gradient(red 69%,#0000 70%) 84.5% fill/100%;
+  clip-path: polygon(-41% 0,50% 91%, 141% 0);
+  color: white;
+  text-align: center;
+  flex-grow: 0.1;
+  font-size: 1.5vw;
+  flex-shrink: 1;
+  min-height: 4vh;
+  max-height: 8vh;
+  min-width: 4vw;
+  max-width: 15vw;
+}
+
+.monster-block {
+    border-radius: 50% 50% 50% 50% / 12% 12% 30% 30%;
+    background-color: blue;
+    color: white;
+    width: 20%;
+    text-align: center;
+    font-size: 2vw;
+    min-width: 1.5vw;
+    max-width: 4vw;
+    height: 6vh;
+    flex-shrink: 1;
+    border: 1px dashed white;
+  }
+
+.monster-name {
+  margin-left: 0.5vw;
+  font-size: 2vw;
+  text-align: right;
+  vertical-align: center;
+  height: 5vh;
+  line-height: 5vh;
+  white-space: nowrap;
+}
+
+
+.monster-top-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.monster-top-row h3 {
+  margin-block-start: 0.1em;
+  margin-block-end: 0.1em;
 }
 
 .targeted {
@@ -35,11 +102,18 @@
 #playerStats {
   color: green;
   border: 1px solid green;
-  width: 15vw;
-  font-size: 50%;
+  width: 20vw;
 }
 
+#playerStats h4, #opponents h4 {
+  font-size: 1.3vw;
+}
+
+
+
 img {
+  min-width: 25%;
+  min-height: 25%;
   max-width: 100%;
   max-height: 100%;
 }
@@ -52,6 +126,11 @@ img {
   display: flex;
   justify-content: space-around;
   font-size: 60%;
+  margin-block-start: 0em;
+}
+
+#opponents .monster-top-row {
+  font-size: 140%;
 }
 
 
@@ -138,8 +217,10 @@ img {
 
 #handContainer2 {
   width: 70vw;
+  height: 30vh;
   display: flex;
-  padding: 5vh 0vw;
   border: 1px dashed blue;
   justify-content: space-around;
 }
+
+/* https://codersblock.com/blog/creating-glow-effects-with-css/ */
