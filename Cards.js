@@ -1,8 +1,14 @@
+//for fire, add more cards that use kindle
+//for water, implement the Drown mechanic
+
+//Take Aim/Sabotage will be for air
+
+
 let fireCardPool = {
     fireEnergy: {
       name: "Fire Energy",
       text: (state) => {
-        return `. Gain 1 energy`
+        return `Gain 1 energy`
       },
       minReq: -99,
       cardType: "fireEnergy",
@@ -18,7 +24,8 @@ let fireCardPool = {
     kindle: {
       name: "kindle",
       text: (state) => {
-        return `Deal ${2 + (state.playcountKindle*3) + state.playerMonster.strength + state.playerMonster.turnStrength} damage. Gain 1 energy. All kindles deal +3 damage this combat`;
+        return `Deal ${2 + (state.playcountKindle*3) + state.playerMonster.strength + state.playerMonster.turnStrength} damage. 
+        Gain 1 energy. All kindles deal +3 damage this combat`;
       },
       minReq: -99,
       cardType: "fireEnergy",

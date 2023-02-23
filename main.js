@@ -5,7 +5,11 @@
 
 //TO-DO
 //change enemy attacks to take a state object and render dynamic text
+//block only appears if grreater than zero
+//same with strength and dex for all monsters
+//figure out some way to render energy inside the right icon (flame/water/etc)
 
+//figure out a way to do tooltips
 
 //add in a monster flag that, if true, does not set block to 0 between cards
 //add in a card that allows you to keep block between turns
@@ -441,13 +445,17 @@ function renderPlayerMonster(stateObj) {
   let playerHP = document.createElement("H3");
   playerHP.textContent = stateObj.playerMonster.currentHP + "/" + stateObj.playerMonster.maxHP;
   playerHP.classList.add("monster-hp");
-  let playerBlock = document.createElement("H3");
-  playerBlock.textContent = stateObj.playerMonster.encounterBlock;
-  playerBlock.classList.add("monster-block");
 
   topRowDiv.appendChild(playerName);
   topRowDiv.appendChild(playerHP);
-  topRowDiv.appendChild(playerBlock);
+
+  if (stateObj.playerMonster.encounterBlock > 0) {
+    let playerBlock = document.createElement("H3");
+    playerBlock.textContent = stateObj.playerMonster.encounterBlock;
+    playerBlock.classList.add("monster-block");
+    topRowDiv.appendChild(playerBlock);
+  }
+
   document.getElementById("playerStats").appendChild(topRowDiv);
 
   let playerEnergyText = document.createElement("H4");
@@ -470,7 +478,7 @@ function renderDivs(stateObj) {
 
     </div>
 
-    <div id="playerDeckPile" class="pile">Current Deck
+    <div id="playerDeckPile" class="pile">Deck
         <div id="deckDiv"> </div>
     </div>
 
@@ -485,14 +493,14 @@ function renderDivs(stateObj) {
 
   <div class="flex-container" id="cardScreenSection">
   <div id="drawPile" class="pile">
-    <p>Draw Pile
+    <p>Draw
     </p>
     <div id="drawDiv"></div>
 
   </div>
   <div id="handContainer2"> </div>
   <div id="handContainer"> </div>
-  <div id="discardPile" class="pile">Discard Pile
+  <div id="discardPile" class="pile">Discard
     <div id="discardDiv"></div>
   </div>
 </div>`;
@@ -515,26 +523,27 @@ function renderHand(stateObj) {
       cardDiv.classList.add("card");
       let cardName = document.createElement("H3");
       let cardText = document.createElement("P");
-      let cardButton = document.createElement("Button");
+      cardName.textContent = cardObj.name;
+      cardText.textContent = cardObj.text(stateObj, index);
+      cardDiv.append(cardName, cardText);
+      
       if (cardObj.minReq <= stateObj.playerMonster.encounterEnergy) {
+        let cardButton = document.createElement("Button");
         cardButton.addEventListener("click", function () {
           playACard(stateObj, index);
         });
-      };
-      if (cardObj.minReq <= stateObj.playerMonster.encounterEnergy) {
         cardButton.textContent = "Play";
         cardDiv.classList.add("playable")
+        cardDiv.append(cardButton);
       };
+     
       if (cardObj.cardType == "fireEnergy") {
         cardDiv.classList.add("fire-energy");
       }
-
       if (cardObj.cardType == "waterEnergy") {
         cardDiv.classList.add("water-energy");
       }
-      cardName.textContent = cardObj.name;
-      cardText.textContent = cardObj.text(stateObj, index);
-      cardDiv.append(cardName, cardText, cardButton);
+      
       document.getElementById("handContainer2").appendChild(cardDiv);
     });
   }
@@ -605,13 +614,16 @@ function renderOpponents(stateObj) {
     let monsterHP = document.createElement("H3");
     monsterHP.textContent = monsterObj.currentHP + "/" + monsterObj.maxHP;
     monsterHP.classList.add("monster-hp");
-    let monsterBlock = document.createElement("H3");
-    monsterBlock.textContent = monsterObj.encounterBlock;
-    monsterBlock.classList.add("monster-block");
-
     monsterStatsDiv.appendChild(monsterName);
     monsterStatsDiv.appendChild(monsterHP);
-    monsterStatsDiv.appendChild(monsterBlock);
+
+    if (monsterObj.encounterBlock > 0) {
+      let monsterBlock = document.createElement("H3");
+      monsterBlock.textContent = monsterObj.encounterBlock;
+      monsterBlock.classList.add("monster-block");
+      monsterStatsDiv.appendChild(monsterBlock);
+    }
+    
     monsterDiv.appendChild(monsterStatsDiv);
     
     let monsterStatsSecond = document.createElement("Div");
@@ -620,6 +632,7 @@ function renderOpponents(stateObj) {
     let monsterStrengthAndDex = document.createElement("H4");
     let monsterEncounterEnergy = document.createElement("H4");
     monsterEncounterEnergy.textContent = "Energy: " + monsterObj.encounterEnergy;
+    monsterEncounterEnergy.classList.add("monster-energy");
     monsterStrengthAndDex.textContent = "Strength: " + monsterObj.strength + " Dex: " + monsterObj.dex;
     monsterStatsSecond.append(monsterEncounterEnergy, monsterStrengthAndDex);
 
@@ -645,14 +658,21 @@ function renderOpponents(stateObj) {
       if (index === monsterObj.opponentMoveIndex) {
         moveDiv.classList.add("chosen");
       }
+      let moveNameCostDiv = document.createElement("Div");
+      moveNameCostDiv.classList.add("move-name-cost");
+
       let moveName = document.createElement("H3");
-      let moveText = document.createElement("P");
       let moveCost = document.createElement("P");
       moveName.textContent = moveObj.name;
-      moveText.textContent = moveObj.text;
-      moveCost.textContent = "Energy cost: " + moveObj.cost;
+      moveCost.textContent = moveObj.cost;
       moveCost.classList.add("energy-cost");
-      moveDiv.append(moveName, moveText, moveCost);
+      moveNameCostDiv.append(moveName, moveCost);
+
+      let moveText = document.createElement("P");
+      moveText.textContent = moveObj.text;
+
+
+      moveDiv.append(moveNameCostDiv, moveText);
       opponentMoveListDiv.appendChild(moveDiv);
     });
 
