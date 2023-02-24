@@ -1,7 +1,7 @@
 /*
 1. add card types for energy/attack/power
 2. add a spot to track drowning
-
+3. change the pile divs to use variable-size font-heights
 
 */
 
@@ -125,6 +125,7 @@ img {
   color: red;
   border: 1px solid red;
   padding: 0.1vh;
+  margin: 0.1vw;
   width: 75vw;
   display: flex;
   justify-content: space-around;
@@ -138,9 +139,6 @@ img {
 
 
 
-.energy-cost {
-  color: brown;
-}
 
 #cardScreenSection {
   height: 30vh;
@@ -191,7 +189,10 @@ img {
 
 .pile {
   width: 3vw;
-  height: 3vh;
+  height: 10vh;
+  line-height: 10vh;
+  color: white;
+  background-color: brown;
   border: 1px dashed red;
   font-size: 2vh;
 }
@@ -205,11 +206,13 @@ img {
   font-size: 70%;
 }
 
-#drawDiv .card,
-#discardDiv .card,
-#deckDiv .card {
+.card-pile-card {
+  border: 1px solid black;
+  margin: 1%;
   height: 15vh;
   width: 8vw;
+  line-height: normal;
+  float: left;
 }
 
 .fire-energy {
@@ -234,9 +237,14 @@ img {
 
 /* https://codersblock.com/blog/creating-glow-effects-with-css/ */
 
-.monster-top-row h3, .move h3, .move p, .card h3, .card p {
-  margin-block-start: 0.1em;
-  margin-block-end: 0.1em;
+.monster-top-row h3, .move h3, .move p, .card h3, .card p, .pile p, .card-pile-card h3 {
+  margin-block-start: 0.01em;
+  margin-block-end: 0.01em;
+  margin-left: 0.1em;
+}
+
+.card-pile-card h3 {
+  font-size: 2vh;
 }
 
 .card p, .card button {
@@ -249,15 +257,23 @@ img {
 
 .monster-energy {
   font-size: 3vh;
+  background-color: rgb(101, 14, 145);
+  color: white;
+  border-radius: 10px;
+  padding: 0.3vh 0.4vw;
+  margin-left: 0.1vw;
 }
 
 .energy-cost {
-  min-width: 1.2vw;
+  min-width: 1.4vw;
   text-align: center;
-  font-size: 3.5vh;
   border-radius: 50%;
-  padding: 0.29em;
-  background-color: red;
+  font-size: 3vh;
+  padding: 0.2em;
+  background-color: rgb(101, 14, 145);
   font-weight: bold;
   color: white;
-}
+  float: right;
+ }
+
+

@@ -248,6 +248,9 @@ function handleDeaths(stateObj) {
     });
     if (newState.opponentMonster.length == 0) {
       console.log("all opponents dead");
+      newState.playerMonster.turnStrength = 0;
+      newState.playerMonster.turnDex = 0;
+      newState.playcountKindle = 0;
       newState.status = Status.EncounterRewards;
       //newState = resetAfterEncounter(state);
     }
@@ -555,7 +558,7 @@ function renderCardPile(cardArrayObj, divStringName) {
     cardArrayObj.forEach(function (cardObj, index) {
       let cardDiv = document.createElement("Div");
       cardDiv.id = index;
-      cardDiv.classList.add("card");
+      cardDiv.classList.add("card-pile-card");
       if (cardObj.cardType == "fireEnergy") {
         cardDiv.classList.add("fire-energy");
       }
