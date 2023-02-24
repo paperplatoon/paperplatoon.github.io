@@ -12,15 +12,16 @@
 let fireCardPool = {
     fireEnergy: {
       name: "Fire Energy",
-      text: (state) => {
-        return `Gain 1 energy`
+      text: (state, index, array) => {
+        return `Gain ${1 + (1*array[index].upgrades)} energy`
       },
       minReq: -99,
+      upgrades: 0,
       cost: "energy",
       cardType: "fireEnergy",
-      action: (state) => {
+      action: (state, index, array) => {
         let toChangeState = immer.produce(state, (newState) => {
-          newState.playerMonster.encounterEnergy += 1;
+          newState.playerMonster.encounterEnergy += (1 + (1*newState.encounterHand[index].upgrades));
   
         })
         return toChangeState;
@@ -29,22 +30,23 @@ let fireCardPool = {
   
     kindle: {
       name: "kindle",
-      text: (state) => {
-        return `Deal ${2 + (state.playcountKindle*3) + state.playerMonster.strength + state.playerMonster.turnStrength} damage. 
-        Gain 1 energy. All kindles deal +3 damage this combat`;
+      text: (state, index, array) => {
+        return `Deal ${5 + (5*array[index].upgrades) + (array[index].playCount*5) + state.playerMonster.strength + state.playerMonster.turnStrength} damage. 
+        Deal 5 more damage this combat`;
       },
       minReq: -99,
-      cost: "energy",
-      cardType: "fireEnergy",
+      upgrades: 0,
+      playCount: 0,
+      cost: "0",
+      cardType: "fire",
       //takes the state object, declares a toChangeState which takes immer.produce
       //and returns a new state reflecting the changes
-      action: (state) => {
+      action: (state, index, array) => {
         let toChangeState = immer.produce(state, (newState) => {
-          let tempState = dealOpponentDamage(newState, (2 + (newState.playcountKindle*3)));
+          let tempState = dealOpponentDamage(newState, (5 + (newState.encounterHand[index].playCount*5) + (newState.encounterHand[index].upgrades*5)));
           newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
           newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
-          newState.playerMonster.encounterEnergy += 1;
-          newState.playcountKindle += 1;
+          newState.encounterHand[index].playCount += 3;
         })
         return toChangeState;
       }

@@ -160,7 +160,7 @@ function renderChooseCardReward(stateObj) {
       cardDiv.classList.add("water-energy");
     }
     cardName.textContent = cardObj.name;
-    cardText.textContent = cardObj.text(stateObj, index);
+    cardText.textContent = cardObj.text(stateObj, index, sampledCardPool);
     cardDiv.append(cardName, cardText, chooseButton);
     document.getElementById("app").appendChild(cardDiv);
   });
@@ -240,13 +240,13 @@ function handleDeaths(stateObj) {
   console.log("handling deaths");
   let toChangeState = immer.produce(stateObj, (newState) => {
     newState.opponentMonster.forEach(function (monster, index) {
-      if (monster.currentHP <= 0) {
-        console.log("opponent monster at index " + index + " has died.")
+      if (monster.drown >= monster.currentHP && monster.currentHP > 0) {
+        console.log("opponent monster at index " + index + " has drowned.")
         newState.opponentMonster.splice(index, 1);
         newState.targetedMonster = 0;
       }
-      if (monster.drown >= monster.currentHP) {
-        console.log("opponent monster at index " + index + " has drowned.")
+      if (monster.currentHP <= 0) {
+        console.log("opponent monster at index " + index + " has died.")
         newState.opponentMonster.splice(index, 1);
         newState.targetedMonster = 0;
       }
@@ -414,20 +414,19 @@ function drawAHand(stateObj) {
 
 function playACard(stateObj, cardIndexInHand) {
   console.log("triggering playACard");
-  let card = stateObj.encounterHand[cardIndexInHand];
-  let toChangeState = card.action(stateObj, cardIndexInHand);
-  let toChangeState2 = immer.produce(toChangeState, (newState) => {
-    if (card.exhaust == true) {
-      console.log("you're exhausting " + card.name);
+  stateObj = stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand);
+  stateObj = immer.produce(stateObj, (newState) => {
+    if (stateObj.encounterHand[cardIndexInHand].exhaust == true) {
+      console.log("you're exhausting " + stateObj.encounterHand[cardIndexInHand].name);
       newState.encounterHand.splice(cardIndexInHand, 1);
     } else {
-      newState.encounterDiscard.push(card);
+      newState.encounterDiscard.push(stateObj.encounterHand[cardIndexInHand]);
       newState.encounterHand.splice(cardIndexInHand, 1);
     }
 
   })
-  let toChangeState3 = handleDeaths(toChangeState2)
-  changeState(toChangeState3);
+  stateObj = handleDeaths(stateObj)
+  changeState(stateObj);
 }
 
 function targetThisMonster(stateObj, monsterIndex) {
@@ -548,7 +547,9 @@ function renderHand(stateObj) {
       cardDiv.append(topCardRowDiv);
 
       let cardText = document.createElement("P");
-      cardText.textContent = cardObj.text(stateObj, index);
+      console.log("index is " + index);
+
+      cardText.textContent = cardObj.text(stateObj, index, stateObj.encounterHand);
       cardDiv.append(cardText);
       
       
@@ -590,7 +591,7 @@ function renderCardPile(cardArrayObj, divStringName) {
       let cardName = document.createElement("H3");
       let cardText = document.createElement("P");
       cardName.textContent = cardObj.name;
-      cardText.textContent = cardObj.text(state, index);
+      cardText.textContent = cardObj.text(state, index, cardArrayObj);
       cardDiv.append(cardName, cardText);
       document.getElementById(divStringName).appendChild(cardDiv);
     });
@@ -617,7 +618,7 @@ function renderRemoveCard(stateObj) {
         cardDiv.classList.add("water-energy");
       }
       cardName.textContent = cardObj.name;
-      cardText.textContent = cardObj.text(stateObj, index);
+      cardText.textContent = cardObj.text(stateObj, index, stateObj.playerDeck);
       cardDiv.append(cardName, cardText, cardButton);
       document.getElementById("app").appendChild(cardDiv);
   })

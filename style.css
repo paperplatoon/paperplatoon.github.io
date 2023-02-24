@@ -98,6 +98,7 @@
   text-align: right;
   vertical-align: center;
   height: 5vh;
+  line-height: 0;
   white-space: nowrap;
   border-radius: 15px;
   /*
@@ -110,6 +111,7 @@
 .monster-button:hover {
   color: #fff;
   background-color: rgb(93, 0, 0);
+  box-shadow: 0 0 10px rgba(33,33,33); 
   transition: .7s;
 }
 
@@ -229,7 +231,6 @@ img {
   width: 15vw;
   height: 20vh;
   float: left;
-  font-size: 70%;
 }
 
 .card-pile-card {
@@ -270,18 +271,14 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   margin-left: 0.1em;
 }
 
-.card-top-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
+
 
 .card-pile-card h3 {
   font-size: 2vh;
 }
 
 .card p, .card button {
-  font-size: 1.8vh;
+  font-size: 2.2vh;
 }
 
 .card h3 {
@@ -310,4 +307,8 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   max-height: 3vh;
  }
 
-
+ .card-top-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
