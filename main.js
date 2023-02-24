@@ -245,6 +245,11 @@ function handleDeaths(stateObj) {
         newState.opponentMonster.splice(index, 1);
         newState.targetedMonster = 0;
       }
+      if (monster.drown >= monster.currentHP) {
+        console.log("opponent monster at index " + index + " has drowned.")
+        newState.opponentMonster.splice(index, 1);
+        newState.targetedMonster = 0;
+      }
     });
     if (newState.opponentMonster.length == 0) {
       console.log("all opponents dead");
@@ -524,11 +529,28 @@ function renderHand(stateObj) {
       let cardDiv = document.createElement("Div");
       cardDiv.id = index;
       cardDiv.classList.add("card");
+
+      let topCardRowDiv = document.createElement("Div");
+      topCardRowDiv.classList.add("card-top-row")
       let cardName = document.createElement("H3");
-      let cardText = document.createElement("P");
       cardName.textContent = cardObj.name;
+      
+      let cardCost = document.createElement("H3")
+      if (cardObj.cost !== "energy") {
+        cardCost.textContent = cardObj.cost;
+        cardCost.classList.add("hand-card-cost");
+        topCardRowDiv.append(cardCost);
+      } else {
+        cardName.classList.add("energy-name")
+      }
+      topCardRowDiv.append(cardName);
+
+      cardDiv.append(topCardRowDiv);
+
+      let cardText = document.createElement("P");
       cardText.textContent = cardObj.text(stateObj, index);
-      cardDiv.append(cardName, cardText);
+      cardDiv.append(cardText);
+      
       
       if (cardObj.minReq <= stateObj.playerMonster.encounterEnergy) {
         let cardButton = document.createElement("Button");
@@ -611,13 +633,34 @@ function renderOpponents(stateObj) {
     let monsterStatsDiv = document.createElement("Div");  
     monsterStatsDiv.classList.add("monster-top-row");
 
-    let monsterName = document.createElement("H3");
-    monsterName.textContent = monsterObj.name;
-    monsterName.classList.add("monster-name")
+
+
+    if (stateObj.targetedMonster == index) {
+      let monsterName = document.createElement("H3");
+      monsterName.textContent = monsterObj.name;
+      monsterName.classList.add("monster-name");
+      monsterStatsDiv.appendChild(monsterName);
+    } else {
+      let monsterButton = document.createElement("Button");
+      monsterButton.textContent = monsterObj.name;
+      monsterButton.classList.add("monster-button");
+      monsterButton.addEventListener("click", function () {
+        targetThisMonster(stateObj, index);
+      });
+      monsterStatsDiv.appendChild(monsterButton);
+    }
+
+    if (monsterObj.drown > 0) {
+      let drownDiv = document.createElement("Div");
+      drownDiv.textContent = monsterObj.drown + "/" + monsterObj.currentHP;
+      drownDiv.classList.add("monster-drown")
+      monsterStatsDiv.append(drownDiv);
+    }
+
     let monsterHP = document.createElement("H3");
     monsterHP.textContent = monsterObj.currentHP + "/" + monsterObj.maxHP;
     monsterHP.classList.add("monster-hp");
-    monsterStatsDiv.appendChild(monsterName);
+    
     monsterStatsDiv.appendChild(monsterHP);
 
     if (monsterObj.encounterBlock > 0) {
@@ -642,15 +685,7 @@ function renderOpponents(stateObj) {
     monsterDiv.appendChild(monsterStatsSecond);
     if (stateObj.targetedMonster == index) {
       monsterDiv.classList.add("targeted");
-    } else {
-      let targetButton = document.createElement("Button");
-      targetButton.textContent = "Target";
-      targetButton.addEventListener("click", function () {
-        targetThisMonster(stateObj, index);
-      });
-      monsterDiv.append(targetButton);
-    }
-
+    } 
 
     let opponentMoveListDiv = document.createElement("Div");
 

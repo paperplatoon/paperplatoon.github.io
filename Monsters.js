@@ -8,6 +8,7 @@ let opponentMonsters = {
       currentHP: 25,
       strength: 0,
       dex: 0,
+      drown: 0,
       moves: [
         {
           name: "Hibernate",
@@ -49,6 +50,7 @@ let opponentMonsters = {
       currentHP: 30,
       strength: 0,
       dex: 0,
+      drown: 0,
       moves: [
         {
           name: "Charging Strike",
@@ -108,6 +110,7 @@ let opponentMonsters = {
       currentHP: 40,
       strength: 0,
       dex: 0,
+      drown: 0,
       moves: [
         {
           name: "Regenerate",
@@ -168,6 +171,7 @@ let opponentMonsters = {
       currentHP: 20,
       strength: 0,
       dex: 0,
+      drown: 0,
       moves: [
         {
           name: "Backflip",
@@ -227,6 +231,7 @@ let opponentMonsters = {
       currentHP: 50,
       strength: 0,
       dex: 0,
+      drown: 0,
       moves: [
         {
           name: "Coursing Flames",
@@ -348,7 +353,8 @@ let opponentMonsters = {
         waterCardPool.tackle,
         waterCardPool.bodySlam,
         waterCardPool.gainDex,
-        waterCardPool.cloakingFog
+        waterCardPool.cloakingFog,
+        waterCardPool.drownTest
       ]
     }
   };

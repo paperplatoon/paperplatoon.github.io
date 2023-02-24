@@ -47,7 +47,8 @@
 .monster {
   border: 0.2px solid red;
   border-radius: 1vw;
-  min-width: 20vw;
+  width: 20vw;
+  justify-content: space-between;
 }
 
 .monster-hp {
@@ -88,19 +89,44 @@
   height: 5vh;
   line-height: 5vh;
   white-space: nowrap;
+  color:rgb(93, 0, 0)
 }
 
+.monster-button {
+  margin-left: 0.5vw;
+  font-size: 2vw;
+  text-align: right;
+  vertical-align: center;
+  height: 5vh;
+  white-space: nowrap;
+  border-radius: 15px;
+  /*
+  background-color: rgb(93, 0, 0);
+  color: white;
+  */
+  border: 2px dashed rgb(93, 0, 0);
+}
+
+.monster-button:hover {
+  color: #fff;
+  background-color: rgb(93, 0, 0);
+  transition: .7s;
+}
+
+.monster-drown {
+  color: blue;
+}
 
 .monster-top-row {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 
 
 .targeted {
-    border: 2px dashed red;
+    border: 4px dashed red;
 }
 
 #playerStats {
@@ -235,7 +261,8 @@ img {
   justify-content: space-around;
 }
 
-/* https://codersblock.com/blog/creating-glow-effects-with-css/ */
+/* https://codersblock.com/blog/creating-glow-effects-with-css/ 
+https://blog.logrocket.com/css-style-button-accessibility/*/
 
 .monster-top-row h3, .move h3, .move p, .card h3, .card p, .pile p, .card-pile-card h3 {
   margin-block-start: 0.01em;
@@ -243,16 +270,22 @@ img {
   margin-left: 0.1em;
 }
 
+.card-top-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .card-pile-card h3 {
   font-size: 2vh;
 }
 
 .card p, .card button {
-  font-size: 2.5vh;
+  font-size: 1.8vh;
 }
 
 .card h3 {
-  font-size: 3.5vh;
+  font-size: 3vh;
 }
 
 .monster-energy {
@@ -264,7 +297,7 @@ img {
   margin-left: 0.1vw;
 }
 
-.energy-cost {
+.energy-cost, .hand-card-cost {
   min-width: 1.4vw;
   text-align: center;
   border-radius: 50%;
@@ -274,6 +307,7 @@ img {
   font-weight: bold;
   color: white;
   float: right;
+  max-height: 3vh;
  }
 
 
