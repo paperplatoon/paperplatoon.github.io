@@ -34,7 +34,7 @@
 
 .move {
   border: 1px dashed;
-  font-size: 2.5vh;
+  font-size: 1.2vw;
   padding: 0.05vh 0.05vw;
   border-radius: 0.6vw;
 }
@@ -144,8 +144,9 @@
 
 
 img {
-  height: 35vh;
-  max-width: 20vw;
+  max-width: 100%;
+  height: auto;
+  width: auto;
 
 }
 
@@ -274,19 +275,19 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 
 .card-pile-card h3 {
-  font-size: 2vh;
+  font-size: 2vw;
 }
 
 .card p, .card button {
-  font-size: 2.2vh;
+  font-size: 1.4vw;
 }
 
 .card h3 {
-  font-size: 3vh;
+  font-size: 2vw;
 }
 
 .monster-energy {
-  font-size: 3vh;
+  font-size: 3vw;
   background-color: rgb(101, 14, 145);
   color: white;
   border-radius: 10px;
@@ -298,13 +299,13 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   min-width: 1.4vw;
   text-align: center;
   border-radius: 50%;
-  font-size: 3vh;
+  font-size: 1.2em;
   padding: 0.2em;
   background-color: rgb(101, 14, 145);
   font-weight: bold;
   color: white;
   float: right;
-  max-height: 3vh;
+  max-height: 3vw;
  }
 
  .card-top-row {

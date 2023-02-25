@@ -148,11 +148,9 @@ function renderChooseCardReward(stateObj) {
     cardDiv.classList.add("card");
     let cardName = document.createElement("H3");
     let cardText = document.createElement("P");
-    let chooseButton = document.createElement("Button");   
-    chooseButton.addEventListener("click", function () {
+    cardDiv.addEventListener("click", function () {
         chooseThisCard(sampledCardPool[index], stateObj, index);
       });   
-    chooseButton.textContent = "Choose";
     if (cardObj.cardType == "fireEnergy") {
       cardDiv.classList.add("fire-energy");
     }
@@ -161,7 +159,7 @@ function renderChooseCardReward(stateObj) {
     }
     cardName.textContent = cardObj.name;
     cardText.textContent = cardObj.text(stateObj, index, sampledCardPool);
-    cardDiv.append(cardName, cardText, chooseButton);
+    cardDiv.append(cardName, cardText);
     document.getElementById("app").appendChild(cardDiv);
   });
 
@@ -175,6 +173,15 @@ function renderChooseCardReward(stateObj) {
 };
 
 function skipCards(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.status = Status.RemovingCards;
+  })
+  stateObj = setUpEncounter(stateObj);
+  changeState(stateObj);
+  return stateObj;
+}
+
+function skipRemove(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.status = Status.InEncounter;
   })
@@ -412,9 +419,9 @@ function drawAHand(stateObj) {
 }
 
 
-function playACard(stateObj, cardIndexInHand) {
+function playACard(stateObj, cardIndexInHand, arrayObj) {
   console.log("triggering playACard");
-  stateObj = stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand);
+  stateObj = stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
   stateObj = immer.produce(stateObj, (newState) => {
     if (stateObj.encounterHand[cardIndexInHand].exhaust == true) {
       console.log("you're exhausting " + stateObj.encounterHand[cardIndexInHand].name);
@@ -535,7 +542,11 @@ function renderHand(stateObj) {
       cardName.textContent = cardObj.name;
       
       let cardCost = document.createElement("H3")
-      if (cardObj.cost !== "energy") {
+      if (typeof cardObj.cost === 'function') {
+        cardCost.textContent = cardObj.cost(stateObj, index, stateObj.encounterHand);
+        cardCost.classList.add("hand-card-cost");
+        topCardRowDiv.append(cardCost);
+      } else if (cardObj.cost !== "energy") {
         cardCost.textContent = cardObj.cost;
         cardCost.classList.add("hand-card-cost");
         topCardRowDiv.append(cardCost);
@@ -549,19 +560,26 @@ function renderHand(stateObj) {
       let cardText = document.createElement("P");
       console.log("index is " + index);
 
+  
       cardText.textContent = cardObj.text(stateObj, index, stateObj.encounterHand);
       cardDiv.append(cardText);
       
       
-      if (cardObj.minReq <= stateObj.playerMonster.encounterEnergy) {
-        let cardButton = document.createElement("Button");
-        cardButton.addEventListener("click", function () {
-          playACard(stateObj, index);
-        });
-        cardButton.textContent = "Play";
-        cardDiv.classList.add("playable")
-        cardDiv.append(cardButton);
-      };
+      if (typeof cardObj.minReq === 'function') {
+        if (cardObj.minReq(stateObj, index, stateObj.encounterHand) <= stateObj.playerMonster.encounterEnergy) {
+          cardDiv.addEventListener("click", function () {
+            playACard(stateObj, index, stateObj.encounterHand);
+          });
+        };
+      } else {
+        if (cardObj.minReq <= stateObj.playerMonster.encounterEnergy) {
+          cardDiv.addEventListener("click", function () {
+            playACard(stateObj, index, stateObj.encounterHand);
+          });
+        };
+      }
+      
+      
      
       if (cardObj.cardType == "fireEnergy") {
         cardDiv.classList.add("fire-energy");
@@ -622,6 +640,12 @@ function renderRemoveCard(stateObj) {
       cardDiv.append(cardName, cardText, cardButton);
       document.getElementById("app").appendChild(cardDiv);
   })
+  let skipButton = document.createElement("Button");
+  skipButton.addEventListener("click", function () {
+    skipRemove(stateObj);
+  }); 
+  skipButton.textContent = "Skip";
+  document.getElementById("app").appendChild(skipButton);
 };
 
 function renderOpponents(stateObj) {

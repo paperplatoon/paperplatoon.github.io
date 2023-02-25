@@ -289,12 +289,10 @@ let opponentMonsters = {
         fireCardPool.fireEnergy,
         fireCardPool.fireEnergy,
         fireCardPool.fireEnergy,
-        fireCardPool.fireEnergy,
         fireCardPool.kindle,
         fireCardPool.devExplode,
-        fireCardPool.devExplode,
-        fireCardPool.gainstrength,
-        fireCardPool.siphon,
+        fireCardPool.fireball,
+        fireCardPool.flamingStrike
       ],
     },
   
