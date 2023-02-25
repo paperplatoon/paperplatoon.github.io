@@ -43,7 +43,7 @@
 
 function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1) {
   let toChangeState = immer.produce(stateObj, (newState) => {
-    let calculatedDamage = ((damageNumber + newState.playerMonster.strength + newState.playerMonster.turnStrength) * attackNumber);
+    let calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
     if (newState.opponentMonster[newState.targetedMonster].hunted == true) {
       calculatedDamage *=2;
     }
@@ -260,9 +260,9 @@ function handleDeaths(stateObj) {
     });
     if (newState.opponentMonster.length == 0) {
       console.log("all opponents dead");
-      newState.playerMonster.turnStrength = 0;
-      newState.playerMonster.turnDex = 0;
-      newState.playcountKindle = 0;
+      newState.playerMonster.strength -= tempStrength;
+      newState.playerMonster.dex -= tempDex;
+      //something that goes through and resets card tempUpgrades and playCount for each card
       newState.status = Status.EncounterRewards;
       //newState = resetAfterEncounter(state);
     }
@@ -327,8 +327,8 @@ function setUpEncounter(stateObj) {
   });
 
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerMonster.turnStrength = 0;
-    newState.playerMonster.turnDex = 0;
+    newState.playerMonster.tempStrength = 0;
+    newState.playerMonster.tempDex = 0;
     newState.opponentMonster.forEach(function (monster, index) {
       console.log("triggering the block/energy opponent loop")
       newState.opponentMonster[index].encounterEnergy = 0;
@@ -475,7 +475,7 @@ function renderPlayerMonster(stateObj) {
   let playerEnergyText = document.createElement("H4");
   let playerStrengthandDexText = document.createElement("H4");
   playerEnergyText.textContent = "Energy: " + stateObj.playerMonster.encounterEnergy;
-  playerStrengthandDexText.textContent = "Strength: " + (stateObj.playerMonster.strength+stateObj.playerMonster.turnStrength) + " Dex: " + (stateObj.playerMonster.dex+stateObj.playerMonster.turnDex);
+  playerStrengthandDexText.textContent = "Strength: " + (stateObj.playerMonster.strength) + " Dex: " + (stateObj.playerMonster.dex);
   document.getElementById("playerStats").appendChild(playerEnergyText)
   document.getElementById("playerStats").appendChild(playerStrengthandDexText);
 
@@ -567,12 +567,14 @@ function renderHand(stateObj) {
       
       if (typeof cardObj.minReq === 'function') {
         if (cardObj.minReq(stateObj, index, stateObj.encounterHand) <= stateObj.playerMonster.encounterEnergy) {
+          cardDiv.classList.add("playable");
           cardDiv.addEventListener("click", function () {
             playACard(stateObj, index, stateObj.encounterHand);
           });
         };
       } else {
         if (cardObj.minReq <= stateObj.playerMonster.encounterEnergy) {
+          cardDiv.classList.add("playable");
           cardDiv.addEventListener("click", function () {
             playACard(stateObj, index, stateObj.encounterHand);
           });
@@ -658,21 +660,15 @@ function renderOpponents(stateObj) {
     let monsterStatsDiv = document.createElement("Div");  
     monsterStatsDiv.classList.add("monster-top-row");
 
+    let monsterName = document.createElement("H3");
+    monsterName.textContent = monsterObj.name;
+    monsterName.classList.add("monster-name");
+    monsterStatsDiv.appendChild(monsterName);
 
-
-    if (stateObj.targetedMonster == index) {
-      let monsterName = document.createElement("H3");
-      monsterName.textContent = monsterObj.name;
-      monsterName.classList.add("monster-name");
-      monsterStatsDiv.appendChild(monsterName);
-    } else {
-      let monsterButton = document.createElement("Button");
-      monsterButton.textContent = monsterObj.name;
-      monsterButton.classList.add("monster-button");
-      monsterButton.addEventListener("click", function () {
+    if (stateObj.targetedMonster !== index) {
+      monsterDiv.addEventListener("click", function () {
         targetThisMonster(stateObj, index);
       });
-      monsterStatsDiv.appendChild(monsterButton);
     }
 
     if (monsterObj.drown > 0) {
@@ -851,8 +847,8 @@ function startEncounter(stateObj) {
 
 function endTurnIncrement(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerMonster.turnStrength = 0;
-    newState.playerMonster.turnDex = 0;
+    newState.playerMonster.strength -= tempStrength;
+    newState.playerMonster.dex -= tempDex;
     newState.opponentMonster.forEach(function (monsterObj, index) {
       monsterObj.hunted = false;
     })
