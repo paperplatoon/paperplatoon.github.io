@@ -7,19 +7,24 @@
 
 #stats {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   border: 1px solid black;
-  height: 60vh;
+  height: 96vh;
 }
 
-
+#playerMonster {
+  display: flex;
+  flex-direction: column;
+  
+}
 
 #stats h4 {
   margin-block-start: 0.1em;
   margin-block-end: 0.1em;
 }
 
-/* * { border: 1px solid black; } */
+ /* * { border: 1px solid black; } */
 
 
 
@@ -139,8 +144,8 @@
 
 #playerStats {
   color: green;
-  border: 1px solid green;
-  width: 20vw;
+  border: 3px solid green;
+  width: 35vw;
 }
 
 #playerStats h4, #opponents h4 {
@@ -148,8 +153,7 @@
 }
 
 img {
-  max-width: 100%;
-  height: auto;
+  height: 20vh;
   width: auto;
 
 }
@@ -170,19 +174,13 @@ img {
   font-size: 140%;
 }
 
-
-
-
-#cardScreenSection {
-  height: 30vh;
-  width: 96vw;
-  border: 1px solid green;
-  text-align: center;
+.player-monster-row {
   display: flex;
   flex-direction: row;
-  align-content: center;
-
+  justify-content: space-around;
 }
+
+
 
 #drawDiv,
 #discardDiv,
@@ -234,13 +232,13 @@ img {
   border: 2px solid black;
   margin: 1%;
   width: 15vw;
-  height: 20vh;
+  height: 11vh;
   float: left;
 }
 
 .fire-energy {
   background: linear-gradient(90deg, rgb(231, 10, 10),rgb(255, 84, 84), rgb(231, 10, 10), rgb(172, 6, 6));
-  line-height: 20vh;
+  line-height: 2vh;
 }
 
 .water-energy {
@@ -250,13 +248,11 @@ img {
 .card-pile-card {
   border: 1px solid black;
   margin: 1%;
-  height: 12vh;
+  height: 8vh;
   width: 12vw;
   line-height: 1.2;
   float: left;
 }
-
-
 
 .playable {
   border: 4px solid rgb(182, 43, 43);
@@ -269,9 +265,11 @@ img {
 }
 
 #handContainer2 {
-  width: 90vw;
-  height: 25vh;
+  width: 35vw;
+  height: 60vh;
   display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
   border: 1px dashed blue;
   justify-content: space-around;
 }
@@ -279,7 +277,7 @@ img {
 /* https://codersblock.com/blog/creating-glow-effects-with-css/ 
 https://blog.logrocket.com/css-style-button-accessibility/*/
 
-.monster-top-row h3, .move h3, .move p, .card h3, .card p, .pile p, .card-pile-card h3 {
+.monster-top-row h3, .move h3, .move p, .card h3, .card p, .pile p, .card-pile-card h3, #playerStats h4 {
   margin-block-start: 0.01em;
   margin-block-end: 0.01em;
   margin-left: 0.1em;
@@ -293,11 +291,11 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 }
 
 .card-pile-card p {
-  font-size: 1.3vw;
+  font-size: 1.1vw;
 }
 
 .card p{
-  font-size: 1.3vw;
+  font-size: 1.1vw;
 }
 
 .card h3 {

@@ -481,15 +481,40 @@ function renderPlayerMonster(stateObj) {
 
   let avatar = document.createElement('img');
   avatar.src = 'fireMonster.png';
-  document.getElementById('playerStats').appendChild(avatar);
+
+  let imageRowDiv = document.createElement("Div");
+  imageRowDiv.classList.add("player-monster-row");
+  imageRowDiv.appendChild(avatar);
+
+  let drawPileDiv = document.createElement("Div");
+  drawPileDiv.setAttribute("id", "drawPile");
+  drawPileDiv.classList.add("pile");
+
+  let drawDiv = document.createElement("Div");
+  drawDiv.setAttribute("id", "drawDiv");
+  drawPileDiv.append(drawDiv);
+  imageRowDiv.append(drawPileDiv);
+
+        
+  let discardPileDiv = document.createElement("Div");
+  discardPileDiv.setAttribute("id", "discardPile")
+  discardPileDiv.classList.add("pile")
+
+  let discardDiv = document.createElement("Div");
+  discardDiv.setAttribute("id", "discardDiv")
+  discardPileDiv.append(discardDiv);
+  imageRowDiv.append(discardPileDiv);
+  //let discardPileDiv.textConte
+
+  document.getElementById('playerStats').appendChild(imageRowDiv);
 }
 
 function renderDivs(stateObj) {
   document.getElementById("app").innerHTML = `
   <div class="flex-container" id="stats">
-    <div id="playerStats">
-
-
+    <div class="flex-container" id="playerMonster">
+      <div id="playerStats"> </div>
+      <div id="handContainer2"> </div>
     </div>
 
     <div id="playerDeckPile" class="pile">Deck
@@ -504,19 +529,6 @@ function renderDivs(stateObj) {
   <button id="endTurnButton">End Turn</button>
   <!-- <button id="resetButton">Reset</button> -->
 
-
-  <div class="flex-container" id="cardScreenSection">
-  <div id="drawPile" class="pile">
-    <p>Draw
-    </p>
-    <div id="drawDiv"></div>
-
-  </div>
-  <div id="handContainer2"> </div>
-  <div id="handContainer"> </div>
-  <div id="discardPile" class="pile">Discard
-    <div id="discardDiv"></div>
-  </div>
 </div>`;
 document.getElementById("shuffleDrawButton").onclick = function () {
   startEncounter(state);
@@ -847,8 +859,8 @@ function startEncounter(stateObj) {
 
 function endTurnIncrement(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerMonster.strength -= tempStrength;
-    newState.playerMonster.dex -= tempDex;
+    newState.playerMonster.strength -= newState.playerMonster.tempStrength;
+    newState.playerMonster.dex -= newState.playerMonster.tempDex;
     newState.opponentMonster.forEach(function (monsterObj, index) {
       monsterObj.hunted = false;
     })

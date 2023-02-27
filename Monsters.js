@@ -285,6 +285,8 @@ let opponentMonsters = {
       currentHP: 50,
       strength: 0,
       dex: 0,
+      tempStrength: 0,
+      tempDex: 0,
       startingDeck: [
         fireCardPool.fireEnergy,
         fireCardPool.fireEnergy,
@@ -306,6 +308,8 @@ let opponentMonsters = {
       currentHP: 50,
       strength: 0,
       dex: 0,
+      tempStrength: 0,
+      tempDex: 0,
       startingDeck: [
         //6 energy
         fireCardPool.fireEnergy,
@@ -313,8 +317,6 @@ let opponentMonsters = {
         fireCardPool.fireEnergy,
         fireCardPool.fireEnergy,
         fireCardPool.fireEnergy,
-        fireCardPool.flameUp,
-        fireCardPool.flameUp,
         //7 attacks
         fireCardPool.explode,
         fireCardPool.gainstrength,
@@ -336,6 +338,8 @@ let opponentMonsters = {
       currentHP: 50,
       strength: 0,
       dex: 0,
+      tempStrength: 0,
+      tempDex: 0,
       startingDeck: [
         //6 energy
         waterCardPool.waterEnergy,
