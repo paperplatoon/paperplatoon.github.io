@@ -146,6 +146,8 @@ function renderChooseCardReward(stateObj) {
   sampledCardPool.forEach(function (cardObj, index) {
     let cardDiv = document.createElement("Div");
     cardDiv.classList.add("card");
+    cardDiv.classList.add("playable");
+    cardDiv.classList.add("card-reward");
     let cardName = document.createElement("H3");
     let cardText = document.createElement("P");
     cardDiv.addEventListener("click", function () {
@@ -167,7 +169,8 @@ function renderChooseCardReward(stateObj) {
   skipButton.addEventListener("click", function () {
     skipCards(stateObj);
   }); 
-  skipButton.textContent = "Skip";
+  skipButton.textContent = "I don't want to add any of these to my deck";
+  skipButton.classList.add("skip-button");
   document.getElementById("app").appendChild(skipButton);
 
 };
@@ -260,8 +263,8 @@ function handleDeaths(stateObj) {
     });
     if (newState.opponentMonster.length == 0) {
       console.log("all opponents dead");
-      newState.playerMonster.strength -= tempStrength;
-      newState.playerMonster.dex -= tempDex;
+      newState.playerMonster.strength -= newState.playerMonster.tempStrength;
+      newState.playerMonster.dex -= newState.playerMonster.tempDex;
       //something that goes through and resets card tempUpgrades and playCount for each card
       newState.status = Status.EncounterRewards;
       //newState = resetAfterEncounter(state);
@@ -379,7 +382,8 @@ function shuffleDiscardIntoDeck(stateObj) {
 function drawACard(stateObj) {
   let toChangeState = immer.produce(stateObj, (newState) => {
     const handLength = newState.encounterHand.length;
-    if (handLength >= 10) {
+    if (handLength > 8 ) {
+      console.log("hand is full");
       return newState;
     }
 
@@ -418,6 +422,12 @@ function drawAHand(stateObj) {
   return toChangeState;
 }
 
+function upgradeCard(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.encounterHand[0].upgrades +=1;
+  })
+  return stateObj;
+}
 
 function playACard(stateObj, cardIndexInHand, arrayObj) {
   console.log("triggering playACard");
@@ -636,13 +646,13 @@ function renderRemoveCard(stateObj) {
     let cardDiv = document.createElement("Div");
       cardDiv.id = index;
       cardDiv.classList.add("card");
+      cardDiv.classList.add("playable");
+      cardDiv.classList.add("card-reward");
       let cardName = document.createElement("H3");
       let cardText = document.createElement("P");
-      let cardButton = document.createElement("Button");
-      cardButton.addEventListener("click", function () {
+      cardDiv.addEventListener("click", function () {
         removeCard(stateObj, index);
       });
-      cardButton.textContent = "Remove";
       if (cardObj.cardType == "fireEnergy") {
         cardDiv.classList.add("fire-energy");
       }
@@ -651,14 +661,15 @@ function renderRemoveCard(stateObj) {
       }
       cardName.textContent = cardObj.name;
       cardText.textContent = cardObj.text(stateObj, index, stateObj.playerDeck);
-      cardDiv.append(cardName, cardText, cardButton);
+      cardDiv.append(cardName, cardText);
       document.getElementById("app").appendChild(cardDiv);
   })
   let skipButton = document.createElement("Button");
   skipButton.addEventListener("click", function () {
     skipRemove(stateObj);
   }); 
-  skipButton.textContent = "Skip";
+  skipButton.textContent = "I don't want to remove any of these cards from my deck";
+  skipButton.classList.add("skip-button");
   document.getElementById("app").appendChild(skipButton);
 };
 
@@ -861,6 +872,8 @@ function endTurnIncrement(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster.strength -= newState.playerMonster.tempStrength;
     newState.playerMonster.dex -= newState.playerMonster.tempDex;
+    newState.playerMonster.tempStrength = 0;
+    newState.playerMonster.tempDex = 0;
     newState.opponentMonster.forEach(function (monsterObj, index) {
       monsterObj.hunted = false;
     })

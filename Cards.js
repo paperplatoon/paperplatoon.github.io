@@ -245,7 +245,7 @@ let fireCardPool = {
       cost: () => {
         return 2
       },
-      upgrades: 0,
+      upgrades: 2,
       action: (state, index, array) => {
         let toChangeState = immer.produce(state, (newState) => {
           if (newState.opponentMonster[newState.targetedMonster].encounterEnergy >= 2) {
@@ -333,6 +333,20 @@ let fireCardPool = {
           newState.playerMonster.strength += 5;
         })
         return toChangeState;
+      }
+    },
+
+    upgrade: {
+      name: "Upgrades",
+      text: (state, index, array) => { return `Upgrade your top left card ${1 + (array[index].upgrades)} time`},
+      minReq: 1,
+      cost: "1",
+      upgrades: 0,
+      action: (state, index, array) => {
+        for (i = 0; i < (1+array[index].upgrades); i++) {
+          state = upgradeCard(state);
+        }
+        return state;
       }
     },
 

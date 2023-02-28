@@ -10,7 +10,7 @@
   flex-direction: row;
   justify-content: space-between;
   border: 1px solid black;
-  height: 96vh;
+  height: 90vh;
 }
 
 #playerMonster {
@@ -230,9 +230,9 @@ img {
 
 .card {
   border: 2px solid black;
-  margin: 1%;
+  margin: 0.1vw;
   width: 15vw;
-  height: 11vh;
+  height: 10vh;
   float: left;
 }
 
@@ -266,7 +266,7 @@ img {
 
 #handContainer2 {
   width: 35vw;
-  height: 60vh;
+  height: 50vh;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -330,4 +330,13 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   flex-direction: row;
   justify-content: space-around;
   padding: 0.3vh;
+}
+
+.card-reward {
+  margin-left: 2vw;
+  width: 25vw;
+}
+
+.skip-button{
+  margin: 2vw;
 }
