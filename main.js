@@ -4,10 +4,10 @@
 //PUTS DECK BUILDING LIMITATION - can only have so many multi combo cards
 
 //TO-DO
-//change enemy attacks to take a state object and render dynamic text
-//block only appears if grreater than zero
+//add card costs to Choose/remove card screens
 //same with strength and dex for all monsters
 //figure out some way to render energy inside the right icon (flame/water/etc)
+//add 
 
 //figure out a way to do tooltips
 
@@ -27,8 +27,6 @@
 
 
 //DONE
-//add in a screen to remove cards
-//add in a renderDivs function that deletes and recreates all the divs
 
 
 
@@ -240,10 +238,8 @@ const Status = {
 
 let gameStartState = {
   playerMonster: false,
-  opponentMonster: [opponentMonsters.opponent1, opponentMonsters.opponent2],
   status: Status.ChoosingMonster,
-  opponentChosenMoveIndex: false,
-  playcountKindle: 0
+  fightCount: 0
 };
 
 
@@ -277,6 +273,7 @@ function handleDeaths(stateObj) {
       console.log("all opponents dead");
       newState.playerMonster.strength -= newState.playerMonster.tempStrength;
       newState.playerMonster.dex -= newState.playerMonster.tempDex;
+      newState.fightCount += 1;
       //something that goes through and resets card tempUpgrades and playCount for each card
       newState.status = Status.EncounterRewards;
       //newState = resetAfterEncounter(state);
@@ -316,7 +313,7 @@ renderScreen(state);
 //setUpEncounter block is undefined because opponentMonster hasn't been set yet
 function setUpEncounter(stateObj) {
   //shuffle monster array and pick two randomly
-  let opponentMonsterArray = Object.values(opponentMonsters);
+  let opponentMonsterArray = OpponentMonsterFightCountArray[stateObj.fightCount]
   let potentialOpponents = fisherYatesShuffle(opponentMonsterArray);
   stateObj = immer.produce(stateObj, (newState) => {
     console.log("setting up encounter");

@@ -267,11 +267,17 @@ let opponentMonsters = {
         }  
       ]
     },
-  
+  }
  // consuming flames
  // rising tide  
+
+ let OpponentMonsterFightCountArray = [
+  [opponentMonsters.opponent1, opponentMonsters.opponent3, opponentMonsters.opponent4],
+  [opponentMonsters.opponent2, opponentMonsters.opponent5],
+  [opponentMonsters.opponent2, opponentMonsters.opponent5]
+ ]
   
-  }
+
   
   
   let playerMonsters = {
