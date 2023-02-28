@@ -389,7 +389,7 @@ let fireCardPool = {
   
   let waterCardPool = {
     waterEnergy: {
-      name: "Water Energy",
+      name: "",
       text: (state) => {
         return `Gain 1 energy`
       },
@@ -423,13 +423,13 @@ let fireCardPool = {
     drownTest: {
       name: "Enter the Abyss",
       text: (state) => {
-        return `Spend 1 energy. +50 drown`
+        return `Spend 1 energy. +20 drown`
       },
       minReq: 1,
       cost: "1",
       action: (state) => {
         let toChangeState = immer.produce(state, (newState) => {
-          newState.opponentMonster[newState.targetedMonster].drown +=50;
+          newState.opponentMonster[newState.targetedMonster].drown +=20;
         })
         return toChangeState;
       }

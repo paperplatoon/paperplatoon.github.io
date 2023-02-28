@@ -173,6 +173,18 @@ function renderChooseCardReward(stateObj) {
   skipButton.classList.add("skip-button");
   document.getElementById("app").appendChild(skipButton);
 
+  let deckPileDiv = document.createElement("Div");
+  deckPileDiv.setAttribute("id", "playerDeckPile");
+  deckPileDiv.classList.add("remove-pile");
+  deckPileDiv.textContent = "View Current Deck";  
+
+
+  let deckDiv = document.createElement("Div");
+  deckDiv.setAttribute("id", "deckDiv");
+  
+  deckPileDiv.append(deckDiv);
+  document.getElementById("app").append(deckPileDiv);
+
 };
 
 function skipCards(stateObj) {
@@ -463,14 +475,14 @@ function renderPlayerMonster(stateObj) {
   let topRowDiv = document.createElement("Div");
   topRowDiv.classList.add("monster-top-row");
 
-  let playerName = document.createElement("H3");
-  playerName.textContent = stateObj.playerMonster.name;
-  playerName.classList.add("monster-name")
+  let avatar = document.createElement('img');
+  avatar.src = 'fireMonster.png';
+  topRowDiv.appendChild(avatar);
+
   let playerHP = document.createElement("H3");
   playerHP.textContent = stateObj.playerMonster.currentHP + "/" + stateObj.playerMonster.maxHP;
   playerHP.classList.add("monster-hp");
 
-  topRowDiv.appendChild(playerName);
   topRowDiv.appendChild(playerHP);
 
   if (stateObj.playerMonster.encounterBlock > 0) {
@@ -479,6 +491,25 @@ function renderPlayerMonster(stateObj) {
     playerBlock.classList.add("monster-block");
     topRowDiv.appendChild(playerBlock);
   }
+
+  let drawPileDiv = document.createElement("Div");
+  drawPileDiv.setAttribute("id", "drawPile");
+  drawPileDiv.classList.add("pile");
+
+  let drawDiv = document.createElement("Div");
+  drawDiv.setAttribute("id", "drawDiv");
+  drawPileDiv.append(drawDiv);
+  topRowDiv.append(drawPileDiv);
+
+        
+  let discardPileDiv = document.createElement("Div");
+  discardPileDiv.setAttribute("id", "discardPile")
+  discardPileDiv.classList.add("pile")
+
+  let discardDiv = document.createElement("Div");
+  discardDiv.setAttribute("id", "discardDiv")
+  discardPileDiv.append(discardDiv);
+  topRowDiv.append(discardPileDiv);
 
   document.getElementById("playerStats").appendChild(topRowDiv);
 
@@ -489,31 +520,12 @@ function renderPlayerMonster(stateObj) {
   document.getElementById("playerStats").appendChild(playerEnergyText)
   document.getElementById("playerStats").appendChild(playerStrengthandDexText);
 
-  let avatar = document.createElement('img');
-  avatar.src = 'fireMonster.png';
+  
 
   let imageRowDiv = document.createElement("Div");
-  imageRowDiv.classList.add("player-monster-row");
-  imageRowDiv.appendChild(avatar);
+  imageRowDiv.classList.add("player-decks-row");
 
-  let drawPileDiv = document.createElement("Div");
-  drawPileDiv.setAttribute("id", "drawPile");
-  drawPileDiv.classList.add("pile");
-
-  let drawDiv = document.createElement("Div");
-  drawDiv.setAttribute("id", "drawDiv");
-  drawPileDiv.append(drawDiv);
-  imageRowDiv.append(drawPileDiv);
-
-        
-  let discardPileDiv = document.createElement("Div");
-  discardPileDiv.setAttribute("id", "discardPile")
-  discardPileDiv.classList.add("pile")
-
-  let discardDiv = document.createElement("Div");
-  discardDiv.setAttribute("id", "discardDiv")
-  discardPileDiv.append(discardDiv);
-  imageRowDiv.append(discardPileDiv);
+  
   //let discardPileDiv.textConte
 
   document.getElementById('playerStats').appendChild(imageRowDiv);
@@ -671,6 +683,7 @@ function renderRemoveCard(stateObj) {
   skipButton.textContent = "I don't want to remove any of these cards from my deck";
   skipButton.classList.add("skip-button");
   document.getElementById("app").appendChild(skipButton);
+  
 };
 
 function renderOpponents(stateObj) {
@@ -682,11 +695,6 @@ function renderOpponents(stateObj) {
 
     let monsterStatsDiv = document.createElement("Div");  
     monsterStatsDiv.classList.add("monster-top-row");
-
-    let monsterName = document.createElement("H3");
-    monsterName.textContent = monsterObj.name;
-    monsterName.classList.add("monster-name");
-    monsterStatsDiv.appendChild(monsterName);
 
     if (stateObj.targetedMonster !== index) {
       monsterDiv.addEventListener("click", function () {
@@ -770,6 +778,7 @@ function renderScreen(stateObj) {
     renderChooseMonster(stateObj);
   } else if (stateObj.status == Status.EncounterRewards) {
       renderChooseCardReward(stateObj);
+      renderCardPile(stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.RemovingCards) {
     renderRemoveCard(stateObj);
   } else {
