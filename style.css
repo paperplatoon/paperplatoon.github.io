@@ -72,10 +72,8 @@
   flex-grow: 0.1;
   font-size: 1.5vw;
   flex-shrink: 1;
-  min-height: 4vh;
-  max-height: 12vh;
-  min-width: 4vw;
-  max-width: 15vw;
+  height: 6vmax;
+  max-width: 6vmax;
 }
 
 .monster-block {
@@ -85,9 +83,8 @@
     width: 20%;
     text-align: center;
     font-size: 2vw;
-    min-width: 1.5vw;
-    max-width: 4vw;
-    max-height: 12vh;
+    width: 3vmax;
+    height: 3vmax;
     flex-shrink: 1;
     border: 1px dashed white;
   }
@@ -143,9 +140,9 @@
   font-size: 1.3vw;
 }
 
-img {
-  height: 20vh;
-  width: auto;
+img, avatar {
+  width: 10vmax;
+  height: 10vmax;
 
 }
 
@@ -219,6 +216,7 @@ img {
   border: 1px dashed red;
   font-size: 2vh;
   overflow-wrap: break-word;
+  z-index: 2;
 }
 
 .remove-pile {
@@ -234,7 +232,7 @@ img {
 
 .card {
   border: 2px solid black;
-  margin: 0.1vw;
+  margin: 0.4vmax;
   width: 15vw;
   height: 10vh;
   float: left;
@@ -262,7 +260,7 @@ img {
 }
 
 .playable {
-  border: 4px solid rgb(182, 43, 43);
+  border: 4px solid rgb(8, 61, 0);
   box-shadow: 0 0 5px rgba(33,33,33); 
 }
 
@@ -275,10 +273,13 @@ img {
   width: 35vw;
   height: 50vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
   border: 1px dashed blue;
-  justify-content: space-around;
+  justify-content: center;
+  align-content: start;
+  background:rgb(8, 61, 0);
+  background: linear-gradient(90deg, rgba(75,75,75,0.08) 0%, rgba(255,175,70,0.08) 35%, rgba(0,212,255,0.08) 100%);
 }
 
 /* https://codersblock.com/blog/creating-glow-effects-with-css/ 
@@ -320,6 +321,17 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   border-radius: 10px;
   padding: 0.3vh 0.4vw;
   margin-left: 0.1vw;
+  text-align: center;
+}
+
+.player-energy {
+  font-size: 3vw;
+  background-color: rgb(8, 61, 0);
+  color: white;
+  border-radius: 10px;
+  padding: 0.3vh 0.4vw;
+  margin-left: 0.1vw;
+  text-align: center;
 }
 
 .energy-cost, .hand-card-cost {
@@ -346,17 +358,27 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   background-color: rgb(8, 61, 0);
  }
 
+ .card-reward {
+  margin-left: 2vw;
+  width: 25vw;
+}
+
  .card-top-row {
   display: flex;
   flex-direction: row;
   justify-content: left;
 }
 
-.card-reward {
-  margin-left: 2vw;
-  width: 25vw;
+.card-top-row-reward {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
 }
+
+
+
 
 .skip-button{
   margin: 2vw;
 }
+

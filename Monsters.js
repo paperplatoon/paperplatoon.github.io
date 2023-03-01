@@ -2,10 +2,10 @@ let opponentMonsters = {
     opponent1: {
       name: "Mr Bubbles",
       type: "water",
-      maxHP: 25,
+      maxHP: 55,
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      currentHP: 25,
+      currentHP: 55,
       strength: 0,
       dex: 0,
       drown: 0,
@@ -23,6 +23,7 @@ let opponentMonsters = {
             return toChangeState;
           }
         },
+
         {
           name: "Fury Strike",
           cost: "3",
@@ -44,10 +45,10 @@ let opponentMonsters = {
     opponent2: {
       name: "Mrs Bubbles",
       type: "water",
-      maxHP: 30,
+      maxHP: 60,
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      currentHP: 30,
+      currentHP: 60,
       strength: 0,
       dex: 0,
       drown: 0,
@@ -106,8 +107,8 @@ let opponentMonsters = {
       type: "Earth",
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      maxHP: 40,
-      currentHP: 40,
+      maxHP: 80,
+      currentHP: 80,
       strength: 0,
       dex: 0,
       drown: 0,
@@ -115,13 +116,13 @@ let opponentMonsters = {
         {
           name: "Regenerate",
           cost: "0",
-          text: "Recover 5 health. Gain 1 energy",
+          text: "Recover 10 health. Gain 1 energy",
           minReq: 0,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
               newState.opponentMonster[monsterIndex].encounterEnergy += 1;
-              if (newState.opponentMonster[monsterIndex].currentHP < (newState.opponentMonster[monsterIndex].maxHP - 6)) {
-                newState.opponentMonster[monsterIndex].currentHP += 5;
+              if (newState.opponentMonster[monsterIndex].currentHP < (newState.opponentMonster[monsterIndex].maxHP - 11)) {
+                newState.opponentMonster[monsterIndex].currentHP += 10;
               } else {
                 newState.opponentMonster[monsterIndex].currentHP = newState.opponentMonster[monsterIndex].maxHP;
               };
@@ -133,12 +134,12 @@ let opponentMonsters = {
         {
           name: "Granite Skin",
           cost: "2",
-          text: "Gain 15 block. Gain 2 energy",
+          text: "Gain 20 block. Gain 2 energy",
           minReq: 2,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
               newState.opponentMonster[monsterIndex].encounterEnergy += 2;
-              newState.opponentMonster[monsterIndex].encounterBlock += 15;
+              newState.opponentMonster[monsterIndex].encounterBlock += 20;
             })
             return toChangeState;
           }
@@ -147,11 +148,11 @@ let opponentMonsters = {
         {
           name: "Eruption",
           cost: "5",
-          text: "Deal 25 damage. Spend 5 energy.",
+          text: "Deal 40 damage. Spend 5 energy.",
           minReq: 5,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
-              let tempState = dealPlayerDamage(newState, 25, monsterIndex);
+              let tempState = dealPlayerDamage(newState, 40, monsterIndex);
               newState.opponentMonster[monsterIndex].encounterEnergy -= 5;
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
@@ -165,10 +166,10 @@ let opponentMonsters = {
     opponent4: {
       name: "Skydancer",
       type: "air",
-      maxHP: 20,
+      maxHP: 40,
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      currentHP: 20,
+      currentHP: 40,
       strength: 0,
       dex: 0,
       drown: 0,
@@ -176,12 +177,12 @@ let opponentMonsters = {
         {
           name: "Backflip",
           cost: "0",
-          text: "Gain 10 block. Gain 2 energy",
+          text: "Gain 20 block. Gain 2 energy",
           minReq: 0,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
               newState.opponentMonster[monsterIndex].encounterEnergy += 2;
-              newState.opponentMonster[monsterIndex].encounterBlock += 10;
+              newState.opponentMonster[monsterIndex].encounterBlock += 20;
             })
             return toChangeState;
           }
@@ -189,14 +190,14 @@ let opponentMonsters = {
         {
           name: "Swift Jab",
           cost: "2",
-          text: "Gain 15 block. Deal 5 damage. Gain 2 energy",
+          text: "Gain 30 block. Deal 10 damage. Gain 2 energy",
           minReq: 2,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
-              let tempState = dealPlayerDamage(newState, 5, monsterIndex);
+              let tempState = dealPlayerDamage(newState, 10, monsterIndex);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-              newState.opponentMonster[monsterIndex].encounterBlock += 15;
+              newState.opponentMonster[monsterIndex].encounterBlock += 30;
               newState.opponentMonster[monsterIndex].encounterEnergy += 2;
             })
             return toChangeState;
@@ -206,14 +207,14 @@ let opponentMonsters = {
         {
           name: "Roundhouse Kick",
           cost: "6",
-          text: "Gain 20 block. Deal 25 damage. Spend 5 energy",
+          text: "Gain 30 block. Deal 35 damage. Spend 5 energy",
           minReq: 6,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
-              let tempState = dealPlayerDamage(newState, 25, monsterIndex);
+              let tempState = dealPlayerDamage(newState, 35, monsterIndex);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-              newState.opponentMonster[monsterIndex].encounterBlock += 20;
+              newState.opponentMonster[monsterIndex].encounterBlock += 30;
               newState.opponentMonster[monsterIndex].encounterEnergy -= 5;
             })
             return toChangeState;
@@ -225,10 +226,10 @@ let opponentMonsters = {
     opponent5: {
       name: "Sindur",
       type: "fire",
-      maxHP: 50,
+      maxHP: 100,
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      currentHP: 50,
+      currentHP: 100,
       strength: 0,
       dex: 0,
       drown: 0,
@@ -236,31 +237,30 @@ let opponentMonsters = {
         {
           name: "Coursing Flames",
           cost: "0",
-          text: "Deal 5 damage. Gain 5 strength. Gain 1 energy",
+          text: "Deal 10 damage. Gain 10 strength. Gain 1 energy",
           minReq: 0,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
               newState.opponentMonster[monsterIndex].encounterEnergy += 1;
-              let tempState = dealPlayerDamage(newState, 5, monsterIndex);
+              let tempState = dealPlayerDamage(newState, 10, monsterIndex);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-              newState.opponentMonster[monsterIndex].strength += 5;
+              newState.opponentMonster[monsterIndex].strength += 10;
             })
             return toChangeState;
           }
         },
         {
           name: "Heat Discharge",
-          cost: "3",
+          cost: "2",
           text: "Spend 2 energy. Deal strength damage to the enemy twice.",
-          minReq: 3,
+          minReq: 2,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
               let tempState = dealPlayerDamage(newState, 0, monsterIndex, 2);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-              newState.opponentMonster[monsterIndex].encounterBlock += 5;
-              newState.opponentMonster[monsterIndex].encounterEnergy -= 3;
+              newState.opponentMonster[monsterIndex].encounterEnergy -= 2;
             })
             return toChangeState;
           }
@@ -287,20 +287,21 @@ let opponentMonsters = {
       encounterEnergy: 0,
       opponentMoveIndex: false,
       cardPool: fireCardPool,
-      maxHP: 50,
-      currentHP: 50,
+      maxHP: 100,
+      currentHP: 100,
       strength: 0,
       dex: 0,
       tempStrength: 0,
       tempDex: 0,
       startingDeck: [
-        fireCardPool.fireEnergy,
-        fireCardPool.fireEnergy,
-        fireCardPool.fireEnergy,
-        fireCardPool.flamingStrike,
+        waterCardPool.cloakingFog,
+        fireCardPool.setAflame,
+        fireCardPool.setAflame,
         fireCardPool.upgrade,
-        fireCardPool.kindle,
         fireCardPool.devExplode,
+        fireCardPool.devExplode,
+        fireCardPool.gainstrength,
+        fireCardPool.sparkBarrage
       ],
     },
   
@@ -310,25 +311,25 @@ let opponentMonsters = {
       encounterEnergy: 0,
       opponentMoveIndex: false,
       cardPool: fireCardPool,
-      maxHP: 50,
-      currentHP: 50,
+      maxHP: 100,
+      currentHP: 100,
       strength: 0,
       dex: 0,
       tempStrength: 0,
       tempDex: 0,
       startingDeck: [
-        //6 energy
+        //2 energy
         fireCardPool.fireEnergy,
         fireCardPool.fireEnergy,
-        fireCardPool.fireEnergy,
-        fireCardPool.fireEnergy,
-        fireCardPool.fireEnergy,
-        //7 attacks
+        //10 attacks
         fireCardPool.explode,
         fireCardPool.gainstrength,
+        fireCardPool.sparkBarrage,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
+        fireCardPool.tackle,
+        fireCardPool.tackle,
         fireCardPool.tackle,
         fireCardPool.tackle
       ],
@@ -340,8 +341,8 @@ let opponentMonsters = {
       cardPool: waterCardPool,
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      maxHP: 50,
-      currentHP: 50,
+      maxHP: 100,
+      currentHP: 100,
       strength: 0,
       dex: 0,
       tempStrength: 0,

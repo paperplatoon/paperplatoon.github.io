@@ -146,20 +146,45 @@ function renderChooseCardReward(stateObj) {
     cardDiv.classList.add("card");
     cardDiv.classList.add("playable");
     cardDiv.classList.add("card-reward");
-    let cardName = document.createElement("H3");
+
+    let topCardRowDiv = document.createElement("Div");
+    topCardRowDiv.classList.add("card-top-row-reward");
+
+      let cardCost = document.createElement("H3")
+      if (typeof cardObj.cost === 'function') {
+        cardCost.textContent = cardObj.cost(stateObj, index, stateObj.encounterHand);
+        cardCost.classList.add("hand-card-cost");
+        topCardRowDiv.append(cardCost);
+      } else if (cardObj.cost !== "energy" && typeof cardObj.cost === 'string') {
+          cardCost.textContent = cardObj.cost;
+          cardCost.classList.add("hand-card-cost");
+          topCardRowDiv.append(cardCost);
+        } else if (cardObj.minReq > 0) {
+          cardCost.textContent = cardObj.cost;
+          cardCost.classList.add("hand-card-cost");
+          topCardRowDiv.append(cardCost);
+      } else{}
+
+
+      let cardName = document.createElement("H3");
+      cardName.textContent = cardObj.name;
+      topCardRowDiv.append(cardName);
+      cardDiv.append(topCardRowDiv);
+
     let cardText = document.createElement("P");
+    cardText.textContent = cardObj.text(stateObj, index, sampledCardPool);
+    cardDiv.append(cardText);
+
     cardDiv.addEventListener("click", function () {
         chooseThisCard(sampledCardPool[index], stateObj, index);
       });   
+
     if (cardObj.cardType == "fireEnergy") {
       cardDiv.classList.add("fire-energy");
     }
     if (cardObj.cardType == "waterEnergy") {
       cardDiv.classList.add("water-energy");
     }
-    cardName.textContent = cardObj.name;
-    cardText.textContent = cardObj.text(stateObj, index, sampledCardPool);
-    cardDiv.append(cardName, cardText);
     document.getElementById("app").appendChild(cardDiv);
   });
 
@@ -419,7 +444,7 @@ function drawACard(stateObj) {
 //Need to figure out some way to make this terminate early if encounterDiscard and encounterDraw are both empty
 function drawAHand(stateObj) {
   let toChangeState = immer.produce(stateObj, (newState) => {
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 6; i++) {
       if (
         newState.encounterDraw.length !== 0 ||
         newState.encounterDiscard.length !== 0
@@ -511,6 +536,7 @@ function renderPlayerMonster(stateObj) {
   document.getElementById("playerStats").appendChild(topRowDiv);
 
   let playerEnergyText = document.createElement("H4");
+  playerEnergyText.classList.add("player-energy")
   let playerStrengthandDexText = document.createElement("H4");
   playerEnergyText.textContent = "Energy: " + stateObj.playerMonster.encounterEnergy;
   playerStrengthandDexText.textContent = "Strength: " + (stateObj.playerMonster.strength) + " Dex: " + (stateObj.playerMonster.dex);
@@ -577,13 +603,16 @@ function renderHand(stateObj) {
         cardCost.textContent = cardObj.cost(stateObj, index, stateObj.encounterHand);
         cardCost.classList.add("hand-card-cost");
         topCardRowDiv.append(cardCost);
-      } else if (cardObj.cost !== "energy") {
-        cardCost.textContent = cardObj.cost;
-        cardCost.classList.add("hand-card-cost");
-        topCardRowDiv.append(cardCost);
-      } else {
-        cardName.classList.add("energy-name")
-      }
+      } else if (cardObj.cost !== "energy" && typeof cardObj.cost === 'string') {
+          cardCost.textContent = cardObj.cost;
+          cardCost.classList.add("hand-card-cost");
+          topCardRowDiv.append(cardCost);
+        } else if (cardObj.minReq > 0) {
+          cardCost.textContent = cardObj.cost;
+          cardCost.classList.add("hand-card-cost");
+          topCardRowDiv.append(cardCost);
+      } else{}
+
       topCardRowDiv.append(cardName);
 
       cardDiv.append(topCardRowDiv);
@@ -657,8 +686,32 @@ function renderRemoveCard(stateObj) {
       cardDiv.classList.add("card");
       cardDiv.classList.add("playable");
       cardDiv.classList.add("card-reward");
+
+      let topCardRowDiv = document.createElement("Div");
+      topCardRowDiv.classList.add("card-top-row")
       let cardName = document.createElement("H3");
+      cardName.textContent = cardObj.name;
+      
+      let cardCost = document.createElement("H3")
+      if (typeof cardObj.cost === 'function') {
+        cardCost.textContent = cardObj.cost(stateObj, index, stateObj.playerDeck);
+        cardCost.classList.add("hand-card-cost");
+        topCardRowDiv.append(cardCost);
+      } else if (cardObj.cost !== "energy" && cardObj.cost > 0) {
+        cardCost.textContent = cardObj.cost;
+        cardCost.classList.add("hand-card-cost");
+        topCardRowDiv.append(cardCost);
+      } else {
+
+      }
+      topCardRowDiv.append(cardName);
+
+      cardDiv.append(topCardRowDiv);
+      
       let cardText = document.createElement("P");
+      cardText.textContent = cardObj.text(stateObj, index, stateObj.playerDeck);
+      cardDiv.append(cardText);
+
       cardDiv.addEventListener("click", function () {
         removeCard(stateObj, index);
       });
@@ -668,9 +721,6 @@ function renderRemoveCard(stateObj) {
       if (cardObj.cardType == "waterEnergy") {
         cardDiv.classList.add("water-energy");
       }
-      cardName.textContent = cardObj.name;
-      cardText.textContent = cardObj.text(stateObj, index, stateObj.playerDeck);
-      cardDiv.append(cardName, cardText);
       document.getElementById("app").appendChild(cardDiv);
   })
   let skipButton = document.createElement("Button");
@@ -692,6 +742,11 @@ function renderOpponents(stateObj) {
 
     let monsterStatsDiv = document.createElement("Div");  
     monsterStatsDiv.classList.add("monster-top-row");
+
+    let avatar = document.createElement('img');
+    avatar.src = 'pikachu.png';
+    avatar.classList.add("avatar")
+    monsterStatsDiv.append(avatar);
 
     if (stateObj.targetedMonster !== index) {
       monsterDiv.addEventListener("click", function () {
@@ -721,17 +776,16 @@ function renderOpponents(stateObj) {
     
     monsterDiv.appendChild(monsterStatsDiv);
     
-    let monsterStatsSecond = document.createElement("Div");
-    monsterStatsSecond.classList.add("monster-top-row");
 
     let monsterStrengthAndDex = document.createElement("H4");
     let monsterEncounterEnergy = document.createElement("H4");
     monsterEncounterEnergy.textContent = "Energy: " + monsterObj.encounterEnergy;
     monsterEncounterEnergy.classList.add("monster-energy");
     monsterStrengthAndDex.textContent = "Strength: " + monsterObj.strength + " Dex: " + monsterObj.dex;
-    monsterStatsSecond.append(monsterEncounterEnergy, monsterStrengthAndDex);
+    monsterDiv.append(monsterEncounterEnergy, monsterStrengthAndDex);
 
-    monsterDiv.appendChild(monsterStatsSecond);
+    
+
     if (stateObj.targetedMonster == index) {
       monsterDiv.classList.add("targeted");
     } 
