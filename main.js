@@ -344,7 +344,7 @@ function setUpEncounter(stateObj) {
     console.log("setting up encounter");
     newState.playerMonster.encounterBlock = 0;
     //pick first two monsters from shuffled array
-    newState.opponentMonster = [potentialOpponents[0], potentialOpponents[1]];
+    newState.opponentMonster = potentialOpponents[0];
     newState.encounterHand = [];
     newState.encounterDiscard = [];
     newState.playcountKindle = 0;
@@ -359,7 +359,7 @@ function setUpEncounter(stateObj) {
       newState.encounterDraw = [...stateObj.playerDeck];
     }
     newState.targetedMonster = 0;
-    newState.playerMonster.encounterEnergy = 0;
+    newState.playerMonster.encounterEnergy = newState.playerMonster.turnEnergy;
     console.log(newState.opponentMonster);
   });
 
@@ -961,6 +961,7 @@ async function endTurn(stateObj) {
   stateObj = pickMove(stateObj);
   stateObj = immer.produce(stateObj, (draft) => {
     draft.playerMonster.encounterBlock = 0;
+    draft.playerMonster.encounterEnergy += draft.playerMonster.turnEnergy;
   })
   stateObj = drawAHand(stateObj);
   changeState(stateObj);

@@ -13,12 +13,12 @@ let opponentMonsters = {
         {
           name: "Hibernate",
           cost: "0",
-          text: "Gain 3 energy and 10 block",
+          text: "Gain 3 energy and 15 block",
           minReq: 0,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
               newState.opponentMonster[monsterIndex].encounterEnergy += 3;
-              newState.opponentMonster[monsterIndex].encounterBlock += 10;
+              newState.opponentMonster[monsterIndex].encounterBlock += 15;
             })
             return toChangeState;
           }
@@ -27,12 +27,12 @@ let opponentMonsters = {
         {
           name: "Fury Strike",
           cost: "3",
-          text: "Spend 3 energy. Deal 10 damage",
+          text: "Spend 3 energy. Deal 20 damage",
           minReq: 3,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
               newState.opponentMonster[monsterIndex].encounterEnergy -= 3;
-              let tempState = dealPlayerDamage(newState, 10, monsterIndex);
+              let tempState = dealPlayerDamage(newState, 20, monsterIndex);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
             })
@@ -272,9 +272,34 @@ let opponentMonsters = {
  // rising tide  
 
  let OpponentMonsterFightCountArray = [
-  [opponentMonsters.opponent1, opponentMonsters.opponent3, opponentMonsters.opponent4],
-  [opponentMonsters.opponent2, opponentMonsters.opponent5],
-  [opponentMonsters.opponent2, opponentMonsters.opponent5]
+  [
+    [opponentMonsters.opponent1], 
+    [opponentMonsters.opponent3], 
+    [opponentMonsters.opponent4]
+  ],
+
+  [
+    [opponentMonsters.opponent2], 
+    [opponentMonsters.opponent3], 
+    [opponentMonsters.opponent4]
+  ],
+
+  [
+    [opponentMonsters.opponent5], 
+    [opponentMonsters.opponent3, opponentMonsters.opponent4], 
+    [opponentMonsters.opponent4],
+    [opponentMonsters.opponent1, opponentMonsters.opponent4],
+  ],
+
+  [
+    [opponentMonsters.opponent5, opponentMonsters.opponent1], 
+    [opponentMonsters.opponent2, opponentMonsters.opponent4], 
+  ],
+
+  
+  [
+    [opponentMonsters.opponent2, opponentMonsters.opponent5]
+  ]
  ]
   
 
@@ -293,6 +318,7 @@ let opponentMonsters = {
       dex: 0,
       tempStrength: 0,
       tempDex: 0,
+      turnEnergy: 3,
       startingDeck: [
         waterCardPool.cloakingFog,
         fireCardPool.setAflame,
@@ -317,17 +343,19 @@ let opponentMonsters = {
       dex: 0,
       tempStrength: 0,
       tempDex: 0,
+      turnEnergy: 3,
       startingDeck: [
-        //2 energy
+        //1 energy
         fireCardPool.fireEnergy,
-        fireCardPool.fireEnergy,
-        //10 attacks
+        //11 attacks
         fireCardPool.explode,
         fireCardPool.gainstrength,
-        fireCardPool.sparkBarrage,
+        fireCardPool.upgrade,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
+        fireCardPool.withdraw,
+        fireCardPool.tackle,
         fireCardPool.tackle,
         fireCardPool.tackle,
         fireCardPool.tackle,
@@ -347,17 +375,16 @@ let opponentMonsters = {
       dex: 0,
       tempStrength: 0,
       tempDex: 0,
+      turnEnergy: 3,
       startingDeck: [
-        //6 energy
+        //1 energy
         waterCardPool.waterEnergy,
-        waterCardPool.waterEnergy,
-        waterCardPool.waterEnergy,
-        waterCardPool.waterEnergy,
-        waterCardPool.waterEnergy,
-        waterCardPool.waterEnergy,
-        //6 attacks
+        //11 attacks
         waterCardPool.withdraw,
         waterCardPool.withdraw,
+        waterCardPool.withdraw,
+        waterCardPool.withdraw,
+        waterCardPool.tackle,
         waterCardPool.tackle,
         waterCardPool.tackle,
         waterCardPool.bodySlam,
