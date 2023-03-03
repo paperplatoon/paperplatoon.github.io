@@ -214,7 +214,6 @@ function skipCards(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.status = Status.RemovingCards;
   })
-  stateObj = setUpEncounter(stateObj);
   changeState(stateObj);
   return stateObj;
 }
@@ -224,6 +223,14 @@ function skipRemove(stateObj) {
     newState.status = Status.InEncounter;
   })
   stateObj = setUpEncounter(stateObj);
+  changeState(stateObj);
+  return stateObj;
+}
+
+function skipUpgrade(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.status = Status.EncounterRewards;
+  })
   changeState(stateObj);
   return stateObj;
 }
@@ -248,15 +255,25 @@ function removeCard(stateObj, index) {
   return stateObj;
 }
 
+function encounterUpgradeCard(stateObj, index) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerDeck[index].upgrades +=1;
+    newState.status = Status.EncounterRewards;
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
 
 
 
 const Status = {
-  ChoosingMonster: "Choosing monster",
-  EncounterRewards: "Battle Rewards",
+  ChoosingMonster: "Choose a monster",
+  UpgradingCards: "Choose any card from your deck to upgrade",
+  EncounterRewards: "Choose a card to add to your deck",
   InEncounter: "in encounter",
   WonEncounter: "won encounter",
-  RemovingCards: "choose a card to remove",
+  RemovingCards: "choose a card to remove from your deck",
   Death: "You died",
   InTown: "In Town"
 };
@@ -300,7 +317,7 @@ function handleDeaths(stateObj) {
       newState.playerMonster.dex -= newState.playerMonster.tempDex;
       newState.fightCount += 1;
       //something that goes through and resets card tempUpgrades and playCount for each card
-      newState.status = Status.EncounterRewards;
+      newState.status = Status.UpgradingCards;
       //newState = resetAfterEncounter(state);
     }
 
@@ -459,7 +476,7 @@ function drawAHand(stateObj) {
 function upgradeCard(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.encounterHand[0].upgrades +=1;
-  })
+  });
   return stateObj;
 }
 
@@ -733,6 +750,61 @@ function renderRemoveCard(stateObj) {
   
 };
 
+function renderUpgradeCard(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  stateObj.playerDeck.forEach(function (cardObj, index) {
+    let cardDiv = document.createElement("Div");
+      cardDiv.id = index;
+      cardDiv.classList.add("card");
+      cardDiv.classList.add("playable");
+      cardDiv.classList.add("card-reward");
+
+      let topCardRowDiv = document.createElement("Div");
+      topCardRowDiv.classList.add("card-top-row")
+      let cardName = document.createElement("H3");
+      cardName.textContent = cardObj.name;
+      
+      let cardCost = document.createElement("H3")
+      if (typeof cardObj.cost === 'function') {
+        cardCost.textContent = cardObj.cost(stateObj, index, stateObj.playerDeck);
+        cardCost.classList.add("hand-card-cost");
+        topCardRowDiv.append(cardCost);
+      } else if (cardObj.cost !== "energy" && cardObj.cost > 0) {
+        cardCost.textContent = cardObj.cost;
+        cardCost.classList.add("hand-card-cost");
+        topCardRowDiv.append(cardCost);
+      } else {
+
+      }
+      topCardRowDiv.append(cardName);
+
+      cardDiv.append(topCardRowDiv);
+      
+      let cardText = document.createElement("P");
+      cardText.textContent = cardObj.text(stateObj, index, stateObj.playerDeck);
+      cardDiv.append(cardText);
+
+      cardDiv.addEventListener("click", function () {
+        encounterUpgradeCard(stateObj, index);
+      });
+      if (cardObj.cardType == "fireEnergy") {
+        cardDiv.classList.add("fire-energy");
+      }
+      if (cardObj.cardType == "waterEnergy") {
+        cardDiv.classList.add("water-energy");
+      }
+      document.getElementById("app").appendChild(cardDiv);
+  })
+  let skipButton = document.createElement("Button");
+  skipButton.addEventListener("click", function () {
+    skipUpgrade(stateObj);
+  }); 
+  skipButton.textContent = "I don't want to upgrade any of these cards";
+  skipButton.classList.add("skip-button");
+  document.getElementById("app").appendChild(skipButton);
+  
+};
+
 function renderOpponents(stateObj) {
   document.getElementById("opponents").innerHTML = "";
   stateObj.opponentMonster.forEach(function (monsterObj, index) {
@@ -832,7 +904,9 @@ function renderScreen(stateObj) {
       renderCardPile(stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.RemovingCards) {
     renderRemoveCard(stateObj);
-  } else {
+  } else if (stateObj.status == Status.UpgradingCards) {
+    renderUpgradeCard(stateObj);
+  }else {
     renderDivs(stateObj);
     renderPlayerMonster(stateObj);
     renderHand(stateObj);

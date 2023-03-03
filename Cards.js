@@ -393,14 +393,14 @@ let fireCardPool = {
     drownTest: {
       name: "Enter the Abyss",
       text: (state, index, array) => {
-        return `Opponents gains ${20 + (array[index].upgrades*10)} drown`
+        return `Opponents gains ${15 + (array[index].upgrades*10)} drown`
       },
       minReq: 1,
       cost: "1",
       upgrades: 0,
       action: (state, index, array) => {
         let toChangeState = immer.produce(state, (newState) => {
-          newState.opponentMonster[newState.targetedMonster].drown += 20 + (array[index].upgrades*10);
+          newState.opponentMonster[newState.targetedMonster].drown += 15 + (array[index].upgrades*10);
           newState.playerMonster.encounterEnergy -=1
         })
         return toChangeState;
