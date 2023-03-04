@@ -833,6 +833,13 @@ function renderOpponents(stateObj) {
       monsterStatsDiv.append(drownDiv);
     }
 
+    if (monsterObj.hunted > 0) {
+      let huntedDiv = document.createElement("img");
+      huntedDiv.src = 'crosshair.png';
+      huntedDiv.classList.add('hunted');
+      monsterStatsDiv.append(huntedDiv)
+    }
+
     let monsterHP = document.createElement("H3");
     monsterHP.textContent = monsterObj.currentHP + "/" + monsterObj.maxHP;
     monsterHP.classList.add("monster-hp");
