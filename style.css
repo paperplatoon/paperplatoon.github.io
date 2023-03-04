@@ -26,6 +26,17 @@
 
  /* * { border: 1px solid black; } */
 
+ .fishbowl {
+  background: rgb(0,194,255);
+  background: radial-gradient(circle, rgba(0,194,255,.80) 55%, rgba(37,203,255,.80) 63%, rgba(79,213,255,.80) 73%);
+  clip-path: polygon(50% 12%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%);
+  height: 3vmax;
+  width: 3vmax;
+  line-height: 3vmax;
+  text-align: center;
+  color: white;
+}
+
 
 
 #opponentHealthBlock, .move-name-cost {
@@ -382,3 +393,9 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   margin: 2vw;
 }
 
+.hunted {
+  background-image: url(crosshair.PNG);
+  height: 1.6vmax;
+  width: 1.6vmax;
+  color: green;
+}

@@ -9,6 +9,7 @@ let opponentMonsters = {
       strength: 0,
       dex: 0,
       drown: 0,
+      hunted: 0,
       moves: [
         {
           name: "Hibernate",
@@ -52,6 +53,7 @@ let opponentMonsters = {
       strength: 0,
       dex: 0,
       drown: 0,
+      hunted: 0,
       moves: [
         {
           name: "Charging Strike",
@@ -112,6 +114,7 @@ let opponentMonsters = {
       strength: 0,
       dex: 0,
       drown: 0,
+      hunted: 0,
       moves: [
         {
           name: "Regenerate",
@@ -173,6 +176,7 @@ let opponentMonsters = {
       strength: 0,
       dex: 0,
       drown: 0,
+      hunted: 0,
       moves: [
         {
           name: "Backflip",
@@ -233,6 +237,7 @@ let opponentMonsters = {
       strength: 0,
       dex: 0,
       drown: 0,
+      hunted: 0,
       moves: [
         {
           name: "Coursing Flames",
@@ -327,7 +332,7 @@ let opponentMonsters = {
         fireCardPool.devExplode,
         fireCardPool.devExplode,
         fireCardPool.gainstrength,
-        fireCardPool.sparkBarrage
+        waterCardPool.drownTest
       ],
     },
   
@@ -350,7 +355,6 @@ let opponentMonsters = {
         //11 attacks
         fireCardPool.explode,
         fireCardPool.gainstrength,
-        fireCardPool.upgrade,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
@@ -390,7 +394,7 @@ let opponentMonsters = {
         waterCardPool.bodySlam,
         waterCardPool.gainDex,
         waterCardPool.cloakingFog,
-        waterCardPool.drownTest
+        waterCardPool.huntPrey
       ]
     }
   };
