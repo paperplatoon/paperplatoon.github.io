@@ -10,7 +10,7 @@
   flex-direction: row;
   justify-content: space-between;
   border: 1px solid black;
-  height: 90vh;
+  height: 94vh;
 }
 
 #playerMonster {
@@ -67,7 +67,7 @@
   justify-content: space-between;
 }
 
-.monster:hover {
+.clickable-monster:hover {
   cursor: pointer;
   box-shadow: 0 0 20px rgba(33,33,33); 
 
@@ -143,7 +143,7 @@
 #playerStats {
   color: green;
   border: 3px solid green;
-  height: 30vh;
+  height: 37vh;
   width: 35vw;
 }
 
@@ -282,7 +282,7 @@ img, avatar {
 
 #handContainer2 {
   width: 35vw;
-  height: 50vh;
+  height: 57vh;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

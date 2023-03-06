@@ -42,7 +42,7 @@
 function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1) {
   let toChangeState = immer.produce(stateObj, (newState) => {
     let calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
-    if (newState.opponentMonster[newState.targetedMonster].hunted == true) {
+    if (newState.opponentMonster[newState.targetedMonster].hunted > 0) {
       calculatedDamage *=2;
     }
     if (newState.opponentMonster[newState.targetedMonster].encounterBlock == 0) {
@@ -77,7 +77,7 @@ opponentMonsterArray = Object.values(opponentMonsters);
 fireCardArray = Object.values(fireCardPool);
 waterCardArray = Object.values(waterCardPool);
 
-let potentialMonsterChoices = [playerMonsters.charles, playerMonsters.whirlies, playerMonsters.devCheat];
+let potentialMonsterChoices = playerMonsterArray;
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // - - - - - -  - - - - -Creating the State - - - - - -  - - - - -
@@ -387,8 +387,6 @@ function setUpEncounter(stateObj) {
       console.log("triggering the block/energy opponent loop")
       newState.opponentMonster[index].encounterEnergy = 0;
       newState.opponentMonster[index].encounterBlock = 0;
-      newState.opponentMonster[index].strength = 0;
-      newState.opponentMonster[index].dex = 0;
     })
   })
 
@@ -515,7 +513,7 @@ function renderPlayerMonster(stateObj) {
   topRowDiv.classList.add("monster-top-row");
 
   let avatar = document.createElement('img');
-  avatar.src = 'fireMonster.png';
+  avatar.src = stateObj.playerMonster.avatar;
   topRowDiv.appendChild(avatar);
 
   let playerHP = document.createElement("H3");
@@ -816,7 +814,7 @@ function renderOpponents(stateObj) {
     monsterStatsDiv.classList.add("monster-top-row");
 
     let avatar = document.createElement('img');
-    avatar.src = 'pikachu.png';
+    avatar.src = monsterObj.avatar;
     avatar.classList.add("avatar")
     monsterStatsDiv.append(avatar);
 
@@ -829,13 +827,13 @@ function renderOpponents(stateObj) {
     if (monsterObj.drown > 0) {
       let drownDiv = document.createElement("Div");
       drownDiv.textContent = monsterObj.drown + "/" + monsterObj.currentHP;
-      drownDiv.classList.add("monster-drown")
+      drownDiv.classList.add("fishbowl")
       monsterStatsDiv.append(drownDiv);
     }
 
     if (monsterObj.hunted > 0) {
       let huntedDiv = document.createElement("img");
-      huntedDiv.src = 'crosshair.png';
+      huntedDiv.src = 'img/crosshair.png';
       huntedDiv.classList.add('hunted');
       monsterStatsDiv.append(huntedDiv)
     }
@@ -867,15 +865,17 @@ function renderOpponents(stateObj) {
 
     if (stateObj.targetedMonster == index) {
       monsterDiv.classList.add("targeted");
-    } 
+    } else {
+      monsterDiv.classList.add("clickable-monster")
+    }
 
     let opponentMoveListDiv = document.createElement("Div");
 
-    monsterObj.moves.forEach(function (moveObj, index) {
+    monsterObj.moves.forEach(function (moveObj, moveIndex) {
       let moveDiv = document.createElement("Div");
-      moveDiv.id = index;
+      moveDiv.id = moveIndex;
       moveDiv.classList.add("move");
-      if (index === monsterObj.opponentMoveIndex) {
+      if (moveIndex === monsterObj.opponentMoveIndex) {
         moveDiv.classList.add("chosen");
       }
       let moveNameCostDiv = document.createElement("Div");
@@ -889,7 +889,14 @@ function renderOpponents(stateObj) {
       moveNameCostDiv.append(moveName, moveCost);
 
       let moveText = document.createElement("P");
-      moveText.textContent = moveObj.text;
+      if (typeof moveObj.text === "function") {
+        console.log("movetext is function")
+        moveText.textContent = moveObj.text(stateObj, index, stateObj.opponentMonster);
+      } else {
+        moveText.textContent = moveObj.text;
+      }
+      
+      
 
 
       moveDiv.append(moveNameCostDiv, moveText);
@@ -967,7 +974,7 @@ function playOpponentMove(stateObj) {
   stateObj.opponentMonster.forEach(function (monsterObj, index) {
     const move = monsterObj.moves[monsterObj.opponentMoveIndex];
     //move.action also take a state object and returns a state object, so newState gets updated
-    stateObj = move.action(stateObj, index);
+    stateObj = move.action(stateObj, index, stateObj.opponentMonster);
   });
   return stateObj;
 }
@@ -1016,7 +1023,7 @@ function endTurnIncrement(stateObj) {
     newState.playerMonster.tempStrength = 0;
     newState.playerMonster.tempDex = 0;
     newState.opponentMonster.forEach(function (monsterObj, index) {
-      monsterObj.hunted = false;
+      monsterObj.hunted -= 1;
     })
     newState.turnDouble = false;
   })

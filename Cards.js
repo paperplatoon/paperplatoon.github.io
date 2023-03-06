@@ -8,6 +8,8 @@
 
 //Take Aim/Sabotage will be for air
 
+//keyword: if energy is removed, do effect.
+
 
 let fireCardPool = {
     fireEnergy: {
@@ -74,15 +76,14 @@ let fireCardPool = {
 
     setAflame: {
       name: "Set Aflame",
-      minReq: 1,
+      minReq: -99,
       upgrades: 0,
-      cost: 1,
+      cost: 0,
       text: (state, index, array) => {
         return `You gain ${3+array[index].upgrades} energy. Your opponent gains ${3-array[index].upgrades}.`
       },
       action: (state, index, array) => {
         let toChangeState = immer.produce(state, (newState) => {
-          newState.playerMonster.encounterEnergy -=1;
           newState.playerMonster.encounterEnergy += 3+array[index].upgrades;
           newState.opponentMonster[newState.targetedMonster].encounterEnergy +=3-array[index].upgrades;
         })
@@ -205,6 +206,7 @@ let fireCardPool = {
         return toChangeState;
       }
     },
+    
   
     essencedrain: {
       name: "Essence Drain",
@@ -318,6 +320,63 @@ let fireCardPool = {
       }
     },
 
+    rareUpgrade: {
+      name: "Rare Upgrade",
+      text: (state, index, array) => { return `Gain ${5 + state.playerMonster.dex + (array[index].upgrades*10)} block. Upgrade your top left card 2 times.`},
+      minReq: 1,
+      cost: "1",
+      upgrades: 0,
+      action: (state, index, array) => {
+        state = upgradeCard(state);
+        state = upgradeCard(state);
+
+        state = immer.produce(state, (newState) => {
+          newState.playerMonster.encounterBlock += 5;
+          newState.playerMonster.encounterEnergy -=1;
+        })
+        return state;
+      }
+    },
+
+    infuse: {
+      name: "Infuse",
+      text: (state, index, array) => { return `Gain ${15 + state.playerMonster.dex + (array[index].upgrades*10)} block. Upgrade your top left card 2 times.`},
+      minReq: 2,
+      cost: "2",
+      upgrades: 0,
+      action: (state, index, array) => {
+        state = upgradeCard(state);
+        state = upgradeCard(state);
+
+        state = immer.produce(state, (newState) => {
+          newState.playerMonster.encounterBlock += 15;
+          newState.playerMonster.encounterEnergy -=2;
+        })
+        return state;
+      }
+    },
+
+    refineEnergy: {
+      name: "Refine Energy",
+      text: (state, index, array) => { return `Remove 2 energy from your opponent. Upgrade your top left card ${1 + array[index].upgrades} times.`},
+      minReq: 1,
+      cost: "1",
+      upgrades: 0,
+      action: (state, index, array) => {
+        for (i = 0; i < (1+array[index].upgrades); i++) {
+          state = upgradeCard(state);
+        }
+        state = immer.produce(state, (newState) => {
+          if (newState.opponentMonster[newState.targetedMonster].encounterEnergy > 2) {
+            newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 2;
+          } else if (newState.opponentMonster[newState.targetedMonster].encounterEnergy > 0) {
+              newState.opponentMonster[newState.targetedMonster].encounterEnergy = 0
+          } else {}
+        })
+        return state;
+      }
+    },
+
     microFlames: {
       name: "Micro Flames",
       text: (state, index, array) => { return `All attacks this turn do +5 damage. Draw ${(1 + array[index].upgrades)} cards`},
@@ -394,6 +453,23 @@ let fireCardPool = {
     drownTest: {
       name: "Enter the Abyss",
       text: (state, index, array) => {
+        return `Opponents gains ${100 + (array[index].upgrades*10)} drown`
+      },
+      minReq: 1,
+      cost: "1",
+      upgrades: 0,
+      action: (state, index, array) => {
+        let toChangeState = immer.produce(state, (newState) => {
+          newState.opponentMonster[newState.targetedMonster].drown += 100 + (array[index].upgrades*10);
+          newState.playerMonster.encounterEnergy -=1
+        })
+        return toChangeState;
+      }
+    },
+
+    enterAbyss: {
+      name: "Enter the Abyss",
+      text: (state, index, array) => {
         return `Opponents gains ${15 + (array[index].upgrades*10)} drown`
       },
       minReq: 1,
@@ -403,6 +479,38 @@ let fireCardPool = {
         let toChangeState = immer.produce(state, (newState) => {
           newState.opponentMonster[newState.targetedMonster].drown += 15 + (array[index].upgrades*10);
           newState.playerMonster.encounterEnergy -=1
+        })
+        return toChangeState;
+      }
+    },
+
+    bait: {
+      name: "Bait",
+      text: (state, index, array) => { return `Gain ${(10 + state.playerMonster.dex + (10*array[index].upgrades))} block. Remove 1 opponent energy` },
+      minReq: 1,
+      upgrades: 0,
+      cost: 1,
+      action: (state, index, array) => {
+        let toChangeState = immer.produce(state, (newState) => {
+          newState.playerMonster.encounterEnergy -=1;
+          newState.playerMonster.encounterBlock += (10 + newState.playerMonster.dex + (10*array[index].upgrades));
+          newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 1;
+        })
+        return toChangeState;
+      }
+    },
+
+    sabotage: {
+      name: "Sabotage",
+      text: (state, index, array) => { return `Gain ${(20 + state.playerMonster.dex + (10*array[index].upgrades))} block. Remove 2 opponent energy` },
+      minReq: 2,
+      upgrades: 0,
+      cost: 2,
+      action: (state, index, array) => {
+        let toChangeState = immer.produce(state, (newState) => {
+          newState.playerMonster.encounterEnergy -=2;
+          newState.playerMonster.encounterBlock += (20 + newState.playerMonster.dex + (10*array[index].upgrades));
+          newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 2;
         })
         return toChangeState;
       }
@@ -543,6 +651,7 @@ let fireCardPool = {
       //and returns a new state reflecting the changes
       action: (state, index, array) => {
         let toChangeState = immer.produce(state, (newState) => {
+          console.log("number of upgrades is " +array[index].upgrades )
           newState.opponentMonster[newState.targetedMonster].hunted += (1 + array[index].upgrades);
           newState.playerMonster.encounterEnergy -= 1;
         })
