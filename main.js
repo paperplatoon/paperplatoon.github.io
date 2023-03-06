@@ -281,7 +281,8 @@ const Status = {
 let gameStartState = {
   playerMonster: false,
   status: Status.ChoosingMonster,
-  fightCount: 0
+  gymCount: 0,
+  gymFightCount: 0
 };
 
 
@@ -297,6 +298,7 @@ function changeState(newStateObj) {
 }
 
 function handleDeaths(stateObj) {
+  let shouldUpgrade = false;
   console.log("handling deaths");
   let toChangeState = immer.produce(stateObj, (newState) => {
     newState.opponentMonster.forEach(function (monster, index) {
@@ -315,9 +317,18 @@ function handleDeaths(stateObj) {
       console.log("all opponents dead");
       newState.playerMonster.strength -= newState.playerMonster.tempStrength;
       newState.playerMonster.dex -= newState.playerMonster.tempDex;
-      newState.fightCount += 1;
+
+      if (gyms[newState.gymCount][newState.gymFightCount].boss) {
+        newState.gymFightCount = 0;
+        newState.gymCount += 1;
+        newState.status = Status.UpgradingCards;
+      } else {
+        newState.gymFightCount += 1;
+        shouldUpgrade = true;
+        //return newState;
+      }
       //something that goes through and resets card tempUpgrades and playCount for each card
-      newState.status = Status.UpgradingCards;
+      
       //newState = resetAfterEncounter(state);
     }
 
@@ -330,6 +341,9 @@ function handleDeaths(stateObj) {
   })
   // check if all opponents are dead
 
+  if (shouldUpgrade === true) {
+    toChangeState = setUpEncounter(toChangeState)
+  }
   return toChangeState;
 };
 
@@ -355,13 +369,15 @@ renderScreen(state);
 //setUpEncounter block is undefined because opponentMonster hasn't been set yet
 function setUpEncounter(stateObj) {
   //shuffle monster array and pick two randomly
-  let opponentMonsterArray = OpponentMonsterFightCountArray[stateObj.fightCount]
-  let potentialOpponents = fisherYatesShuffle(opponentMonsterArray);
+  // let opponentMonsterArray = OpponentMonsterFightCountArray[stateObj.fightCount]
+  // let potentialOpponents = fisherYatesShuffle(opponentMonsterArray);
+
+
   stateObj = immer.produce(stateObj, (newState) => {
     console.log("setting up encounter");
     newState.playerMonster.encounterBlock = 0;
     //pick first two monsters from shuffled array
-    newState.opponentMonster = potentialOpponents[0];
+    newState.opponentMonster = gyms[newState.gymCount][newState.gymFightCount].opponents;
     newState.encounterHand = [];
     newState.encounterDiscard = [];
     newState.playcountKindle = 0;
@@ -377,14 +393,12 @@ function setUpEncounter(stateObj) {
     }
     newState.targetedMonster = 0;
     newState.playerMonster.encounterEnergy = newState.playerMonster.turnEnergy;
-    console.log(newState.opponentMonster);
   });
 
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster.tempStrength = 0;
     newState.playerMonster.tempDex = 0;
     newState.opponentMonster.forEach(function (monster, index) {
-      console.log("triggering the block/energy opponent loop")
       newState.opponentMonster[index].encounterEnergy = 0;
       newState.opponentMonster[index].encounterBlock = 0;
     })
@@ -532,6 +546,7 @@ function renderPlayerMonster(stateObj) {
   let drawPileDiv = document.createElement("Div");
   drawPileDiv.setAttribute("id", "drawPile");
   drawPileDiv.classList.add("pile");
+  drawPileDiv.textContent = "Draw";
 
   let drawDiv = document.createElement("Div");
   drawDiv.setAttribute("id", "drawDiv");
@@ -542,6 +557,7 @@ function renderPlayerMonster(stateObj) {
   let discardPileDiv = document.createElement("Div");
   discardPileDiv.setAttribute("id", "discardPile")
   discardPileDiv.classList.add("pile")
+  discardPileDiv.textContent = "Discard"
 
   let discardDiv = document.createElement("Div");
   discardDiv.setAttribute("id", "discardDiv")
@@ -575,10 +591,6 @@ function renderDivs(stateObj) {
     <div class="flex-container" id="playerMonster">
       <div id="playerStats"> </div>
       <div id="handContainer2"> </div>
-    </div>
-
-    <div id="playerDeckPile" class="pile">Deck
-        <div id="deckDiv"> </div>
     </div>
 
     <div id="opponents"></div>
@@ -633,7 +645,6 @@ function renderHand(stateObj) {
       cardDiv.append(topCardRowDiv);
 
       let cardText = document.createElement("P");
-      console.log("index is " + index);
 
   
       cardText.textContent = cardObj.text(stateObj, index, stateObj.encounterHand);
@@ -926,7 +937,6 @@ function renderScreen(stateObj) {
     renderHand(stateObj);
     renderCardPile(stateObj.encounterDraw, "drawDiv");
     renderCardPile(stateObj.encounterDiscard, "discardDiv");
-    renderCardPile(stateObj.playerDeck, "deckDiv");
     renderOpponents(stateObj);
   }
 }

@@ -370,7 +370,7 @@ let opponentMonsters = {
 
 
     blockbossguard1: {
-      name: "test1",
+      name: "guard1",
       type: "Air",
       maxHP: 60,
       encounterEnergy: 0,
@@ -422,7 +422,7 @@ let opponentMonsters = {
     },
 
     blockbossguard2: {
-      name: "test1",
+      name: "guard2",
       type: "Air",
       maxHP: 50,
       encounterEnergy: 0,
@@ -522,57 +522,129 @@ let opponentMonsters = {
         
       ]
     },
+
+    blockgymboss: {
+      name: "boss",
+      type: "Air",
+      maxHP: 50,
+      encounterEnergy: 0,
+      opponentMoveIndex: false,
+      currentHP: 50,
+      strength: 0,
+      dex: 0,
+      drown: 0,
+      hunted: 0,
+      avatar: "img/dracula.png",
+      moves: [
+        {
+          name: "Shielded Strike",
+          cost: "0",
+          text: (state, index, array) => {
+            let damageValue = 0;
+            if (state.opponentMonster.find(monster => monster.name === "guard1")) {
+              damageValue += (5 + state.opponentMonster.find(monster => monster.name === "guard1").dex)
+            }
+            if (state.opponentMonster.find(monster => monster.name === "guard2")) {
+              damageValue += (5 + state.opponentMonster.find(monster => monster.name === "guard2").dex)
+            }
+            return `Deal ${damageValue} damage. Other monsters gain +1 dexterity`
+          }, 
+
+          minReq: 0,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              let damageValue = 0;
+              if (newState.opponentMonster.find(monster => monster.name === "guard1")) {
+                damageValue += (5 + newState.opponentMonster.find(monster => monster.name === "guard1").dex)
+              }
+              if (newState.opponentMonster.find(monster => monster.name === "guard2")) {
+                damageValue += (5 + newState.opponentMonster.find(monster => monster.name === "guard2").dex)
+              }
+
+              let tempState = dealPlayerDamage(newState, damageValue, index);
+              newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+              newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
+              
+              if (newState.opponentMonster.find(monster => monster.name === "guard1")) {
+                newState.opponentMonster.find(monster => monster.name === "guard1").dex += 1;
+              }
+              if (newState.opponentMonster.find(monster => monster.name === "guard2")) {
+                newState.opponentMonster.find(monster => monster.name === "guard2").dex += 1;
+              }
+            })
+
+            newState.opponentMonster[index].encounterEnergy += 1;
+
+            return toChangeState;
+          }
+        },
+
+        {
+          name: "Rear Up",
+          cost: "5",
+          text: (state, index, array) => {
+            return `Deal ${50 + array[index].strength} damage.`
+          },
+          minReq: 5,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              let tempState = dealPlayerDamage(newState, 50, index);
+              newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+              newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
+              newState.opponentMonster[index].encounterEnergy -= 5;
+            })
+            return toChangeState;
+          }
+        }
+    
+      ]
+    },
   }
  // consuming flames
- // rising tide  
+ // rising tide
 
- let OpponentMonsterFightCountArray = [
-  [
-    [opponentMonsters.blockgym1],
-    //[opponentMonsters.blockbossguard1, opponentMonsters.blockbossguard2]
-  ],
-  
-  [
-    [opponentMonsters.opponent1],
-    [opponentMonsters.opponent2], 
-    [opponentMonsters.opponent3], 
-    [opponentMonsters.opponent4],
-    [opponentMonsters.opponent6]
-  ],
+ let gym1 = [
+  {
+    opponents: [opponentMonsters.blockgym1],
+    goldReward: 25
+  },
 
-  [
-    [opponentMonsters.opponent2], 
-    [opponentMonsters.opponent3], 
-    [opponentMonsters.opponent4],
-    [opponentMonsters.opponent7]
-  ],
+  {
+    opponents: [opponentMonsters.blockgymboss],
+    //opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockbossguard2],
+    goldReward: 25
+  },
 
-  [
-    [opponentMonsters.opponent5], 
-    [opponentMonsters.opponent3, opponentMonsters.opponent4], 
-    [opponentMonsters.opponent4],
-    [opponentMonsters.opponent1, opponentMonsters.opponent4],
-    [opponentMonsters.opponent1, opponentMonsters.opponent7]
-  ],
-
-  [
-    [opponentMonsters.opponent5, opponentMonsters.opponent1], 
-    [opponentMonsters.opponent2, opponentMonsters.opponent4],
-    [opponentMonsters.opponent2, opponentMonsters.opponent6] 
-  ],
-
-  
-  [
-    [opponentMonsters.opponent2, opponentMonsters.opponent5],
-    [opponentMonsters.opponent1, opponentMonsters.opponent1],
-    [opponentMonsters.opponent1, opponentMonsters.opponent2],
-    [opponentMonsters.opponent1, opponentMonsters.opponent2],
-
-  ]
+  {
+    opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockgymboss, opponentMonsters.blockbossguard2],
+    goldReward: 125,
+    boss: true
+  },
  ]
-  
 
-  
+ let gym2 = [
+  {
+    opponents: [opponentMonsters.blockgym1, opponentMonsters.blockgym1],
+    goldReward: 25
+  },
+
+  {
+    opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockbossguard1],
+    goldReward: 25
+  },
+
+  {
+    opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockgymboss, opponentMonsters.blockbossguard2],
+    goldReward: 125,
+    boss: true
+  },
+ ]
+
+ let gyms = [
+  gym1,
+  gym2
+ ]
+    
   
   let playerMonsters = {
     devCheat: {
@@ -684,8 +756,6 @@ let opponentMonsters = {
         waterCardPool.waterEnergy,
         //11 attacks
         waterCardPool.drownTest,
-        waterCardPool.withdraw,
-        waterCardPool.withdraw,
         waterCardPool.bodySlam,
         waterCardPool.gainDex,
         waterCardPool.cloakingFog,

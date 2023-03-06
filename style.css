@@ -131,7 +131,7 @@
 .monster-top-row {
   display: flex;
   flex-direction: row;
-  justify-content: left;
+  justify-content: space-evenly;
 }
 
 
