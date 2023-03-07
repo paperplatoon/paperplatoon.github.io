@@ -573,9 +573,11 @@ let opponentMonsters = {
               if (newState.opponentMonster.find(monster => monster.name === "guard2")) {
                 newState.opponentMonster.find(monster => monster.name === "guard2").dex += 1;
               }
+
+              newState.opponentMonster[index].encounterEnergy += 1;
             })
 
-            newState.opponentMonster[index].encounterEnergy += 1;
+            
 
             return toChangeState;
           }
@@ -864,8 +866,8 @@ let opponentMonsters = {
         fireCardPool.setAflame,
         fireCardPool.setAflame,
         fireCardPool.upgrade,
-        fireCardPool.devExplode,
-        fireCardPool.devExplode,
+        fireCardPool.rareExplode,
+        fireCardPool.rareExplode,
         fireCardPool.gainstrength,
         waterCardPool.drownTest
       ],

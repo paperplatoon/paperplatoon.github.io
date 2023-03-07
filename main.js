@@ -94,17 +94,19 @@ function renderChooseMonster(stateObj) {
     monsterDiv.id = index;
     monsterDiv.classList.add("monster-to-choose");
     let monsterName = document.createElement("H3");
-    let monsterChoiceButton = document.createElement("Button");
 
     monsterName.textContent = monsterObj.name;
-    monsterChoiceButton.textContent = "Choose"
+    let avatar = document.createElement('img');
+    avatar.classList.add("avatar");
+    avatar.src = monsterObj.avatar;
 
-    monsterChoiceButton.addEventListener("click", function () {
-    chooseThisMonster(stateObj, index);
+    monsterDiv.addEventListener("click", function () {
+      chooseThisMonster(stateObj, index);
     });
 
-    monsterDiv.append(monsterName, monsterChoiceButton);
-    document.getElementById("app").appendChild(monsterDiv);
+    monsterDiv.append(monsterName, avatar);
+    monsterChoiceDiv.append(monsterDiv)
+    document.getElementById("app").appendChild(monsterChoiceDiv);
     })
 };
 
@@ -154,7 +156,7 @@ function renderChooseCardReward(stateObj) {
 
       let cardCost = document.createElement("H3")
       if (typeof cardObj.cost === 'function') {
-        cardCost.textContent = cardObj.cost(stateObj, index, stateObj.encounterHand);
+        cardCost.textContent = cardObj.cost(stateObj, index, sampledCardPool);
         cardCost.classList.add("hand-card-cost");
         topCardRowDiv.append(cardCost);
       } else if (cardObj.cost !== "energy" && typeof cardObj.cost === 'string') {
@@ -255,9 +257,21 @@ function TownFight(stateObj) {
 
 function chooseThisCard(cardObj, stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerDeck.push(cardObj);
-    newState.status = Status.InTown;
+    newState.playerDeck.push(cardObj);    
   })
+
+  if (stateObj.gymFightCount === 0) {
+    console.log("boss beaten")
+    stateObj = immer.produce(stateObj, (newState) => {
+      newState.status = Status.InTown;
+    })
+  } else {
+    stateObj = immer.produce(stateObj, (newState) => {
+      newState.status = Status.InEncounter;
+    })
+    console.log("setting up next encounter")
+    stateObj = setUpEncounter(stateObj);
+  }
   //stateObj = setUpEncounter(stateObj);
   changeState(stateObj);
   return stateObj;
@@ -316,7 +330,7 @@ let gameStartState = {
 
 
 function changeState(newStateObj) {
-  console.log("you're changing the state");
+  console.log("you're changing the state and the status is " + newStateObj.status);
   state = { ...newStateObj };
   //state = { ...handleDeaths() };
   renderScreen(state);
@@ -347,10 +361,10 @@ function handleDeaths(stateObj) {
       if (gyms[newState.gymCount][newState.gymFightCount].boss) {
         newState.gymFightCount = 0;
         newState.gymCount += 1; 
-        newState.status = Status.InTown;
+        newState.status = Status.EncounterRewards;
       } else {
         newState.gymFightCount += 1;
-        shouldUpgrade = true;
+        newState.status = Status.EncounterRewards;
         //return newState;
       }
       //something that goes through and resets card tempUpgrades and playCount for each card
@@ -367,9 +381,6 @@ function handleDeaths(stateObj) {
   })
   // check if all opponents are dead
 
-  if (shouldUpgrade === true) {
-    toChangeState = setUpEncounter(toChangeState)
-  }
   return toChangeState;
 };
 
@@ -403,6 +414,8 @@ function setUpEncounter(stateObj) {
     console.log("setting up encounter");
     newState.playerMonster.encounterBlock = 0;
     //pick first two monsters from shuffled array
+    console.log("gym count " + newState.gymCount)
+    console.log("gym fight count " + newState.gymFightCount)
     newState.opponentMonster = gyms[newState.gymCount][newState.gymFightCount].opponents;
     newState.encounterHand = [];
     newState.encounterDiscard = [];

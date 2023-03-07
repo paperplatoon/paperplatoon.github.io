@@ -4,39 +4,54 @@
 3. change the pile divs to use variable-size font-heights
 
 */
-#stats, #town, #town-top-row {
+#stats, #town, #town-top-row, .monster-choice-window {
   display: flex;
   flex-direction: row;
 }
 
-#stats, #town, #town-top-row {
+#stats, #town, #town-top-row, .monster-choice-window {
   justify-content: space-evenly;
 }
 
-#town, #town-top-row {
+.monster-to-choose {
+  width: 12vw;
+  height: 60vh;
+  border: 2px dashed red;
+  border-radius: 15px;
+  text-align: center;
+}
+
+#town, #town-top-row, .monster-choice-window {
   align-items: center;
 }
 
-#stats, #town {
-  justify-content: space-between;
+#town-top-row {
+  height: 9vh;
+}
+
+#stats, #town, .monster-choice-window {
+  justify-content: space-evenly;
   border: 1px solid black;
   height: 94vh;
 }
 
 #town {
-  height: 80vh;
+  height: 85vh;
   justify-content: space-evenly;
   vertical-align: center;
   align-items: center;
+  background-image: url(img/town3.png);
+
 }
 
 #goldDiv {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 4vh;
-  width: 4vw;
+  height: 3vh;
+  width: 3vw;
   position: relative;
+  font-size: 1vmax;
 }
 
 .town-div {
@@ -53,6 +68,7 @@
 #goldText {
   position: absolute;
   color: white;
+  margin: 0;
 }
 
 #TownFight  {
@@ -139,7 +155,7 @@
   justify-content: space-between;
 }
 
-.clickable-monster:hover, .clickable-town-div:hover {
+.clickable-monster:hover, .clickable-town-div:hover, .monster-to-choose:hover {
   cursor: pointer;
   box-shadow: 0 0 20px rgba(33,33,33); 
 
@@ -271,6 +287,7 @@
 #discardPile #discardDiv,
 #playerDeckPile #deckDiv {
   display: none;
+  z-index: 10
 }
 
 #drawPile:hover #drawDiv,
@@ -305,14 +322,14 @@
 
 .remove-pile {
   width: 15vw;
-  height: 10vh;
-  line-height: 10vh;
+  height: 7vh;
+  line-height: 7vh;
   color: white;
   background-color: brown;
   border: 1px dashed red;
   font-size: 2vh;
   text-align: center;
-  margin: 1vmin;
+  margin: 0.3vmin;
 }
 
 .card {
