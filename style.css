@@ -134,7 +134,10 @@
   justify-content: space-evenly;
 }
 
+#goldDiv {
+  color: rgb(183, 183, 2);
 
+}
 
 .targeted {
     border: 4px dashed red;

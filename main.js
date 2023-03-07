@@ -282,7 +282,8 @@ let gameStartState = {
   playerMonster: false,
   status: Status.ChoosingMonster,
   gymCount: 0,
-  gymFightCount: 0
+  gymFightCount: 0,
+  gold: 0
 };
 
 
@@ -317,10 +318,11 @@ function handleDeaths(stateObj) {
       console.log("all opponents dead");
       newState.playerMonster.strength -= newState.playerMonster.tempStrength;
       newState.playerMonster.dex -= newState.playerMonster.tempDex;
+      newState.gold += gyms[newState.gymCount][newState.gymFightCount].goldReward
 
       if (gyms[newState.gymCount][newState.gymFightCount].boss) {
         newState.gymFightCount = 0;
-        newState.gymCount += 1;
+        newState.gymCount += 1; 
         newState.status = Status.UpgradingCards;
       } else {
         newState.gymFightCount += 1;
@@ -563,6 +565,11 @@ function renderPlayerMonster(stateObj) {
   discardDiv.setAttribute("id", "discardDiv")
   discardPileDiv.append(discardDiv);
   topRowDiv.append(discardPileDiv);
+
+  let goldDiv = document.createElement("Div");
+  goldDiv.setAttribute("id", "goldDiv")
+  goldDiv.textContent = stateObj.gold;
+  topRowDiv.append(goldDiv);
 
   document.getElementById("playerStats").appendChild(topRowDiv);
 
