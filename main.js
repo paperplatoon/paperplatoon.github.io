@@ -305,7 +305,7 @@ let gameStartState = {
   enemyFightHealTotal: 0,
   gymCount: 0,
   gymFightCount: 0,
-  gold: 0,
+  gold: 50,
   cardRemoveCost: 50,
   cardUpgradeCost: 50
 };
@@ -553,6 +553,7 @@ function renderPlayerMonster(stateObj) {
   topRowDiv.classList.add("monster-top-row");
 
   let avatar = document.createElement('img');
+  avatar.classList.add("avatar");
   avatar.src = stateObj.playerMonster.avatar;
   topRowDiv.appendChild(avatar);
 
@@ -647,30 +648,52 @@ function renderTown(stateObj) {
     <div id="playerDeckPile" class="remove-pile">View Current Deck
       <div id="deckDiv"> </div>
     </div>
-  <div id="goldDiv"></div>
+  <div id="goldDiv">
+    <img src="img/goldsack.png" class="bg-image"></img>
+    <h3 id="goldText"></h3>
+  </div>
   </div>
 
   <div class="flex-container" id="town">
-      <div id="TownRemove" class="town-div">Remove A Card</div>
-      <div id="TownUpgrade" class="town-div">Upgrade a Card </div>
+      <div id="TownRemove" class="town-div">
+        <img src="img/tavern2.png" class="bg-image"></img>
+        <h3 id="removeText" class="fight-text">Remove A Card</h3> 
+      </div>
+      <div id="TownUpgrade" class="town-div">
+        <img src="img/forge.png" class="bg-image"></img>
+        <h3 id="upgradeText" class="fight-text">Upgrade A Card</h3> 
+      </div>
       <div id="TownFight" class="town-div">
-        <img src="img/dracula.png" class="bg-image"></img> 
+        <img src="img/dracula.png" class="bg-image"></img>
+        <h3 class="fight-text">Fight Town Gym</h3> 
       </div>
   </div>
   `;
 
-  document.getElementById("TownRemove").onclick = function () {
-    changeStatus(stateObj, Status.RemovingCards);
-  };
-  document.getElementById("TownUpgrade").onclick = function () {
-    changeStatus(stateObj, Status.UpgradingCards);
+
+  if (stateObj.gold >= stateObj.cardRemoveCost) {
+    document.getElementById("TownRemove").classList.add("clickable-town-div")
+    document.getElementById("TownRemove").onclick = function () {
+      changeStatus(stateObj, Status.RemovingCards);
+    }
+  } else {
+    document.getElementById("removeText").textContent = "Not enough gold to remove a card";
   };
 
+  if (stateObj.gold >= stateObj.cardUpgradeCost) {
+    document.getElementById("TownUpgrade").classList.add("clickable-town-div")
+    document.getElementById("TownUpgrade").onclick = function () {
+      changeStatus(stateObj, Status.UpgradingCards);
+    };
+  } else {
+    document.getElementById("upgradeText").textContent = "Not enough gold to upgrade a card";
+  }
+  document.getElementById("TownFight").classList.add("clickable-town-div")
   document.getElementById("TownFight").onclick = function () {
     TownFight(stateObj);
     };
 
-  document.getElementById("goldDiv").textContent = stateObj.gold;
+  document.getElementById("goldText").textContent = stateObj.gold;
 }
 
 //render player's hand

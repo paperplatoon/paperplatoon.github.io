@@ -11,7 +11,11 @@
 
 #stats, #town, #town-top-row {
   justify-content: space-evenly;
-} 
+}
+
+#town, #town-top-row {
+  align-items: center;
+}
 
 #stats, #town {
   justify-content: space-between;
@@ -26,16 +30,46 @@
   align-items: center;
 }
 
-#TownRemove, #TownUpgrade, #TownFight {
+#goldDiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 4vh;
+  width: 4vw;
+  position: relative;
+}
+
+.town-div {
   height: 30vh;
   width: 15vw;
   color: rgb(220, 220, 220);
-  line-height: 30vh;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+#goldText {
+  position: absolute;
+  color: white;
 }
 
 #TownFight  {
-  background-color: black; 
+  background-color: black;
+}
+
+.fight-text {
+  position: absolute;
+  top: 0vh;
+  color: white;
+  font-size: 4vmin;
+  background-color: black;
+}
+
+#removeText {
+  color: rgb(255, 255, 255);
+  background-color: black;
 }
 
 .bg-image {
@@ -105,7 +139,7 @@
   justify-content: space-between;
 }
 
-.clickable-monster:hover, .town-div:hover {
+.clickable-monster:hover, .clickable-town-div:hover {
   cursor: pointer;
   box-shadow: 0 0 20px rgba(33,33,33); 
 
@@ -188,7 +222,7 @@
   font-size: 1.3vw;
 }
 
-img, avatar {
+.avatar {
   width: 10vmax;
   height: 10vmax;
 
@@ -255,15 +289,6 @@ img, avatar {
   }
 }
 
-#goldDiv {
-  line-height: 10vh;
-  color:rgb(0, 0, 0);
-  background-image: url(img/crosshair.PNG);
-  background-color: green;
-  height: 5vmin;
-  width: 5vmin;
-  
-}
 
 .pile {
   width: 3vw;
