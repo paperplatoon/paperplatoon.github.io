@@ -1,3 +1,5 @@
+//return `Deal ${5 + array[index].strength} damage. Restore 5 health`
+
 let opponentMonsters = {
     opponent1: {
       name: "Mr Bubbles",
@@ -405,7 +407,7 @@ let opponentMonsters = {
         {
           name: "Detonate",
           cost: "4",
-          text: "Deal 30 damage",
+          text: "Deal 30 damage. -4 energy",
           minReq: 4,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
@@ -456,7 +458,7 @@ let opponentMonsters = {
         {
           name: "Quick Detonate",
           cost: "3",
-          text: "Deal 25 damage",
+          text: "Deal 25 damage. -3 energy",
           minReq: 3,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
@@ -505,7 +507,7 @@ let opponentMonsters = {
           name: "Shield Throw",
           cost: "1",
           text: (state, index, array) => {
-            return `Deal ${15 + array[index].dex + array[index].strength} damage. Gain 1 dexterity.`
+            return `Deal ${15 + array[index].dex + array[index].strength} damage. Gain 1 dexterity. -1 energy`
           },
           minReq: 1,
           action: (state, index, array) => {
@@ -547,7 +549,7 @@ let opponentMonsters = {
             if (state.opponentMonster.find(monster => monster.name === "guard2")) {
               damageValue += (5 + state.opponentMonster.find(monster => monster.name === "guard2").dex)
             }
-            return `Deal ${damageValue} damage. Other monsters gain +1 dexterity`
+            return `Deal ${damageValue} damage. Other monsters gain +1 dexterity. +1 energy`
           }, 
 
           minReq: 0,
@@ -583,7 +585,7 @@ let opponentMonsters = {
           name: "Rear Up",
           cost: "5",
           text: (state, index, array) => {
-            return `Deal ${50 + array[index].strength} damage.`
+            return `Deal ${50 + array[index].strength} damage. -5 energy`
           },
           minReq: 5,
           action: (state, index, array) => {
@@ -599,6 +601,203 @@ let opponentMonsters = {
     
       ]
     },
+
+    healgym1: {
+      name: "heal1",
+      type: "Air",
+      maxHP: 80,
+      encounterEnergy: 0,
+      opponentMoveIndex: false,
+      currentHP: 80,
+      strength: 0,
+      dex: 0,
+      drown: 0,
+      hunted: 0,
+      avatar: "img/waterdevil.png",
+      moves: [
+        {
+          name: "Replenish",
+          cost: "0",
+          text: (state, index, array) => {
+            return `Restore 10 health. +2 energy`
+          }, 
+          minReq: 0,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              if (array[index].currentHP < (array[index].maxHP - 11)) {
+                newState.opponentMonster[index].currentHP += 10;
+              } else {
+                newState.opponentMonster[index].currentHP = newState.opponentMonster[index].maxHP;
+              }; 
+              newState.opponentMonster[index].encounterEnergy += 2;    
+            })
+            return toChangeState;
+          }
+        },
+        {
+          name: "Shield Throw",
+          cost: "3",
+          text: (state, index, array) => {
+            return `Deal ${5 + array[index].strength} damage 3 times. +1 energy`
+          },
+          minReq: 3,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              let tempState = dealPlayerDamage(newState, 5, index, 3);
+              newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+              newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
+              newState.opponentMonster[index].encounterEnergy += 1;
+            })
+            return toChangeState;
+          }
+        },
+
+        {
+          name: "Mega Drain",
+          cost: "5",
+          text: (state, index, array) => {
+            return `Deal ${30 + array[index].strength} damage. Restore 20 health. -5 energy`
+          },
+          minReq: 5,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              let tempState = dealPlayerDamage(newState, 30, index);
+              newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+              newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
+              newState.opponentMonster[index].encounterEnergy -= 5;
+              if (array[index].currentHP < (array[index].maxHP - 21)) {
+                newState.opponentMonster[index].currentHP += 20;
+              } else {
+                newState.opponentMonster[index].currentHP = newState.opponentMonster[index].maxHP;
+              }; 
+              
+            })
+            return toChangeState;
+          }
+        }
+        
+      ]
+    },
+
+    healgymguard1: {
+      name: "heal1",
+      type: "Air",
+      maxHP: 45,
+      encounterEnergy: 0,
+      opponentMoveIndex: false,
+      currentHP: 45,
+      strength: 0,
+      dex: 0,
+      drown: 0,
+      hunted: 0,
+      avatar: "img/earthevil.png",
+      moves: [
+        {
+          name: "Replenish",
+          cost: "0",
+          text: (state, index, array) => {
+            //maybe scale health restore for a later fight???
+            return `Restore 10 health. Gain 1 energy`
+          }, 
+          minReq: 0,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              if (array[index].currentHP < (array[index].maxHP - 11)) {
+                newState.opponentMonster[index].currentHP += 10;
+                newState.enemyFightHealTotal += 10;
+              } else {
+                newState.enemyFightHealTotal += (newState.opponentMonster[index].maxHP - newState.opponentMonster[index].currentHP)
+                newState.opponentMonster[index].currentHP = newState.opponentMonster[index].maxHP;
+              }; 
+              newState.opponentMonster[index].encounterEnergy += 1;    
+            })
+            return toChangeState;
+          }
+        },
+        {
+          name: "Seed Explosion",
+          cost: "4",
+          text: (state, index, array) => {
+            return `Deal ${40 + array[index].strength} damage. -4 energy`
+          },
+          minReq: 4,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              let tempState = dealPlayerDamage(newState, 40, index);
+              newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+              newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
+              newState.opponentMonster[index].encounterEnergy -= 4;
+            })
+            return toChangeState;
+          }
+        },
+        
+      ]
+    },
+
+    healgymboss: {
+      name: "healboss",
+      type: "Air",
+      maxHP: 100,
+      encounterEnergy: 0,
+      opponentMoveIndex: false,
+      currentHP: 100,
+      strength: 0,
+      dex: 0,
+      drown: 0,
+      hunted: 0,
+      avatar: "img/earthpsycho.png",
+      moves: [
+        {
+          name: "Acid Floor",
+          cost: "0",
+          text: (state, index, array) => {
+            //maybe scale health restore for a later fight???
+            return `Deal ${10 + array[index].strength} damage to ALL enemies. Gain 3 energy`
+          }, 
+          minReq: 0,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              calculatedDamage = 10 + array[index].strength;
+              let tempState = dealPlayerDamage(newState, calculatedDamage, index);
+              newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+              newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
+              newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
+                if (monsterObj.encounterBlock == 0) {
+                  monsterObj.currentHP -= calculatedDamage;
+                } else if (monsterObj.encounterBlock >= calculatedDamage) {
+                  monsterObj.encounterBlock -= calculatedDamage;
+                } else {
+                  monsterObj.currentHP -= (calculatedDamage - monsterObj.encounterBlock);
+                  monsterObj.encounterBlock = 0;
+                } 
+              })     
+              newState.opponentMonster[index].encounterEnergy += 3;        
+          })
+          return toChangeState;
+        }
+      },
+
+        {
+          name: "Unleash Growth",
+          cost: "3",
+          text: (state, index, array) => {
+            return `Deal damage equal to the total amount healed this fight (${state.enemyFightHealTotal}). -3 energy`
+          },
+          minReq: 3,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              let tempState = dealPlayerDamage(newState, state.enemyFightHealTotal, index);
+              newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+              newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
+              newState.opponentMonster[index].encounterEnergy -= 3;
+            })
+            return toChangeState;
+          }
+        },
+        
+      ]
+    },
   }
  // consuming flames
  // rising tide
@@ -610,8 +809,7 @@ let opponentMonsters = {
   },
 
   {
-    opponents: [opponentMonsters.blockgymboss],
-    //opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockbossguard2],
+    opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockbossguard2],
     goldReward: 25
   },
 
@@ -624,25 +822,25 @@ let opponentMonsters = {
 
  let gym2 = [
   {
-    opponents: [opponentMonsters.blockgym1, opponentMonsters.blockgym1],
+    opponents: [opponentMonsters.healgym1],
     goldReward: 25
   },
 
   {
-    opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockbossguard1],
+    opponents: [opponentMonsters.healgymguard1, opponentMonsters.healgymguard1],
     goldReward: 25
   },
 
   {
-    opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockgymboss, opponentMonsters.blockbossguard2],
+    opponents: [opponentMonsters.healgymboss, opponentMonsters.healgymguard1, opponentMonsters.healgymguard1],
     goldReward: 125,
     boss: true
   },
  ]
 
  let gyms = [
-  gym1,
-  gym2
+  gym2,
+  gym1
  ]
     
   
@@ -756,10 +954,8 @@ let opponentMonsters = {
         waterCardPool.waterEnergy,
         //11 attacks
         waterCardPool.drownTest,
-        waterCardPool.bodySlam,
-        waterCardPool.gainDex,
-        waterCardPool.cloakingFog,
-        waterCardPool.huntPrey
+        waterCardPool.drownTest,
+        waterCardPool.drownTest,
       ]
     }
   };

@@ -111,9 +111,11 @@ function renderChooseMonster(stateObj) {
 function chooseThisMonster(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster = potentialMonsterChoices[index];
-    newState.status = Status.InEncounter;
+    //newState.status = Status.InEncounter;
+    newState.status = Status.InTown;
+    newState.playerDeck = potentialMonsterChoices[index].startingDeck;
   })
-  stateObj = setUpEncounter(stateObj);
+  //stateObj = setUpEncounter(stateObj);
   changeState(stateObj);
   return stateObj;
 }
@@ -220,16 +222,32 @@ function skipCards(stateObj) {
 
 function skipRemove(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.status = Status.InEncounter;
+    newState.status = Status.InTown;
   })
-  stateObj = setUpEncounter(stateObj);
   changeState(stateObj);
   return stateObj;
 }
 
 function skipUpgrade(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.status = Status.EncounterRewards;
+    newState.status = Status.InTown;
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function changeStatus(stateObj, newStatus) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.status = newStatus;
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function TownFight(stateObj) {
+  stateObj = setUpEncounter(stateObj)
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.status = Status.InEncounter;
   })
   changeState(stateObj);
   return stateObj;
@@ -238,7 +256,7 @@ function skipUpgrade(stateObj) {
 function chooseThisCard(cardObj, stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerDeck.push(cardObj);
-    newState.status = Status.RemovingCards;
+    newState.status = Status.InTown;
   })
   //stateObj = setUpEncounter(stateObj);
   changeState(stateObj);
@@ -247,18 +265,21 @@ function chooseThisCard(cardObj, stateObj, index) {
 
 function removeCard(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
+    newState.gold -= newState.cardRemoveCost;
+    newState.cardRemoveCost += 50;
     newState.playerDeck.splice(index, 1);
-    newState.status = Status.InEncounter;
+    newState.status = Status.InTown;
   })
-  stateObj = setUpEncounter(stateObj);
   changeState(stateObj);
   return stateObj;
 }
 
 function encounterUpgradeCard(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
+    newState.gold -= newState.cardUpgradeCost;
+    newState.cardUpgradeCost += 50;
     newState.playerDeck[index].upgrades +=1;
-    newState.status = Status.EncounterRewards;
+    newState.status = Status.InTown;
   })
   changeState(stateObj);
   return stateObj;
@@ -281,9 +302,12 @@ const Status = {
 let gameStartState = {
   playerMonster: false,
   status: Status.ChoosingMonster,
+  enemyFightHealTotal: 0,
   gymCount: 0,
   gymFightCount: 0,
-  gold: 0
+  gold: 0,
+  cardRemoveCost: 50,
+  cardUpgradeCost: 50
 };
 
 
@@ -323,7 +347,7 @@ function handleDeaths(stateObj) {
       if (gyms[newState.gymCount][newState.gymFightCount].boss) {
         newState.gymFightCount = 0;
         newState.gymCount += 1; 
-        newState.status = Status.UpgradingCards;
+        newState.status = Status.InTown;
       } else {
         newState.gymFightCount += 1;
         shouldUpgrade = true;
@@ -382,7 +406,7 @@ function setUpEncounter(stateObj) {
     newState.opponentMonster = gyms[newState.gymCount][newState.gymFightCount].opponents;
     newState.encounterHand = [];
     newState.encounterDiscard = [];
-    newState.playcountKindle = 0;
+    newState.enemyFightHealTotal = 0;
     if (!stateObj.playerDeck) {
       console.log("player has no playerDeck")
       newState.playerDeck = [...stateObj.playerMonster.startingDeck];
@@ -608,14 +632,45 @@ function renderDivs(stateObj) {
   <button id="endTurnButton">End Turn</button>
   <!-- <button id="resetButton">Reset</button> -->
 
-</div>`;
-document.getElementById("shuffleDrawButton").onclick = function () {
-  startEncounter(state);
-};
-document.getElementById("endTurnButton").onclick = function () {
-  endTurn(state);
-};
+  </div>`;
+  document.getElementById("shuffleDrawButton").onclick = function () {
+    startEncounter(state);
+  };
+  document.getElementById("endTurnButton").onclick = function () {
+    endTurn(state);
+  };
+}
 
+function renderTown(stateObj) {
+  document.getElementById("app").innerHTML = `
+  <div id="town-top-row">
+    <div id="playerDeckPile" class="remove-pile">View Current Deck
+      <div id="deckDiv"> </div>
+    </div>
+  <div id="goldDiv"></div>
+  </div>
+
+  <div class="flex-container" id="town">
+      <div id="TownRemove" class="town-div">Remove A Card</div>
+      <div id="TownUpgrade" class="town-div">Upgrade a Card </div>
+      <div id="TownFight" class="town-div">
+        <img src="img/dracula.png" class="bg-image"></img> 
+      </div>
+  </div>
+  `;
+
+  document.getElementById("TownRemove").onclick = function () {
+    changeStatus(stateObj, Status.RemovingCards);
+  };
+  document.getElementById("TownUpgrade").onclick = function () {
+    changeStatus(stateObj, Status.UpgradingCards);
+  };
+
+  document.getElementById("TownFight").onclick = function () {
+    TownFight(stateObj);
+    };
+
+  document.getElementById("goldDiv").textContent = stateObj.gold;
 }
 
 //render player's hand
@@ -938,7 +993,10 @@ function renderScreen(stateObj) {
     renderRemoveCard(stateObj);
   } else if (stateObj.status == Status.UpgradingCards) {
     renderUpgradeCard(stateObj);
-  }else {
+  } else if (stateObj.status == Status.InTown) {
+    renderTown(stateObj);
+    renderCardPile(stateObj.playerDeck, "deckDiv")
+  } else {
     renderDivs(stateObj);
     renderPlayerMonster(stateObj);
     renderHand(stateObj);
@@ -1040,7 +1098,9 @@ function endTurnIncrement(stateObj) {
     newState.playerMonster.tempStrength = 0;
     newState.playerMonster.tempDex = 0;
     newState.opponentMonster.forEach(function (monsterObj, index) {
-      monsterObj.hunted -= 1;
+      if (monsterObj.hunted > 0) {
+        monsterObj.hunted -=1;
+      };
     })
     newState.turnDouble = false;
   })

@@ -510,7 +510,11 @@ let fireCardPool = {
         let toChangeState = immer.produce(state, (newState) => {
           newState.playerMonster.encounterEnergy -=2;
           newState.playerMonster.encounterBlock += (20 + newState.playerMonster.dex + (10*array[index].upgrades));
-          newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 2;
+          if (newState.opponentMonster[newState.targetedMonster].encounterEnergy > 2) {
+            newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 2;
+          } else if (newState.opponentMonster[newState.targetedMonster].encounterEnergy > 0) {
+              newState.opponentMonster[newState.targetedMonster].encounterEnergy = 0
+          } else {}
         })
         return toChangeState;
       }

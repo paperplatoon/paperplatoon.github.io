@@ -4,13 +4,51 @@
 3. change the pile divs to use variable-size font-heights
 
 */
-
-#stats {
+#stats, #town, #town-top-row {
   display: flex;
   flex-direction: row;
+}
+
+#stats, #town, #town-top-row {
+  justify-content: space-evenly;
+} 
+
+#stats, #town {
   justify-content: space-between;
   border: 1px solid black;
   height: 94vh;
+}
+
+#town {
+  height: 80vh;
+  justify-content: space-evenly;
+  vertical-align: center;
+  align-items: center;
+}
+
+#TownRemove, #TownUpgrade, #TownFight {
+  height: 30vh;
+  width: 15vw;
+  color: rgb(220, 220, 220);
+  line-height: 30vh;
+  text-align: center;
+}
+
+#TownFight  {
+  background-color: black; 
+}
+
+.bg-image {
+  height: auto;
+  width: 100%;
+}
+
+#TownRemove {
+  background-color: rgb(2, 98, 2);
+}
+
+#TownUpgrade {
+  background-color: rgb(19, 0, 116);
 }
 
 #playerMonster {
@@ -63,11 +101,11 @@
 .monster {
   border: 0.2px solid red;
   border-radius: 1vw;
-  width: 20vw;
+  width: 18vw;
   justify-content: space-between;
 }
 
-.clickable-monster:hover {
+.clickable-monster:hover, .town-div:hover {
   cursor: pointer;
   box-shadow: 0 0 20px rgba(33,33,33); 
 
@@ -134,10 +172,6 @@
   justify-content: space-evenly;
 }
 
-#goldDiv {
-  color: rgb(183, 183, 2);
-
-}
 
 .targeted {
     border: 4px dashed red;
@@ -221,6 +255,16 @@ img, avatar {
   }
 }
 
+#goldDiv {
+  line-height: 10vh;
+  color:rgb(0, 0, 0);
+  background-image: url(img/crosshair.PNG);
+  background-color: green;
+  height: 5vmin;
+  width: 5vmin;
+  
+}
+
 .pile {
   width: 3vw;
   height: 10vh;
@@ -229,7 +273,8 @@ img, avatar {
   background-color: brown;
   border: 1px dashed red;
   font-size: 2vh;
-  overflow-wrap: break-word;
+  white-space: nowrap;
+  overflow: hidden;
   z-index: 2;
 }
 
@@ -242,6 +287,7 @@ img, avatar {
   border: 1px dashed red;
   font-size: 2vh;
   text-align: center;
+  margin: 1vmin;
 }
 
 .card {
@@ -397,7 +443,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 }
 
 .hunted {
-  background-image: url(crosshair.PNG);
+  background-image: url("img/crosshair.PNG");
   height: 1.6vmax;
   width: 1.6vmax;
   color: green;
