@@ -308,6 +308,16 @@ function encounterUpgradeCard(stateObj, index) {
   return stateObj;
 }
 
+function decreaseCardCost(stateObj, index, array) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerDeck[index].baseCost -=1;
+    newState.costDecreased = true;
+    newState.status = Status.InTown;
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
 
 
 
@@ -319,7 +329,8 @@ const Status = {
   WonEncounter: "won encounter",
   RemovingCards: "choose a card to remove from your deck",
   Death: "You died",
-  InTown: "In Town"
+  InTown: "In Town",
+  DecreasingCost: "decreasing card cost"
 };
 
 let gameStartState = {
@@ -330,7 +341,9 @@ let gameStartState = {
   gymFightCount: 0,
   gold: 50,
   cardRemoveCost: 50,
-  cardUpgradeCost: 50
+  cardUpgradeCost: 50,
+  costDecreased: false,
+  extraHeal: 0
 };
 
 
@@ -340,7 +353,7 @@ let gameStartState = {
 
 function changeState(newStateObj) {
   console.log("you're changing the state and the status is " + newStateObj.status);
-  state = handleDeaths(newStateObj);
+  state = {...newStateObj}
   //state = { ...handleDeaths() };
   renderScreen(state);
 }
@@ -370,7 +383,8 @@ function handleDeaths(stateObj) {
 
         if (gyms[newState.gymCount][newState.gymFightCount].boss) {
           newState.gymFightCount = 0;
-          newState.gymCount += 1; 
+          newState.gymCount += 1;
+          newState.costDecreased = false; 
           newState.status = Status.EncounterRewards;
         } else {
           newState.gymFightCount += 1;
@@ -382,7 +396,7 @@ function handleDeaths(stateObj) {
         //newState = resetAfterEncounter(state);
       }
 
-      if (newState.playerMonster.current <= 0) {
+      if (newState.playerMonster.currentHP <= 0) {
         // all monsters are dead
         console.log("we deads");
         //newState.status = Status.lostEncounter;
@@ -691,6 +705,11 @@ function renderTown(stateObj) {
         <img src="img/dracula.png" class="bg-image"></img>
         <h3 class="fight-text">Fight Town Gym</h3> 
       </div>
+
+      <div id="TownDecrease" class="town-div">
+        <img src="img/dracula.png" class="bg-image"></img>
+        <h3 id="decreaseText" class="fight-text">Decrease Card Cost</h3> 
+      </div>
   </div>
   `;
 
@@ -702,6 +721,15 @@ function renderTown(stateObj) {
     }
   } else {
     document.getElementById("removeText").textContent = "Not enough gold to remove a card";
+  };
+
+  if (stateObj.costDecreased === false) {
+    document.getElementById("TownDecrease").classList.add("clickable-town-div")
+    document.getElementById("TownDecrease").onclick = function () {
+      changeStatus(stateObj, Status.DecreasingCost);
+    }
+  } else {
+    document.getElementById("decreaseText").textContent = "Already decreased cost of a card";
   };
 
   if (stateObj.gold >= stateObj.cardUpgradeCost) {
@@ -923,6 +951,64 @@ function renderUpgradeCard(stateObj) {
   
 };
 
+function renderDecreaseCardCost(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  stateObj.playerDeck.forEach(function (cardObj, index) {
+    if (cardObj.baseCost && typeof cardObj.baseCost === 'number') {
+      let cardDiv = document.createElement("Div");
+        cardDiv.id = index;
+        cardDiv.classList.add("card");
+        cardDiv.classList.add("playable");
+        cardDiv.classList.add("card-reward");
+
+        let topCardRowDiv = document.createElement("Div");
+        topCardRowDiv.classList.add("card-top-row")
+        let cardName = document.createElement("H3");
+        cardName.textContent = cardObj.name;
+        
+        let cardCost = document.createElement("H3")
+        if (typeof cardObj.cost === 'function') {
+          cardCost.textContent = cardObj.cost(stateObj, index, stateObj.playerDeck);
+          cardCost.classList.add("hand-card-cost");
+          topCardRowDiv.append(cardCost);
+        } else if (cardObj.cost !== "energy" && cardObj.cost > 0) {
+          cardCost.textContent = cardObj.cost;
+          cardCost.classList.add("hand-card-cost");
+          topCardRowDiv.append(cardCost);
+        } else {
+
+        }
+        topCardRowDiv.append(cardName);
+
+        cardDiv.append(topCardRowDiv);
+        
+        let cardText = document.createElement("P");
+        cardText.textContent = cardObj.text(stateObj, index, stateObj.playerDeck);
+        cardDiv.append(cardText);
+
+        cardDiv.addEventListener("click", function () {
+          decreaseCardCost(stateObj, index, stateObj.playerDeck);
+        });
+        if (cardObj.cardType == "fireEnergy") {
+          cardDiv.classList.add("fire-energy");
+        }
+        if (cardObj.cardType == "waterEnergy") {
+          cardDiv.classList.add("water-energy");
+        }
+        document.getElementById("app").appendChild(cardDiv);
+    }
+  })
+
+  let skipButton = document.createElement("Button");
+  skipButton.addEventListener("click", function () {
+    skipUpgrade(stateObj);
+  }); 
+  skipButton.textContent = "I don't want to decrease the cost of any of these cards";
+  skipButton.classList.add("skip-button");
+  document.getElementById("app").appendChild(skipButton);
+  
+};
+
 function renderOpponents(stateObj) {
   document.getElementById("opponents").innerHTML = "";
   stateObj.opponentMonster.forEach(function (monsterObj, index) {
@@ -1050,6 +1136,9 @@ function renderScreen(stateObj) {
   } else if (stateObj.status == Status.InTown) {
     renderTown(stateObj);
     renderCardPile(stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.DecreasingCost) {
+    renderDecreaseCardCost(stateObj);
+    renderCardPile(stateObj.playerDeck, "deckDiv")
   } else {
     renderDivs(stateObj);
     renderPlayerMonster(stateObj);
@@ -1162,6 +1251,7 @@ function endTurnIncrement(stateObj) {
     })
     newState.turnDouble = false;
   })
+  stateObj = handleDeaths(stateObj);
   return stateObj;
 }
 

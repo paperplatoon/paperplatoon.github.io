@@ -870,7 +870,7 @@ let opponentMonsters = {
       avatar: "img/fireMonster.png",
       startingDeck: [
         waterCardPool.cloakingFog,
-        waterCardPool.cloakingFog,
+        fireCardPool.upgrade,
         fireCardPool.setAflame,
         fireCardPool.setAflame,
         fireCardPool.rareExplode,
