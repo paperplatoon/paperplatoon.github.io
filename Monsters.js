@@ -382,6 +382,7 @@ let opponentMonsters = {
       dex: 3,
       drown: 0,
       hunted: 0,
+      poison: 0,
       avatar: "img/dracula.png",
       moves: [
         {
@@ -434,6 +435,7 @@ let opponentMonsters = {
       dex: 1,
       drown: 0,
       hunted: 0,
+      poison: 0,
       avatar: "img/dracula.png",
       moves: [
         {
@@ -484,6 +486,7 @@ let opponentMonsters = {
       dex: 0,
       drown: 0,
       hunted: 0,
+      poison: 0,
       avatar: "img/dracula.png",
       moves: [
         {
@@ -536,6 +539,7 @@ let opponentMonsters = {
       dex: 0,
       drown: 0,
       hunted: 0,
+      poison: 0,
       avatar: "img/dracula.png",
       moves: [
         {
@@ -615,6 +619,7 @@ let opponentMonsters = {
       dex: 0,
       drown: 0,
       hunted: 0,
+      poison: 0,
       avatar: "img/waterdevil.png",
       moves: [
         {
@@ -692,6 +697,7 @@ let opponentMonsters = {
       dex: 0,
       drown: 0,
       hunted: 0,
+      poison: 0,
       avatar: "img/earthevil.png",
       moves: [
         {
@@ -748,6 +754,7 @@ let opponentMonsters = {
       dex: 0,
       drown: 0,
       hunted: 0,
+      poison: 0,
       avatar: "img/earthpsycho.png",
       moves: [
         {
@@ -841,14 +848,14 @@ let opponentMonsters = {
  ]
 
  let gyms = [
-  gym2,
-  gym1
+  gym1,
+  gym2
  ]
     
   
   let playerMonsters = {
     devCheat: {
-      name: "Testing Mode",
+      name: "Overpowered Test Character",
       type: "fire",
       encounterEnergy: 0,
       opponentMoveIndex: false,
@@ -863,13 +870,11 @@ let opponentMonsters = {
       avatar: "img/fireMonster.png",
       startingDeck: [
         waterCardPool.cloakingFog,
+        waterCardPool.cloakingFog,
         fireCardPool.setAflame,
         fireCardPool.setAflame,
-        fireCardPool.upgrade,
         fireCardPool.rareExplode,
-        fireCardPool.rareExplode,
-        fireCardPool.gainstrength,
-        waterCardPool.drownTest
+        fireCardPool.rareExplode
       ],
     },
   
@@ -905,7 +910,7 @@ let opponentMonsters = {
       ],
     },
   
-    whirlies: {
+    swirly: {
       name: "Swirly",
       type: "Water",
       cardPool: waterCardPool,
@@ -937,8 +942,8 @@ let opponentMonsters = {
       ]
     },
 
-    waterTest: {
-      name: "waterTest",
+    poisonTest: {
+      name: "Venom",
       type: "Water",
       cardPool: waterCardPool,
       encounterEnergy: 0,
@@ -955,9 +960,17 @@ let opponentMonsters = {
         //1 energy
         waterCardPool.waterEnergy,
         //11 attacks
-        waterCardPool.drownTest,
-        waterCardPool.drownTest,
-        waterCardPool.drownTest,
+        waterCardPool.withdraw,
+        waterCardPool.withdraw,
+        waterCardPool.withdraw,
+        waterCardPool.withdraw,
+        waterCardPool.tackle,
+        waterCardPool.tackle,
+        waterCardPool.tackle,
+        waterCardPool.pinprick,
+        waterCardPool.poisonedblade,
+        waterCardPool.venomshield
+
       ]
     }
   };

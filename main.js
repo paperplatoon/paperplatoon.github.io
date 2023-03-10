@@ -215,9 +215,18 @@ function renderChooseCardReward(stateObj) {
 };
 
 function skipCards(stateObj) {
-  stateObj = immer.produce(stateObj, (newState) => {
-    newState.status = Status.RemovingCards;
-  })
+  if (stateObj.gymFightCount === 0) {
+    console.log("boss beaten")
+    stateObj = immer.produce(stateObj, (newState) => {
+      newState.status = Status.InTown;
+    })
+  } else {
+    stateObj = immer.produce(stateObj, (newState) => {
+      newState.status = Status.InEncounter;
+    })
+    console.log("setting up next encounter")
+    stateObj = setUpEncounter(stateObj);
+  }
   changeState(stateObj);
   return stateObj;
 }
@@ -331,7 +340,7 @@ let gameStartState = {
 
 function changeState(newStateObj) {
   console.log("you're changing the state and the status is " + newStateObj.status);
-  state = { ...newStateObj };
+  state = handleDeaths(newStateObj);
   //state = { ...handleDeaths() };
   renderScreen(state);
 }
@@ -339,49 +348,51 @@ function changeState(newStateObj) {
 function handleDeaths(stateObj) {
   let shouldUpgrade = false;
   console.log("handling deaths");
-  let toChangeState = immer.produce(stateObj, (newState) => {
-    newState.opponentMonster.forEach(function (monster, index) {
-      if (monster.drown >= monster.currentHP && monster.currentHP > 0) {
-        console.log("opponent monster at index " + index + " has drowned.")
-        newState.opponentMonster.splice(index, 1);
-        newState.targetedMonster = 0;
-      }
-      if (monster.currentHP <= 0) {
-        console.log("opponent monster at index " + index + " has died.")
-        newState.opponentMonster.splice(index, 1);
-        newState.targetedMonster = 0;
-      }
-    });
-    if (newState.opponentMonster.length == 0) {
-      console.log("all opponents dead");
-      newState.playerMonster.strength -= newState.playerMonster.tempStrength;
-      newState.playerMonster.dex -= newState.playerMonster.tempDex;
-      newState.gold += gyms[newState.gymCount][newState.gymFightCount].goldReward
+  if (stateObj.opponentMonster) {
+    stateObj = immer.produce(stateObj, (newState) => {
+      newState.opponentMonster.forEach(function (monster, index) {
+        if (monster.drown >= monster.currentHP && monster.currentHP > 0) {
+          console.log("opponent monster at index " + index + " has drowned.")
+          newState.opponentMonster.splice(index, 1);
+          newState.targetedMonster = 0;
+        }
+        if (monster.currentHP <= 0) {
+          console.log("opponent monster at index " + index + " has died.")
+          newState.opponentMonster.splice(index, 1);
+          newState.targetedMonster = 0;
+        }
+      });
+      if (newState.opponentMonster.length == 0) {
+        console.log("all opponents dead");
+        newState.playerMonster.strength -= newState.playerMonster.tempStrength;
+        newState.playerMonster.dex -= newState.playerMonster.tempDex;
+        newState.gold += gyms[newState.gymCount][newState.gymFightCount].goldReward
 
-      if (gyms[newState.gymCount][newState.gymFightCount].boss) {
-        newState.gymFightCount = 0;
-        newState.gymCount += 1; 
-        newState.status = Status.EncounterRewards;
-      } else {
-        newState.gymFightCount += 1;
-        newState.status = Status.EncounterRewards;
-        //return newState;
+        if (gyms[newState.gymCount][newState.gymFightCount].boss) {
+          newState.gymFightCount = 0;
+          newState.gymCount += 1; 
+          newState.status = Status.EncounterRewards;
+        } else {
+          newState.gymFightCount += 1;
+          newState.status = Status.EncounterRewards;
+          //return newState;
+        }
+        //something that goes through and resets card tempUpgrades and playCount for each card
+        
+        //newState = resetAfterEncounter(state);
       }
-      //something that goes through and resets card tempUpgrades and playCount for each card
-      
-      //newState = resetAfterEncounter(state);
-    }
 
-    if (newState.playerMonster.current <= 0) {
-      // all monsters are dead
-      console.log("we deads");
-      //newState.status = Status.lostEncounter;
-      newState = resetAfterEncounter(newState);
-    }
-  })
+      if (newState.playerMonster.current <= 0) {
+        // all monsters are dead
+        console.log("we deads");
+        //newState.status = Status.lostEncounter;
+        newState = resetAfterEncounter(newState);
+      }
+    })
+  }
   // check if all opponents are dead
 
-  return toChangeState;
+  return stateObj;
 };
 
 // maybe don’t look at this too closely
@@ -531,7 +542,7 @@ function upgradeCard(stateObj) {
   return stateObj;
 }
 
-function playACard(stateObj, cardIndexInHand, arrayObj) {
+async function playACard(stateObj, cardIndexInHand, arrayObj) {
   console.log("triggering playACard");
   stateObj = stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
   stateObj = immer.produce(stateObj, (newState) => {
@@ -935,9 +946,16 @@ function renderOpponents(stateObj) {
 
     if (monsterObj.drown > 0) {
       let drownDiv = document.createElement("Div");
-      drownDiv.textContent = monsterObj.drown + "/" + monsterObj.currentHP;
+      drownDiv.textContent = monsterObj.drown;
       drownDiv.classList.add("fishbowl")
       monsterStatsDiv.append(drownDiv);
+    }
+
+    if (monsterObj.poison > 0) {
+      let poisonDiv = document.createElement("Div");
+      poisonDiv.classList.add("poison");
+      poisonDiv.textContent = monsterObj.poison;
+      monsterStatsDiv.append(poisonDiv);
     }
 
     if (monsterObj.hunted > 0) {
@@ -1137,6 +1155,10 @@ function endTurnIncrement(stateObj) {
       if (monsterObj.hunted > 0) {
         monsterObj.hunted -=1;
       };
+
+      if (monsterObj.poison > 0) {
+        monsterObj.currentHP -= (monsterObj.poison*5)
+      }
     })
     newState.turnDouble = false;
   })
