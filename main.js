@@ -896,51 +896,66 @@ function renderRemoveCard(stateObj) {
   
 };
 
+function renderClickableCardList(stateObj, cardArray, divName, functionToAdd) {
+  cardArray.forEach(function (cardObj, index) {
+    renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd)
+  })
+}
+
+stateObj, cardArray, cardObj, index, divName
+
+// function renderClickableCardList(stateObj, cardArray, divName, functionToAdd) {
+//   cardArray.forEach(function (cardObj, index) {
+//     let cardDiv = document.createElement("Div");
+//       cardDiv.id = index;
+//       cardDiv.classList.add("card");
+//       cardDiv.classList.add("playable");
+//       cardDiv.classList.add("card-reward");
+
+//       let topCardRowDiv = document.createElement("Div");
+//       topCardRowDiv.classList.add("card-top-row")
+//       let cardName = document.createElement("H3");
+//       cardName.textContent = cardObj.name;
+      
+//       let cardCost = document.createElement("H3")
+//       if (typeof cardObj.cost === 'function') {
+//         cardCost.textContent = cardObj.cost(stateObj, index, cardArray);
+//         cardCost.classList.add("hand-card-cost");
+//         topCardRowDiv.append(cardCost);
+//       } else if (cardObj.cost !== "energy" && cardObj.cost > 0) {
+//         cardCost.textContent = cardObj.cost;
+//         cardCost.classList.add("hand-card-cost");
+//         topCardRowDiv.append(cardCost);
+//       } else {
+
+//       }
+//       topCardRowDiv.append(cardName);
+
+//       cardDiv.append(topCardRowDiv);
+      
+//       let cardText = document.createElement("P");
+//       cardText.textContent = cardObj.text(stateObj, index, cardArray);
+//       cardDiv.append(cardText);
+
+//       cardDiv.addEventListener("click", function () {
+//         functionToAdd(stateObj, index);
+//       });
+//       if (cardObj.cardType == "fireEnergy") {
+//         cardDiv.classList.add("fire-energy");
+//       }
+//       if (cardObj.cardType == "waterEnergy") {
+//         cardDiv.classList.add("water-energy");
+//       }
+//       document.getElementById(divName).appendChild(cardDiv);
+//   })
+// }
+
+
+
 function renderUpgradeCard(stateObj) {
   document.getElementById("app").innerHTML = ""
-  stateObj.playerDeck.forEach(function (cardObj, index) {
-    let cardDiv = document.createElement("Div");
-      cardDiv.id = index;
-      cardDiv.classList.add("card");
-      cardDiv.classList.add("playable");
-      cardDiv.classList.add("card-reward");
-
-      let topCardRowDiv = document.createElement("Div");
-      topCardRowDiv.classList.add("card-top-row")
-      let cardName = document.createElement("H3");
-      cardName.textContent = cardObj.name;
-      
-      let cardCost = document.createElement("H3")
-      if (typeof cardObj.cost === 'function') {
-        cardCost.textContent = cardObj.cost(stateObj, index, stateObj.playerDeck);
-        cardCost.classList.add("hand-card-cost");
-        topCardRowDiv.append(cardCost);
-      } else if (cardObj.cost !== "energy" && cardObj.cost > 0) {
-        cardCost.textContent = cardObj.cost;
-        cardCost.classList.add("hand-card-cost");
-        topCardRowDiv.append(cardCost);
-      } else {
-
-      }
-      topCardRowDiv.append(cardName);
-
-      cardDiv.append(topCardRowDiv);
-      
-      let cardText = document.createElement("P");
-      cardText.textContent = cardObj.text(stateObj, index, stateObj.playerDeck);
-      cardDiv.append(cardText);
-
-      cardDiv.addEventListener("click", function () {
-        encounterUpgradeCard(stateObj, index);
-      });
-      if (cardObj.cardType == "fireEnergy") {
-        cardDiv.classList.add("fire-energy");
-      }
-      if (cardObj.cardType == "waterEnergy") {
-        cardDiv.classList.add("water-energy");
-      }
-      document.getElementById("app").appendChild(cardDiv);
-  })
+  renderClickableCardList(stateObj, stateObj.playerDeck, "app", encounterUpgradeCard);
+ 
   let skipButton = document.createElement("Button");
   skipButton.addEventListener("click", function () {
     skipUpgrade(stateObj);
@@ -950,6 +965,51 @@ function renderUpgradeCard(stateObj) {
   document.getElementById("app").appendChild(skipButton);
   
 };
+
+function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd) {
+  let cardDiv = document.createElement("Div");
+        cardDiv.id = index;
+        cardDiv.classList.add("card");
+        cardDiv.classList.add("playable");
+        cardDiv.classList.add("card-reward");
+
+        let topCardRowDiv = document.createElement("Div");
+        topCardRowDiv.classList.add("card-top-row")
+        let cardName = document.createElement("H3");
+        cardName.textContent = cardObj.name;
+        
+        let cardCost = document.createElement("H3")
+        if (typeof cardObj.cost === 'function') {
+          cardCost.textContent = cardObj.cost(stateObj, index, cardArray);
+          cardCost.classList.add("hand-card-cost");
+          topCardRowDiv.append(cardCost);
+        } else if (cardObj.cost !== "energy" && cardObj.cost > 0) {
+          cardCost.textContent = cardObj.cost;
+          cardCost.classList.add("hand-card-cost");
+          topCardRowDiv.append(cardCost);
+        } else {
+
+        }
+        topCardRowDiv.append(cardName);
+
+        cardDiv.append(topCardRowDiv);
+        
+        let cardText = document.createElement("P");
+        cardText.textContent = cardObj.text(stateObj, index, stateObj.playerDeck);
+        cardDiv.append(cardText);
+
+        cardDiv.addEventListener("click", function () {
+          functionToAdd(stateObj, index, cardArray);
+        });
+        if (cardObj.cardType == "fireEnergy") {
+          cardDiv.classList.add("fire-energy");
+        }
+        if (cardObj.cardType == "waterEnergy") {
+          cardDiv.classList.add("water-energy");
+        }
+        document.getElementById(divName).appendChild(cardDiv);
+
+}
 
 function renderDecreaseCardCost(stateObj) {
   document.getElementById("app").innerHTML = ""
