@@ -4,6 +4,11 @@
 3. change the pile divs to use variable-size font-heights
 
 */
+#app {
+  display: flex;
+  flex-direction: column;
+}
+
 #stats, #town, #town-top-row, .monster-choice-window {
   display: flex;
   flex-direction: row;
@@ -26,13 +31,13 @@
 }
 
 #town-top-row {
-  height: 9vh;
+  height: 6vh;
 }
 
 #stats, #town, .monster-choice-window {
   justify-content: space-evenly;
   border: 1px solid black;
-  height: 94vh;
+  height: 90vh;
 }
 
 #town {
@@ -48,8 +53,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 3vh;
-  width: 3vw;
+  height: 2.5vh;
+  width: 2.5vw;
   position: relative;
   font-size: 1vmax;
 }
@@ -138,6 +143,8 @@
   color: white;
   flex-shrink: 2;
 }
+
+
 
 
 
@@ -329,20 +336,17 @@
 .pile {
   width: 3vw;
   height: 10vh;
-  line-height: 10vh;
   color: white;
   background-color: brown;
   border: 1px dashed red;
   font-size: 2vh;
   white-space: nowrap;
   overflow: hidden;
-  z-index: 2;
 }
 
 .remove-pile {
   width: 15vw;
-  height: 7vh;
-  line-height: 7vh;
+  height: 4vh;
   color: white;
   background-color: brown;
   border: 1px dashed red;
@@ -376,7 +380,6 @@
   margin: 1%;
   height: 8vh;
   width: 12vw;
-  line-height: 1;
   float: left;
 }
 

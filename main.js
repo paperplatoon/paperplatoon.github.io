@@ -231,17 +231,9 @@ function skipCards(stateObj) {
   return stateObj;
 }
 
-function skipRemove(stateObj) {
+function changeStatus(stateObj, newStatus) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.status = Status.InTown;
-  })
-  changeState(stateObj);
-  return stateObj;
-}
-
-function skipUpgrade(stateObj) {
-  stateObj = immer.produce(stateObj, (newState) => {
-    newState.status = Status.InTown;
+    newState.status = newStatus;
   })
   changeState(stateObj);
   return stateObj;
@@ -439,8 +431,6 @@ function setUpEncounter(stateObj) {
     console.log("setting up encounter");
     newState.playerMonster.encounterBlock = 0;
     //pick first two monsters from shuffled array
-    console.log("gym count " + newState.gymCount)
-    console.log("gym fight count " + newState.gymFightCount)
     newState.opponentMonster = gyms[newState.gymCount][newState.gymFightCount].opponents;
     newState.encounterHand = [];
     newState.encounterDiscard = [];
@@ -509,7 +499,7 @@ function shuffleDiscardIntoDeck(stateObj) {
 function drawACard(stateObj) {
   let toChangeState = immer.produce(stateObj, (newState) => {
     const handLength = newState.encounterHand.length;
-    if (handLength > 8 ) {
+    if (handLength > 7 ) {
       console.log("hand is full");
       return newState;
     }
@@ -657,6 +647,19 @@ function renderPlayerMonster(stateObj) {
 
 function renderDivs(stateObj) {
   document.getElementById("app").innerHTML = `
+  <div id="town-top-row">
+    <p>${stateObj.status}</p>
+    <button id="shuffleDrawButton">Start Encounter</button>
+    <button id="endTurnButton">End Turn</button>
+    <div id="playerDeckPile" class="remove-pile">View Current Deck
+      <div id="deckDiv"> </div>
+    </div>
+    <div id="goldDiv">
+      <img src="img/goldsack.png" class="bg-image"></img>
+      <h3 id="goldText"></h3>
+    </div>
+  </div>
+
   <div class="flex-container" id="stats">
     <div class="flex-container" id="playerMonster">
       <div id="playerStats"> </div>
@@ -667,8 +670,6 @@ function renderDivs(stateObj) {
   </div>
 
   </div>
-  <button id="shuffleDrawButton">Start Encounter</button>
-  <button id="endTurnButton">End Turn</button>
   <!-- <button id="resetButton">Reset</button> -->
 
   </div>`;
@@ -678,11 +679,14 @@ function renderDivs(stateObj) {
   document.getElementById("endTurnButton").onclick = function () {
     endTurn(state);
   };
+  document.getElementById("goldText").textContent = stateObj.gold;
 }
+
 
 function renderTown(stateObj) {
   document.getElementById("app").innerHTML = `
   <div id="town-top-row">
+    <p>${stateObj.status}</p>
     <div id="playerDeckPile" class="remove-pile">View Current Deck
       <div id="deckDiv"> </div>
     </div>
@@ -748,231 +752,133 @@ function renderTown(stateObj) {
   document.getElementById("goldText").textContent = stateObj.gold;
 }
 
-//render player's hand
+// ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== 
+// ====== ====== ====== ====== ====== RENDERING CARDS AND CARD PILES ====== ====== ====== ====== ====== ====== 
+// ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== 
 function renderHand(stateObj) {
   document.getElementById("handContainer2").innerHTML = "";
   if (stateObj.encounterHand.length > 0) {
     stateObj.encounterHand.forEach(function (cardObj, index) {
-      let cardDiv = document.createElement("Div");
-      cardDiv.id = index;
-      cardDiv.classList.add("card");
-
-      let topCardRowDiv = document.createElement("Div");
-      topCardRowDiv.classList.add("card-top-row")
-      let cardName = document.createElement("H3");
-      cardName.textContent = cardObj.name;
-      
-      let cardCost = document.createElement("H3")
-      if (typeof cardObj.cost === 'function') {
-        cardCost.textContent = cardObj.cost(stateObj, index, stateObj.encounterHand);
-        cardCost.classList.add("hand-card-cost");
-        topCardRowDiv.append(cardCost);
-      } else if (cardObj.cost !== "energy" && typeof cardObj.cost === 'string') {
-          cardCost.textContent = cardObj.cost;
-          cardCost.classList.add("hand-card-cost");
-          topCardRowDiv.append(cardCost);
-        } else if (cardObj.minReq > 0) {
-          cardCost.textContent = cardObj.cost;
-          cardCost.classList.add("hand-card-cost");
-          topCardRowDiv.append(cardCost);
-      } else{}
-
-      topCardRowDiv.append(cardName);
-
-      cardDiv.append(topCardRowDiv);
-
-      let cardText = document.createElement("P");
-
-  
-      cardText.textContent = cardObj.text(stateObj, index, stateObj.encounterHand);
-      cardDiv.append(cardText);
-      
-      
-      if (typeof cardObj.minReq === 'function') {
-        if (cardObj.minReq(stateObj, index, stateObj.encounterHand) <= stateObj.playerMonster.encounterEnergy) {
-          cardDiv.classList.add("playable");
-          cardDiv.addEventListener("click", function () {
-            playACard(stateObj, index, stateObj.encounterHand);
-          });
-        };
-      } else {
-        if (cardObj.minReq <= stateObj.playerMonster.encounterEnergy) {
-          cardDiv.classList.add("playable");
-          cardDiv.addEventListener("click", function () {
-            playACard(stateObj, index, stateObj.encounterHand);
-          });
-        };
-      }
-      
-      
-     
-      if (cardObj.cardType == "fireEnergy") {
-        cardDiv.classList.add("fire-energy");
-      }
-      if (cardObj.cardType == "waterEnergy") {
-        cardDiv.classList.add("water-energy");
-      }
-      
-      document.getElementById("handContainer2").appendChild(cardDiv);
+      renderCard(stateObj, stateObj.encounterHand, cardObj, index, "handContainer2", functionToAdd=false)
     });
   }
 }
 
-function renderCardPile(cardArrayObj, divStringName) {
+function renderCardPile(stateObj, cardArrayObj, divStringName) {
   document.getElementById(divStringName).innerHTML = "";
   if (cardArrayObj.length > 0) {
     cardArrayObj.forEach(function (cardObj, index) {
-      let cardDiv = document.createElement("Div");
-      cardDiv.id = index;
-      cardDiv.classList.add("card-pile-card");
-      if (cardObj.cardType == "fireEnergy") {
-        cardDiv.classList.add("fire-energy");
-      }
-      if (cardObj.cardType == "waterEnergy") {
-        cardDiv.classList.add("water-energy");
-      }
-      let cardName = document.createElement("H3");
-      let cardText = document.createElement("P");
-      cardName.textContent = cardObj.name;
-      cardText.textContent = cardObj.text(state, index, cardArrayObj);
-      cardDiv.append(cardName, cardText);
-      document.getElementById(divStringName).appendChild(cardDiv);
+      renderCard(stateObj, cardArrayObj, cardObj, index, divStringName)
     });
   }
+}
+
+function topRowDiv(stateObj, divName) {
+  let topRowDiv = document.createElement("Div");
+  topRowDiv.setAttribute("id", "town-top-row");
+
+  let statusText = document.createElement("p");
+  statusText.textContent = stateObj.status;
+  topRowDiv.append(statusText);
+
+  let deckPileDiv = document.createElement("Div");
+  deckPileDiv.setAttribute("id", "playerDeckPile");
+  deckPileDiv.classList.add("remove-pile");
+  deckPileDiv.textContent = "View Current Deck";
+  let deckDiv = document.createElement("Div");
+  deckDiv.setAttribute("id", "deckDiv");
+  deckPileDiv.append(deckDiv);
+  topRowDiv.append(deckPileDiv);
+
+  let goldDiv = document.createElement("Div");
+  goldDiv.setAttribute("id", "goldDiv");
+
+  let goldImg = document.createElement("img");
+  goldImg.src = "img/goldsack.png";
+  goldImg.classList.add("bg-image");
+  goldDiv.append(goldImg);
+
+  let goldText = document.createElement("H3");
+  goldText.setAttribute("id", "goldText");
+  goldText.textContent = stateObj.gold;
+  goldDiv.append(goldText)
+  topRowDiv.append(goldDiv);
+
+  document.getElementById(divName).append(topRowDiv)
+
+  return topRowDiv
+}
+
+function divContainer(divName) {
+  let removeDiv = document.createElement("Div")
+  removeDiv.setAttribute("id", "remove-div")
+  removeDiv.classList.add("remove-div")
+  removeDiv.classList.add("screen-inner-div")
+
+  document.getElementById(divName).append(removeDiv);
+
+  return removeDiv
+}
+
+function skipToTownButton(stateObj, buttonString, divName) {
+  let skipButton = document.createElement("Button");
+  skipButton.addEventListener("click", function () {
+    changeStatus(stateObj, Status.InTown);
+  });
+  skipButton.classList.add("skip-button");
+  skipButton.textContent = buttonString;
+  document.getElementById(divName).append(skipButton);
+  return skipButton;
 }
 
 function renderRemoveCard(stateObj) {
   document.getElementById("app").innerHTML = ""
-  stateObj.playerDeck.forEach(function (cardObj, index) {
-    let cardDiv = document.createElement("Div");
-      cardDiv.id = index;
-      cardDiv.classList.add("card");
-      cardDiv.classList.add("playable");
-      cardDiv.classList.add("card-reward");
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+  
+  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", removeCard);
 
-      let topCardRowDiv = document.createElement("Div");
-      topCardRowDiv.classList.add("card-top-row")
-      let cardName = document.createElement("H3");
-      cardName.textContent = cardObj.name;
-      
-      let cardCost = document.createElement("H3")
-      if (typeof cardObj.cost === 'function') {
-        cardCost.textContent = cardObj.cost(stateObj, index, stateObj.playerDeck);
-        cardCost.classList.add("hand-card-cost");
-        topCardRowDiv.append(cardCost);
-      } else if (cardObj.cost !== "energy" && cardObj.cost > 0) {
-        cardCost.textContent = cardObj.cost;
-        cardCost.classList.add("hand-card-cost");
-        topCardRowDiv.append(cardCost);
-      } else {
-
-      }
-      topCardRowDiv.append(cardName);
-
-      cardDiv.append(topCardRowDiv);
-      
-      let cardText = document.createElement("P");
-      cardText.textContent = cardObj.text(stateObj, index, stateObj.playerDeck);
-      cardDiv.append(cardText);
-
-      cardDiv.addEventListener("click", function () {
-        removeCard(stateObj, index);
-      });
-      if (cardObj.cardType == "fireEnergy") {
-        cardDiv.classList.add("fire-energy");
-      }
-      if (cardObj.cardType == "waterEnergy") {
-        cardDiv.classList.add("water-energy");
-      }
-      document.getElementById("app").appendChild(cardDiv);
-  })
-  let skipButton = document.createElement("Button");
-  skipButton.addEventListener("click", function () {
-    skipRemove(stateObj);
-  }); 
-  skipButton.textContent = "I don't want to remove any of these cards from my deck";
-  skipButton.classList.add("skip-button");
-  document.getElementById("app").appendChild(skipButton);
+  skipToTownButton(stateObj, "I don't want to remove any of these cards from my deck", "remove-div");
   
 };
-
-function renderClickableCardList(stateObj, cardArray, divName, functionToAdd) {
-  cardArray.forEach(function (cardObj, index) {
-    renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd)
-  })
-}
-
-stateObj, cardArray, cardObj, index, divName
-
-// function renderClickableCardList(stateObj, cardArray, divName, functionToAdd) {
-//   cardArray.forEach(function (cardObj, index) {
-//     let cardDiv = document.createElement("Div");
-//       cardDiv.id = index;
-//       cardDiv.classList.add("card");
-//       cardDiv.classList.add("playable");
-//       cardDiv.classList.add("card-reward");
-
-//       let topCardRowDiv = document.createElement("Div");
-//       topCardRowDiv.classList.add("card-top-row")
-//       let cardName = document.createElement("H3");
-//       cardName.textContent = cardObj.name;
-      
-//       let cardCost = document.createElement("H3")
-//       if (typeof cardObj.cost === 'function') {
-//         cardCost.textContent = cardObj.cost(stateObj, index, cardArray);
-//         cardCost.classList.add("hand-card-cost");
-//         topCardRowDiv.append(cardCost);
-//       } else if (cardObj.cost !== "energy" && cardObj.cost > 0) {
-//         cardCost.textContent = cardObj.cost;
-//         cardCost.classList.add("hand-card-cost");
-//         topCardRowDiv.append(cardCost);
-//       } else {
-
-//       }
-//       topCardRowDiv.append(cardName);
-
-//       cardDiv.append(topCardRowDiv);
-      
-//       let cardText = document.createElement("P");
-//       cardText.textContent = cardObj.text(stateObj, index, cardArray);
-//       cardDiv.append(cardText);
-
-//       cardDiv.addEventListener("click", function () {
-//         functionToAdd(stateObj, index);
-//       });
-//       if (cardObj.cardType == "fireEnergy") {
-//         cardDiv.classList.add("fire-energy");
-//       }
-//       if (cardObj.cardType == "waterEnergy") {
-//         cardDiv.classList.add("water-energy");
-//       }
-//       document.getElementById(divName).appendChild(cardDiv);
-//   })
-// }
-
-
 
 function renderUpgradeCard(stateObj) {
   document.getElementById("app").innerHTML = ""
-  renderClickableCardList(stateObj, stateObj.playerDeck, "app", encounterUpgradeCard);
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+
+  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", encounterUpgradeCard);
  
+  skipToTownButton(stateObj, "I don't want to upgrade any of these cards", "remove-div");
+};
+
+function renderDecreaseCardCost(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  stateObj.playerDeck.forEach(function (cardObj, index) {
+    if (cardObj.baseCost && typeof cardObj.baseCost === 'number') {
+      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "app", decreaseCardCost)
+    }
+  });
   let skipButton = document.createElement("Button");
   skipButton.addEventListener("click", function () {
-    skipUpgrade(stateObj);
+    changeStatus(stateObj, Status.InTown);
   }); 
-  skipButton.textContent = "I don't want to upgrade any of these cards";
+  skipButton.textContent = "I don't want to decrease the cost of any of these cards";
   skipButton.classList.add("skip-button");
   document.getElementById("app").appendChild(skipButton);
   
 };
 
-function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd) {
+function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=false) {
   let cardDiv = document.createElement("Div");
         cardDiv.id = index;
         cardDiv.classList.add("card");
-        cardDiv.classList.add("playable");
-        cardDiv.classList.add("card-reward");
-
+        let nonClickableArrays = [stateObj.encounterHand, stateObj.encounterDraw, stateObj.encounterDiscard];
+        if (nonClickableArrays.includes(cardArray)) {   
+        } else {
+          cardDiv.classList.add("card-reward");
+          cardDiv.classList.add("playable");
+        }
         let topCardRowDiv = document.createElement("Div");
         topCardRowDiv.classList.add("card-top-row")
         let cardName = document.createElement("H3");
@@ -983,7 +889,7 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd)
           cardCost.textContent = cardObj.cost(stateObj, index, cardArray);
           cardCost.classList.add("hand-card-cost");
           topCardRowDiv.append(cardCost);
-        } else if (cardObj.cost !== "energy" && cardObj.cost > 0) {
+        } else if (cardObj.cost !== "energy") {
           cardCost.textContent = cardObj.cost;
           cardCost.classList.add("hand-card-cost");
           topCardRowDiv.append(cardCost);
@@ -995,12 +901,33 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd)
         cardDiv.append(topCardRowDiv);
         
         let cardText = document.createElement("P");
-        cardText.textContent = cardObj.text(stateObj, index, stateObj.playerDeck);
+        cardText.textContent = cardObj.text(stateObj, index, cardArray);
         cardDiv.append(cardText);
 
-        cardDiv.addEventListener("click", function () {
-          functionToAdd(stateObj, index, cardArray);
-        });
+        if (cardArray === stateObj.encounterHand) {
+          console.log("looping through hand logic");
+          if (typeof cardObj.minReq === 'function') {
+            if (cardObj.minReq(stateObj, index, stateObj.encounterHand) <= stateObj.playerMonster.encounterEnergy) {
+              cardDiv.classList.add("playable");
+              cardDiv.addEventListener("click", function () {
+                playACard(stateObj, index, stateObj.encounterHand);
+              });
+            };
+          } else {
+            if (cardObj.minReq <= stateObj.playerMonster.encounterEnergy) {
+              cardDiv.classList.add("playable");
+              cardDiv.addEventListener("click", function () {
+                playACard(stateObj, index, stateObj.encounterHand);
+              });
+            };
+          }
+        }
+
+        if (functionToAdd) {
+          cardDiv.addEventListener("click", function () {
+            functionToAdd(stateObj, index, cardArray);
+          });
+        }
         if (cardObj.cardType == "fireEnergy") {
           cardDiv.classList.add("fire-energy");
         }
@@ -1008,66 +935,19 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd)
           cardDiv.classList.add("water-energy");
         }
         document.getElementById(divName).appendChild(cardDiv);
-
 }
 
-function renderDecreaseCardCost(stateObj) {
-  document.getElementById("app").innerHTML = ""
-  stateObj.playerDeck.forEach(function (cardObj, index) {
-    if (cardObj.baseCost && typeof cardObj.baseCost === 'number') {
-      let cardDiv = document.createElement("Div");
-        cardDiv.id = index;
-        cardDiv.classList.add("card");
-        cardDiv.classList.add("playable");
-        cardDiv.classList.add("card-reward");
-
-        let topCardRowDiv = document.createElement("Div");
-        topCardRowDiv.classList.add("card-top-row")
-        let cardName = document.createElement("H3");
-        cardName.textContent = cardObj.name;
-        
-        let cardCost = document.createElement("H3")
-        if (typeof cardObj.cost === 'function') {
-          cardCost.textContent = cardObj.cost(stateObj, index, stateObj.playerDeck);
-          cardCost.classList.add("hand-card-cost");
-          topCardRowDiv.append(cardCost);
-        } else if (cardObj.cost !== "energy" && cardObj.cost > 0) {
-          cardCost.textContent = cardObj.cost;
-          cardCost.classList.add("hand-card-cost");
-          topCardRowDiv.append(cardCost);
-        } else {
-
-        }
-        topCardRowDiv.append(cardName);
-
-        cardDiv.append(topCardRowDiv);
-        
-        let cardText = document.createElement("P");
-        cardText.textContent = cardObj.text(stateObj, index, stateObj.playerDeck);
-        cardDiv.append(cardText);
-
-        cardDiv.addEventListener("click", function () {
-          decreaseCardCost(stateObj, index, stateObj.playerDeck);
-        });
-        if (cardObj.cardType == "fireEnergy") {
-          cardDiv.classList.add("fire-energy");
-        }
-        if (cardObj.cardType == "waterEnergy") {
-          cardDiv.classList.add("water-energy");
-        }
-        document.getElementById("app").appendChild(cardDiv);
-    }
+function renderClickableCardList(stateObj, cardArray, divName, functionToAdd) {
+  cardArray.forEach(function (cardObj, index) {
+    renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd)
   })
+}
 
-  let skipButton = document.createElement("Button");
-  skipButton.addEventListener("click", function () {
-    skipUpgrade(stateObj);
-  }); 
-  skipButton.textContent = "I don't want to decrease the cost of any of these cards";
-  skipButton.classList.add("skip-button");
-  document.getElementById("app").appendChild(skipButton);
-  
-};
+// ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== 
+// ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== 
+// ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== 
+
+
 
 function renderOpponents(stateObj) {
   document.getElementById("opponents").innerHTML = "";
@@ -1163,7 +1043,6 @@ function renderOpponents(stateObj) {
 
       let moveText = document.createElement("P");
       if (typeof moveObj.text === "function") {
-        console.log("movetext is function")
         moveText.textContent = moveObj.text(stateObj, index, stateObj.opponentMonster);
       } else {
         moveText.textContent = moveObj.text;
@@ -1187,24 +1066,26 @@ function renderScreen(stateObj) {
   if (!stateObj.playerMonster) {
     renderChooseMonster(stateObj);
   } else if (stateObj.status == Status.EncounterRewards) {
-      renderChooseCardReward(stateObj);
-      renderCardPile(stateObj.playerDeck, "deckDiv")
+    renderChooseCardReward(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.RemovingCards) {
     renderRemoveCard(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.UpgradingCards) {
     renderUpgradeCard(stateObj);
   } else if (stateObj.status == Status.InTown) {
     renderTown(stateObj);
-    renderCardPile(stateObj.playerDeck, "deckDiv")
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.DecreasingCost) {
     renderDecreaseCardCost(stateObj);
-    renderCardPile(stateObj.playerDeck, "deckDiv")
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else {
     renderDivs(stateObj);
     renderPlayerMonster(stateObj);
     renderHand(stateObj);
-    renderCardPile(stateObj.encounterDraw, "drawDiv");
-    renderCardPile(stateObj.encounterDiscard, "discardDiv");
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+    renderCardPile(stateObj, stateObj.encounterDraw, "drawDiv");
+    renderCardPile(stateObj, stateObj.encounterDiscard, "discardDiv");
     renderOpponents(stateObj);
   }
 }
