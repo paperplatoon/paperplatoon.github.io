@@ -875,10 +875,14 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
         cardDiv.classList.add("card");
         let nonClickableArrays = [stateObj.encounterHand, stateObj.encounterDraw, stateObj.encounterDiscard];
         if (nonClickableArrays.includes(cardArray)) {   
+        } else if (divName === "deckDiv") {
+          cardDiv.classList.add("card-pile-card")
         } else {
           cardDiv.classList.add("card-reward");
           cardDiv.classList.add("playable");
         }
+
+
         let topCardRowDiv = document.createElement("Div");
         topCardRowDiv.classList.add("card-top-row")
         let cardName = document.createElement("H3");
@@ -1073,6 +1077,7 @@ function renderScreen(stateObj) {
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.UpgradingCards) {
     renderUpgradeCard(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.InTown) {
     renderTown(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
