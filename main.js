@@ -322,7 +322,7 @@ const Status = {
   RemovingCards: "choose a card to remove from your deck",
   Death: "You died",
   InTown: "In Town",
-  DecreasingCost: "decreasing card cost"
+  DecreasingCost: "Choose a card and decrease its cost by 1"
 };
 
 let gameStartState = {
@@ -686,7 +686,9 @@ function renderDivs(stateObj) {
 function renderTown(stateObj) {
   document.getElementById("app").innerHTML = `
   <div id="town-top-row">
-    <p>${stateObj.status}</p>
+    <div id="status-text-div">
+      <p>${stateObj.status}</p>
+    </div>
     <div id="playerDeckPile" class="remove-pile">View Current Deck
       <div id="deckDiv"> </div>
     </div>
@@ -711,7 +713,7 @@ function renderTown(stateObj) {
       </div>
 
       <div id="TownDecrease" class="town-div">
-        <img src="img/dracula.png" class="bg-image"></img>
+        <img src="img/wizardshop.png" class="bg-image"></img>
         <h3 id="decreaseText" class="fight-text">Decrease Card Cost</h3> 
       </div>
   </div>
@@ -777,9 +779,13 @@ function topRowDiv(stateObj, divName) {
   let topRowDiv = document.createElement("Div");
   topRowDiv.setAttribute("id", "town-top-row");
 
+  let statusTextDiv = document.createElement("Div");
+  statusTextDiv.setAttribute("id", "status-text-div");
+
   let statusText = document.createElement("p");
   statusText.textContent = stateObj.status;
-  topRowDiv.append(statusText);
+  statusTextDiv.append(statusText);
+  topRowDiv.append(statusTextDiv);
 
   let deckPileDiv = document.createElement("Div");
   deckPileDiv.setAttribute("id", "playerDeckPile");
@@ -854,9 +860,11 @@ function renderUpgradeCard(stateObj) {
 
 function renderDecreaseCardCost(stateObj) {
   document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app")
+  divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
     if (cardObj.baseCost && typeof cardObj.baseCost === 'number') {
-      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "app", decreaseCardCost)
+      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", decreaseCardCost)
     }
   });
   let skipButton = document.createElement("Button");

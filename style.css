@@ -24,6 +24,18 @@
   border: 2px dashed red;
   border-radius: 15px;
   text-align: center;
+  background-color: rgb(64, 64, 64);
+  opacity: 0.9;
+}
+
+.monster-to-choose img {
+  opacity: 1;
+}
+
+#status-text-div {
+  border: 3px solid green;
+  text-align: center;
+  
 }
 
 #town, #town-top-row, .monster-choice-window {
@@ -45,8 +57,13 @@
   justify-content: space-evenly;
   vertical-align: center;
   align-items: center;
-  background-image: url(img/town3.png);
+  background-image: url(img/town5.png);
+}
 
+.monster-choice-window {
+  background-image: url(img/pent4.png);
+  background-size: cover;
+  color: grey;
 }
 
 #goldDiv {
@@ -104,6 +121,10 @@
 
 #TownUpgrade {
   background-color: rgb(19, 0, 116);
+}
+
+#TownDecrease {
+  background-color: crimson;
 }
 
 #playerMonster {
@@ -176,10 +197,16 @@
   justify-content: space-between;
 }
 
-.clickable-monster:hover, .clickable-town-div:hover, .monster-to-choose:hover {
+.clickable-monster:hover, .clickable-town-div:hover {
   cursor: pointer;
   box-shadow: 0 0 20px rgba(33,33,33); 
+}
 
+.monster-to-choose:hover {
+  cursor: pointer;
+  box-shadow: 0 0 20px rgb(254, 254, 254); 
+  color: white;
+  animation: fadeIn 0.5s forwards;
 }
 
 .monster-hp {
@@ -271,7 +298,7 @@
 }
 
 #opponents {
-  color: red;
+  color: white;
   border: 1px solid red;
   padding: 0.1vh;
   margin: 0.1vw;
@@ -280,6 +307,8 @@
   justify-content: space-around;
   font-size: 60%;
   margin-block-start: 0em;
+  background-image: url(img/pent3.png);
+  background-size: cover;
 }
 
 #opponents .monster-top-row {
@@ -416,6 +445,13 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   padding: 0.2vw;
 }
 
+#status-text-div p {
+  margin-block-start: 0.01em;
+  margin-block-end: 0.01em;
+  margin-left: 0.1em;
+  padding: 0.2vmax;
+  font-size: 1.2vmax;
+}
 
 
 .card-pile-card h3 {
