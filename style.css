@@ -598,3 +598,11 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 .water-energy {
   background-color: rgba(1, 29, 240, 0.393);
 }
+
+button {
+  font-size: 1.3em;
+}
+
+button:hover {
+  background-color: rgb(213, 212, 212);
+}
