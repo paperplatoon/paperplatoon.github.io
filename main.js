@@ -842,7 +842,7 @@ function renderRemoveCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   
-  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", removeCard);
+  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", removeCard, goldCost="remove");
 
   skipToTownButton(stateObj, "I don't want to remove any of these cards from my deck", "remove-div");
   
@@ -853,7 +853,7 @@ function renderUpgradeCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
 
-  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", encounterUpgradeCard);
+  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", encounterUpgradeCard, goldCost="upgrade");
  
   skipToTownButton(stateObj, "I don't want to upgrade any of these cards", "remove-div");
 };
@@ -873,11 +873,11 @@ function renderDecreaseCardCost(stateObj) {
   }); 
   skipButton.textContent = "I don't want to decrease the cost of any of these cards";
   skipButton.classList.add("skip-button");
-  document.getElementById("app").appendChild(skipButton);
+  document.getElementById("remove-div").appendChild(skipButton);
   
 };
 
-function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=false) {
+function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=false, goldCost=false) {
   let cardDiv = document.createElement("Div");
         cardDiv.id = index;
         cardDiv.classList.add("card");
@@ -905,9 +905,7 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
           cardCost.textContent = cardObj.cost;
           cardCost.classList.add("hand-card-cost");
           topCardRowDiv.append(cardCost);
-        } else {
-
-        }
+        } else {}
         topCardRowDiv.append(cardName);
 
         cardDiv.append(topCardRowDiv);
@@ -915,6 +913,20 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
         let cardText = document.createElement("P");
         cardText.textContent = cardObj.text(stateObj, index, cardArray);
         cardDiv.append(cardText);
+
+        if (goldCost === "remove") {
+          console.log("remove")
+          let costText = document.createElement("P");
+          costText.textContent = "(" + stateObj.cardRemoveCost+ " gold to remove)";
+          costText.classList.add("invisible-cost")
+          cardDiv.append(costText);
+        } else if (goldCost === "upgrade") {
+          console.log("upgrade")
+          let costText = document.createElement("P");
+          costText.textContent = "(" + stateObj.cardUpgradeCost + " gold to upgrade)";
+          costText.classList.add("invisible-cost")
+          cardDiv.append(costText);
+        }
 
         if (cardArray === stateObj.encounterHand) {
           console.log("looping through hand logic");
@@ -949,9 +961,9 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
         document.getElementById(divName).appendChild(cardDiv);
 }
 
-function renderClickableCardList(stateObj, cardArray, divName, functionToAdd) {
+function renderClickableCardList(stateObj, cardArray, divName, functionToAdd, goldCost) {
   cardArray.forEach(function (cardObj, index) {
-    renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd)
+    renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd, goldCost)
   })
 }
 

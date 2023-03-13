@@ -9,6 +9,13 @@
   flex-direction: column;
 }
 
+.card h3 {
+  font-size: 1.1vmax;
+  padding: 0;
+  padding-left: 0.1vmin;
+  margin-bottom: 0;
+}
+
 #stats, #town, #town-top-row, .monster-choice-window {
   display: flex;
   flex-direction: row;
@@ -20,11 +27,11 @@
 
 .monster-to-choose {
   width: 12vw;
-  height: 60vh;
-  border: 2px dashed red;
+  height: 30vh;
+  border: 2px dashed rgb(91, 0, 0);
   border-radius: 15px;
   text-align: center;
-  background-color: rgb(64, 64, 64);
+  background-color: rgb(29, 29, 29);
   opacity: 0.9;
 }
 
@@ -50,6 +57,10 @@
   justify-content: space-evenly;
   border: 1px solid black;
   height: 90vh;
+}
+
+#stats {
+  background-image: url(img/pent3.png);
 }
 
 #town {
@@ -186,7 +197,7 @@
 }
 
 .chosen {
-  background: rgba(255, 255, 0, 0.3);
+  background: rgba(24, 24, 0, 0.636);
   border: 2px dashed silver;
 }
 
@@ -280,10 +291,10 @@
 }
 
 #playerStats {
-  color: green;
-  border: 3px solid green;
-  height: 37vh;
-  width: 28vw;
+  color: white;
+  height: 30vh;
+  width: 30vw;
+  /*background: linear-gradient(90deg, rgba(50, 52, 52, 0.6) 0%, rgba(194, 191, 188, 0.23) 15%, rgba(255, 242, 225, 0.23) 85%, rgba(44, 47, 48, 0.6) 100%); */
 }
 
 #playerStats h4, #opponents h4 {
@@ -299,7 +310,6 @@
 
 #opponents {
   color: white;
-  border: 1px solid red;
   padding: 0.1vh;
   margin: 0.1vw;
   width: 75vw;
@@ -328,19 +338,22 @@
 #discardDiv,
 #deckDiv {
   color: black;
-  background-color: rgb(237, 221, 224);
+  background-image: url(img/sky.jpeg);
+  background-size: cover;
   height: 80vh;
   width: 80vw;
   position: fixed;
   top: 10vh;
   left: 10vw;
+  padding-left: 11vw;
+  padding-top: 4.5vmax;
 }
 
 
 
 #drawPile #drawDiv,
 #discardPile #discardDiv,
-#playerDeckPile #deckDiv {
+#playerDeckPile #deckDiv, .invisible-cost {
   display: none;
   z-index: 10
 }
@@ -350,6 +363,15 @@
 #playerDeckPile:hover #deckDiv {
   animation: fadeIn 1s;
   display: block;
+}
+
+.card-reward:hover .invisible-cost {
+  animation: fadeIn 0.3s;
+  display: block;
+}
+
+.invisible-cost {
+  color: rgb(255, 117, 117);
 }
 
 @keyframes fadeIn {
@@ -384,55 +406,60 @@
   margin: 0.3vmin;
 }
 
+.remove-div {
+  background-image: url(img/sky.jpeg);
+  background-size: cover;
+  height: 80vh;
+  padding-left: 11vw;
+  padding-top: 9vh;
+  padding-right: 11vw;
+}
+
 .card {
   border: 2px solid black;
+  background: linear-gradient(90deg, rgb(255, 238, 208),rgb(230, 171, 94), rgb(255, 200, 127), rgb(243, 133, 23));
   margin: 0.4vmax;
-  width: 12vw;
+  width: 13vw;
   height: 10vh;
   float: left;
+  justify-content: center;
 }
 
-.fire-energy {
-  background: linear-gradient(90deg, rgb(174, 4, 4),rgb(200, 58, 58), rgb(172, 10, 10), rgb(128, 8, 8));
-  line-height: 6vh;
-  text-align: center;
-  font-weight: bold;
-  color: white;
-}
 
-.water-energy {
-  background-color: rgba(1, 29, 240, 0.393);
-}
 
 .card-pile-card {
   border: 1px solid black;
+  background: linear-gradient(90deg, rgb(255, 238, 208),rgb(230, 171, 94), rgb(255, 200, 127), rgb(243, 133, 23));
   margin: 1%;
   height: 10vh;
   width: 15vw;
   float: left;
 }
 
+
+
 .playable {
   border: 4px solid rgb(8, 61, 0);
-  box-shadow: 0 0 5px rgba(33,33,33); 
+  box-shadow: 0 0 2px rgba(33,33,33); 
+  justify-content: center;
 }
 
 .playable:hover {
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(33,33,33); 
+  box-shadow: 0 0 10px rgb(178, 95, 0); 
+  background: linear-gradient(90deg, rgb(64, 59, 52),rgb(108, 80, 43), rgb(88, 68, 43), rgb(87, 47, 8));
+  color: white;
 }
 
 #handContainer2 {
-  width: 28vw;
+  width: 30vw;
   height: 57vh;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  border: 1px dashed blue;
   justify-content: center;
   align-content: start;
-  background:rgb(8, 61, 0);
-  background: linear-gradient(90deg, rgba(75,75,75,0.08) 0%, rgba(255,175,70,0.08) 35%, rgba(0,212,255,0.08) 100%);
+  /*background: linear-gradient(45deg, rgba(32, 78, 70, 0.6) 0%, rgba(255,175,70,0.23) 35%, rgba(0,212,255,0.08) 100%); */
 }
 
 /* https://codersblock.com/blog/creating-glow-effects-with-css/ 
@@ -455,24 +482,21 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 
 .card-pile-card h3 {
-  font-size: 2.5vmin;
+  font-size: 2.2vmin;
 }
 
 .card-pile-card p {
-  font-size: 1.6vmin;
+  font-size: 1.6vmax;
+
 }
 
 .card p{
-  font-size: 1vmax;
+  font-size: 0.95vmax;
   padding: 0;
+  justify-content: center;
 }
 
-.card h3 {
-  font-size: 1.5vmax;
-  padding: 0;
-  padding-left: 0.1vmin;
-  margin-bottom: 0;
-}
+
 
 .monster-energy {
   font-size: 3vw;
@@ -500,7 +524,6 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   text-align: center;
   border-radius: 50%;
   font-size: 1.2em;
-  padding: 0.2em;
   background-color: rgb(101, 14, 145);
   font-weight: bold;
   color: white;
@@ -508,25 +531,19 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   max-height: 3vw;
  }
 
- .hand-card-cost {
-  width: 1.4vw;
-  height: 1.4vw;
-  font-size: 1em;
-  padding: 0.1em;
-  margin-right: 3%;
-  line-height: 1em;
-  background-color: rgb(8, 61, 0);
- }
+
 
  .card-reward {
   margin-left: 2vw;
-  width: 25vw;
+  width: 15vw;
 }
 
  .card-top-row {
   display: flex;
   flex-direction: row;
   justify-content: left;
+  margin-left: 1vmin;
+  margin-top: 0.5vmin;
 }
 
 .card-top-row-reward {
@@ -558,4 +575,26 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   line-height: 2vmax;
   display: inline-block;
   text-align: center;
+}
+
+.hand-card-cost {
+  width: 1.8vmin;
+  height: 1.8vmin;
+  font-size: 1em;
+  padding: 2vmin;
+  margin-right: 3%;
+  line-height: 1.8vmin;
+  background-color: rgb(8, 61, 0);
+ }
+
+ .fire-energy {
+  background: linear-gradient(90deg, rgb(174, 4, 4),rgb(200, 58, 58), rgb(172, 10, 10), rgb(128, 8, 8));
+  line-height: 6vh;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+}
+
+.water-energy {
+  background-color: rgba(1, 29, 240, 0.393);
 }

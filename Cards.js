@@ -205,7 +205,7 @@ let fireCardPool = {
     gainstrength: {
       name: "Gain Strength",
       text: (state, index, array) => {
-        return `Spend ${array[index].baseCost - (array[index].upgrades)} energy. Gain 1 strength permanently. Exhaust`;
+        return `+1 permanent strength. Exhaust`;
       },
       minReq: (state, index, array) => {
         return (array[index].baseCost - (array[index].upgrades))
@@ -826,18 +826,19 @@ let fireCardPool = {
     bodySlam: {
       name: "Body Slam",
       text: (state, index, array) => {
-        if (state.status === Status.InTown) {
+        if (state.status !== Status.InEncounter) {
           if (array[index].baseHits === 1) {
             return `Deal damage equal to ${50 + (array[index].upgrades*50)}% of your block`        
           } else {
             return `Deal damage equal to ${50 + (array[index].upgrades*50)}% of your block ${array[index].baseHits} times`
           }
-        }
+        } else {
         if (array[index].baseHits === 1) {
           return `Deal damage equal to ${50 + (array[index].upgrades*50)}% of your block (${Math.floor((state.playerMonster.encounterBlock * (0.5 + (array[index].upgrades*0.5))) + state.playerMonster.strength + array[index].baseDamage)})`        
         } else {
           return `Deal damage equal to ${50 + (array[index].upgrades*50)}% of your block (${Math.floor((state.playerMonster.encounterBlock * (0.5 + (array[index].upgrades*0.5))) + state.playerMonster.strength + array[index].baseDamage)}) ${array[index].baseHits} times`
         }
+      }
       },
       minReq: 0,
       cost: 0,
@@ -902,9 +903,9 @@ let fireCardPool = {
     },
   
     gainDex: {
-      name: "Study the Way",
+      name: "Gymnastics",
       text: (state, index, array) => {
-        return `Spend ${3 - (array[index].upgrades)} energy. Gain 1 dexterity permanently`;
+        return `+1 permanent dexterity. Exhaust`;
       },
       minReq: (state, index, array) => {
         return (3 - (array[index].upgrades))
