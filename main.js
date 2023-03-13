@@ -947,10 +947,13 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
         } else {}
         topCardRowDiv.append(cardName);
 
-        cardDiv.append(topCardRowDiv);
+        
         
         let cardText = document.createElement("P");
         cardText.textContent = cardObj.text(stateObj, index, cardArray);
+        cardText.classList.add("upgrade-text")
+        
+        cardDiv.append(topCardRowDiv);
         cardDiv.append(cardText);
 
         if (goldCost === "remove") {
@@ -960,12 +963,30 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
           costText.classList.add("invisible-cost")
           cardDiv.append(costText);
         } else if (goldCost === "upgrade") {
-          console.log("upgrade")
+          cardDiv.classList.add("card-upgrade");
+          let altUpgradeText =  document.createElement("P");
+          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "upgrades", 1)
+          altUpgradeText.classList.add("alt-upgrade-text");
+          cardDiv.append(altUpgradeText);
+
+          if (typeof cardObj.cost === 'function') {
+            let cardAltCost = document.createElement("H3");
+            cardAltCost.textContent = showChangedUpgradeCost(stateObj, index, cardArray, cardObj, "upgrades", 1)
+            cardAltCost.classList.add("alt-cost")
+            topCardRowDiv.innerHTML = "";
+            topCardRowDiv.append(cardAltCost, cardCost, cardName);
+          } else {
+            
+          }
+
           let costText = document.createElement("P");
           costText.textContent = "(" + stateObj.cardUpgradeCost + " gold to upgrade)";
           costText.classList.add("invisible-cost")
           cardDiv.append(costText);
         }
+
+        
+        
 
         if (cardArray === stateObj.encounterHand) {
           console.log("looping through hand logic");
@@ -1004,6 +1025,26 @@ function renderClickableCardList(stateObj, cardArray, divName, functionToAdd, go
   cardArray.forEach(function (cardObj, index) {
     renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd, goldCost)
   })
+}
+
+
+//function that takes a card, a card property, and a change, and returns that card's text IF the change happened
+function showChangedUpgradeText(stateObj, index, array, cardObj, propertyNameString, valueChange) {
+  let cardClone = {...cardObj}
+  let newState = immer.produce(stateObj, (draft) => {
+    draft.playerDeck[index][propertyNameString] += valueChange;
+  })
+  console.log(newState.playerDeck[index][propertyNameString])
+  return cardClone.text(newState, index, newState.playerDeck)  
+}
+
+function showChangedUpgradeCost(stateObj, index, array, cardObj, propertyNameString, valueChange) {
+  let cardClone = {...cardObj}
+  let newState = immer.produce(stateObj, (draft) => {
+    draft.playerDeck[index][propertyNameString] += valueChange;
+  })
+  console.log(newState.playerDeck[index][propertyNameString])
+  return cardClone.cost(newState, index, newState.playerDeck)  
 }
 
 // ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== 

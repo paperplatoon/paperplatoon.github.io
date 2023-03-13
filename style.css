@@ -27,7 +27,7 @@
 
 .monster-to-choose {
   width: 12vw;
-  height: 30vh;
+  height: 45vh;
   border: 2px dashed rgb(91, 0, 0);
   border-radius: 15px;
   text-align: center;
@@ -489,7 +489,6 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 .card-pile-card p {
   font-size: 1.6vmax;
-
 }
 
 .card p{
@@ -527,6 +526,23 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   border-radius: 50%;
   font-size: 1.2em;
   background-color: rgb(101, 14, 145);
+  font-weight: bold;
+  color: white;
+  float: right;
+  max-height: 3vw;
+ }
+
+ .alt-cost {
+  width: 1.8vmin;
+  height: 1.8vmin;
+  font-size: 1em;
+  padding: 2vmin;
+  margin-right: 3%;
+  line-height: 1.8vmin;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 1.2em;
+  background-color: rgb(8, 61, 0);
   font-weight: bold;
   color: white;
   float: right;
@@ -608,4 +624,21 @@ button {
 button:hover {
   background-color: rgb(213, 212, 212);
   cursor: pointer;
+}
+
+.alt-upgrade-text, .alt-cost {
+  display: none;
+}
+
+.alt-upgrade-text {
+  color: rgb(189, 255, 189);
+  
+}
+
+.card-upgrade:hover .upgrade-text, .card-upgrade:hover .hand-card-cost {
+  display: none;
+}
+
+.card-upgrade:hover .alt-upgrade-text, .card-upgrade:hover .alt-cost {
+  display: block;
 }
