@@ -844,7 +844,7 @@ let fireCardPool = {
       cost: 0,
       upgrades: 0,
       baseDamage: 0,
-      baseHits: 2,
+      baseHits: 1,
       cardType: "attack",
       elementType: "water",
       action: (state, index, array) => {
@@ -979,7 +979,7 @@ let fireCardPool = {
       },
       minReq: 1,
       baseCost: 1,
-      cardType: "ability",
+      Type: "ability",
       elementType: "water",
       cost:  (state, index, array) => {
         return array[index].baseCost;

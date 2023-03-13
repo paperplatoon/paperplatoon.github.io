@@ -69,6 +69,7 @@
   vertical-align: center;
   align-items: center;
   background-image: url(img/town5.png);
+  background-size: cover;
 }
 
 .monster-choice-window {
@@ -355,7 +356,7 @@
 #discardPile #discardDiv,
 #playerDeckPile #deckDiv, .invisible-cost {
   display: none;
-  z-index: 10
+  z-index: 10;
 }
 
 #drawPile:hover #drawDiv,
@@ -404,6 +405,7 @@
   font-size: 2vh;
   text-align: center;
   margin: 0.3vmin;
+  cursor: help;
 }
 
 .remove-div {
@@ -605,4 +607,5 @@ button {
 
 button:hover {
   background-color: rgb(213, 212, 212);
+  cursor: pointer;
 }

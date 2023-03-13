@@ -303,7 +303,27 @@ function encounterUpgradeCard(stateObj, index) {
 function decreaseCardCost(stateObj, index, array) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerDeck[index].baseCost -=1;
-    newState.costDecreased = true;
+    newState.eventUsed = true;
+    newState.status = Status.InTown;
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function increaseCardBlock(stateObj, index, array) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerDeck[index].baseBlock += 5;
+    newState.eventUsed = true;
+    newState.status = Status.InTown;
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function increaseBaseHits(stateObj, index, array) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerDeck[index].baseHits += 1;
+    newState.eventUsed = true;
     newState.status = Status.InTown;
   })
   changeState(stateObj);
@@ -322,7 +342,9 @@ const Status = {
   RemovingCards: "choose a card to remove from your deck",
   Death: "You died",
   InTown: "In Town",
-  DecreasingCost: "Choose a card and decrease its cost by 1"
+  DecreasingCost: "Choose a card and decrease its cost by 1",
+  IncreasingBlock: "Choose a card to increase its block by 5",
+  IncreasingHits: "Choose a card to hit 1 extra time"
 };
 
 let gameStartState = {
@@ -334,7 +356,7 @@ let gameStartState = {
   gold: 50,
   cardRemoveCost: 50,
   cardUpgradeCost: 50,
-  costDecreased: false,
+  eventUsed: false,
   extraHeal: 0
 };
 
@@ -376,7 +398,7 @@ function handleDeaths(stateObj) {
         if (gyms[newState.gymCount][newState.gymFightCount].boss) {
           newState.gymFightCount = 0;
           newState.gymCount += 1;
-          newState.costDecreased = false; 
+          newState.eventUsed = false; 
           newState.status = Status.EncounterRewards;
         } else {
           newState.gymFightCount += 1;
@@ -714,7 +736,7 @@ function renderTown(stateObj) {
 
       <div id="TownDecrease" class="town-div">
         <img src="img/wizardshop.png" class="bg-image"></img>
-        <h3 id="decreaseText" class="fight-text">Decrease Card Cost</h3> 
+        <h3 id="decreaseText" class="fight-text">Increase Card Block</h3> 
       </div>
   </div>
   `;
@@ -729,10 +751,10 @@ function renderTown(stateObj) {
     document.getElementById("removeText").textContent = "Not enough gold to remove a card";
   };
 
-  if (stateObj.costDecreased === false) {
+  if (stateObj.eventUsed === false) {
     document.getElementById("TownDecrease").classList.add("clickable-town-div")
     document.getElementById("TownDecrease").onclick = function () {
-      changeStatus(stateObj, Status.DecreasingCost);
+      changeStatus(stateObj, Status.IncreasingHits);
     }
   } else {
     document.getElementById("decreaseText").textContent = "Already decreased cost of a card";
@@ -867,14 +889,31 @@ function renderDecreaseCardCost(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", decreaseCardCost)
     }
   });
-  let skipButton = document.createElement("Button");
-  skipButton.addEventListener("click", function () {
-    changeStatus(stateObj, Status.InTown);
-  }); 
-  skipButton.textContent = "I don't want to decrease the cost of any of these cards";
-  skipButton.classList.add("skip-button");
-  document.getElementById("remove-div").appendChild(skipButton);
-  
+  skipToTownButton(stateObj, "I don't want to decrease the cost of any of these cards", "remove-div"); 
+};
+
+function renderIncreaseCardBlock(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app")
+  divContainer("app");
+  stateObj.playerDeck.forEach(function (cardObj, index) {
+    if (cardObj.baseBlock && typeof cardObj.baseBlock === 'number') {
+      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardBlock)
+    }
+  });
+  skipToTownButton(stateObj, "I don't want to increase the block of any of these cards", "remove-div"); 
+};
+
+function renderIncreaseBaseHit(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app")
+  divContainer("app");
+  stateObj.playerDeck.forEach(function (cardObj, index) {
+    if (cardObj.baseHits && typeof cardObj.baseHits === 'number') {
+      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseBaseHits)
+    }
+  });
+  skipToTownButton(stateObj, "I don't want more hits for any of these cards", "remove-div"); 
 };
 
 function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=false, goldCost=false) {
@@ -1103,6 +1142,12 @@ function renderScreen(stateObj) {
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.DecreasingCost) {
     renderDecreaseCardCost(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.IncreasingBlock) {
+    renderIncreaseCardBlock(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.IncreasingHits) {
+    renderIncreaseBaseHit(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else {
     renderDivs(stateObj);
