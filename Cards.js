@@ -12,6 +12,8 @@
 
 //evnts that let you change baseCost, baseHits, baseBlock, baseDamage, and baseHeal
 
+//damage for energy
+
 let fireCardPool = {
     fireEnergy: {
       name: "",

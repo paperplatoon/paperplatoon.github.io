@@ -192,45 +192,11 @@ function renderChooseCardReward(stateObj) {
     document.getElementById("app").appendChild(cardDiv);
   });
 
-  let skipButton = document.createElement("Button");
-  skipButton.addEventListener("click", function () {
-    skipCards(stateObj);
-  }); 
-  skipButton.textContent = "I don't want to add any of these to my deck";
-  skipButton.classList.add("skip-button");
+  skipToTownButton(stateObj, "I don't want to add any of these cards to my deck", "app")
   document.getElementById("app").appendChild(skipButton);
 
-  let deckPileDiv = document.createElement("Div");
-  deckPileDiv.setAttribute("id", "playerDeckPile");
-  deckPileDiv.classList.add("remove-pile");
-  deckPileDiv.textContent = "View Current Deck";  
-
-
-  let deckDiv = document.createElement("Div");
-  deckDiv.setAttribute("id", "deckDiv");
-  
-  deckPileDiv.append(deckDiv);
-  document.getElementById("app").append(deckPileDiv);
 
 };
-
-function skipCards(stateObj) {
-  if (stateObj.gymFightCount === 0) {
-    console.log("boss beaten")
-    stateObj = immer.produce(stateObj, (newState) => {
-      newState.status = Status.InTown;
-    })
-  } else {
-    stateObj = immer.produce(stateObj, (newState) => {
-      newState.status = Status.InEncounter;
-    })
-    console.log("setting up next encounter")
-    stateObj = setUpEncounter(stateObj);
-  }
-  changeState(stateObj);
-  return stateObj;
-}
-
 
 function changeStatus(stateObj, newStatus) {
   stateObj = immer.produce(stateObj, (newState) => {
@@ -251,36 +217,20 @@ function TownFight(stateObj) {
 
 function chooseThisCard(cardObj, stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerDeck.push(cardObj);    
+    newState.playerDeck.push(cardObj); 
+    newState.status = Status.InTown;   
   })
-
-  if (stateObj.gymFightCount === 0) {
-    console.log("boss beaten")
-    stateObj = immer.produce(stateObj, (newState) => {
-      newState.status = Status.InTown;
-    })
-  } else {
-    stateObj = immer.produce(stateObj, (newState) => {
-      newState.status = Status.InEncounter;
-    })
-    console.log("setting up next encounter")
-    stateObj = setUpEncounter(stateObj);
-  }
-  //stateObj = setUpEncounter(stateObj);
   changeState(stateObj);
   return stateObj;
 }
 
-async function removeCard(stateObj, index) {
-
+function removeCard(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.gold -= newState.cardRemoveCost;
     newState.cardRemoveCost += 50;
     newState.playerDeck.splice(index, 1);
     newState.status = Status.InTown
   })
-  
-  
   changeState(stateObj);
   return stateObj;
 }
@@ -290,6 +240,32 @@ function encounterUpgradeCard(stateObj, index) {
     newState.gold -= newState.cardUpgradeCost;
     newState.cardUpgradeCost += 50;
     newState.playerDeck[index].upgrades +=1;
+    newState.status = Status.InTown;
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function fullHeal(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.gold -= newState.healCost;
+    newState.healCost += 25;
+    newState.playerMonster.currentHP = newState.playerMonster.maxHP;
+    newState.status = Status.InTown;
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function cheapHeal(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.gold -= (Math.floor(newState.healCost/2));
+    healAmount = Math.floor(newState.playerMonster.maxHP/4)
+    if ((newState.playerMonster.maxHP - newState.playerMonster.currentHP) <= (healAmount + newState.extraHeal)) {
+      newState.playerMonster.currentHP = newState.playerMonster.maxHP;
+    } else {
+      newState.playerMonster.currentHP += (healAmount + newState.extraHeal)
+    }       
     newState.status = Status.InTown;
   })
   changeState(stateObj);
@@ -326,9 +302,6 @@ function increaseBaseHits(stateObj, index, array) {
   return stateObj;
 }
 
-
-
-
 const Status = {
   ChoosingMonster: "Choose a monster",
   UpgradingCards: "Choose any card from your deck to upgrade",
@@ -340,7 +313,8 @@ const Status = {
   InTown: "In Town",
   DecreasingCost: "Choose a card and decrease its cost by 1",
   IncreasingBlock: "Choose a card to increase its block by 5",
-  IncreasingHits: "Choose a card to hit 1 extra time"
+  IncreasingHits: "Choose a card to hit 1 extra time",
+  HealersShop: "Restore your health for a price"
 };
 
 let gameStartState = {
@@ -352,6 +326,7 @@ let gameStartState = {
   gold: 50,
   cardRemoveCost: 50,
   cardUpgradeCost: 50,
+  healCost: 50,
   eventUsed: false,
   extraHeal: 0,
   fightHealCount: 0,
@@ -729,13 +704,19 @@ function renderDivs(stateObj) {
   document.getElementById("goldText").textContent = stateObj.gold;
 }
 
+let monsterHP = document.createElement("H3");
+  monsterHP.textContent = stateObj.playerMonster.currentHP + "/" + stateObj.playerMonster.maxHP;
+  monsterHP.classList.add("monster-hp-town");
+  topRowDiv.appendChild(monsterHP);
+
 
 function renderTown(stateObj) {
   document.getElementById("app").innerHTML = `
   <div id="town-top-row">
     <div id="status-text-div">
-      <p>${stateObj.status}</p>
+      <p>Gym: ${stateObj.gymCount}    Fight: ${stateObj.gymFightCount}/3 </p>
     </div>
+    <h3 class="monster-hp-town">${stateObj.playerMonster.currentHP}/${stateObj.playerMonster.maxHP}</h3>
     <div id="playerDeckPile" class="remove-pile">View Current Deck
       <div id="deckDiv"> </div>
     </div>
@@ -746,6 +727,10 @@ function renderTown(stateObj) {
   </div>
 
   <div class="flex-container" id="town">
+  <div id="TownHealer" class="town-div">
+        <img src="img/healer.png" class="bg-image"></img>
+        <h3 id="healText" class="fight-text">Visit Healer</h3> 
+      </div>
       <div id="TownRemove" class="town-div">
         <img src="img/tavern2.png" class="bg-image"></img>
         <h3 id="removeText" class="fight-text">Remove A Card</h3> 
@@ -765,6 +750,15 @@ function renderTown(stateObj) {
       </div>
   </div>
   `;
+
+  if (stateObj.gold >= Math.floor(stateObj.healCost/2)) {
+    document.getElementById("TownHealer").classList.add("clickable-town-div")
+    document.getElementById("TownHealer").onclick = function () {
+      changeStatus(stateObj, Status.HealersShop);
+    }
+  } else {
+    document.getElementById("removeText").textContent = "Not enough gold to heal";
+  };
 
 
   if (stateObj.gold >= stateObj.cardRemoveCost) {
@@ -834,6 +828,11 @@ function topRowDiv(stateObj, divName) {
   statusTextDiv.append(statusText);
   topRowDiv.append(statusTextDiv);
 
+  let monsterHP = document.createElement("H3");
+  monsterHP.textContent = stateObj.playerMonster.currentHP + "/" + stateObj.playerMonster.maxHP;
+  monsterHP.classList.add("monster-hp-town");
+  topRowDiv.appendChild(monsterHP);
+
   let deckPileDiv = document.createElement("Div");
   deckPileDiv.setAttribute("id", "playerDeckPile");
   deckPileDiv.classList.add("remove-pile");
@@ -892,6 +891,34 @@ function renderRemoveCard(stateObj) {
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", removeCard, goldCost="remove");
 
   skipToTownButton(stateObj, "I don't want to remove any of these cards from my deck", "remove-div");
+  
+};
+
+function renderHealer(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+  document.getElementById("remove-div").classList.add("healer-div")
+  
+  let cheapHealButton = document.createElement("Button");
+  cheapHealButton.addEventListener("click", function () {
+    cheapHeal(stateObj);
+  });
+  cheapHealButton.classList.add("cheap-heal-button");
+  cheapHealButton.classList.add("heal-button");
+  cheapHealButton.textContent = `Heal 25% of your max health (${Math.floor(stateObj.playerMonster.maxHP/4)}) for ${Math.floor(stateObj.healCost/2)} gold`
+  document.getElementById("remove-div").append(cheapHealButton);
+
+  let HealButton = document.createElement("Button");
+  HealButton.addEventListener("click", function () {
+    fullHeal(stateObj);
+  });
+  HealButton.classList.add("full-heal-button");
+  HealButton.classList.add("heal-button");
+  HealButton.textContent = `Spend ${stateObj.healCost} gold to fully heal`
+  document.getElementById("remove-div").append(HealButton);
+  
+  skipToTownButton(stateObj, "I don't want healing right now", "remove-div");
   
 };
 
@@ -1220,6 +1247,9 @@ function renderScreen(stateObj) {
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.IncreasingHits) {
     renderIncreaseBaseHit(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.HealersShop) {
+    renderHealer(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else {
     renderDivs(stateObj);
