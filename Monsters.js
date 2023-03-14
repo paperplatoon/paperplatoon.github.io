@@ -866,15 +866,18 @@ let opponentMonsters = {
       dex: 0,
       tempStrength: 0,
       tempDex: 0,
+      fightStrength: 0,
+      fightDex: 0,
       turnEnergy: 3,
       avatar: "img/fireMonster.png",
       startingDeck: [
-        waterCardPool.cloakingFog,
-        fireCardPool.upgrade,
+        fireCardPool.darkknowledge,
+        fireCardPool.simpleheal,
         fireCardPool.setAflame,
         fireCardPool.setAflame,
-        fireCardPool.rareExplode,
-        fireCardPool.rareExplode
+        fireCardPool.calldemons,
+        fireCardPool.bloodshield,
+        fireCardPool.cursedritual,
       ],
     },
   
@@ -890,6 +893,8 @@ let opponentMonsters = {
       dex: 0,
       tempStrength: 0,
       tempDex: 0,
+      fightStrength: 0,
+      fightDex: 0,
       turnEnergy: 3,
       avatar: "img/flamingbaby.png",
       startingDeck: [
@@ -922,6 +927,8 @@ let opponentMonsters = {
       dex: 0,
       tempStrength: 0,
       tempDex: 0,
+      fightStrength: 0,
+      fightDex: 0,
       turnEnergy: 3,
       avatar: "img/watertongue.png",
       startingDeck: [
@@ -954,6 +961,8 @@ let opponentMonsters = {
       dex: 0,
       tempStrength: 0,
       tempDex: 0,
+      fightStrength: 0,
+      fightDex: 0,
       turnEnergy: 3,
       avatar: "img/watertongue.png",
       startingDeck: [

@@ -549,8 +549,6 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   max-height: 3vw;
  }
 
-
-
  .card-reward {
   margin-left: 2vw;
   width: 15vw;
@@ -626,7 +624,7 @@ button:hover {
   cursor: pointer;
 }
 
-.alt-upgrade-text, .alt-cost {
+.alt-upgrade-text, .alt-cost, .alt-hits-text {
   display: none;
 }
 
@@ -635,10 +633,10 @@ button:hover {
   
 }
 
-.card-upgrade:hover .upgrade-text, .card-upgrade:hover .hand-card-cost {
+.card-upgrade:hover .upgrade-text, .card-upgrade:hover .hand-card-cost, .card-upgrade:hover .card-more-hits {
   display: none;
 }
 
-.card-upgrade:hover .alt-upgrade-text, .card-upgrade:hover .alt-cost {
+.card-upgrade:hover .alt-upgrade-text, .card-upgrade:hover .alt-cost,  .card-upgrade:hover .alt-hits-text {
   display: block;
 }

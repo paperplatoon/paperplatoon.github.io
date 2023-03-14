@@ -185,16 +185,120 @@ let fireCardPool = {
       cost:  (state, index, array) => {
         return array[index].baseCost;
       },
-      baseHeal: 10,
+      baseHeal: 5,
       cardType: "ability",
       elementType: "fire",
       action: (state, index, array) => {
         let toChangeState = immer.produce(state, (newState) => {
           if ((newState.playerMonster.maxHP - newState.playerMonster.currentHP) <= (array[index].baseHeal + (array[index].upgrades*5) + state.extraHeal)) {
             newState.playerMonster.currentHP = newState.playerMonster.maxHP;
+            newState.fightHealCount += 1;
+            newState.fightHealValue += newState.playerMonster.maxHP-newState.playerMonster.currentHP;
           } else {
             newState.playerMonster.currentHP += (array[index].baseHeal + (array[index].upgrades*5) + state.extraHeal);
+            newState.fightHealCount += 1;
+            newState.fightHealValue += (array[index].baseHeal + (array[index].upgrades*5) + state.extraHeal)
+
           }       
+          newState.playerMonster.encounterEnergy -= array[index].baseCost;
+        })
+        return toChangeState;
+      }
+    },
+
+    darkknowledge: {
+      name: "Dark Knowledge",
+      text: (state, index, array) => { return `Deal ${array[index].baseSelfDamage} damage to yourself. Draw ${4+array[index].upgrades} cards` },
+      minReq: 1,
+      upgrades: 0,
+      baseCost: 1,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      baseSelfDamage: 5,
+      cardType: "ability",
+      elementType: "fire",
+      action: (state, index, array) => {
+        let toChangeState = immer.produce(state, (newState) => {
+          newState.selfDamageCount += 1;
+          newState.selfDamageValue += array[index].baseSelfDamage;  
+          newState.playerMonster.currentHP -= array[index].baseSelfDamage;        
+          newState.playerMonster.encounterEnergy -= array[index].baseCost;
+        })
+        for (let i=0; i < 4+array[index].upgrades; i++) {
+          toChangeState = drawACard(toChangeState);
+        }
+        return toChangeState;
+      }
+    },
+
+    cursedritual: {
+      name: "Cursed Ritual",
+      text: (state, index, array) => { return `Deal ${array[index].baseSelfDamage} damage to yourself. Gain ${5+(array[index].upgrades*5)} strength` },
+      minReq: 1,
+      upgrades: 0,
+      baseCost: 1,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      baseSelfDamage: 5,
+      cardType: "ability",
+      elementType: "fire",
+      action: (state, index, array) => {
+        let toChangeState = immer.produce(state, (newState) => {
+          newState.selfDamageCount += 1;
+          newState.selfDamageValue += array[index].baseSelfDamage;  
+          newState.playerMonster.fightStrength += 5+(array[index].upgrades*5);
+          newState.playerMonster.strength += 5+(array[index].upgrades*5)
+          newState.playerMonster.currentHP -= array[index].baseSelfDamage; 
+          newState.playerMonster.encounterEnergy -= array[index].baseCost;
+        })
+        return toChangeState;
+      }
+    },
+
+    bloodshield: {
+      name: "Blood Shield",
+      text: (state, index, array) => { return `Deal ${array[index].baseSelfDamage + (array[index].upgrades*3)} damage to yourself. Gain ${20+(array[index].upgrades*10)} block` },
+      minReq: 1,
+      upgrades: 0,
+      baseCost: 1,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      baseSelfDamage: 2,
+      cardType: "ability",
+      elementType: "fire",
+      action: (state, index, array) => {
+        let toChangeState = immer.produce(state, (newState) => {
+          newState.selfDamageCount += 1;
+          newState.selfDamageValue += array[index].baseSelfDamage;  
+          newState.playerMonster.encounterBlock += 20+(array[index].upgrades*10);
+          newState.playerMonster.currentHP -= array[index].baseSelfDamage; 
+          newState.playerMonster.encounterEnergy -= array[index].baseCost;
+        })
+        return toChangeState;
+      }
+    },
+
+    calldemons: {
+      name: "Call Demons",
+      text: (state, index, array) => { return `Deal ${array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*5)} damage for each time you've self-inflicted damage this game (${state.selfDamageCount})` },
+      minReq: 1,
+      upgrades: 0,
+      baseCost: 1,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      baseDamage: 10,
+      baseHits: 0,
+      cardType: "ability",
+      elementType: "fire",
+      action: (state, index, array) => {
+        let toChangeState = immer.produce(state, (newState) => {
+          let tempState = dealOpponentDamage(newState, (array[index].baseDamage + (array[index].upgrades*5)), newState.selfDamageCount+array[index].baseHits);
+          newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
+          newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
         })
         return toChangeState;

@@ -231,13 +231,6 @@ function skipCards(stateObj) {
   return stateObj;
 }
 
-function changeStatus(stateObj, newStatus) {
-  stateObj = immer.produce(stateObj, (newState) => {
-    newState.status = newStatus;
-  })
-  changeState(stateObj);
-  return stateObj;
-}
 
 function changeStatus(stateObj, newStatus) {
   stateObj = immer.produce(stateObj, (newState) => {
@@ -278,16 +271,16 @@ function chooseThisCard(cardObj, stateObj, index) {
   return stateObj;
 }
 
-function removeCard(stateObj, index) {
+async function removeCard(stateObj, index) {
+
   stateObj = immer.produce(stateObj, (newState) => {
     newState.gold -= newState.cardRemoveCost;
     newState.cardRemoveCost += 50;
     newState.playerDeck.splice(index, 1);
-
-    
-
-    newState.status = Status.InTown;
+    newState.status = Status.InTown
   })
+  
+  
   changeState(stateObj);
   return stateObj;
 }
@@ -360,7 +353,11 @@ let gameStartState = {
   cardRemoveCost: 50,
   cardUpgradeCost: 50,
   eventUsed: false,
-  extraHeal: 0
+  extraHeal: 0,
+  fightHealCount: 0,
+  fightHealValue: 0,
+  selfDamageCount: 0,
+  selfDamageValue: 0
 };
 
 
@@ -373,6 +370,42 @@ function changeState(newStateObj) {
   state = {...newStateObj}
   //state = { ...handleDeaths() };
   renderScreen(state);
+}
+
+function resetAfterFight(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerMonster.strength -= newState.playerMonster.tempStrength;
+    newState.playerMonster.dex -= newState.playerMonster.tempDex;
+    newState.playerMonster.tempStrength = 0;
+    newState.playerMonster.tempDex = 0;
+
+    newState.playerMonster.strength -= newState.playerMonster.fightStrength;
+    newState.playerMonster.dex -= newState.playerMonster.fightDex;
+    newState.playerMonster.fightStrength = 0;
+    newState.playerMonster.fightDex = 0;
+
+    newState.playerMonster.encounterBlock = 0;
+
+    newState.fightHealCount = 0;
+    newState.fightHealValue = 0;
+    newState.selfDamageCount = 0;
+    newState.selfDamageValue = 0;
+
+    newState.gold += gyms[newState.gymCount][newState.gymFightCount].goldReward
+    
+
+    if (gyms[newState.gymCount][newState.gymFightCount].boss) {
+      newState.gymFightCount = 0;
+      newState.gymCount += 1;
+      newState.eventUsed = false; 
+      newState.status = Status.EncounterRewards;
+    } else {
+      newState.gymFightCount += 1;
+      newState.status = Status.EncounterRewards;
+    }
+  })
+
+  return stateObj;
 }
 
 function handleDeaths(stateObj) {
@@ -394,24 +427,13 @@ function handleDeaths(stateObj) {
       });
       if (newState.opponentMonster.length == 0) {
         console.log("all opponents dead");
-        newState.playerMonster.strength -= newState.playerMonster.tempStrength;
-        newState.playerMonster.dex -= newState.playerMonster.tempDex;
-        newState.gold += gyms[newState.gymCount][newState.gymFightCount].goldReward
-
-        if (gyms[newState.gymCount][newState.gymFightCount].boss) {
-          newState.gymFightCount = 0;
-          newState.gymCount += 1;
-          newState.eventUsed = false; 
-          newState.status = Status.EncounterRewards;
-        } else {
-          newState.gymFightCount += 1;
-          newState.status = Status.EncounterRewards;
+        Object.assign(newState, resetAfterFight(newState))
+        
           //return newState;
         }
         //something that goes through and resets card tempUpgrades and playCount for each card
         
         //newState = resetAfterEncounter(state);
-      }
 
       if (newState.playerMonster.currentHP <= 0) {
         // all monsters are dead
@@ -913,7 +935,7 @@ function renderIncreaseBaseHit(stateObj) {
   divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
     if (cardObj.baseHits && typeof cardObj.baseHits === 'number') {
-      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseBaseHits)
+      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseBaseHits, goldCost="moreHits")
     }
   });
   skipToTownButton(stateObj, "I don't want more hits for any of these cards", "remove-div"); 
@@ -921,7 +943,7 @@ function renderIncreaseBaseHit(stateObj) {
 
 function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=false, goldCost=false) {
   let cardDiv = document.createElement("Div");
-        cardDiv.id = index;
+        cardDiv.id = "card-index-"+index;
         cardDiv.classList.add("card");
         let nonClickableArrays = [stateObj.encounterHand, stateObj.encounterDraw, stateObj.encounterDiscard];
         if (nonClickableArrays.includes(cardArray)) {   
@@ -986,6 +1008,12 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
           costText.textContent = "(" + stateObj.cardUpgradeCost + " gold to upgrade)";
           costText.classList.add("invisible-cost")
           cardDiv.append(costText);
+        } else if (goldCost === "moreHits") {
+          cardDiv.classList.add("card-more-hits");
+          let altHitsText =  document.createElement("P");
+          altHitsText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseHits", 1) + " alt"
+          altHitsText.classList.add("alt-hits-text");
+          cardDiv.append(altHitsText);
         }
 
         
@@ -1336,3 +1364,16 @@ async function endTurn(stateObj) {
 
 }
 
+function animate(animationName, element) {
+ 
+  // must match animation-duration in --active css
+  const durationMS = 2000;
+
+  // start the animation
+  element.classList.add(`${animationName}--active`);
+
+  // reset after the animation completes
+  setTimeout(() => {
+    element.classList.remove(`${animationName}--active`);
+  }, durationMS);
+}
