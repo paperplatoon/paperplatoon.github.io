@@ -283,6 +283,9 @@ function removeCard(stateObj, index) {
     newState.gold -= newState.cardRemoveCost;
     newState.cardRemoveCost += 50;
     newState.playerDeck.splice(index, 1);
+
+    
+
     newState.status = Status.InTown;
   })
   changeState(stateObj);
@@ -976,7 +979,7 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
             topCardRowDiv.innerHTML = "";
             topCardRowDiv.append(cardAltCost, cardCost, cardName);
           } else {
-            
+
           }
 
           let costText = document.createElement("P");
