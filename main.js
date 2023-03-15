@@ -36,6 +36,7 @@ const Status = {
   DecreasingCost: "Choose a card and decrease its cost by 1",
   IncreasingBlock: "Choose a card to increase its block by 5",
   IncreasingHits: "Choose a card to hit 1 extra time",
+  IncreasingAttack: "Choose an attack to deal +10 damage",
   HealersShop: "Restore your health for a price"
 };
 
@@ -273,7 +274,17 @@ function decreaseCardCost(stateObj, index, array) {
 
 function increaseCardBlock(stateObj, index, array) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerDeck[index].baseBlock += 5;
+    newState.playerDeck[index].baseBlock += 10;
+    newState.eventUsed = true;
+    newState.status = Status.InTown;
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function increaseCardAttack(stateObj, index, array) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerDeck[index].baseDamage += 10;
     newState.eventUsed = true;
     newState.status = Status.InTown;
   })
@@ -730,6 +741,13 @@ function renderTown(stateObj, ) {
       divText: "Buffer Shield",
       newStatus: Status.IncreasingBlock
     },
+
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.png",
+      divText: "Hone Sword",
+      newStatus: Status.IncreasingAttack
+    },
   ];
 
   let shuffledEvents = fisherYatesShuffle(eventsArray);
@@ -937,6 +955,18 @@ function renderIncreaseCardBlock(stateObj) {
     }
   });
   skipToTownButton(stateObj, "I don't want to increase the block of any of these cards", "remove-div"); 
+};
+
+function renderIncreaseCardAttack(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app")
+  divContainer("app");
+  stateObj.playerDeck.forEach(function (cardObj, index) {
+    if (cardObj.baseDamage && typeof cardObj.baseDamage === 'number') {
+      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardAttack)
+    }
+  });
+  skipToTownButton(stateObj, "I don't want to increase the attack of any of these cards", "remove-div"); 
 };
 
 function renderIncreaseBaseHit(stateObj) {
@@ -1233,6 +1263,9 @@ function renderScreen(stateObj) {
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.IncreasingHits) {
     renderIncreaseBaseHit(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.IncreasingAttack) {
+    renderIncreaseCardAttack(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.HealersShop) {
     renderHealer(stateObj);
