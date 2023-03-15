@@ -651,7 +651,16 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 }
 
 .water-energy {
-  background-color: rgba(1, 29, 240, 0.393);
+  background: linear-gradient(90deg, rgb(168, 165, 255),rgb(55, 55, 194), rgb(44, 40, 175), rgb(23, 1, 110));
+  line-height: 6vh;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+}
+
+.rare-card {
+  background: linear-gradient(45deg, rgb(246, 255, 145),rgb(246, 232, 83), rgb(224, 222, 121),rgb(189, 193, 5), rgb(246, 255, 145));
+  border: 3px double yellow;
 }
 
 button {

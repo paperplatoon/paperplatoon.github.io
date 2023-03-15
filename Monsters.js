@@ -531,10 +531,10 @@ let opponentMonsters = {
     blockgymboss: {
       name: "boss",
       type: "Air",
-      maxHP: 50,
+      maxHP: 100,
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      currentHP: 50,
+      currentHP: 100,
       strength: 0,
       dex: 0,
       drown: 0,
@@ -855,7 +855,7 @@ let opponentMonsters = {
   
   let playerMonsters = {
     devCheat: {
-      name: "Overpowered Test Character",
+      name: "Test Character",
       type: "fire",
       encounterEnergy: 0,
       opponentMoveIndex: false,
@@ -872,12 +872,11 @@ let opponentMonsters = {
       avatar: "img/fireMonster.png",
       startingDeck: [
         fireCardPool.darkknowledge,
-        fireCardPool.simpleheal,
+        fireCardPool.darkknowledge,
         fireCardPool.setAflame,
-        fireCardPool.rareExplode,
-        fireCardPool.calldemons,
-        fireCardPool.rareExplode,
-        fireCardPool.cursedritual,
+        fireCardPool.bloatedbomb,
+        fireCardPool.vampiricstrike,
+        fireCardPool.pirouettespin
       ],
     },
   
