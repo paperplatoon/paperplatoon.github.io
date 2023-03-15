@@ -50,13 +50,17 @@
 }
 
 #town-top-row {
-  height: 6vh;
+  height: 7vh;
 }
 
 #stats, #town, .monster-choice-window {
   justify-content: space-evenly;
   border: 1px solid black;
-  height: 90vh;
+  height: 89vh;
+}
+
+.monster-choice-window {
+  height: 96vh;
 }
 
 #stats {
@@ -65,7 +69,6 @@
 }
 
 #town {
-  height: 85vh;
   justify-content: space-evenly;
   vertical-align: center;
   align-items: center;
@@ -136,7 +139,7 @@
   background-color: rgb(19, 0, 116);
 }
 
-#TownDecrease {
+#TownEvent {
   background-color: rgb(181, 172, 0);
 }
 
@@ -216,7 +219,7 @@
 }
 
 .chosen {
-  background: rgba(24, 24, 0, 0.636);
+  background: rgba(255, 83, 83, 0.636);
   border: 2px dashed silver;
 }
 

@@ -183,7 +183,7 @@ function changeStatus(stateObj, newStatus) {
   return stateObj;
 }
 
-function skipCards(stateObj, newStatus) {
+function skipCards(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     stateObj.cardsSkipped += 1;
     newState.status = Status.InTown;
@@ -677,90 +677,91 @@ let monsterHP = document.createElement("H3");
   topRowDiv.appendChild(monsterHP);
 
 
-function renderTown(stateObj) {
-  document.getElementById("app").innerHTML = `
-  <div id="town-top-row">
-    <div id="status-text-div">
-      <p>Gym: ${stateObj.gymCount}    Fight: ${stateObj.gymFightCount}/3 </p>
-    </div>
-    <h3 class="monster-hp-town">${stateObj.playerMonster.currentHP}/${stateObj.playerMonster.maxHP}</h3>
-    <div id="playerDeckPile" class="remove-pile">View Current Deck
-      <div id="deckDiv"> </div>
-    </div>
-  <div id="goldDiv">
-    <img src="img/goldsack.png" class="bg-image"></img>
-    <h3 id="goldText"></h3>
-  </div>
-  </div>
 
-  <div class="flex-container" id="town">
-  <div id="TownHealer" class="town-div">
-        <img src="img/healer.png" class="bg-image"></img>
-        <h3 id="healText" class="fight-text">Visit Healer</h3> 
-      </div>
-      <div id="TownRemove" class="town-div">
-        <img src="img/tavern2.png" class="bg-image"></img>
-        <h3 id="removeText" class="fight-text">Remove A Card</h3> 
-      </div>
-      <div id="TownUpgrade" class="town-div">
-        <img src="img/forge.png" class="bg-image"></img>
-        <h3 id="upgradeText" class="fight-text">Upgrade A Card</h3> 
-      </div>
-      <div id="TownFight" class="town-div">
-        <img src="img/dracula.png" class="bg-image"></img>
-        <h3 class="fight-text">Fight Town Gym</h3> 
-      </div>
+function renderTownDiv(stateObj, idNameString, imgSrcString, imgTextString, triggerCondition, functionToAdd, statusToChange=false, altText=false) {
+  let newTownDiv = document.createElement("Div");
+  newTownDiv.setAttribute("id", idNameString)
+  newTownDiv.classList.add("town-div");
+  let newDivImg = document.createElement("Img");
+  newDivImg.src = imgSrcString;
+  newDivImg.classList.add("bg-image");
+  newTownDiv.append(newDivImg);
 
-      <div id="TownDecrease" class="town-div">
-        <img src="img/wizardshop.png" class="bg-image"></img>
-        <h3 id="decreaseText" class="fight-text">Increase Card Block</h3> 
-      </div>
-  </div>
-  `;
+  let newDivText = document.createElement("H3");
+  newDivText.textContent = imgTextString
+  newDivText.classList.add("fight-text");
 
-  if (stateObj.gold >= Math.floor(stateObj.healCost/2)) {
-    document.getElementById("TownHealer").classList.add("clickable-town-div")
-    document.getElementById("TownHealer").onclick = function () {
-      changeStatus(stateObj, Status.HealersShop);
-    }
-  } else {
-    document.getElementById("removeText").textContent = `Not enough gold (${Math.floor(stateObj.healCost/2)})`;
-  };
-
-
-  if (stateObj.gold >= stateObj.cardRemoveCost) {
-    document.getElementById("TownRemove").classList.add("clickable-town-div")
-    document.getElementById("TownRemove").onclick = function () {
-      changeStatus(stateObj, Status.RemovingCards);
-    }
-  } else {
-    document.getElementById("removeText").textContent = `Not enough gold (${stateObj.cardRemoveCost})`;
-  };
-
-  if (stateObj.eventUsed === false) {
-    document.getElementById("TownDecrease").classList.add("clickable-town-div")
-    document.getElementById("TownDecrease").onclick = function () {
-      changeStatus(stateObj, Status.IncreasingHits);
-    }
-  } else {
-    document.getElementById("decreaseText").textContent = "Already used";
-  };
-
-  if (stateObj.gold >= stateObj.cardUpgradeCost) {
-    document.getElementById("TownUpgrade").classList.add("clickable-town-div")
-    document.getElementById("TownUpgrade").onclick = function () {
-      changeStatus(stateObj, Status.UpgradingCards);
-    };
-  } else {
-    document.getElementById("upgradeText").textContent = `Not enough gold (${stateObj.cardUpgradeCost})`;
-  }
-  document.getElementById("TownFight").classList.add("clickable-town-div")
-  document.getElementById("TownFight").onclick = function () {
-    TownFight(stateObj);
+  if (triggerCondition===true) {
+      newTownDiv.classList.add("clickable-town-div")
+      newTownDiv.onclick = function () {
+        functionToAdd(stateObj, statusToChange);
+      }
+    } else {
+      newDivText.textContent = altText;
     };
 
-  document.getElementById("goldText").textContent = stateObj.gold;
+    newTownDiv.append(newDivText);
+    return newTownDiv
 }
+  
+  
+
+
+function renderTown(stateObj, ) {
+
+  let eventsArray = [
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.png",
+      divText: "Double Tap",
+      newStatus: Status.IncreasingHits
+    },
+
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.png",
+      divText: "Memorize",
+      newStatus: Status.DecreasingCost
+    },
+
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.png",
+      divText: "Buffer Shield",
+      newStatus: Status.IncreasingBlock
+    },
+  ];
+
+  let shuffledEvents = fisherYatesShuffle(eventsArray);
+
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  let townDiv = document.createElement("Div");
+  townDiv.classList.add("flex-container")
+  townDiv.setAttribute("id", "town");
+  
+
+  let townHealDiv = renderTownDiv(stateObj, "TownHealer", "img/healer.png", "Visit Healer", (stateObj.gold >= Math.floor(stateObj.healCost/2)), changeStatus, Status.HealersShop, "Not enough gold");
+  let townRemoveDiv = renderTownDiv(stateObj, "TownRemove", "img/tavern2.png", "Remove A Card",  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `Not enough gold (${stateObj.cardRemoveCost} needed)`);
+  let townUpgradeDiv = renderTownDiv(stateObj, "TownUpgrade", "img/forge.png", "Upgrade A Card", (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `Not enough gold (${stateObj.cardUpgradeCost} needed)`);
+  let townGymDiv = renderTownDiv(stateObj, "TownFight", "img/dracula.png", "Fight Town Gym", true, TownFight)
+
+  let mysteryDiv = renderTownDiv(stateObj, shuffledEvents[0].divID, shuffledEvents[0].imgSrc, shuffledEvents[0].divText, (stateObj.eventUsed == false), changeStatus, shuffledEvents[0].newStatus, "Already used");
+
+
+  townDiv.append(townHealDiv, townRemoveDiv, townUpgradeDiv, townGymDiv, mysteryDiv);
+  document.getElementById("app").append(townDiv);
+
+  //     <div id="TownDecrease" class="town-div">
+  //       <img src="img/wizardshop.png" class="bg-image"></img>
+  //       <h3 id="decreaseText" class="fight-text">Increase Card Block</h3> 
+  //     </div>
+  // </div>
+  // `;
+
+}
+
+
 
 // ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== 
 // ====== ====== ====== ====== ====== RENDERING CARDS AND CARD PILES ====== ====== ====== ====== ====== ====== 
@@ -841,9 +842,16 @@ function divContainer(divName) {
 
 function skipToTownButton(stateObj, buttonString, divName, cardSkip=false) {
   let skipButton = document.createElement("Button");
-  skipButton.addEventListener("click", function () {
-    changeStatus(stateObj, Status.InTown);
-  });
+  if (!cardSkip) {
+    skipButton.addEventListener("click", function () {
+      changeStatus(stateObj, Status.InTown);
+    });
+  } else {
+    skipButton.addEventListener("click", function () {
+      skipCards(stateObj);
+    });
+  }
+  
   skipButton.classList.add("skip-button");
   skipButton.textContent = buttonString;
   document.getElementById(divName).append(skipButton);
@@ -867,7 +875,7 @@ function renderChooseCardReward(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
-  skipToTownButton(stateObj, "I don't want to add any of these cards to my deck", "remove-div");
+  skipToTownButton(stateObj, "I don't want to add any of these cards to my deck", "remove-div", cardSkip=true);
 
 };
 
