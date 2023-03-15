@@ -201,9 +201,12 @@ function TownFight(stateObj) {
   return stateObj;
 }
 
-function chooseThisCard(cardObj, stateObj, index) {
+function chooseThisCard(stateObj, index, sampledCardPool) {
+  console.log("passed for card pool " + sampledCardPool)
+  console.log("passed for index " + index)
+  console.log("card to add " + sampledCardPool[index])
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerDeck.push(cardObj); 
+    newState.playerDeck.push(sampledCardPool[index]); 
     newState.status = Status.InTown;   
   })
   changeState(stateObj);
@@ -1059,7 +1062,7 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
         document.getElementById(divName).appendChild(cardDiv);
 }
 
-function renderClickableCardList(stateObj, cardArray, divName, functionToAdd, goldCost) {
+function renderClickableCardList(stateObj, cardArray, divName, functionToAdd, goldCost=false) {
   cardArray.forEach(function (cardObj, index) {
     renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd, goldCost)
   })
