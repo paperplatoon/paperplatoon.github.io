@@ -37,6 +37,12 @@ const Status = {
   IncreasingBlock: "Choose a card to increase its block by 5",
   IncreasingHits: "Choose a card to hit 1 extra time",
   IncreasingAttack: "Choose an attack to deal +10 damage",
+  DuplicatingCards: "Choose a card. Add a copy of it to your deck",
+  DoublingAttack: "Choose a card. Double its base damage",
+  DoubleUpgradeEvent: "Choose a card. Upgrade it twice",
+  LevelUpEvent: "Choose a trait to permanently level up",
+  ChooseRareEvent: "Choose a rare card to add to your deck",
+  ShowCardPool: "showing card pool",
   HealersShop: "Restore your health for a price"
 };
 
@@ -225,6 +231,54 @@ function removeCard(stateObj, index) {
   return stateObj;
 }
 
+function increaseStrengthEvent(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerMonster.strength += 5;
+    newState.status = Status.InTown
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function increaseDexEvent(stateObj, index) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerMonster.dex += 5;
+    newState.status = Status.InTown
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function increaseEnergyEvent(stateObj, index) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerMonster.turnEnergy += 1;
+    newState.status = Status.InTown
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function duplicateCard(stateObj, index, array) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    let cardObj = {...newState.playerDeck[index]}
+    newState.playerDeck.push(cardObj);
+    newState.status = Status.InTown
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function doubleUpgradeCard(stateObj, index) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerDeck[index].upgrades +=2;
+    newState.status = Status.InTown;
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+
+
 function encounterUpgradeCard(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.gold -= newState.cardUpgradeCost;
@@ -285,6 +339,16 @@ function increaseCardBlock(stateObj, index, array) {
 function increaseCardAttack(stateObj, index, array) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerDeck[index].baseDamage += 10;
+    newState.eventUsed = true;
+    newState.status = Status.InTown;
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function doubleCardAttack(stateObj, index, array) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerDeck[index].baseDamage *= 2;
     newState.eventUsed = true;
     newState.status = Status.InTown;
   })
@@ -724,24 +788,57 @@ function renderTown(stateObj, ) {
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
+      divText: "ShowCardPool",
+      newStatus: Status.ShowCardPool
+    },
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.png",
+      divText: "Treasure",
+      newStatus: Status.ChooseRareEvent
+    },
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.png",
+      divText: "Level Up",
+      newStatus: Status.LevelUpEvent
+    },
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.png",
+      divText: "Refine",
+      newStatus: Status.DoubleUpgradeEvent
+    },
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.png",
+      divText: "Empower",
+      newStatus: Status.DoublingAttack
+    },
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.png",
+      divText: "Duplicate",
+      newStatus: Status.DuplicatingCards
+    },
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.png",
       divText: "Double Tap",
       newStatus: Status.IncreasingHits
     },
-
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
       divText: "Memorize",
       newStatus: Status.DecreasingCost
     },
-
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
       divText: "Buffer Shield",
       newStatus: Status.IncreasingBlock
     },
-
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
@@ -750,7 +847,7 @@ function renderTown(stateObj, ) {
     },
   ];
 
-  let shuffledEvents = fisherYatesShuffle(eventsArray);
+  //eventsArray = fisherYatesShuffle(eventsArray);
 
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
@@ -764,7 +861,7 @@ function renderTown(stateObj, ) {
   let townUpgradeDiv = renderTownDiv(stateObj, "TownUpgrade", "img/forge.png", "Upgrade A Card", (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `Not enough gold (${stateObj.cardUpgradeCost} needed)`);
   let townGymDiv = renderTownDiv(stateObj, "TownFight", "img/dracula.png", "Fight Town Gym", true, TownFight)
 
-  let mysteryDiv = renderTownDiv(stateObj, shuffledEvents[0].divID, shuffledEvents[0].imgSrc, shuffledEvents[0].divText, (stateObj.eventUsed == false), changeStatus, shuffledEvents[0].newStatus, "Already used");
+  let mysteryDiv = renderTownDiv(stateObj, eventsArray[0].divID, eventsArray[0].imgSrc, eventsArray[0].divText, (stateObj.eventUsed == false), changeStatus, eventsArray[0].newStatus, "Already used");
 
 
   townDiv.append(townHealDiv, townRemoveDiv, townUpgradeDiv, townGymDiv, mysteryDiv);
@@ -847,9 +944,13 @@ function topRowDiv(stateObj, divName) {
   return topRowDiv
 }
 
-function divContainer(divName) {
+function divContainer(divName, newDivName=false) {
   let removeDiv = document.createElement("Div")
-  removeDiv.setAttribute("id", "remove-div")
+  if (newDivName) {
+    removeDiv.setAttribute("id", newDivName)
+  } else {
+    removeDiv.setAttribute("id", "remove-div")
+  }
   removeDiv.classList.add("remove-div")
   removeDiv.classList.add("screen-inner-div")
 
@@ -872,7 +973,7 @@ function skipToTownButton(stateObj, buttonString, divName, cardSkip=false) {
   
   skipButton.classList.add("skip-button");
   skipButton.textContent = buttonString;
-  document.getElementById(divName).append(skipButton);
+  document.querySelector(divName).append(skipButton);
   return skipButton;
 }
 
@@ -881,8 +982,31 @@ function renderRemoveCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", removeCard, goldCost="remove");
-  skipToTownButton(stateObj, "I don't want to remove any of these cards from my deck", "remove-div");
-  
+  skipToTownButton(stateObj, "I don't want to remove any of these cards from my deck", ".remove-div");
+};
+
+function renderCardPool(stateObj, cardPool) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+  renderClickableCardList(stateObj, Object.values(fireCardPool), "remove-div");
+  skipToTownButton(stateObj, "I don't want to remove any of these cards from my deck", ".remove-div");
+};
+
+function renderDuplicateCard(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", duplicateCard);
+  skipToTownButton(stateObj, "I don't want to duplicate any of these cards", ".remove-div");
+};
+
+function renderDoubleUpgradeCard(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", doubleUpgradeCard);
+  skipToTownButton(stateObj, "I don't want to upgrade any of these cards", ".remove-div");
 };
 
 function renderChooseCardReward(stateObj) {
@@ -893,8 +1017,20 @@ function renderChooseCardReward(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
-  skipToTownButton(stateObj, "I don't want to add any of these cards to my deck", "remove-div", cardSkip=true);
+  skipToTownButton(stateObj, "I don't want to add any of these cards to my deck", ".remove-div", cardSkip=true);
+};
 
+function renderChooseRareCard(stateObj) {
+  let cardPool = Object.values(stateObj.playerMonster.cardPool);
+  let rareCards = cardPool.filter(card => card.rare);
+  let shuffledCardPool = fisherYatesShuffle(rareCards);
+  let sampledCardPool = shuffledCardPool.slice(0, 3);
+
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+  renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
+  skipToTownButton(stateObj, "I don't want to add any of these cards to my deck", ".remove-div", cardSkip=true);
 };
 
 function renderHealer(stateObj) {
@@ -921,7 +1057,23 @@ function renderHealer(stateObj) {
   HealButton.textContent = `Spend ${stateObj.healCost} gold to fully heal`
   document.getElementById("remove-div").append(HealButton);
   
-  skipToTownButton(stateObj, "I don't want healing right now", "remove-div");
+  skipToTownButton(stateObj, "I don't want healing right now", ".remove-div");
+  
+};
+
+function renderLevelUp(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app", "level-up-div");
+
+  let strengthDiv = renderTownDiv(stateObj, "increaseStrength", "img/forge.png", "+5 permanent Strength", true, increaseStrengthEvent, Status.InTown, altText=false);
+  let DexDiv = renderTownDiv(stateObj, "increaseDex", "img/forge.png", "+5 permanent Dexterity", true, increaseDexEvent, Status.InTown, altText=false);
+  let energyDiv = renderTownDiv(stateObj, "increaseEnergy", "img/forge.png", "+1 energy per turn", true, increaseEnergyEvent, Status.InTown, altText=false);
+  
+  document.getElementById("level-up-div").append(strengthDiv, DexDiv, energyDiv);
+  
+  
+  skipToTownButton(stateObj, "I don't want to level up for some reason (I should!)", "#app");
   
 };
 
@@ -930,7 +1082,7 @@ function renderUpgradeCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", encounterUpgradeCard, goldCost="upgrade");
-  skipToTownButton(stateObj, "I don't want to upgrade any of these cards", "remove-div");
+  skipToTownButton(stateObj, "I don't want to upgrade any of these cards", ".remove-div");
 };
 
 function renderDecreaseCardCost(stateObj) {
@@ -942,7 +1094,7 @@ function renderDecreaseCardCost(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", decreaseCardCost)
     }
   });
-  skipToTownButton(stateObj, "I don't want to decrease the cost of any of these cards", "remove-div"); 
+  skipToTownButton(stateObj, "I don't want to decrease the cost of any of these cards", ".remove-div"); 
 };
 
 function renderIncreaseCardBlock(stateObj) {
@@ -954,7 +1106,7 @@ function renderIncreaseCardBlock(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardBlock)
     }
   });
-  skipToTownButton(stateObj, "I don't want to increase the block of any of these cards", "remove-div"); 
+  skipToTownButton(stateObj, "I don't want to increase the block of any of these cards", ".remove-div"); 
 };
 
 function renderIncreaseCardAttack(stateObj) {
@@ -966,7 +1118,19 @@ function renderIncreaseCardAttack(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardAttack)
     }
   });
-  skipToTownButton(stateObj, "I don't want to increase the attack of any of these cards", "remove-div"); 
+  skipToTownButton(stateObj, "I don't want to increase the attack of any of these cards", ".remove-div"); 
+};
+
+function renderDoubleCardAttack(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app")
+  divContainer("app");
+  stateObj.playerDeck.forEach(function (cardObj, index) {
+    if (cardObj.baseDamage && cardObj.baseDamage > 0) {
+      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", doubleCardAttack)
+    }
+  });
+  skipToTownButton(stateObj, "I don't want to double the attack of any of these cards", ".remove-div"); 
 };
 
 function renderIncreaseBaseHit(stateObj) {
@@ -1269,6 +1433,24 @@ function renderScreen(stateObj) {
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.HealersShop) {
     renderHealer(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.DuplicatingCards) {
+    renderDuplicateCard(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.DoublingAttack) {
+    renderDoubleCardAttack(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.DoubleUpgradeEvent) {
+    renderDoubleUpgradeCard(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.LevelUpEvent) {
+    renderLevelUp(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.ChooseRareEvent) {
+    renderChooseRareCard(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.ShowCardPool) {
+    renderCardPool(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else {
     renderDivs(stateObj);

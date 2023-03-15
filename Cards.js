@@ -848,7 +848,7 @@ let fireCardPool = {
       action: (state, index, array) => {
         let toChangeState = immer.produce(state, (newState) => {
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
-          let tempState = dealOpponentDamage(state, ( array[index].baseDamage + (array[index].upgrades*5) - (state.cardsSkipped*5) ), (array[index].baseHits), all=true);
+          let tempState = dealOpponentDamage(state, ( array[index].baseDamage + (array[index].upgrades*25) - (state.cardsSkipped*5) ), (array[index].baseHits), all=true);
           newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
             monsterObj.currentHP = tempState.opponentMonster[monsterIndex].currentHP
             monsterObj.encounterBlock = tempState.opponentMonster[monsterIndex].encounterBlock
@@ -1264,7 +1264,9 @@ let fireCardPool = {
     withdraw: {
       name: "Withdraw",
       text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*5))} block` },
-      minReq: 1,
+      minReq: (state, index, array) => {
+        return array[index].baseCost;
+      },
       baseCost: 1,
       baseBlock: 10,
       cardType: "ability",
@@ -1357,7 +1359,9 @@ let fireCardPool = {
       text: (state, index, array) => {
         return `Deal double damage to the targeted enemy for ${(1 + array[index].upgrades)} turn.`;
       },
-      minReq: 1,
+      minReq: (state, index, array) => {
+        return array[index].baseCost;
+      },
       baseCost: 1,
       Type: "ability",
       elementType: "water",

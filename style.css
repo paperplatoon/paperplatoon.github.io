@@ -156,8 +156,8 @@
   flex-direction: column;
 }
 
-.remove-div button {
-  width: 75%;
+.remove-div button, #level-up-div button {
+  width: 60vw;
 }
 
 #playerMonster {
@@ -661,6 +661,14 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   text-align: center;
   font-weight: bold;
   color: white;
+}
+
+#level-up-div {
+  height: 60vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+
 }
 
 .water-energy {
