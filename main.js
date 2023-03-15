@@ -574,6 +574,16 @@ function renderPlayerMonster(stateObj) {
   let topRowDiv = document.createElement("Div");
   topRowDiv.classList.add("monster-top-row");
 
+  let drawPileDiv = document.createElement("Div");
+  drawPileDiv.setAttribute("id", "drawPile");
+  drawPileDiv.classList.add("pile");
+  drawPileDiv.textContent = "Draw";
+
+  let drawDiv = document.createElement("Div");
+  drawDiv.setAttribute("id", "drawDiv");
+  drawPileDiv.append(drawDiv);
+  topRowDiv.append(drawPileDiv);
+
   let avatar = document.createElement('img');
   avatar.classList.add("avatar");
   avatar.src = stateObj.playerMonster.avatar;
@@ -592,16 +602,6 @@ function renderPlayerMonster(stateObj) {
     topRowDiv.appendChild(playerBlock);
   }
 
-  let drawPileDiv = document.createElement("Div");
-  drawPileDiv.setAttribute("id", "drawPile");
-  drawPileDiv.classList.add("pile");
-  drawPileDiv.textContent = "Draw";
-
-  let drawDiv = document.createElement("Div");
-  drawDiv.setAttribute("id", "drawDiv");
-  drawPileDiv.append(drawDiv);
-  topRowDiv.append(drawPileDiv);
-
         
   let discardPileDiv = document.createElement("Div");
   discardPileDiv.setAttribute("id", "discardPile")
@@ -612,11 +612,6 @@ function renderPlayerMonster(stateObj) {
   discardDiv.setAttribute("id", "discardDiv")
   discardPileDiv.append(discardDiv);
   topRowDiv.append(discardPileDiv);
-
-  let goldDiv = document.createElement("Div");
-  goldDiv.setAttribute("id", "goldDiv")
-  goldDiv.textContent = stateObj.gold;
-  topRowDiv.append(goldDiv);
 
   document.getElementById("playerStats").appendChild(topRowDiv);
 

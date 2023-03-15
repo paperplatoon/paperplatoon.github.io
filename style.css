@@ -375,13 +375,23 @@
   background-image: url(img/sky.jpeg);
   background-size: cover;
   height: 80vh;
-  width: 80vw;
+  width: 90vw;
   position: fixed;
   top: 10vh;
-  left: 10vw;
-  padding-left: 11vw;
-  padding-top: 4.5vmax;
+  left: 5vw;
+  padding-left: 2vw;
+  padding-top: 2vmax;
 }
+
+#drawDiv, #discardDiv {
+  height: 80vh;
+  width: 60vw;
+  top: 10vh;
+  left: 10vw;
+  padding-left: 2vw;
+  padding-top: 2vmax;
+}
+
 
 
 
@@ -425,8 +435,6 @@
   background-color: brown;
   border: 1px dashed red;
   font-size: 2vh;
-  white-space: nowrap;
-  overflow: hidden;
 }
 
 .remove-pile {
@@ -469,6 +477,8 @@
   height: 10vh;
   width: 15vw;
   float: left;
+  display: block;
+  justify-content: center;
   overflow: wrap;
 }
 

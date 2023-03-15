@@ -786,9 +786,9 @@ let fireCardPool = {
       name: "Bloated Bomb",
       text: (state, index, array) => {
         if (array[index].baseHits === 1) {
-          return `Deal ${array[index].baseDamage + (array[index].upgrades*25)} damage to ALL enemies. -5 for each card skipped (${array[index].baseDamage + (array[index].upgrades*25) - (state.cardsSkipped*5)})`;
+          return `Deal ${array[index].baseDamage + (array[index].upgrades*25)+state.playerMonster.strength} damage to ALL enemies. -5 for each card skipped (${array[index].baseDamage + (array[index].upgrades*25) - (state.cardsSkipped*5)})`;
         } else {
-          return `Deal ${array[index].baseDamage + (array[index].upgrades*25)} damage to ALL enemies ${array[index].baseHits} times. -5 for each card skipped (${array[index].baseDamage + (array[index].upgrades*25) - (state.cardsSkipped*5)})`
+          return `Deal ${array[index].baseDamage + (array[index].upgrades*25)+state.playerMonster.strength} damage to ALL enemies ${array[index].baseHits} times. -5 for each card skipped (${(state.playerMonster.strength + array[index].baseDamage + (array[index].upgrades*25) - (state.cardsSkipped*5))*array[index].baseHits})`
         }
       },
       minReq: 4,
