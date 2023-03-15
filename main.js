@@ -175,77 +175,6 @@ function fisherYatesShuffle(arrayObj) {
  return arrayCopy;
 }
 
-function renderChooseCardReward(stateObj) {
-  document.getElementById("app").innerHTML = "";
-
-  let cardChoiceDiv = document.createElement("Div");
-  cardChoiceDiv.classList.add("card-choice-window");
-  document.getElementById("app").appendChild(cardChoiceDiv);
-
-
-  let shuffledCardPool = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
-  let sampledCardPool = shuffledCardPool.slice(0, 3);
-
-  sampledCardPool.forEach(function (cardObj, index) {
-    let cardDiv = document.createElement("Div");
-    cardDiv.classList.add("card");
-    cardDiv.classList.add("playable");
-    cardDiv.classList.add("card-reward");
-
-    let topCardRowDiv = document.createElement("Div");
-    topCardRowDiv.classList.add("card-top-row-reward");
-
-      let cardCost = document.createElement("H3")
-      if (typeof cardObj.cost === 'function') {
-        cardCost.textContent = cardObj.cost(stateObj, index, sampledCardPool);
-        cardCost.classList.add("hand-card-cost");
-        topCardRowDiv.append(cardCost);
-      } else if (cardObj.cost !== "energy" && typeof cardObj.cost === 'string') {
-          cardCost.textContent = cardObj.cost;
-          cardCost.classList.add("hand-card-cost");
-          topCardRowDiv.append(cardCost);
-        } else if (cardObj.minReq > 0) {
-          cardCost.textContent = cardObj.cost;
-          cardCost.classList.add("hand-card-cost");
-          topCardRowDiv.append(cardCost);
-      } else{}
-
-
-      let cardName = document.createElement("H3");
-      cardName.textContent = cardObj.name;
-      topCardRowDiv.append(cardName);
-      cardDiv.append(topCardRowDiv);
-
-    let cardText = document.createElement("P");
-    cardText.textContent = cardObj.text(stateObj, index, sampledCardPool);
-    cardDiv.append(cardText);
-
-    cardDiv.addEventListener("click", function () {
-        chooseThisCard(sampledCardPool[index], stateObj, index);
-      });   
-
-    if (cardObj.cardType == "fireEnergy") {
-      cardDiv.classList.add("fire-energy");
-    }
-    if (cardObj.cardType == "waterEnergy") {
-      cardDiv.classList.add("water-energy");
-    }
-    if (cardObj.rare === true) {
-      cardDiv.classList.add("rare-card");
-    }
-    document.getElementById("app").appendChild(cardDiv);
-  });
-
-  let skipButton = document.createElement("Button");
-  skipButton.addEventListener("click", function () {
-    skipCards(stateObj);
-  });
-  skipButton.classList.add("skip-button");
-  skipButton.textContent = "I don't want to add any of these cards to my deck";
-  document.getElementById("app").append(skipButton);
-
-};
-
 function changeStatus(stateObj, newStatus) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.status = newStatus;
@@ -927,11 +856,21 @@ function renderRemoveCard(stateObj) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app");
-  
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", removeCard, goldCost="remove");
-
   skipToTownButton(stateObj, "I don't want to remove any of these cards from my deck", "remove-div");
   
+};
+
+function renderChooseCardReward(stateObj) {
+  let shuffledCardPool = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
+  let sampledCardPool = shuffledCardPool.slice(0, 3);
+
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+  renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
+  skipToTownButton(stateObj, "I don't want to add any of these cards to my deck", "remove-div");
+
 };
 
 function renderHealer(stateObj) {
@@ -966,9 +905,7 @@ function renderUpgradeCard(stateObj) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app");
-
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", encounterUpgradeCard, goldCost="upgrade");
- 
   skipToTownButton(stateObj, "I don't want to upgrade any of these cards", "remove-div");
 };
 
