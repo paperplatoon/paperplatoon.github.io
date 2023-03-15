@@ -10,6 +10,9 @@
 //keyword: if energy is removed, do effect.
 //evnts that let you change baseCost, baseHits, baseBlock, baseDamage, and baseHeal
 
+//more cards that deal damage to all
+//add a 0-cost card that deals damage for total self-damage dealt in a fight * 2 (rare)
+
 //total = 30
 
 let fireCardPool = {
@@ -423,6 +426,36 @@ let fireCardPool = {
           newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
           newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
+        })
+        return toChangeState;
+      }
+    },
+
+    fierymissiles: {
+      cardID: 31,
+      name: "Fiery Missiles",
+      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage+array[index].upgrades}. Deal ${(array[index].baseDamage + state.playerMonster.strength)} damage ${(array[index].baseHits + array[index].upgrades)} times` },
+      minReq: 1,
+      baseCost: 1,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      upgrades: 0,
+      baseDamage: 10,
+      baseSelfDamage: 2,
+      baseHits: 2,
+      cardType: "attack",
+      elementType: "fire",
+      action: (state, index, array) => {
+        let toChangeState = immer.produce(state, (newState) => {
+          let tempState = dealOpponentDamage(newState, array[index].baseDamage, (array[index].baseHits + array[index].upgrades));
+          newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
+          newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
+          newState.playerMonster.encounterEnergy -= array[index].baseCost;
+
+          newState.selfDamageCount += 1;
+          newState.selfDamageValue += array[index].baseSelfDamage;  
+          newState.playerMonster.currentHP -= array[index].baseSelfDamage;
         })
         return toChangeState;
       }

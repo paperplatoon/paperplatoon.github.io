@@ -876,7 +876,7 @@ let opponentMonsters = {
         fireCardPool.setAflame,
         fireCardPool.bloatedbomb,
         fireCardPool.vampiricstrike,
-        fireCardPool.pirouettespin
+        fireCardPool.fierymissiles
       ],
     },
   

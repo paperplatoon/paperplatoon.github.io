@@ -230,6 +230,9 @@ function renderChooseCardReward(stateObj) {
     if (cardObj.cardType == "waterEnergy") {
       cardDiv.classList.add("water-energy");
     }
+    if (cardObj.rare === true) {
+      cardDiv.classList.add("rare-card");
+    }
     document.getElementById("app").appendChild(cardDiv);
   });
 
