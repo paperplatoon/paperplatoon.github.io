@@ -915,71 +915,71 @@ let opponentMonsters = {
       ],
     },
   
-    swirly: {
-      name: "Swirly",
-      type: "Water",
-      cardPool: waterCardPool,
-      encounterEnergy: 0,
-      opponentMoveIndex: false,
-      maxHP: 100,
-      currentHP: 100,
-      strength: 0,
-      dex: 0,
-      tempStrength: 0,
-      tempDex: 0,
-      fightStrength: 0,
-      fightDex: 0,
-      turnEnergy: 3,
-      avatar: "img/watertongue.png",
-      startingDeck: [
-        //1 energy
-        waterCardPool.waterEnergy,
-        //11 attacks
-        waterCardPool.withdraw,
-        waterCardPool.withdraw,
-        waterCardPool.withdraw,
-        waterCardPool.withdraw,
-        waterCardPool.tackle,
-        waterCardPool.tackle,
-        waterCardPool.tackle,
-        waterCardPool.bodySlam,
-        waterCardPool.gainDex,
-        waterCardPool.cloakingFog,
-        waterCardPool.huntPrey
-      ]
-    },
+  // swirly: {
+  //   name: "Swirly",
+  //   type: "Water",
+  //   cardPool: waterCardPool,
+  //   encounterEnergy: 0,
+  //   opponentMoveIndex: false,
+  //   maxHP: 100,
+  //   currentHP: 100,
+  //   strength: 0,
+  //   dex: 0,
+  //   tempStrength: 0,
+  //   tempDex: 0,
+  //   fightStrength: 0,
+  //   fightDex: 0,
+  //   turnEnergy: 3,
+  //   avatar: "img/watertongue.png",
+  //   startingDeck: [
+  //     //1 energy
+  //     waterCardPool.waterEnergy,
+  //     //11 attacks
+  //     waterCardPool.withdraw,
+  //     waterCardPool.withdraw,
+  //     waterCardPool.withdraw,
+  //     waterCardPool.withdraw,
+  //     waterCardPool.tackle,
+  //     waterCardPool.tackle,
+  //     waterCardPool.tackle,
+  //     waterCardPool.bodySlam,
+  //     waterCardPool.gainDex,
+  //     waterCardPool.cloakingFog,
+  //     waterCardPool.huntPrey
+  //   ]
+  // },
 
-    poisonTest: {
-      name: "Venom",
-      type: "Water",
-      cardPool: waterCardPool,
-      encounterEnergy: 0,
-      opponentMoveIndex: false,
-      maxHP: 100,
-      currentHP: 50,
-      strength: 0,
-      dex: 0,
-      tempStrength: 0,
-      tempDex: 0,
-      fightStrength: 0,
-      fightDex: 0,
-      turnEnergy: 3,
-      avatar: "img/watertongue.png",
-      startingDeck: [
-        //1 energy
-        waterCardPool.waterEnergy,
-        //11 attacks
-        waterCardPool.withdraw,
-        waterCardPool.withdraw,
-        waterCardPool.withdraw,
-        waterCardPool.withdraw,
-        waterCardPool.tackle,
-        waterCardPool.tackle,
-        waterCardPool.tackle,
-        waterCardPool.pinprick,
-        waterCardPool.poisonedblade,
-        waterCardPool.venomshield
+  // poisonTest: {
+  //   name: "Venom",
+  //   type: "Water",
+  //   cardPool: waterCardPool,
+  //   encounterEnergy: 0,
+  //   opponentMoveIndex: false,
+  //   maxHP: 100,
+  //   currentHP: 50,
+  //   strength: 0,
+  //   dex: 0,
+  //   tempStrength: 0,
+  //   tempDex: 0,
+  //   fightStrength: 0,
+  //   fightDex: 0,
+  //   turnEnergy: 3,
+  //   avatar: "img/watertongue.png",
+  //   startingDeck: [
+  //     //1 energy
+  //     waterCardPool.waterEnergy,
+  //     //11 attacks
+  //     waterCardPool.withdraw,
+  //     waterCardPool.withdraw,
+  //     waterCardPool.withdraw,
+  //     waterCardPool.withdraw,
+  //     waterCardPool.tackle,
+  //     waterCardPool.tackle,
+  //     waterCardPool.tackle,
+  //     waterCardPool.pinprick,
+  //     waterCardPool.poisonedblade,
+  //     waterCardPool.venomshield
 
-      ]
-    }
+  //   ]
+  // }
   };

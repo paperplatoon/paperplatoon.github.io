@@ -40,7 +40,7 @@
 }
 
 #status-text-div {
-  border: 3px solid green;
+  color: silver;
   text-align: center;
   
 }
@@ -50,7 +50,9 @@
 }
 
 #town-top-row {
-  height: 7vh;
+  height: 8vh;
+  background:url(img/sky.jpeg);
+  border: 2px double rgba(11, 0, 22, 0.848);
 }
 
 #stats, #town, .monster-choice-window {

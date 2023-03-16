@@ -740,7 +740,9 @@ function renderPlayerMonster(stateObj) {
 function renderDivs(stateObj) {
   document.getElementById("app").innerHTML = `
   <div id="town-top-row">
-    <p>${stateObj.status}</p>
+    <div id="status-text-div">
+      <p>Gym: ${stateObj.gymCount}   Fight: ${stateObj.gymFightCount}/3</p>
+    </div>
     <button id="shuffleDrawButton">Start Encounter</button>
     <button id="endTurnButton">End Turn</button>
     <div id="playerDeckPile" class="remove-pile">View Current Deck
@@ -813,12 +815,12 @@ function renderTownDiv(stateObj, idNameString, imgSrcString, imgTextString, trig
 function renderTown(stateObj, ) {
 
   let eventsArray = [
-    {
-      divID: "TownEvent",
-      imgSrc: "img/wizardshop.png",
-      divText: "ShowCardPool",
-      newStatus: Status.ShowCardPool
-    },
+    // {
+    //   divID: "TownEvent",
+    //   imgSrc: "img/wizardshop.png",
+    //   divText: "ShowCardPool",
+    //   newStatus: Status.ShowCardPool
+    // },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
@@ -875,7 +877,7 @@ function renderTown(stateObj, ) {
     },
   ];
 
-  //eventsArray = fisherYatesShuffle(eventsArray);
+  eventsArray = fisherYatesShuffle(eventsArray);
 
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
@@ -933,9 +935,16 @@ function topRowDiv(stateObj, divName) {
 
   let statusTextDiv = document.createElement("Div");
   statusTextDiv.setAttribute("id", "status-text-div");
-
   let statusText = document.createElement("p");
-  statusText.textContent = stateObj.status;
+
+  if (stateObj.status = Status.InTown || Status.InEncounter) {
+    statusText.textContent = `Gym: ${stateObj.gymCount}   Fight: ${stateObj.gymFightCount}/3`
+  } else {
+    statusText.textContent = stateObj.status;
+  }
+
+  
+  
   statusTextDiv.append(statusText);
   topRowDiv.append(statusTextDiv);
 
