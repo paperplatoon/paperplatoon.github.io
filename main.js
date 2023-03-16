@@ -60,10 +60,13 @@ let gameStartState = {
   eventUsed: false,
   extraHeal: 0,
   fightHealCount: 0,
-  fightHealValue: 0,
-  selfDamageCount: 0,
-  selfDamageValue: 0,
-  cardsPerTurn: 0
+  fightHealTotal: 0,
+  fightSelfDamageCount: 0,
+  fightSelfDamageTotal: 0,
+  fightEnergyDrainCount: 0,
+  fightEnergyDrainTotal: 0,
+  cardsPerTurn: 0,
+  gainLifePerCard: 0,
 };
 
 playerMonsterArray = Object.values(playerMonsters);
@@ -395,9 +398,13 @@ function resetAfterFight(stateObj) {
     newState.playerMonster.encounterBlock = 0;
 
     newState.fightHealCount = 0;
-    newState.fightHealValue = 0;
-    newState.selfDamageCount = 0;
-    newState.selfDamageValue = 0;
+    newState.fightHealTotal = 0;
+    newState.fightSelfDamageCount = 0;
+    newState.fightSelfDamageTotal = 0;
+    newState.fightEnergyDrainCount = 0;
+    newState.fightEnergyDrainTotal = 0;
+    newState.enemyFightHealTotal = 0;
+    newState.gainLifePerCard = 0;
 
     newState.gold += gyms[newState.gymCount][newState.gymFightCount].goldReward
     
@@ -499,9 +506,13 @@ function setUpEncounter(stateObj) {
     newState.encounterDiscard = [];
     newState.enemyFightHealTotal = 0;
     newState.fightHealCount = 0;
-    newState.fightHealValue = 0;
-    newState.selfDamageCount = 0;
-    newState.selfDamageValue = 0;
+    newState.fightHealTotal = 0;
+    newState.fightSelfDamageCount = 0;
+    newState.fightSelfDamageTotal = 0;
+    newState.fightEnergyDrainCount = 0;
+    newState.fightEnergyDrainTotal = 0;
+    newState.gainLifePerCard = 0;
+    
     newState.cardsPerTurn = 0;
     if (!stateObj.playerDeck) {
       console.log("player has no playerDeck")
@@ -626,11 +637,28 @@ async function playACard(stateObj, cardIndexInHand, arrayObj) {
       newState.encounterDiscard.push(stateObj.encounterHand[cardIndexInHand]);
       newState.encounterHand.splice(cardIndexInHand, 1);
     }
+    //trigger if life gain
+    if (newState.gainLifePerCard > 0) {
+      //trigger if player is not at full health
+      if (newState.playerMonster.currentHP < newState.playerMonster.maxHP) {
+        //if the lifegain is less than total HP loss, do heal to full, otherwise, heal per card
+        if (newState.playerMonster.maxHP-newState.playerMonster.currentHP > 0 && newState.playerMonster.maxHP-newState.playerMonster.currentHP < newState.gainLifePerCard) {
+          newState.fightHealTotal += newState.playerMonster.maxHP-newState.playerMonster.currentHP;
+          newState.playerMonster.currentHP = newState.playerMonster.maxHP;
+          newState.fightHealCount +=1;
+        } else if (newState.playerMonster.maxHP-newState.playerMonster.currentHP >= newState.gainLifePerCard) {
+          newState.fightHealTotal += newState.gainLifePerCard;
+          newState.playerMonster.currentHP += newState.gainLifePerCard;
+          newState.fightHealCount +=1;
+        }
+      }
+    }
 
   })
-  stateObj = handleDeaths(stateObj)
+  stateObj = handleDeaths(stateObj);
   changeState(stateObj);
 }
+
 
 function targetThisMonster(stateObj, monsterIndex) {
   let toChangeState = immer.produce(stateObj, (newState) => {
@@ -1224,7 +1252,6 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
         
 
         if (cardArray === stateObj.encounterHand) {
-          console.log("looping through hand logic");
           if (typeof cardObj.minReq === 'function') {
             if (cardObj.minReq(stateObj, index, stateObj.encounterHand) <= stateObj.playerMonster.encounterEnergy) {
               cardDiv.classList.add("playable");
@@ -1249,10 +1276,14 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
         }
         if (cardObj.cardType == "fireEnergy") {
           cardDiv.classList.add("fire-energy");
-        }
-        if (cardObj.cardType == "waterEnergy") {
+        } else if (cardObj.cardType == "waterEnergy") {
           cardDiv.classList.add("water-energy");
+        } else if (cardObj.cardType == "attack") {
+          cardDiv.classList.add("attack-card");
+        } else if (cardObj.cardType == "ability") {
+          cardDiv.classList.add("ability-card");
         }
+
         if (cardObj.rare) {
           cardDiv.classList.add("rare-card")
         }

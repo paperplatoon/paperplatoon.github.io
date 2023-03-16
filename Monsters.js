@@ -873,10 +873,11 @@ let opponentMonsters = {
       startingDeck: [
         fireCardPool.darkknowledge,
         fireCardPool.darkknowledge,
+        fireCardPool.puffofsmoke,
+        fireCardPool.retreatingslash,
         fireCardPool.setAflame,
-        fireCardPool.bloatedbomb,
-        fireCardPool.vampiricstrike,
-        fireCardPool.fierymissiles
+        fireCardPool.fierymissiles,
+        fireCardPool.sunlight
       ],
     },
   

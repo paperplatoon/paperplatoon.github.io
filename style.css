@@ -709,3 +709,11 @@ button:hover {
 .card-upgrade:hover .alt-upgrade-text, .card-upgrade:hover .alt-cost,  .card-upgrade:hover .alt-hits-text {
   display: block;
 }
+
+.ability-card {
+  border: 3px solid blue;
+}
+
+.attack-card {
+  border: 3px solid red;
+}
