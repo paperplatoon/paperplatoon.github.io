@@ -683,7 +683,7 @@ let fireCardPool = {
       }
     },
 
-    rareUpgrade: {
+    rareupgrade: {
       cardID: 23,
       rare: true,
       name: "Rare Upgrade",

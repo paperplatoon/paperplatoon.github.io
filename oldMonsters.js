@@ -19,7 +19,8 @@ let playerMonsters = {
         fireCardPool.setaflame,
         fireCardPool.darkknowledge,
         fireCardPool.darkknowledge,
-        fireCardPool.sunlight,
+        fireCardPool.rareupgrade,
+        fireCardPool.vampiricstrike,
         fireCardPool.bloatedbomb
       ],
     },
@@ -73,7 +74,7 @@ let playerMonsters = {
       fightStrength: 0,
       fightDex: 0,
       turnEnergy: 3,
-      avatar: "img/fireMonster.png",
+      avatar: "img/adorablefire.png",
       startingDeck: [
         fireCardPool.fireEnergy,
         fireCardPool.darkknowledge,
