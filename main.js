@@ -43,7 +43,9 @@ const Status = {
   LevelUpEvent: "Choose a trait to permanently level up",
   ChooseRareEvent: "Choose a rare card to add to your deck",
   ShowCardPool: "showing card pool",
-  HealersShop: "Restore your health for a price"
+  HealersShop: "Restore your health for a price",
+  DeathScreen: "You stupid, stupid asshole! You got your Neo-Neopet killed! Refresh the page to try again",
+  VictoryScreen: "You and your little Neo-Neopet have beaten all the content available in this demo! Check back soon!"
 };
 
 let gameStartState = {
@@ -427,8 +429,10 @@ function resetAfterFight(stateObj) {
 
     newState.gold += gyms[newState.gymCount][newState.gymFightCount].goldReward
     
-
-    if (gyms[newState.gymCount][newState.gymFightCount].boss) {
+    console.log("gym count is " + newState.gymCount);
+    if (gyms[newState.gymCount][newState.gymFightCount].boss && newState.gymCount === 1) {
+      newState.status = Status.VictoryScreen;
+    } else if (gyms[newState.gymCount][newState.gymFightCount].boss) {
       newState.gymFightCount = 0;
       newState.gymCount += 1;
       newState.eventUsed = false; 
@@ -480,7 +484,7 @@ function handleDeaths(stateObj) {
         // all monsters are dead
         console.log("we deads");
         //newState.status = Status.lostEncounter;
-        newState = resetAfterEncounter(newState);
+        newState.status = Status.DeathScreen;
       }
     })
   }
@@ -1065,6 +1069,14 @@ function renderRemoveCard(stateObj) {
   skipToTownButton(stateObj, "I don't want to remove any of these cards from my deck", ".remove-div");
 };
 
+function renderWinLoseScreen(stateObj) {
+  document.getElementById("app").innerHTML = `
+  <div id="death" class="win-lose">
+    <p class="win-loss-text">${stateObj.status}</p>
+    <button onClick="window.location.reload();">Try Again</button>
+  </div>`
+};
+
 function renderCardPool(stateObj, cardPool) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
@@ -1533,6 +1545,8 @@ function renderScreen(stateObj) {
   } else if (stateObj.status == Status.ShowCardPool) {
     renderCardPool(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.DeathScreen || stateObj.status == Status.VictoryScreen) {
+    renderWinLoseScreen(stateObj);
   } else {
     renderDivs(stateObj);
     renderPlayerMonster(stateObj);
@@ -1590,6 +1604,8 @@ function playOpponentMove(stateObj) {
     //move.action also take a state object and returns a state object, so newState gets updated
     stateObj = move.action(stateObj, index, stateObj.opponentMonster);
   });
+
+  stateObj = handleDeaths(stateObj);
   return stateObj;
 }
 
