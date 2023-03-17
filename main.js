@@ -67,6 +67,7 @@ let gameStartState = {
   fightEnergyDrainTotal: 0,
   cardsPerTurn: 0,
   gainLifePerCard: 0,
+  townEventChosen: false
 };
 
 playerMonsterArray = Object.values(playerMonsters);
@@ -812,7 +813,7 @@ function renderTownDiv(stateObj, idNameString, imgSrcString, imgTextString, trig
   
 
 
-function renderTown(stateObj, ) {
+function renderTown(stateObj) {
 
   let eventsArray = [
     // {
@@ -825,65 +826,89 @@ function renderTown(stateObj, ) {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
       divText: "Treasure",
-      newStatus: Status.ChooseRareEvent
+      newStatus: Status.ChooseRareEvent,
+      eventID: 1
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
       divText: "Level Up",
-      newStatus: Status.LevelUpEvent
+      newStatus: Status.LevelUpEvent,
+      eventID: 2
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
       divText: "Refine",
-      newStatus: Status.DoubleUpgradeEvent
+      newStatus: Status.DoubleUpgradeEvent,
+      eventID: 3
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
       divText: "Empower",
-      newStatus: Status.DoublingAttack
+      newStatus: Status.DoublingAttack,
+      eventID: 4
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
       divText: "Duplicate",
-      newStatus: Status.DuplicatingCards
+      newStatus: Status.DuplicatingCards,
+      eventID: 5
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
       divText: "Double Tap",
-      newStatus: Status.IncreasingHits
+      newStatus: Status.IncreasingHits,
+      eventID: 6
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
       divText: "Memorize",
-      newStatus: Status.DecreasingCost
+      newStatus: Status.DecreasingCost,
+      eventID: 7
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
       divText: "Buffer Shield",
-      newStatus: Status.IncreasingBlock
+      newStatus: Status.IncreasingBlock,
+      eventID: 8
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.png",
       divText: "Hone Sword",
-      newStatus: Status.IncreasingAttack
+      newStatus: Status.IncreasingAttack,
+      eventID: 9
+      
     },
   ];
 
-  eventsArray = fisherYatesShuffle(eventsArray);
+
+  console.log(stateObj.townEventChosen.divText)
+  
 
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   let townDiv = document.createElement("Div");
   townDiv.classList.add("flex-container")
   townDiv.setAttribute("id", "town");
+
+  if (stateObj.townEventChosen === false) {
+    console.log("inside Town Event")
+    shuffledEventsArray = fisherYatesShuffle(eventsArray);
+
+    stateObj = immer.produce(stateObj, (newState) => {
+      newState.townEventChosen = shuffledEventsArray[0].eventID
+      console.log("event set")
+    })
+
+    changeState(stateObj);
+  }
   
 
   let townHealDiv = renderTownDiv(stateObj, "TownHealer", "img/healer.png", "Visit Healer", (stateObj.gold >= Math.floor(stateObj.healCost/2)), changeStatus, Status.HealersShop, "Not enough gold");
@@ -891,7 +916,7 @@ function renderTown(stateObj, ) {
   let townUpgradeDiv = renderTownDiv(stateObj, "TownUpgrade", "img/forge.png", "Upgrade A Card", (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `Not enough gold (${stateObj.cardUpgradeCost} needed)`);
   let townGymDiv = renderTownDiv(stateObj, "TownFight", "img/dracula.png", "Fight Town Gym", true, TownFight)
 
-  let mysteryDiv = renderTownDiv(stateObj, eventsArray[0].divID, eventsArray[0].imgSrc, eventsArray[0].divText, (stateObj.eventUsed == false), changeStatus, eventsArray[0].newStatus, "Already used");
+  let mysteryDiv = renderTownDiv(stateObj, eventsArray[stateObj.townEventChosen].divID, eventsArray[stateObj.townEventChosen].imgSrc, eventsArray[stateObj.townEventChosen].divText, (stateObj.eventUsed == false), changeStatus, eventsArray[stateObj.townEventChosen].newStatus, "Already used");
 
 
   townDiv.append(townHealDiv, townRemoveDiv, townUpgradeDiv, townGymDiv, mysteryDiv);
@@ -1179,7 +1204,7 @@ function renderIncreaseBaseHit(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseBaseHits, goldCost="moreHits")
     }
   });
-  skipToTownButton(stateObj, "I don't want more hits for any of these cards", "remove-div"); 
+  skipToTownButton(stateObj, "I don't want more hits for any of these cards", ".remove-div"); 
 };
 
 function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=false, goldCost=false) {

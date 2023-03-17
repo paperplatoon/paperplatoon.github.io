@@ -630,7 +630,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 }
 
 .hunted {
-  background-image: url("img/crosshair.PNG");
+  background-image: url(img/crosshair.PNG);
   height: 1.6vmax;
   width: 1.6vmax;
 }
