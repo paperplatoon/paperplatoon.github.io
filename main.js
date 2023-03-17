@@ -750,7 +750,7 @@ function renderDivs(stateObj) {
       <div id="deckDiv"> </div>
     </div>
     <div id="goldDiv">
-      <img src="img/goldsack.png" class="bg-image"></img>
+      <img src="img/goldsack.PNG" class="bg-image"></img>
       <h3 id="goldText"></h3>
     </div>
   </div>
@@ -1128,9 +1128,9 @@ function renderLevelUp(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app", "level-up-div");
 
-  let strengthDiv = renderTownDiv(stateObj, "increaseStrength", "img/forge.png", "+5 permanent Strength", true, increaseStrengthEvent, Status.InTown, altText=false);
-  let DexDiv = renderTownDiv(stateObj, "increaseDex", "img/forge.png", "+5 permanent Dexterity", true, increaseDexEvent, Status.InTown, altText=false);
-  let energyDiv = renderTownDiv(stateObj, "increaseEnergy", "img/forge.png", "+1 energy per turn", true, increaseEnergyEvent, Status.InTown, altText=false);
+  let strengthDiv = renderTownDiv(stateObj, "increaseStrength", "img/forge.PNG", "+5 permanent Strength", true, increaseStrengthEvent, Status.InTown, altText=false);
+  let DexDiv = renderTownDiv(stateObj, "increaseDex", "img/forge.PNG", "+5 permanent Dexterity", true, increaseDexEvent, Status.InTown, altText=false);
+  let energyDiv = renderTownDiv(stateObj, "increaseEnergy", "img/forge.PNG", "+1 energy per turn", true, increaseEnergyEvent, Status.InTown, altText=false);
   
   document.getElementById("level-up-div").append(strengthDiv, DexDiv, energyDiv);
   
@@ -1393,7 +1393,7 @@ function renderOpponents(stateObj) {
 
     if (monsterObj.hunted > 0) {
       let huntedDiv = document.createElement("img");
-      huntedDiv.src = 'img/crosshair.png';
+      huntedDiv.src = 'img/crosshair.PNG';
       huntedDiv.classList.add('hunted');
       monsterStatsDiv.append(huntedDiv)
     }
