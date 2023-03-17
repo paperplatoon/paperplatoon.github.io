@@ -230,7 +230,7 @@ let fireCardPool = {
     darkknowledge: {
       cardID: 9,
       name: "Dark Knowledge",
-      text: (state, index, array) => { return `Self-wound ${array[index].baseSelfDamage} damage. Draw ${4+array[index].upgrades} cards` },
+      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage} damage. Draw ${4+array[index].upgrades} cards` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -259,7 +259,7 @@ let fireCardPool = {
     cursedritual: {
       cardID: 10,
       name: "Cursed Ritual",
-      text: (state, index, array) => { return `Self-wound ${array[index].baseSelfDamage} damage. Gain ${5+(array[index].upgrades*5)} strength` },
+      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage} damage. Gain ${5+(array[index].upgrades*5)} strength` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -288,7 +288,7 @@ let fireCardPool = {
     bloodshield: {
       cardID: 11,
       name: "Blood Shield",
-      text: (state, index, array) => { return `Self-wound ${array[index].baseSelfDamage + (array[index].upgrades*3)} damage. Gain ${20+(array[index].upgrades*10)} block` },
+      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage + (array[index].upgrades*3)} damage. Gain ${20+(array[index].upgrades*10)} block` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -315,7 +315,7 @@ let fireCardPool = {
     calldemons: {
       cardID: 12,
       name: "Call Demons",
-      text: (state, index, array) => { return `Deal ${array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*5)} damage for each Self-wound this game (${state.fightSelfDamageCount})` },
+      text: (state, index, array) => { return `Deal ${array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*5)} damage for each time you Self-damaged this game (${state.fightSelfDamageCount})` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -904,7 +904,7 @@ let fireCardPool = {
     brand: {
       cardID: 30,
       name: "Branding Iron",
-      text: (state, index, array) => { return `Self-wound ${array[index].baseSelfDamage - array[index].upgrades} damage. Gain ${3+array[index].upgrades} energy` },
+      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage - array[index].upgrades} damage. Gain ${3+array[index].upgrades} energy` },
       minReq: 0,
       upgrades: 0,
       baseCost: 0,

@@ -591,7 +591,7 @@ let opponentMonsters = {
           name: "Rear Up",
           cost: "5",
           text: (state, index, array) => {
-            return `Deal ${50 + array[index].strength} damage. -5 energy`
+            return `Deal ${50 + array[index].strength} damage. -1 energy`
           },
           minReq: 5,
           action: (state, index, array) => {
@@ -599,7 +599,7 @@ let opponentMonsters = {
               let tempState = dealPlayerDamage(newState, 50, index);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
-              newState.opponentMonster[index].encounterEnergy -= 5;
+              newState.opponentMonster[index].encounterEnergy -= 1;
             })
             return toChangeState;
           }
@@ -645,12 +645,12 @@ let opponentMonsters = {
           name: "Shield Throw",
           cost: "3",
           text: (state, index, array) => {
-            return `Deal ${5 + array[index].strength} damage 3 times. +1 energy`
+            return `Deal ${5 + array[index].strength} damage 5 times. +1 energy`
           },
           minReq: 3,
           action: (state, index, array) => {
             let toChangeState = immer.produce(state, (newState) => {
-              let tempState = dealPlayerDamage(newState, 5, index, 3);
+              let tempState = dealPlayerDamage(newState, 5, index, 5);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
               newState.opponentMonster[index].encounterEnergy += 1;
@@ -689,10 +689,10 @@ let opponentMonsters = {
     healgymguard1: {
       name: "heal1",
       type: "Air",
-      maxHP: 45,
+      maxHP: 55,
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      currentHP: 45,
+      currentHP: 55,
       strength: 0,
       dex: 0,
       drown: 0,
@@ -807,6 +807,59 @@ let opponentMonsters = {
         
       ]
     },
+
+    strengthgym1: {
+      name: "test1",
+      type: "Air",
+      maxHP: 60,
+      encounterEnergy: 0,
+      opponentMoveIndex: false,
+      currentHP: 60,
+      strength: 0,
+      dex: 0,
+      drown: 0,
+      hunted: 0,
+      poison: 0,
+      avatar: "img/dracula.png",
+      moves: [
+        {
+          name: "Take Cover",
+          cost: "0",
+          text: (state, index, array) => {
+            return `Gain ${15 + array[index].dex} block. +1 energy`
+          }, 
+          minReq: 0,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              newState.opponentMonster.forEach(function(monsterObj) {
+                monsterObj.encounterBlock += (15 +array[index].dex);
+              })
+              newState.opponentMonster[index].encounterEnergy +=1;     
+            })
+            return toChangeState;
+          }
+        },
+        {
+          name: "Shield Throw",
+          cost: "1",
+          text: (state, index, array) => {
+            return `Deal ${15 + array[index].dex + array[index].strength} damage. Gain 1 dexterity. -1 energy`
+          },
+          minReq: 1,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              let tempState = dealPlayerDamage(newState, (15 + array[index].dex), index);
+              newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+              newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
+              newState.opponentMonster[index].encounterEnergy -= 1;
+              newState.opponentMonster[index].dex +=1;
+            })
+            return toChangeState;
+          }
+        }
+        
+      ]
+    },
   }
  // consuming flames
  // rising tide
@@ -818,7 +871,7 @@ let opponentMonsters = {
   },
 
   {
-    opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockbossguard2],
+    opponents: [opponentMonsters.blockbossguard2, opponentMonsters.blockgym1],
     goldReward: 25
   },
 
@@ -836,7 +889,7 @@ let opponentMonsters = {
   },
 
   {
-    opponents: [opponentMonsters.healgymguard1, opponentMonsters.healgymguard1],
+    opponents: [opponentMonsters.healgymguard1, opponentMonsters.healgym1],
     goldReward: 25
   },
 

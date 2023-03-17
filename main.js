@@ -67,7 +67,7 @@ let gameStartState = {
   fightEnergyDrainTotal: 0,
   cardsPerTurn: 0,
   gainLifePerCard: 0,
-  townEventChosen: 1
+  townEventChosen: false
 };
 
 playerMonsterArray = Object.values(playerMonsters);
@@ -1042,7 +1042,7 @@ function skipToTownButton(stateObj, buttonString, divName, cardSkip=false, isEve
   if (!cardSkip) {
     console.log("no cardskip")
     skipButton.addEventListener("click", function () {
-      changeStatus(stateObj, Status.InTown, isEventUsedForSkipButton=true);
+      changeStatus(stateObj, Status.InTown, isEventUsedForSkipButton);
     });
   } else {
     console.log("yes cardskip and isEventUsed = " + isEventUsedForSkipButton)
