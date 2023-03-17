@@ -67,7 +67,7 @@ let gameStartState = {
   fightEnergyDrainTotal: 0,
   cardsPerTurn: 0,
   gainLifePerCard: 0,
-  townEventChosen: false
+  townEventChosen: 1
 };
 
 playerMonsterArray = Object.values(playerMonsters);
@@ -186,17 +186,23 @@ function fisherYatesShuffle(arrayObj) {
  return arrayCopy;
 }
 
-function changeStatus(stateObj, newStatus) {
+function changeStatus(stateObj, newStatus, countsAsEventSkipForChangeStatus=false) {
   stateObj = immer.produce(stateObj, (newState) => {
+    if (countsAsEventSkipForChangeStatus) {
+      newState.eventUsed = true;
+    }
     newState.status = newStatus;
   })
   changeState(stateObj);
   return stateObj;
 }
 
-function skipCards(stateObj) {
+function skipCards(stateObj, isUsedForEventSkip=false) {
   stateObj = immer.produce(stateObj, (newState) => {
-    stateObj.cardsSkipped += 1;
+    if (isUsedForEventSkip) {
+      newState.eventUsed = true
+    }
+    newState.cardsSkipped += 1;
     newState.status = Status.InTown;
   })
   changeState(stateObj);
@@ -213,11 +219,16 @@ function TownFight(stateObj) {
 }
 
 function chooseThisCard(stateObj, index, sampledCardPool) {
-  console.log("passed for card pool " + sampledCardPool)
-  console.log("passed for index " + index)
-  console.log("card to add " + sampledCardPool[index])
+  console.log("status before adding card is " + stateObj.status)
+  console.log("added " + sampledCardPool[index].name + " to deck")
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerDeck.push(sampledCardPool[index]); 
+    console.log("status outside of ChooseThisCard is " + newState.status)
+
+    if (newState.townEventChosen === 0){
+      newState.eventUsed = true;
+    }
+
     newState.status = Status.InTown;   
   })
   changeState(stateObj);
@@ -225,7 +236,9 @@ function chooseThisCard(stateObj, index, sampledCardPool) {
 }
 
 function removeCard(stateObj, index) {
+  console.log("removed " + stateObj.playerDeck[index].name + " from deck")
   stateObj = immer.produce(stateObj, (newState) => {
+    newState.eventUsed = true;
     newState.gold -= newState.cardRemoveCost;
     newState.cardRemoveCost += 25;
     newState.playerDeck.splice(index, 1);
@@ -237,6 +250,7 @@ function removeCard(stateObj, index) {
 
 function increaseStrengthEvent(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
+    newState.eventUsed = true;
     newState.playerMonster.strength += 5;
     newState.status = Status.InTown
   })
@@ -246,6 +260,7 @@ function increaseStrengthEvent(stateObj) {
 
 function increaseDexEvent(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
+    newState.eventUsed = true;
     newState.playerMonster.dex += 5;
     newState.status = Status.InTown
   })
@@ -255,6 +270,7 @@ function increaseDexEvent(stateObj, index) {
 
 function increaseEnergyEvent(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
+    newState.eventUsed = true;
     newState.playerMonster.turnEnergy += 1;
     newState.status = Status.InTown
   })
@@ -265,6 +281,7 @@ function increaseEnergyEvent(stateObj, index) {
 function duplicateCard(stateObj, index, array) {
   stateObj = immer.produce(stateObj, (newState) => {
     let cardObj = {...newState.playerDeck[index]}
+    newState.eventUsed = true;
     newState.playerDeck.push(cardObj);
     newState.status = Status.InTown
   })
@@ -274,6 +291,7 @@ function duplicateCard(stateObj, index, array) {
 
 function doubleUpgradeCard(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
+    newState.eventUsed = true;
     newState.playerDeck[index].upgrades +=2;
     newState.status = Status.InTown;
   })
@@ -378,8 +396,8 @@ function increaseBaseHits(stateObj, index, array) {
 
 
 function changeState(newStateObj) {
-  console.log("you're changing the state and the status is " + newStateObj.status);
   state = {...newStateObj}
+  console.log("current state is " + state.status)
   //state = { ...handleDeaths() };
   renderScreen(state);
 }
@@ -426,7 +444,6 @@ function resetAfterFight(stateObj) {
 
 function handleDeaths(stateObj) {
   let shouldUpgrade = false;
-  console.log("handling deaths");
   if (stateObj.opponentMonster) {
     stateObj = immer.produce(stateObj, (newState) => {
       let indexesToDelete = [];
@@ -627,12 +644,12 @@ function upgradeCard(stateObj) {
 }
 
 async function playACard(stateObj, cardIndexInHand, arrayObj) {
-  console.log("triggering playACard");
+  console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
   stateObj = stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
   stateObj = immer.produce(stateObj, (newState) => {
     newState.cardsPerTurn += 1;
     if (stateObj.encounterHand[cardIndexInHand].exhaust == true) {
-      console.log("you're exhausting " + stateObj.encounterHand[cardIndexInHand].name);
+      console.log("you exhausted " + stateObj.encounterHand[cardIndexInHand].name);
       newState.encounterHand.splice(cardIndexInHand, 1);
     } else {
       newState.encounterDiscard.push(stateObj.encounterHand[cardIndexInHand]);
@@ -825,78 +842,77 @@ function renderTown(stateObj) {
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.PNG",
-      divText: "Treasure",
+      divText: "Choose Rare Card",
       newStatus: Status.ChooseRareEvent,
+      eventID: 0
+    },
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.PNG",
+      divText: "Increase Stats",
+      newStatus: Status.LevelUpEvent,
       eventID: 1
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.PNG",
-      divText: "Level Up",
-      newStatus: Status.LevelUpEvent,
+      divText: "Upgrade Card 2x",
+      newStatus: Status.DoubleUpgradeEvent,
       eventID: 2
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.PNG",
-      divText: "Refine",
-      newStatus: Status.DoubleUpgradeEvent,
+      divText: "Double Card's Attack",
+      newStatus: Status.DoublingAttack,
       eventID: 3
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.PNG",
-      divText: "Empower",
-      newStatus: Status.DoublingAttack,
+      divText: "Duplicate Card",
+      newStatus: Status.DuplicatingCards,
       eventID: 4
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.PNG",
-      divText: "Duplicate",
-      newStatus: Status.DuplicatingCards,
+      divText: "Increase Card Hits",
+      newStatus: Status.IncreasingHits,
       eventID: 5
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.PNG",
-      divText: "Double Tap",
-      newStatus: Status.IncreasingHits,
+      divText: "Decrease Card Cost",
+      newStatus: Status.DecreasingCost,
       eventID: 6
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.PNG",
-      divText: "Memorize",
-      newStatus: Status.DecreasingCost,
+      divText: "Increase Card Block",
+      newStatus: Status.IncreasingBlock,
       eventID: 7
     },
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.PNG",
-      divText: "Buffer Shield",
-      newStatus: Status.IncreasingBlock,
-      eventID: 8
-    },
-    {
-      divID: "TownEvent",
-      imgSrc: "img/wizardshop.PNG",
-      divText: "Hone Sword",
+      divText: "Increase Card Attack",
       newStatus: Status.IncreasingAttack,
-      eventID: 9
+      eventID: 8
       
     },
   ];
 
 
-  console.log(stateObj.townEventChosen.divText)
   
 
-  document.getElementById("app").innerHTML = ""
-  topRowDiv(stateObj, "app");
-  let townDiv = document.createElement("Div");
-  townDiv.classList.add("flex-container")
-  townDiv.setAttribute("id", "town");
+    document.getElementById("app").innerHTML = ""
+    topRowDiv(stateObj, "app");
+    let townDiv = document.createElement("Div");
+    townDiv.classList.add("flex-container")
+    townDiv.setAttribute("id", "town");
 
   if (stateObj.townEventChosen === false) {
     console.log("inside Town Event")
@@ -1021,15 +1037,17 @@ function divContainer(divName, newDivName=false) {
   return removeDiv
 }
 
-function skipToTownButton(stateObj, buttonString, divName, cardSkip=false) {
+function skipToTownButton(stateObj, buttonString, divName, cardSkip=false, isEventUsedForSkipButton=false) {
   let skipButton = document.createElement("Button");
   if (!cardSkip) {
+    console.log("no cardskip")
     skipButton.addEventListener("click", function () {
-      changeStatus(stateObj, Status.InTown);
+      changeStatus(stateObj, Status.InTown, isEventUsedForSkipButton=true);
     });
   } else {
+    console.log("yes cardskip and isEventUsed = " + isEventUsedForSkipButton)
     skipButton.addEventListener("click", function () {
-      skipCards(stateObj);
+      skipCards(stateObj, isEventUsedForSkipButton);
     });
   }
   
@@ -1060,7 +1078,7 @@ function renderDuplicateCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", duplicateCard);
-  skipToTownButton(stateObj, "I don't want to duplicate any of these cards", ".remove-div");
+  skipToTownButton(stateObj, "I don't want to duplicate any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
 };
 
 function renderDoubleUpgradeCard(stateObj) {
@@ -1068,7 +1086,7 @@ function renderDoubleUpgradeCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", doubleUpgradeCard);
-  skipToTownButton(stateObj, "I don't want to upgrade any of these cards", ".remove-div");
+  skipToTownButton(stateObj, "I don't want to upgrade any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
 };
 
 function renderChooseCardReward(stateObj) {
@@ -1083,6 +1101,7 @@ function renderChooseCardReward(stateObj) {
 };
 
 function renderChooseRareCard(stateObj) {
+  console.log("status while choosing rare is " + stateObj.status);
   let cardPool = Object.values(stateObj.playerMonster.cardPool);
   let rareCards = cardPool.filter(card => card.rare);
   let shuffledCardPool = fisherYatesShuffle(rareCards);
@@ -1092,7 +1111,7 @@ function renderChooseRareCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
-  skipToTownButton(stateObj, "I don't want to add any of these cards to my deck", ".remove-div", cardSkip=true);
+  skipToTownButton(stateObj, "I don't want to add any of these cards to my deck", ".remove-div", cardSkip=true,  isEventUsedForSkipButton=true);
 };
 
 function renderHealer(stateObj) {
@@ -1135,7 +1154,7 @@ function renderLevelUp(stateObj) {
   document.getElementById("level-up-div").append(strengthDiv, DexDiv, energyDiv);
   
   
-  skipToTownButton(stateObj, "I don't want to level up for some reason (I should!)", "#app");
+  skipToTownButton(stateObj, "I don't want to level up for some reason (I should!)", "#app", cardSkip=false, isEventUsedForSkipButton=true);
   
 };
 
@@ -1156,7 +1175,7 @@ function renderDecreaseCardCost(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", decreaseCardCost)
     }
   });
-  skipToTownButton(stateObj, "I don't want to decrease the cost of any of these cards", ".remove-div"); 
+  skipToTownButton(stateObj, "I don't want to decrease the cost of any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
 };
 
 function renderIncreaseCardBlock(stateObj) {
@@ -1168,7 +1187,7 @@ function renderIncreaseCardBlock(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardBlock)
     }
   });
-  skipToTownButton(stateObj, "I don't want to increase the block of any of these cards", ".remove-div"); 
+  skipToTownButton(stateObj, "I don't want to increase the block of any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
 };
 
 function renderIncreaseCardAttack(stateObj) {
@@ -1180,7 +1199,7 @@ function renderIncreaseCardAttack(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardAttack)
     }
   });
-  skipToTownButton(stateObj, "I don't want to increase the attack of any of these cards", ".remove-div"); 
+  skipToTownButton(stateObj, "I don't want to increase the attack of any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
 };
 
 function renderDoubleCardAttack(stateObj) {
@@ -1192,7 +1211,7 @@ function renderDoubleCardAttack(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", doubleCardAttack)
     }
   });
-  skipToTownButton(stateObj, "I don't want to double the attack of any of these cards", ".remove-div"); 
+  skipToTownButton(stateObj, "I don't want to double the attack of any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
 };
 
 function renderIncreaseBaseHit(stateObj) {
@@ -1204,7 +1223,7 @@ function renderIncreaseBaseHit(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseBaseHits, goldCost="moreHits")
     }
   });
-  skipToTownButton(stateObj, "I don't want more hits for any of these cards", ".remove-div"); 
+  skipToTownButton(stateObj, "I don't want more hits for any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
 };
 
 function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=false, goldCost=false) {
@@ -1248,7 +1267,6 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
         cardDiv.append(cardText);
 
         if (goldCost === "remove") {
-          console.log("remove")
           let costText = document.createElement("P");
           costText.textContent = "(" + stateObj.cardRemoveCost+ " gold to remove)";
           costText.classList.add("invisible-cost")
@@ -1337,7 +1355,6 @@ function showChangedUpgradeText(stateObj, index, array, cardObj, propertyNameStr
   let newState = immer.produce(stateObj, (draft) => {
     draft.playerDeck[index][propertyNameString] += valueChange;
   })
-  console.log(newState.playerDeck[index][propertyNameString])
   return cardClone.text(newState, index, newState.playerDeck)  
 }
 
@@ -1346,7 +1363,6 @@ function showChangedUpgradeCost(stateObj, index, array, cardObj, propertyNameStr
   let newState = immer.produce(stateObj, (draft) => {
     draft.playerDeck[index][propertyNameString] += valueChange;
   })
-  console.log(newState.playerDeck[index][propertyNameString])
   return cardClone.cost(newState, index, newState.playerDeck)  
 }
 
@@ -1556,7 +1572,7 @@ function pickMove(stateObj) {
       for (var i = 0; i < monsterObj.moves.length; i++) {
         if (monsterObj.encounterEnergy >= monsterObj.moves[i].minReq) {
           newState.opponentMonster[index].opponentMoveIndex = i;
-          console.log(monsterObj.name + " picks " + monsterObj.moves[i].name);
+          console.log(monsterObj.name + " picks " + monsterObj.moves[i].name + " to use next turn");
         }
       }
     });
@@ -1569,6 +1585,7 @@ function pickMove(stateObj) {
 function playOpponentMove(stateObj) {
   //each opponent Monster plays its own move
   stateObj.opponentMonster.forEach(function (monsterObj, index) {
+    console.log(monsterObj.name + " uses " + monsterObj.moves[monsterObj.opponentMoveIndex].name);
     const move = monsterObj.moves[monsterObj.opponentMoveIndex];
     //move.action also take a state object and returns a state object, so newState gets updated
     stateObj = move.action(stateObj, index, stateObj.opponentMonster);

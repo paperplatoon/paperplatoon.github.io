@@ -855,7 +855,7 @@ let opponentMonsters = {
   
   let playerMonsters = {
     devCheat: {
-      name: "Test Character",
+      name: "Easy Mode",
       type: "fire",
       encounterEnergy: 0,
       opponentMoveIndex: false,
@@ -871,13 +871,11 @@ let opponentMonsters = {
       turnEnergy: 3,
       avatar: "img/fireMonster.png",
       startingDeck: [
+        fireCardPool.setaflame,
         fireCardPool.darkknowledge,
         fireCardPool.darkknowledge,
-        fireCardPool.puffofsmoke,
-        fireCardPool.retreatingslash,
-        fireCardPool.setAflame,
-        fireCardPool.fierymissiles,
-        fireCardPool.sunlight
+        fireCardPool.sunlight,
+        fireCardPool.bloatedbomb
       ],
     },
   
@@ -912,6 +910,37 @@ let opponentMonsters = {
         fireCardPool.tackle,
         fireCardPool.tackle,
         fireCardPool.tackle
+      ],
+    },
+
+    genner: {
+      name: "Genner (strong)",
+      type: "fire",
+      encounterEnergy: 0,
+      opponentMoveIndex: false,
+      cardPool: fireCardPool,
+      maxHP: 100,
+      currentHP: 100,
+      strength: 0,
+      dex: 0,
+      tempStrength: 0,
+      tempDex: 0,
+      fightStrength: 0,
+      fightDex: 0,
+      turnEnergy: 3,
+      avatar: "img/fireMonster.png",
+      startingDeck: [
+        fireCardPool.fireEnergy,
+        fireCardPool.darkknowledge,
+        fireCardPool.puffofsmoke,
+        fireCardPool.retreatingslash,
+        fireCardPool.sunlight,
+        fireCardPool.withdraw,
+        fireCardPool.withdraw,
+        fireCardPool.withdraw,
+        fireCardPool.tackle,
+        fireCardPool.tackle,
+        fireCardPool.tackle,
       ],
     },
   

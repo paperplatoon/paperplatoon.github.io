@@ -100,7 +100,7 @@ let fireCardPool = {
       }
     },
 
-    setAflame: {
+    setaflame: {
       cardID: 4,
       name: "Set Aflame",
       minReq: -99,
