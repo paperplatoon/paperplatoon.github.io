@@ -824,63 +824,63 @@ function renderTown(stateObj) {
     // },
     {
       divID: "TownEvent",
-      imgSrc: "img/wizardshop.png",
+      imgSrc: "img/wizardshop.PNG",
       divText: "Treasure",
       newStatus: Status.ChooseRareEvent,
       eventID: 1
     },
     {
       divID: "TownEvent",
-      imgSrc: "img/wizardshop.png",
+      imgSrc: "img/wizardshop.PNG",
       divText: "Level Up",
       newStatus: Status.LevelUpEvent,
       eventID: 2
     },
     {
       divID: "TownEvent",
-      imgSrc: "img/wizardshop.png",
+      imgSrc: "img/wizardshop.PNG",
       divText: "Refine",
       newStatus: Status.DoubleUpgradeEvent,
       eventID: 3
     },
     {
       divID: "TownEvent",
-      imgSrc: "img/wizardshop.png",
+      imgSrc: "img/wizardshop.PNG",
       divText: "Empower",
       newStatus: Status.DoublingAttack,
       eventID: 4
     },
     {
       divID: "TownEvent",
-      imgSrc: "img/wizardshop.png",
+      imgSrc: "img/wizardshop.PNG",
       divText: "Duplicate",
       newStatus: Status.DuplicatingCards,
       eventID: 5
     },
     {
       divID: "TownEvent",
-      imgSrc: "img/wizardshop.png",
+      imgSrc: "img/wizardshop.PNG",
       divText: "Double Tap",
       newStatus: Status.IncreasingHits,
       eventID: 6
     },
     {
       divID: "TownEvent",
-      imgSrc: "img/wizardshop.png",
+      imgSrc: "img/wizardshop.PNG",
       divText: "Memorize",
       newStatus: Status.DecreasingCost,
       eventID: 7
     },
     {
       divID: "TownEvent",
-      imgSrc: "img/wizardshop.png",
+      imgSrc: "img/wizardshop.PNG",
       divText: "Buffer Shield",
       newStatus: Status.IncreasingBlock,
       eventID: 8
     },
     {
       divID: "TownEvent",
-      imgSrc: "img/wizardshop.png",
+      imgSrc: "img/wizardshop.PNG",
       divText: "Hone Sword",
       newStatus: Status.IncreasingAttack,
       eventID: 9
@@ -911,9 +911,9 @@ function renderTown(stateObj) {
   }
   
 
-  let townHealDiv = renderTownDiv(stateObj, "TownHealer", "img/healer.png", "Visit Healer", (stateObj.gold >= Math.floor(stateObj.healCost/2)), changeStatus, Status.HealersShop, "Not enough gold");
-  let townRemoveDiv = renderTownDiv(stateObj, "TownRemove", "img/tavern2.png", "Remove A Card",  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `Not enough gold (${stateObj.cardRemoveCost} needed)`);
-  let townUpgradeDiv = renderTownDiv(stateObj, "TownUpgrade", "img/forge.png", "Upgrade A Card", (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `Not enough gold (${stateObj.cardUpgradeCost} needed)`);
+  let townHealDiv = renderTownDiv(stateObj, "TownHealer", "img/healer.PNG", "Visit Healer", (stateObj.gold >= Math.floor(stateObj.healCost/2)), changeStatus, Status.HealersShop, "Not enough gold");
+  let townRemoveDiv = renderTownDiv(stateObj, "TownRemove", "img/tavern2.PNG", "Remove A Card",  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `Not enough gold (${stateObj.cardRemoveCost} needed)`);
+  let townUpgradeDiv = renderTownDiv(stateObj, "TownUpgrade", "img/forge.PNG", "Upgrade A Card", (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `Not enough gold (${stateObj.cardUpgradeCost} needed)`);
   let townGymDiv = renderTownDiv(stateObj, "TownFight", "img/dracula.png", "Fight Town Gym", true, TownFight)
 
   let mysteryDiv = renderTownDiv(stateObj, eventsArray[stateObj.townEventChosen].divID, eventsArray[stateObj.townEventChosen].imgSrc, eventsArray[stateObj.townEventChosen].divText, (stateObj.eventUsed == false), changeStatus, eventsArray[stateObj.townEventChosen].newStatus, "Already used");
@@ -991,7 +991,7 @@ function topRowDiv(stateObj, divName) {
   goldDiv.setAttribute("id", "goldDiv");
 
   let goldImg = document.createElement("img");
-  goldImg.src = "img/goldsack.png";
+  goldImg.src = "img/goldsack.PNG";
   goldImg.classList.add("bg-image");
   goldDiv.append(goldImg);
 
