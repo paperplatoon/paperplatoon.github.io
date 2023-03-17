@@ -2,10 +2,8 @@
 //randomize some stuff like strength and dex (maybe starting energy) to change stuff up a bit
 
 let opponentMonsters = {
-
-
     blockbossguard1: {
-      name: "guard1",
+      name: "Block Gym Guard 1",
       type: "Air",
       maxHP: 60,
       encounterEnergy: 0,
@@ -20,7 +18,7 @@ let opponentMonsters = {
       baseBlock: 5,
       baseScale: 0,
       baseHeal: 0,
-      avatar: "img/dracula.png",
+      avatar: "img/airmask.png",
       moves: [
         {
           name: "Spreading Shield",
@@ -51,7 +49,7 @@ let opponentMonsters = {
           minReq: 4,
           action: (state, monsterIndex) => {
             let toChangeState = immer.produce(state, (newState) => {
-              let tempState = dealPlayerDamage(newState, 30, monsterIndex);
+              let tempState = dealPlayerDamage(newState, array[index].baseDamage, monsterIndex);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
 
@@ -64,7 +62,7 @@ let opponentMonsters = {
     },
 
     blockbossguard2: {
-      name: "guard2",
+      name: "Block Gym Guard 2",
       type: "Air",
       maxHP: 50,
       encounterEnergy: 0,
@@ -79,7 +77,7 @@ let opponentMonsters = {
       baseBlock: 5,
       baseScale: 0,
       baseHeal: 0,
-      avatar: "img/dracula.png",
+      avatar: "img/airmask.png",
       moves: [
         {
           name: "Spreading Shield",
@@ -88,7 +86,7 @@ let opponentMonsters = {
             return `All enemies gain +${array[index].baseBlock + array[index].dex} block. +1 energy`
           }, 
           minReq: 0,
-          action: (state, monsterIndex) => {
+          action: (state, index, array) => {
             let toChangeState = immer.produce(state, (newState) => {
               newState.opponentMonster.forEach(function(monsterObj, index) {
                 monsterObj.encounterBlock += (array[index].baseBlock +state.opponentMonster[monsterIndex].dex);
@@ -121,7 +119,7 @@ let opponentMonsters = {
     },
 
     blockgym1: {
-      name: "test1",
+      name: "Block Gym Disciple",
       type: "Air",
       maxHP: 60,
       encounterEnergy: 0,
@@ -178,7 +176,7 @@ let opponentMonsters = {
     },
 
     blockgymboss: {
-      name: "boss",
+      name: "Block Gym Boss",
       type: "Air",
       maxHP: 100,
       encounterEnergy: 0,
@@ -193,7 +191,7 @@ let opponentMonsters = {
       baseScale: 1,
       baseBlock: 0,
       baseHeal: 0,
-      avatar: "img/dracula.png",
+      avatar: "img/hugeair.png",
       moves: [
         {
           name: "Shielded Strike",
@@ -262,7 +260,7 @@ let opponentMonsters = {
     },
 
     healgym1: {
-      name: "heal1",
+      name: "Heal Gym Disciple",
       type: "Air",
       maxHP: 80,
       encounterEnergy: 0,
@@ -344,7 +342,7 @@ let opponentMonsters = {
     },
 
     healgymguard1: {
-      name: "heal1",
+      name: "Heal Gym Guard",
       type: "Air",
       maxHP: 55,
       encounterEnergy: 0,
@@ -372,7 +370,9 @@ let opponentMonsters = {
             let toChangeState = immer.produce(state, (newState) => {
               if (array[index].currentHP < (array[index].maxHP - (array[index].baseHeal+1))) {
                 newState.opponentMonster[index].currentHP += array[index].baseHeal;
+                newState.enemyFightHealTotal += array[index].baseHeal;
               } else {
+                newState.enemyFightHealTotal += (newState.opponentMonster[index].maxHP - newState.opponentMonster[index].currentHP)
                 newState.opponentMonster[index].currentHP = newState.opponentMonster[index].maxHP;
               }; 
               newState.opponentMonster[index].encounterEnergy += 1;    
@@ -390,7 +390,7 @@ let opponentMonsters = {
           minReq: 4,
           action: (state, index, array) => {
             let toChangeState = immer.produce(state, (newState) => {
-              let tempState = dealPlayerDamage(newState, 40, index);
+              let tempState = dealPlayerDamage(newState, array[index].baseDamage, index);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
               newState.opponentMonster[index].encounterEnergy -= 4;
@@ -403,7 +403,7 @@ let opponentMonsters = {
     },
 
     healgymboss: {
-      name: "healboss",
+      name: "Heal Gym Boss",
       type: "Air",
       maxHP: 100,
       encounterEnergy: 0,
@@ -472,55 +472,174 @@ let opponentMonsters = {
     },
 
     strengthgym1: {
-      name: "strength1",
-      type: "Air",
-      maxHP: 130,
+      name: "Strength Gym Disciple",
+      type: "Fire",
+      maxHP: 70,
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      currentHP: 130,
+      currentHP: 70,
       strength: 0,
       dex: 0,
       drown: 0,
       hunted: 0,
       poison: 0,
-      avatar: "img/watertongue.png",
+      baseBlock: 15,
+      baseDamage: 20,
+      baseScale: 10,
+      baseHeal: 0,
+      avatar: "img/firesheep.png",
       moves: [
         {
           name: "Power Strike",
           cost: "0",
           text: (state, index, array) => {
-            return `Deal ${20 + array[index].strength} damange. +2 energy`
-          }, 
+            return `Deal ${array[index].baseDamage + array[index].strength} damage. +1 energy`
+          },
           minReq: 0,
           action: (state, index, array) => {
             let toChangeState = immer.produce(state, (newState) => {
-              let tempState = dealPlayerDamage(newState, 20, index);
+              let tempState = dealPlayerDamage(newState, (array[index].baseDamage), index);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
-              newState.opponentMonster[index].encounterEnergy +=2;     
+              newState.opponentMonster[index].encounterEnergy += 1;
+              
             })
             return toChangeState;
           }
-        },
+        }, 
         {
-          name: "Enraged",
+          name: "Enrage",
           cost: "1",
           text: (state, index, array) => {
-            return `Gain ${20 + array[index].dex} block. Gain 10 strength. -2 energy. Shuffle an Enrage into your deck`
-          },
+            return `Gain ${array[index].baseBlock + array[index].dex} block. Gain ${array[index].baseScale} strength. -1 energy`
+          }, 
           minReq: 1,
           action: (state, index, array) => {
             let toChangeState = immer.produce(state, (newState) => {
-              newState.opponentMonster[index].encounterEnergy -= 2;
-              newState.opponentMonster[index].encounterBlock += 20;
-              newState.opponentMonster[index].strength +=10;
+              newState.opponentMonster[index].encounterBlock += (array[index].baseBlock +array[index].dex);
+              newState.opponentMonster[index].encounterEnergy -=1;   
+              newState.opponentMonster[index].strength += array[index].baseScale;  
             })
             return toChangeState;
           }
         }
-        
       ]
     },
+
+    strengthgymguard: {
+      name: "Strength Gym Guard",
+      type: "Fire",
+      maxHP: 50,
+      encounterEnergy: 0,
+      opponentMoveIndex: false,
+      currentHP: 50,
+      strength: 0,
+      dex: 0,
+      drown: 0,
+      hunted: 0,
+      poison: 0,
+      baseBlock: 0,
+      baseDamage: 1,
+      baseScale: 1,
+      baseHeal: 0,
+      avatar: "img/firebaby.png",
+      moves: [
+        {
+          name: "Whirling Dervish",
+          cost: "0",
+          text: (state, index, array) => {
+            return `Deal ${array[index].baseDamage + array[index].strength} damage 5 times. Gain 1 strength`
+          },
+          minReq: 0,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              let tempState = dealPlayerDamage(newState, array[index].baseDamage, index, 5);
+              newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+              newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
+              newState.opponentMonster[index].strength += array[index].baseScale;
+            })
+            return toChangeState;
+          }
+        }
+      ]
+    },
+
+    strengthgymboss: {
+      name: "Strength Gym Boss",
+      type: "Fire",
+      maxHP: 110,
+      encounterEnergy: 0,
+      opponentMoveIndex: false,
+      currentHP: 110,
+      strength: 0,
+      dex: 0,
+      drown: 0,
+      hunted: 0,
+      poison: 0,
+      baseBlock: 10,
+      baseDamage: 10,
+      baseScale: 10,
+      baseHeal: 0,
+      avatar: "img/firebeard.png",
+      moves: [
+        {
+          name: "Whirling Dervish",
+          cost: "0",
+          text: (state, index, array) => {
+            return `Deal ${array[index].baseDamage + array[index].strength} damage. Gain 10 strength. +2 energy`
+          },
+          minReq: 0,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              let tempState = dealPlayerDamage(newState, array[index].baseDamage, index);
+              newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+              newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
+              newState.opponentMonster[index].strength += array[index].baseScale;
+              newState.opponentMonster[index].encounterEnergy += 2; 
+            })
+            return toChangeState;
+          }
+        },
+
+        {
+          name: "Muscle Shield",
+          cost: "5",
+          text: (state, index, array) => {
+            return `Gain ${array[index].baseBlock + array[index].strength} block. Improved by strength. +2 energy`
+          },
+          minReq: 5,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              let tempState = dealPlayerDamage(newState, array[index].baseDamage, index);
+              newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+              newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
+              newState.opponentMonster[index].encounterEnergy += 2; 
+            })
+            return toChangeState;
+          }
+        },
+
+        {
+          name: "Body Blows",
+          cost: "6",
+          text: (state, index, array) => {
+            return `Deal strength value (${array[index].strength}) two times. -3 energy`
+          },
+          minReq: 6,
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              let tempState = dealPlayerDamage(newState, array[index].strength, index, 3);
+              newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
+              newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
+              newState.opponentMonster[index].encounterEnergy -= 3; 
+            })
+            return toChangeState;
+          }
+        }
+      ]
+    },
+
+    
   }
  // consuming flames
  // rising tide
@@ -543,7 +662,7 @@ let opponentMonsters = {
   },
  ]
 
- let gym2 = [
+let gym2 = [
   {
     opponents: [opponentMonsters.healgym1],
     goldReward: 25
@@ -559,173 +678,33 @@ let opponentMonsters = {
     goldReward: 125,
     boss: true
   },
- ]
+]
+
+let gym3 = [
+  {
+    opponents: [opponentMonsters.strengthgym1],
+    goldReward: 25
+  },
+
+  {
+    opponents: [opponentMonsters.strengthgym1, opponentMonsters.strengthgymguard],
+    goldReward: 25
+  },
+
+  {
+    opponents: [opponentMonsters.strengthgymguard, opponentMonsters.strengthgymboss, opponentMonsters.strengthgymguard],
+    goldReward: 125,
+    boss: true
+  },
+]
 
  let gyms = [
-  gym1,
   gym2,
+  gym3,
   gym1
  ]
 
  
     
   
-  let playerMonsters = {
-    devCheat: {
-      name: "Easy Mode",
-      type: "fire",
-      encounterEnergy: 0,
-      opponentMoveIndex: false,
-      cardPool: fireCardPool,
-      maxHP: 100,
-      currentHP: 100,
-      strength: 0,
-      dex: 0,
-      tempStrength: 0,
-      tempDex: 0,
-      fightStrength: 0,
-      fightDex: 0,
-      turnEnergy: 3,
-      avatar: "img/fireMonster.png",
-      startingDeck: [
-        fireCardPool.setaflame,
-        fireCardPool.darkknowledge,
-        fireCardPool.darkknowledge,
-        fireCardPool.sunlight,
-        fireCardPool.bloatedbomb
-      ],
-    },
-  
-    charles: {
-      name: "Charles",
-      type: "fire",
-      encounterEnergy: 0,
-      opponentMoveIndex: false,
-      cardPool: fireCardPool,
-      maxHP: 100,
-      currentHP: 100,
-      strength: 0,
-      dex: 0,
-      tempStrength: 0,
-      tempDex: 0,
-      fightStrength: 0,
-      fightDex: 0,
-      turnEnergy: 3,
-      avatar: "img/flamingbaby.png",
-      startingDeck: [
-        //1 energy
-        fireCardPool.fireEnergy,
-        //11 attacks
-        fireCardPool.explode,
-        fireCardPool.gainstrength,
-        fireCardPool.withdraw,
-        fireCardPool.withdraw,
-        fireCardPool.withdraw,
-        fireCardPool.withdraw,
-        fireCardPool.tackle,
-        fireCardPool.tackle,
-        fireCardPool.tackle,
-        fireCardPool.tackle,
-        fireCardPool.tackle
-      ],
-    },
-
-    genner: {
-      name: "Genner (strong)",
-      type: "fire",
-      encounterEnergy: 0,
-      opponentMoveIndex: false,
-      cardPool: fireCardPool,
-      maxHP: 100,
-      currentHP: 100,
-      strength: 0,
-      dex: 0,
-      tempStrength: 0,
-      tempDex: 0,
-      fightStrength: 0,
-      fightDex: 0,
-      turnEnergy: 3,
-      avatar: "img/fireMonster.png",
-      startingDeck: [
-        fireCardPool.fireEnergy,
-        fireCardPool.darkknowledge,
-        fireCardPool.puffofsmoke,
-        fireCardPool.retreatingslash,
-        fireCardPool.sunlight,
-        fireCardPool.withdraw,
-        fireCardPool.withdraw,
-        fireCardPool.withdraw,
-        fireCardPool.tackle,
-        fireCardPool.tackle,
-        fireCardPool.tackle,
-      ],
-    },
-  
-  // swirly: {
-  //   name: "Swirly",
-  //   type: "Water",
-  //   cardPool: waterCardPool,
-  //   encounterEnergy: 0,
-  //   opponentMoveIndex: false,
-  //   maxHP: 100,
-  //   currentHP: 100,
-  //   strength: 0,
-  //   dex: 0,
-  //   tempStrength: 0,
-  //   tempDex: 0,
-  //   fightStrength: 0,
-  //   fightDex: 0,
-  //   turnEnergy: 3,
-  //   avatar: "img/watertongue.png",
-  //   startingDeck: [
-  //     //1 energy
-  //     waterCardPool.waterEnergy,
-  //     //11 attacks
-  //     waterCardPool.withdraw,
-  //     waterCardPool.withdraw,
-  //     waterCardPool.withdraw,
-  //     waterCardPool.withdraw,
-  //     waterCardPool.tackle,
-  //     waterCardPool.tackle,
-  //     waterCardPool.tackle,
-  //     waterCardPool.bodySlam,
-  //     waterCardPool.gainDex,
-  //     waterCardPool.cloakingFog,
-  //     waterCardPool.huntPrey
-  //   ]
-  // },
-
-  // poisonTest: {
-  //   name: "Venom",
-  //   type: "Water",
-  //   cardPool: waterCardPool,
-  //   encounterEnergy: 0,
-  //   opponentMoveIndex: false,
-  //   maxHP: 100,
-  //   currentHP: 50,
-  //   strength: 0,
-  //   dex: 0,
-  //   tempStrength: 0,
-  //   tempDex: 0,
-  //   fightStrength: 0,
-  //   fightDex: 0,
-  //   turnEnergy: 3,
-  //   avatar: "img/watertongue.png",
-  //   startingDeck: [
-  //     //1 energy
-  //     waterCardPool.waterEnergy,
-  //     //11 attacks
-  //     waterCardPool.withdraw,
-  //     waterCardPool.withdraw,
-  //     waterCardPool.withdraw,
-  //     waterCardPool.withdraw,
-  //     waterCardPool.tackle,
-  //     waterCardPool.tackle,
-  //     waterCardPool.tackle,
-  //     waterCardPool.pinprick,
-  //     waterCardPool.poisonedblade,
-  //     waterCardPool.venomshield
-
-  //   ]
-  // }
-  };
+ 

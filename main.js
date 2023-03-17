@@ -191,7 +191,8 @@ function fisherYatesShuffle(arrayObj) {
 
 function changeStatus(stateObj, newStatus, countsAsEventSkipForChangeStatus=false) {
   stateObj = immer.produce(stateObj, (newState) => {
-    if (countsAsEventSkipForChangeStatus) {
+    if (countsAsEventSkipForChangeStatus === true) {
+      console.log("changing status, and this counts as skipping the events")
       newState.eventUsed = true;
     }
     newState.status = newStatus;
@@ -203,6 +204,7 @@ function changeStatus(stateObj, newStatus, countsAsEventSkipForChangeStatus=fals
 function skipCards(stateObj, isUsedForEventSkip=false) {
   stateObj = immer.produce(stateObj, (newState) => {
     if (isUsedForEventSkip) {
+      console.log("skpping cards, and this counts as skipping the events")
       newState.eventUsed = true
     }
     newState.cardsSkipped += 1;
@@ -400,7 +402,7 @@ function increaseBaseHits(stateObj, index, array) {
 
 function changeState(newStateObj) {
   state = {...newStateObj}
-  console.log("current state is " + state.status)
+  //console.log("current state is " + state.status)
   //state = { ...handleDeaths() };
   renderScreen(state);
 }
@@ -431,7 +433,7 @@ function resetAfterFight(stateObj) {
     newState.gold += gyms[newState.gymCount][newState.gymFightCount].goldReward
     
     console.log("gym count is " + newState.gymCount);
-    if (gyms[newState.gymCount][newState.gymFightCount].boss && newState.gymCount === 1) {
+    if (gyms[newState.gymCount][newState.gymFightCount].boss && newState.gymCount === 2) {
       newState.status = Status.VictoryScreen;
     } else if (gyms[newState.gymCount][newState.gymFightCount].boss) {
       newState.gymFightCount = 0;
@@ -616,14 +618,14 @@ function drawACard(stateObj) {
     // if deck is empty, shuffle discard and change newState to reflect that
     if (newState.encounterDraw.length === 0) {
       Object.assign(newState, shuffleDiscardIntoDeck(newState));
-      console.log("shuffling");
+      //console.log("shuffling");
     }
 
     // draw a card if possible
     let testState
     let topCard = newState.encounterDraw.shift();
     if (!topCard) {
-      console.log("all cards are in play or something");
+      console.log("all cards are in play");
       return newState;
     }
 
