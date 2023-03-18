@@ -188,7 +188,7 @@ let opponentMonsters = {
       hunted: 0,
       poison: 0,
       baseDamage: 5,
-      baseScale: 1,
+      baseScale: 2,
       baseBlock: 0,
       baseHeal: 0,
       avatar: "img/hugeair.png",
@@ -198,35 +198,35 @@ let opponentMonsters = {
           cost: "0",
           text: (state, index, array) => {
             let damageValue = 0;
-            if (state.opponentMonster.find(monster => monster.name === "guard1")) {
-              damageValue += (array[index].baseDamage + state.opponentMonster.find(monster => monster.name === "guard1").dex)
+            if (state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name)) {
+              damageValue += (array[index].baseDamage + state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name).dex)
             }
-            if (state.opponentMonster.find(monster => monster.name === "guard2")) {
-              damageValue += (array[index].baseDamage + state.opponentMonster.find(monster => monster.name === "guard2").dex)
+            if (state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name)) {
+              damageValue += (array[index].baseDamage + state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex)
             }
-            return `Deal ${damageValue} damage. Other monsters gain +1 dexterity. +1 energy`
+            return `Deal ${damageValue} damage. Other monsters gain ${array[index].baseScale} dexterity. +1 energy`
           }, 
 
           minReq: 0,
           action: (state, index, array) => {
             let toChangeState = immer.produce(state, (newState) => {
               let damageValue = 0;
-              if (newState.opponentMonster.find(monster => monster.name === "guard1")) {
-                damageValue += (array[index].baseDamage + newState.opponentMonster.find(monster => monster.name === "guard1").dex)
+              if (newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name)) {
+                damageValue += (array[index].baseDamage + newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name).dex)
               }
-              if (newState.opponentMonster.find(monster => monster.name === "guard2")) {
-                damageValue += (array[index].baseDamage + newState.opponentMonster.find(monster => monster.name === "guard2").dex)
+              if (newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name)) {
+                damageValue += (array[index].baseDamage + newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex)
               }
 
               let tempState = dealPlayerDamage(newState, damageValue, index);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
               
-              if (newState.opponentMonster.find(monster => monster.name === "guard1")) {
-                newState.opponentMonster.find(monster => monster.name === "guard1").dex += array[index].baseScale;
+              if (newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name)) {
+                newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name).dex += array[index].baseScale;
               }
-              if (newState.opponentMonster.find(monster => monster.name === "guard2")) {
-                newState.opponentMonster.find(monster => monster.name === "guard2").dex += array[index].baseScale;
+              if (newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name)) {
+                newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex += array[index].baseScale;
               }
 
               newState.opponentMonster[index].encounterEnergy += 1;
