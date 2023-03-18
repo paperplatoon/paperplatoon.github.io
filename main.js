@@ -243,7 +243,6 @@ function chooseThisCard(stateObj, index, sampledCardPool) {
 function removeCard(stateObj, index) {
   console.log("removed " + stateObj.playerDeck[index].name + " from deck")
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.eventUsed = true;
     newState.gold -= newState.cardRemoveCost;
     newState.cardRemoveCost += 25;
     newState.playerDeck.splice(index, 1);
