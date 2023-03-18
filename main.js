@@ -168,9 +168,10 @@ function chooseThisMonster(stateObj, index) {
   gyms = fisherYatesShuffle(gyms);
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster = potentialMonsterChoices[index];
+    newState.playerDeck = potentialMonsterChoices[index].startingDeck;
     //newState.status = Status.InEncounter;
     newState.status = Status.InTown;
-    newState.playerDeck = potentialMonsterChoices[index].startingDeck;
+
   })
   //stateObj = setUpEncounter(stateObj);
   changeState(stateObj);
@@ -216,6 +217,7 @@ function skipCards(stateObj, isUsedForEventSkip=false) {
 
 function TownFight(stateObj) {
   stateObj = setUpEncounter(stateObj)
+  changeState(stateObj);
   stateObj = immer.produce(stateObj, (newState) => {
     newState.status = Status.InEncounter;
   })
@@ -596,14 +598,26 @@ function shuffleArray(array) {
 
 //REWEITE FOR IMMER>PRODUCE
 function shuffleDiscardIntoDeck(stateObj) {
-  let newState = { ...stateObj };
-  newState.encounterDraw = [...newState.encounterDiscard];
-  newState.encounterDiscard = [];
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.encounterDraw = [...newState.encounterDiscard];
+    newState.encounterDiscard = [];
+    newState.encounterDraw = shuffleArray(newState.encounterDraw);
+  })
+  
+  return stateObj;
+}
 
-  // shuffle deck
-  newState.encounterDraw = shuffleArray(newState.encounterDraw);
-  //changeState(newState);
-  return newState;
+function addBackstepsToHand(stateObj, numberToAdd=1) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    for (let i=0; i < numberToAdd; i++) {
+      if (newState.encounterHand.length >= 8) {
+        console.log("hand was full, backstep was not added")
+      } else
+      newState.encounterHand.push(fireCardPool.backstep)
+    }
+  })
+
+  return stateObj
 }
 
 function drawACard(stateObj) {

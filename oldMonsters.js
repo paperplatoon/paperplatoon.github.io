@@ -17,9 +17,9 @@ let playerMonsters = {
       avatar: "img/fireMonster.png",
       startingDeck: [
         fireCardPool.setaflame,
-        fireCardPool.darkknowledge,
-        fireCardPool.darkknowledge,
         fireCardPool.rareupgrade,
+        fireCardPool.darkknowledge,
+        fireCardPool.forgeshield,
         fireCardPool.vampiricstrike,
         fireCardPool.bloatedbomb
       ],
@@ -60,7 +60,7 @@ let playerMonsters = {
     },
 
     genner: {
-      name: "Genner (strong)",
+      name: "Stronger Charles",
       type: "fire",
       encounterEnergy: 0,
       opponentMoveIndex: false,
@@ -77,13 +77,16 @@ let playerMonsters = {
       avatar: "img/adorablefire.png",
       startingDeck: [
         fireCardPool.fireEnergy,
-        fireCardPool.darkknowledge,
-        fireCardPool.puffofsmoke,
-        fireCardPool.retreatingslash,
         fireCardPool.sunlight,
+        //
+        fireCardPool.puffofsmoke,
+        fireCardPool.skipaway,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
+        //
+        fireCardPool.retreatingslash,
+        fireCardPool.pirouettespin,
         fireCardPool.tackle,
         fireCardPool.tackle,
         fireCardPool.tackle,
