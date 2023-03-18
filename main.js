@@ -69,7 +69,7 @@ let gameStartState = {
   fightEnergyDrainTotal: 0,
   cardsPerTurn: 0,
   gainLifePerCard: 0,
-  townEventChosen: false
+  townEventChosen: 6
 };
 
 playerMonsterArray = Object.values(playerMonsters);
@@ -195,6 +195,7 @@ function changeStatus(stateObj, newStatus, countsAsEventSkipForChangeStatus=fals
     if (countsAsEventSkipForChangeStatus === true) {
       console.log("changing status, and this counts as skipping the events")
       newState.eventUsed = true;
+      newState.gold += 50
     }
     newState.status = newStatus;
   })
@@ -207,6 +208,7 @@ function skipCards(stateObj, isUsedForEventSkip=false) {
     if (isUsedForEventSkip) {
       console.log("skpping cards, and this counts as skipping the events")
       newState.eventUsed = true
+      newState.gold += 50
     }
     newState.cardsSkipped += 1;
     newState.status = Status.InTown;
@@ -1113,15 +1115,15 @@ function renderDuplicateCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", duplicateCard);
-  skipToTownButton(stateObj, "I don't want to duplicate any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I don't want to duplicate any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
 };
 
 function renderDoubleUpgradeCard(stateObj) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app");
-  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", doubleUpgradeCard);
-  skipToTownButton(stateObj, "I don't want to upgrade any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", doubleUpgradeCard, goldCost="doubleupgrade");
+  skipToTownButton(stateObj, "I don't want to upgrade any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
 };
 
 function renderChooseCardReward(stateObj) {
@@ -1146,7 +1148,7 @@ function renderChooseRareCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
-  skipToTownButton(stateObj, "I don't want to add any of these cards to my deck", ".remove-div", cardSkip=true,  isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I don't want to add any of these cards to my deck (+50 gold)", ".remove-div", cardSkip=true,  isEventUsedForSkipButton=true);
 };
 
 function renderHealer(stateObj) {
@@ -1189,7 +1191,7 @@ function renderLevelUp(stateObj) {
   document.getElementById("level-up-div").append(strengthDiv, DexDiv, energyDiv);
   
   
-  skipToTownButton(stateObj, "I don't want to level up for some reason (I should!)", "#app", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I don't want to level up for some reason even though I probably should (+50 gold))", "#app", cardSkip=false, isEventUsedForSkipButton=true);
   
 };
 
@@ -1207,10 +1209,10 @@ function renderDecreaseCardCost(stateObj) {
   divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
     if (cardObj.baseCost && typeof cardObj.baseCost === 'number') {
-      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", decreaseCardCost)
+      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", decreaseCardCost, goldCost="decreasecost")
     }
   });
-  skipToTownButton(stateObj, "I don't want to decrease the cost of any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I don't want to decrease the cost of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
 };
 
 function renderIncreaseCardBlock(stateObj) {
@@ -1219,10 +1221,10 @@ function renderIncreaseCardBlock(stateObj) {
   divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
     if (cardObj.baseBlock && typeof cardObj.baseBlock === 'number') {
-      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardBlock)
+      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardBlock, goldCost="increaseblock")
     }
   });
-  skipToTownButton(stateObj, "I don't want to increase the block of any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I don't want to increase the block of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
 };
 
 function renderIncreaseCardAttack(stateObj) {
@@ -1231,10 +1233,10 @@ function renderIncreaseCardAttack(stateObj) {
   divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
     if (cardObj.baseDamage && typeof cardObj.baseDamage === 'number') {
-      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardAttack)
+      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardAttack, goldCost="increaseattack")
     }
   });
-  skipToTownButton(stateObj, "I don't want to increase the attack of any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I don't want to increase the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
 };
 
 function renderDoubleCardAttack(stateObj) {
@@ -1243,10 +1245,10 @@ function renderDoubleCardAttack(stateObj) {
   divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
     if (cardObj.baseDamage && cardObj.baseDamage > 0) {
-      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", doubleCardAttack)
+      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", doubleCardAttack, goldCost="doubleattack")
     }
   });
-  skipToTownButton(stateObj, "I don't want to double the attack of any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I don't want to double the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
 };
 
 function renderIncreaseBaseHit(stateObj) {
@@ -1258,7 +1260,7 @@ function renderIncreaseBaseHit(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseBaseHits, goldCost="moreHits")
     }
   });
-  skipToTownButton(stateObj, "I don't want more hits for any of these cards", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I don't want more hits for any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
 };
 
 function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=false, goldCost=false) {
@@ -1296,7 +1298,7 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
         
         let cardText = document.createElement("P");
         cardText.textContent = cardObj.text(stateObj, index, cardArray);
-        cardText.classList.add("upgrade-text")
+        cardText.classList.add("card-text")
         
         cardDiv.append(topCardRowDiv);
         cardDiv.append(cardText);
@@ -1307,37 +1309,78 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
           costText.classList.add("invisible-cost")
           cardDiv.append(costText);
         } else if (goldCost === "upgrade") {
-          cardDiv.classList.add("card-upgrade");
+          cardDiv.classList.add("card-change-text");
           let altUpgradeText =  document.createElement("P");
           altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "upgrades", 1)
-          altUpgradeText.classList.add("alt-upgrade-text");
+          altUpgradeText.classList.add("alt-card-text");
           cardDiv.append(altUpgradeText);
 
           if (typeof cardObj.cost === 'function') {
             let cardAltCost = document.createElement("H3");
             cardAltCost.textContent = showChangedUpgradeCost(stateObj, index, cardArray, cardObj, "upgrades", 1)
             cardAltCost.classList.add("alt-cost")
+            cardDiv.innerHTML = "";
             topCardRowDiv.innerHTML = "";
             topCardRowDiv.append(cardAltCost, cardCost, cardName);
-          } else {
-
-          }
+            cardDiv.append(topCardRowDiv, altUpgradeText, cardText);
+          }  else {}
 
           let costText = document.createElement("P");
           costText.textContent = "(" + stateObj.cardUpgradeCost + " gold to upgrade)";
           costText.classList.add("invisible-cost")
           cardDiv.append(costText);
         } else if (goldCost === "moreHits") {
-          cardDiv.classList.add("card-more-hits");
+          cardDiv.classList.add("card-change-text");
           let altHitsText =  document.createElement("P");
-          altHitsText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseHits", 1) + " alt"
-          altHitsText.classList.add("alt-hits-text");
+          altHitsText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseHits", 1)
+          altHitsText.classList.add("alt-card-text");
           cardDiv.append(altHitsText);
+        } else if (goldCost === "doubleupgrade") {
+          cardDiv.classList.add("card-change-text");
+          let altUpgradeText =  document.createElement("P");
+          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "upgrades", 2)
+          altUpgradeText.classList.add("alt-card-text");
+          cardDiv.append(altUpgradeText);
+
+          if (typeof cardObj.cost === 'function') {
+            let cardAltCost = document.createElement("H3");
+            cardAltCost.textContent = showChangedUpgradeCost(stateObj, index, cardArray, cardObj, "upgrades", 2)
+            cardAltCost.classList.add("alt-cost")
+            topCardRowDiv.innerHTML = "";
+            topCardRowDiv.append(cardAltCost, cardCost, cardName);
+          }  else {}
+        } else if (goldCost === "increaseblock") {
+          cardDiv.classList.add("card-change-text");
+          let altUpgradeText =  document.createElement("P");
+          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseBlock", 10)
+          altUpgradeText.classList.add("alt-card-text");
+          cardDiv.append(altUpgradeText);
+        } else if (goldCost === "increaseattack") {
+          cardDiv.classList.add("card-change-text");
+          let altUpgradeText =  document.createElement("P");
+          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseDamage", 10)
+          altUpgradeText.classList.add("alt-card-text");
+          cardDiv.append(altUpgradeText);
+        } else if (goldCost === "doubleattack") {
+          cardDiv.classList.add("card-change-text");
+          let altUpgradeText =  document.createElement("P");
+          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseDamage", cardArray[index].baseDamage)
+          altUpgradeText.classList.add("alt-card-text");
+          cardDiv.append(altUpgradeText);
+        } else if (goldCost === "decreasecost") {
+          cardDiv.classList.add("card-change-text");
+            let cardAltCost = document.createElement("H3");
+            cardAltCost.textContent = showChangedUpgradeCost(stateObj, index, cardArray, cardObj, "baseCost", -1)
+            console.log(cardAltCost)
+            cardAltCost.classList.add("alt-cost")
+            cardDiv.innerHTML = "";
+            topCardRowDiv.innerHTML = "";
+            topCardRowDiv.append(cardAltCost, cardCost, cardName);
+            cardDiv.append(topCardRowDiv, cardText);
         }
-
         
         
-
+        //if cardArray is the hand, add playable class to the cards if energy > card.minReq
         if (cardArray === stateObj.encounterHand) {
           if (typeof cardObj.minReq === 'function') {
             if (cardObj.minReq(stateObj, index, stateObj.encounterHand) <= stateObj.playerMonster.encounterEnergy) {
@@ -1398,7 +1441,12 @@ function showChangedUpgradeCost(stateObj, index, array, cardObj, propertyNameStr
   let newState = immer.produce(stateObj, (draft) => {
     draft.playerDeck[index][propertyNameString] += valueChange;
   })
-  return cardClone.cost(newState, index, newState.playerDeck)  
+  if (typeof cardObj.cost === "function") {
+    return cardClone.cost(newState, index, newState.playerDeck)
+  } else {
+    return cardClone.cost;
+  }
+    
 }
 
 // ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== 

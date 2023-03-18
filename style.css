@@ -695,20 +695,27 @@ button:hover {
   cursor: pointer;
 }
 
-.alt-upgrade-text, .alt-cost, .alt-hits-text {
+.alt-upgrade-text, .alt-cost, .alt-hits-text, .alt-card-text {
   display: none;
 }
 
-.alt-upgrade-text {
+.alt-upgrade-text, .alt-hits-text, .alt-card-text {
   color: rgb(189, 255, 189);
   
 }
 
-.card-upgrade:hover .upgrade-text, .card-upgrade:hover .hand-card-cost, .card-upgrade:hover .card-more-hits {
+.card-upgrade:hover .upgrade-text, 
+.card-upgrade:hover .card-text, 
+.card-upgrade:hover .hand-card-cost,
+.card-change-text:hover .hand-card-cost, 
+.card-change-text:hover .upgrade-text, 
+.card-change-text:hover .card-text,
+.card-change-text:hover .alt-card-text {
   display: none;
 }
 
-.card-upgrade:hover .alt-upgrade-text, .card-upgrade:hover .alt-cost,  .card-upgrade:hover .alt-hits-text {
+.card-upgrade:hover .alt-upgrade-text, .card-upgrade:hover .alt-card-text, .card-upgrade:hover .alt-cost,  .card-change-text:hover .alt-hits-text, .card-change-text:hover .alt-card-text,
+.card-change-text:hover .alt-cost {
   display: block;
 }
 

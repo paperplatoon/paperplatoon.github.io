@@ -18,10 +18,10 @@ let playerMonsters = {
       startingDeck: [
         fireCardPool.setaflame,
         fireCardPool.rareupgrade,
-        fireCardPool.darkknowledge,
+        fireCardPool.bloatedbomb,
         fireCardPool.forgeshield,
-        fireCardPool.vampiricstrike,
-        fireCardPool.bloatedbomb
+        fireCardPool.powerup,
+        fireCardPool.mentalblock
       ],
     },
   

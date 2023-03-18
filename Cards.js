@@ -1178,7 +1178,7 @@ let fireCardPool = {
     },
 
     forgeshield: {
-      cardID: 39,
+      cardID: 40,
       name: "Forge's Shield",
       text: (state, index, array) => {
         if (state.status === Status.InEncounter) {
@@ -1217,6 +1217,36 @@ let fireCardPool = {
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
         })
         return stateObj;
+      }
+    },
+
+    mentalblock: {
+      cardID: 41,
+      name: "Mental Block",
+      text: (stateObj, index, array) => { 
+        if (array[index].upgrades === 0) {
+          return `Gain block equal to your deck size (${stateObj.playerDeck.length + array[index].baseBlock + state.playerMonster.dex})`;
+        } else {
+          return `Gain block equal to your deck size + ${array[index].upgrades*5} (${stateObj.playerDeck.length + state.playerMonster.dex + array[index].baseBlock + (array[index].upgrades*5)})`;
+        }
+         },
+      minReq: (state, index, array) => {
+        return array[index].baseCost;
+      },
+      upgrades: 0,
+      baseCost: 1,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      baseBlock: 0,
+      cardType: "ability",
+      elementType: "fire",
+      action: (stateObj, index, array) => {
+        stateObj = immer.produce(stateObj, (newState) => {
+          newState.playerMonster.encounterEnergy -= array[index].baseCost
+          newState.playerMonster.encounterBlock += (array[index].baseBlock + newState.playerMonster.dex + (5*array[index].upgrades) + newState.playerDeck.length);
+        })
+        return toChangeState;
       }
     },
   };
