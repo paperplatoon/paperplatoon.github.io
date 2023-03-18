@@ -727,3 +727,7 @@ button:hover {
   border: 3px solid red;
 }
 
+.stay-visible {
+  display: block;
+}
+

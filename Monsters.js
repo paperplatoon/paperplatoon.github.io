@@ -204,7 +204,7 @@ let opponentMonsters = {
             if (state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name)) {
               damageValue += (array[index].baseDamage + state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex)
             }
-            return `Deal ${damageValue} damage. Other monsters gain ${array[index].baseScale} dexterity. +1 energy`
+            return `Deal ${damageValue + array[index].strength} damage. Other monsters gain ${array[index].baseScale} dexterity. +1 energy`
           }, 
 
           minReq: 0,

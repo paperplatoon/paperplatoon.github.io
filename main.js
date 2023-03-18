@@ -69,7 +69,7 @@ let gameStartState = {
   fightEnergyDrainTotal: 0,
   cardsPerTurn: 0,
   gainLifePerCard: 0,
-  townEventChosen: 6
+  townEventChosen: 6,
 };
 
 playerMonsterArray = Object.values(playerMonsters);
@@ -1373,10 +1373,16 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
             cardAltCost.textContent = showChangedUpgradeCost(stateObj, index, cardArray, cardObj, "baseCost", -1)
             console.log(cardAltCost)
             cardAltCost.classList.add("alt-cost")
+
+            cardDiv.classList.add("card-change-text");
+            let altUpgradeText =  document.createElement("P");
+            altUpgradeText.textContent = cardObj.text(stateObj, index, cardArray)
+            altUpgradeText.classList.add("alt-card-text");
+
             cardDiv.innerHTML = "";
             topCardRowDiv.innerHTML = "";
             topCardRowDiv.append(cardAltCost, cardCost, cardName);
-            cardDiv.append(topCardRowDiv, cardText);
+            cardDiv.append(topCardRowDiv, altUpgradeText, cardText);
         }
         
         

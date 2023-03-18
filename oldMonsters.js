@@ -17,11 +17,11 @@ let playerMonsters = {
       avatar: "img/fireMonster.png",
       startingDeck: [
         fireCardPool.setaflame,
-        fireCardPool.rareupgrade,
+        fireCardPool.darkknowledge,
         fireCardPool.bloatedbomb,
-        fireCardPool.forgeshield,
-        fireCardPool.powerup,
-        fireCardPool.mentalblock
+        fireCardPool.feast,
+        fireCardPool.expertsforge,
+        fireCardPool.forgeshield
       ],
     },
   
@@ -87,7 +87,7 @@ let playerMonsters = {
         //
         fireCardPool.retreatingslash,
         fireCardPool.pirouettespin,
-        fireCardPool.tackle,
+        fireCardPool.precisionstrike,
         fireCardPool.tackle,
         fireCardPool.tackle,
       ],
