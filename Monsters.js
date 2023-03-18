@@ -605,14 +605,13 @@ let opponentMonsters = {
           name: "Muscle Shield",
           cost: "5",
           text: (state, index, array) => {
-            return `Gain ${array[index].baseBlock + array[index].strength} block. Improved by strength. +4 energy`
+            return `Gain ${array[index].baseBlock + array[index].strength + array[index].dex} block. Improved by strength. +4 energy`
           },
           minReq: 5,
+          baseBlock: 10,
           action: (state, index, array) => {
             let toChangeState = immer.produce(state, (newState) => {
-              let tempState = dealPlayerDamage(newState, array[index].baseDamage, index);
-              newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-              newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
+              newState.opponentMonster[index].encounterBlock += array[index].baseBlock+ array[index].strength + array[index].dex; 
               newState.opponentMonster[index].encounterEnergy += 4; 
             })
             return toChangeState;

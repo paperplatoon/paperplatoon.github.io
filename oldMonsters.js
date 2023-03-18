@@ -18,7 +18,8 @@ let playerMonsters = {
       startingDeck: [
         fireCardPool.setaflame,
         fireCardPool.darkknowledge,
-        fireCardPool.bloatedbomb,
+        fireCardPool.purefocus,
+        fireCardPool.vampiricstrike,
         fireCardPool.feast,
         fireCardPool.expertsforge,
         fireCardPool.forgeshield

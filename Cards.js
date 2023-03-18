@@ -807,7 +807,7 @@ let fireCardPool = {
       cardID: 27,
       name: "Pure Focus",
       text: (state, index, array) => {
-          return `Deal ${array[index].baseDamage + (array[index].upgrades*5)} damage. Deal ${array[index].baseDamage + (array[index].upgrades*5)} extra damage for each time you've skipped a card (${state.cardsSkipped + array[index].baseHits})`;
+          return `Deal ${array[index].baseDamage + (array[index].upgrades*5) + state.playerMonster.strength} damage. Deal ${array[index].baseDamage + (array[index].upgrades*5)+ state.playerMonster.strength} extra damage for each time you've skipped a card (${state.cardsSkipped + array[index].baseHits})`;
       },
       minReq: (state, index, array) => {
         return array[index].baseCost;
