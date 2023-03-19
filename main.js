@@ -69,7 +69,7 @@ let gameStartState = {
   fightEnergyDrainTotal: 0,
   cardsPerTurn: 0,
   gainLifePerCard: 0,
-  townEventChosen: 6,
+  townEventChosen: false,
 };
 
 playerMonsterArray = Object.values(playerMonsters);
@@ -165,7 +165,7 @@ function renderChooseMonster(stateObj) {
 };
 
 function chooseThisMonster(stateObj, index) {
-  gyms = fisherYatesShuffle(gyms);
+  //gyms = fisherYatesShuffle(gyms);
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster = potentialMonsterChoices[index];
     newState.playerDeck = potentialMonsterChoices[index].startingDeck;
@@ -866,7 +866,8 @@ function renderTown(stateObj) {
     //   divID: "TownEvent",
     //   imgSrc: "img/wizardshop.png",
     //   divText: "ShowCardPool",
-    //   newStatus: Status.ShowCardPool
+    //   newStatus: Status.ShowCardPool,
+    //   eventID: 100
     // },
     {
       divID: "TownEvent",
@@ -930,7 +931,6 @@ function renderTown(stateObj) {
       divText: "Increase Card Attack",
       newStatus: Status.IncreasingAttack,
       eventID: 8
-      
     },
   ];
 

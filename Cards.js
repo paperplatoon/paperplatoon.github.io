@@ -38,7 +38,7 @@ let fireCardPool = {
   
     kindle: {
       cardID: 2,
-      name: "kindle",
+      name: "Kindle",
       text: (state, index, array) => {
         if (array[index].baseHits === 1) {
           return `Deal ${array[index].baseDamage + array[index].playCount*(5 + (array[index].upgrades*10)) + state.playerMonster.strength} damage. 
@@ -230,7 +230,7 @@ let fireCardPool = {
     darkknowledge: {
       cardID: 9,
       name: "Dark Knowledge",
-      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage} damage. Draw ${4+array[index].upgrades} cards` },
+      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage}. Draw ${4+array[index].upgrades} cards` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -259,7 +259,7 @@ let fireCardPool = {
     cursedritual: {
       cardID: 10,
       name: "Cursed Ritual",
-      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage} damage. Gain ${5+(array[index].upgrades*5)} strength` },
+      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage}. Gain ${5+(array[index].upgrades*5)} strength` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -288,7 +288,7 @@ let fireCardPool = {
     bloodshield: {
       cardID: 11,
       name: "Blood Shield",
-      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage + (array[index].upgrades*3)} damage. Gain ${20+(array[index].upgrades*10)} block` },
+      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage + (array[index].upgrades*3)}. Gain ${20+(array[index].upgrades*10)} block` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -900,7 +900,7 @@ let fireCardPool = {
     brand: {
       cardID: 30,
       name: "Branding Iron",
-      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage - array[index].upgrades} damage. Gain ${3+array[index].upgrades} energy` },
+      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage - array[index].upgrades}. Gain ${3+array[index].upgrades} energy` },
       minReq: 0,
       upgrades: 0,
       baseCost: 0,
@@ -1468,6 +1468,103 @@ let fireCardPool = {
           newState.playerMonster.currentHP += (state.cardsPerTurn * (array[index].upgrades +1));
         })
         return toChangeState;
+      }
+    },
+
+    rewindtime: {
+      rare: true,
+      exhaust: true,
+      cardID: 49,
+      name: "Rewind Time",
+      text: (state, index, array) => { return `Drain enemy energy to 0. Remove.` },
+      minReq: (state, index, array) => {
+        return array[index].baseCost-array[index].upgrades;
+      },
+      upgrades: 0,
+      baseCost: 1,
+      cost:  (state, index, array) => {
+        return array[index].baseCost-array[index].upgrades;
+      },
+      upgrades: 0,
+      cardType: "ability",
+      elementType: "fire",
+      action: (stateObj, index, array) => {
+        stateObj = immer.produce(stateObj, (newState) => {
+          if (newState.opponentMonster[newState.targetedMonster].encounterEnergy > 0) {
+            newState.fightEnergyDrainTotal += newState.opponentMonster[newState.targetedMonster].encounterEnergy;
+            newState.opponentMonster[newState.targetedMonster].encounterEnergy = 0;
+            newState.fightEnergyDrainCount += 1;
+            newState.playerMonster.encounterEnergy -= array[index].baseCost-array[index].upgrades
+          }
+        })
+        return stateObj;
+      }
+    },
+
+    redirect: {
+      rare: true,
+      cardID: 50,
+      name: "Redirect",
+      text: (state, index, array) => {
+          return `Deal ${array[index].baseDamage + (array[index].upgrades*5) + state.playerMonster.strength} damage for each energy drained this combat (${state.fightEnergyDrainTotal + array[index].baseHits})`;
+      },
+      minReq: (state, index, array) => {
+        return array[index].baseCost;
+      },
+      baseCost: 1,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      upgrades: 0,
+      baseHits: 0,
+      baseDamage: 5,
+      cardType: "attack",
+      elementType: "fire",
+      action: (stateObj, index, array) => {
+        stateObj = immer.produce(stateObj, (newState) => {
+          let tempState = dealOpponentDamage(stateObj, (array[index].baseDamage + (array[index].upgrades*5)), (state.fightEnergyDrainTotal + array[index].baseHits) );
+          newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
+          newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
+          newState.playerMonster.encounterEnergy -= array[index].baseCost;
+        })
+        
+        return stateObj;
+      }
+    },
+
+    hammerandtongs: {
+      rare: true,
+      exhaust: true,
+      cardID: 51,
+      name: "Hammer & Tongs",
+      text: (state, index, array) => {
+        if (array[index].upgrades === 0) {
+          return `Upgrade a random card in your deck permanently. Remove`;
+        } else {
+          return `Upgrade a random card in your deck permanently ${1+array[index].upgrades} times. Remove`;
+        }
+          ;
+      },
+      minReq: (state, index, array) => {
+        return array[index].baseCost;
+      },
+      baseCost: 2,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      upgrades: 0,
+      baseHits: 0,
+      cardType: "ability",
+      elementType: "fire",
+      action: (stateObj, index, array) => {
+        stateObj = immer.produce(stateObj, (newState) => {
+          randomIndex  = Math.floor(Math.random() * newState.playerDeck.length)
+          console.log('upgrading card at deck index ' + randomIndex)
+          newState.playerDeck[randomIndex].upgrades += (1+array[index].upgrades);
+          console.log('card upgrades for card ' + newState.playerDeck[randomIndex].name + 'are now  ' + newState.playerDeck[randomIndex].upgrades)
+        })
+        
+        return stateObj;
       }
     },
   };

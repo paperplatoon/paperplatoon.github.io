@@ -18,11 +18,13 @@ let playerMonsters = {
       startingDeck: [
         fireCardPool.setaflame,
         fireCardPool.darkknowledge,
-        fireCardPool.purefocus,
-        fireCardPool.vampiricstrike,
-        fireCardPool.feast,
-        fireCardPool.expertsforge,
-        fireCardPool.forgeshield
+        fireCardPool.darkknowledge,
+        fireCardPool.rewindtime,
+        fireCardPool.rewindtime,
+        fireCardPool.hammerandtongs,
+        fireCardPool.setaflame,
+        fireCardPool.forgeshield,
+        fireCardPool.redirect
       ],
     },
   
@@ -52,7 +54,7 @@ let playerMonsters = {
         fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
-        fireCardPool.tackle,
+        fireCardPool.kindle,
         fireCardPool.tackle,
         fireCardPool.tackle,
         fireCardPool.tackle,

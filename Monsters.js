@@ -29,8 +29,8 @@ let opponentMonsters = {
           minReq: 0,
           action: (state, index, array) => {
             let toChangeState = immer.produce(state, (newState) => {
-              newState.opponentMonster.forEach(function(monsterObj, index) {
-                monsterObj.encounterBlock += (array[index].baseBlock +state.opponentMonster[index].dex);
+              newState.opponentMonster.forEach(function(monsterObj, monsterIndex) {
+                monsterObj.encounterBlock += (array[index].baseBlock +array[index].dex);
               })
               newState.opponentMonster[index].encounterEnergy +=1;
 
@@ -88,8 +88,8 @@ let opponentMonsters = {
           minReq: 0,
           action: (state, index, array) => {
             let toChangeState = immer.produce(state, (newState) => {
-              newState.opponentMonster.forEach(function(monsterObj, index) {
-                monsterObj.encounterBlock += (array[index].baseBlock +state.opponentMonster[index].dex);
+              newState.opponentMonster.forEach(function(monsterObj, monsterIndex) {
+                monsterObj.encounterBlock += (array[index].baseBlock +array[index].dex);
               })
               newState.opponentMonster[index].encounterEnergy +=1;
 
@@ -145,9 +145,7 @@ let opponentMonsters = {
           minReq: 0,
           action: (state, index, array) => {
             let toChangeState = immer.produce(state, (newState) => {
-              newState.opponentMonster.forEach(function(monsterObj) {
-                monsterObj.encounterBlock += (array[index].baseBlock +array[index].dex);
-              })
+              newState.opponentMonster[index].encounterBlock += (array[index].baseBlock +array[index].dex);
               newState.opponentMonster[index].encounterEnergy +=1;     
             })
             return toChangeState;
@@ -698,9 +696,9 @@ let gym3 = [
 ]
 
  let gyms = [
-  gym2,
+  gym1,
   gym3,
-  gym1
+  gym2
  ]
 
  
