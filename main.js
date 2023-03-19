@@ -718,6 +718,7 @@ async function playACard(stateObj, cardIndexInHand, arrayObj) {
 
   })
   stateObj = handleDeaths(stateObj);
+  stateObj = pickOpponentMove(stateObj);
   changeState(stateObj);
 }
 
@@ -1672,7 +1673,7 @@ function resetState() {
 
 //needs to return when it reaches the first playable move to prevent it from always playing the last move
 //chooses a random number based on the length of the opponent' moves and highlights it
-function pickMove(stateObj) {
+function pickOpponentMove(stateObj) {
   let toChangeState = immer.produce(stateObj, (newState) => {
     newState.opponentMonster.forEach(function (monsterObj, index) {
       for (var i = 0; i < monsterObj.moves.length; i++) {
@@ -1732,7 +1733,7 @@ function shuffleDraw(stateObj) {
 }
 
 function startEncounter(stateObj) {
-  let state1 = pickMove(stateObj);
+  let state1 = pickOpponentMove(stateObj);
   let state2 = shuffleDraw(state1);
   let toChangeState = drawAHand(state2);
   changeState(toChangeState);
@@ -1769,14 +1770,14 @@ async function endTurn(stateObj) {
     })
   });
   stateObj = endTurnIncrement(stateObj);
-  stateObj = pickMove(stateObj);
+  stateObj = pickOpponentMove(stateObj);
   changeState(stateObj);
   await pause(500);
   stateObj = playOpponentMove(stateObj);
   changeState(stateObj);
   await pause(500);
 
-  stateObj = pickMove(stateObj);
+  stateObj = pickOpponentMove(stateObj);
   stateObj = immer.produce(stateObj, (draft) => {
     draft.playerMonster.encounterBlock = 0;
     draft.playerMonster.encounterEnergy += draft.playerMonster.turnEnergy;

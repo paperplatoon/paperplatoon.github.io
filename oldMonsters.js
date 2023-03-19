@@ -17,11 +17,12 @@ let playerMonsters = {
       avatar: "img/fireMonster.png",
       startingDeck: [
         fireCardPool.setaflame,
-        fireCardPool.darkknowledge,
-        fireCardPool.expertsforge,
-        fireCardPool.mastery,
+        fireCardPool.setaflame,
+        fireCardPool.essencedrain,
+        fireCardPool.essencedrain,
+        fireCardPool.siphon,
+        fireCardPool.redirect,
         fireCardPool.hammerandtongs,
-        fireCardPool.forgeshield,
         fireCardPool.bloatedbomb
       ],
     },
@@ -45,13 +46,20 @@ let playerMonsters = {
       startingDeck: [
         //1 energy
         fireCardPool.fireEnergy,
-        //11 attacks
+        //3 special
         fireCardPool.explode,
-        fireCardPool.withdraw,
-        fireCardPool.throwsand,
+        fireCardPool.gainstrength,
         fireCardPool.kindle,
+        //8 starter
+        fireCardPool.withdraw,
+        fireCardPool.withdraw,
+        fireCardPool.withdraw,
+        fireCardPool.withdraw,   
+        fireCardPool.tackle,
+        fireCardPool.tackle,
         fireCardPool.tackle,
         fireCardPool.tackle
+
       ],
     },
 
