@@ -159,7 +159,7 @@
 }
 
 .remove-div button, #level-up-div button {
-  width: 60vw;
+  width: 80vw;
 }
 
 #playerMonster {
@@ -461,6 +461,11 @@
   padding-left: 1vw;
   padding-top: 3vh;
   padding-right: 1vw;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: start;
 }
 
 .card {
@@ -667,7 +672,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 }
 
 #level-up-div {
-  height: 60vh;
+  height: 80vh;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;

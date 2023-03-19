@@ -1167,6 +1167,7 @@ function renderDuplicateCard(stateObj) {
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", duplicateCard);
   skipToTownButton(stateObj, "I don't want to duplicate any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 function renderDoubleUpgradeCard(stateObj) {
@@ -1175,6 +1176,7 @@ function renderDoubleUpgradeCard(stateObj) {
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", doubleUpgradeCard, goldCost="doubleupgrade");
   skipToTownButton(stateObj, "I don't want to upgrade any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 function renderChooseCardReward(stateObj) {
@@ -1234,6 +1236,7 @@ function renderChooseRareCard(stateObj) {
   divContainer("app");
   renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
   skipToTownButton(stateObj, "I don't want to add any of these cards to my deck (+50 gold)", ".remove-div", cardSkip=true,  isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 function renderHealer(stateObj) {
@@ -1276,7 +1279,8 @@ function renderLevelUp(stateObj) {
   document.getElementById("level-up-div").append(strengthDiv, DexDiv, energyDiv);
   
   
-  skipToTownButton(stateObj, "I don't want to level up for some reason even though I probably should (+50 gold))", "#app", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I don't want to level up for some reason even though I probably should (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
   
 };
 
@@ -1298,6 +1302,7 @@ function renderDecreaseCardCost(stateObj) {
     }
   });
   skipToTownButton(stateObj, "I don't want to decrease the cost of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 function renderIncreaseCardBlock(stateObj) {
@@ -1310,6 +1315,7 @@ function renderIncreaseCardBlock(stateObj) {
     }
   });
   skipToTownButton(stateObj, "I don't want to increase the block of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 function renderIncreaseCardAttack(stateObj) {
@@ -1321,7 +1327,8 @@ function renderIncreaseCardAttack(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardAttack, goldCost="increaseattack")
     }
   });
-  skipToTownButton(stateObj, "I don't want to increase the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I don't want to increase the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div"); 
 };
 
 function renderDoubleCardAttack(stateObj) {
@@ -1333,7 +1340,8 @@ function renderDoubleCardAttack(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", doubleCardAttack, goldCost="doubleattack")
     }
   });
-  skipToTownButton(stateObj, "I don't want to double the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I don't want to double the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div"); 
 };
 
 function renderIncreaseBaseHit(stateObj) {
@@ -1346,6 +1354,7 @@ function renderIncreaseBaseHit(stateObj) {
     }
   });
   skipToTownButton(stateObj, "I don't want more hits for any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=false, goldCost=false) {
