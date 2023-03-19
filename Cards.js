@@ -1561,6 +1561,7 @@ let fireCardPool = {
           randomIndex  = Math.floor(Math.random() * newState.playerDeck.length)
           console.log('upgrading ' + newState.playerDeck[randomIndex].name + ' two times')
           newState.playerDeck[randomIndex].upgrades += (1+array[index].upgrades);
+          newState.playerMonster.encounterEnergy -= array[index].baseCost;
         })
         
         return stateObj;

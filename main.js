@@ -1,3 +1,9 @@
+//negative strength bug
+//card bug fix
+
+
+
+
 //import clone from "https://cdn.skypack.dev/clone@2.1.2";
 //NEXT STEPS
 //CARDS THAT NEED A TURN COMBO COUNTER TO BE AT A CERTAIN AMOUNT BEFORE PLAYING
@@ -82,37 +88,41 @@ let potentialMonsterChoices = playerMonsterArray;
 function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, all=false) {
   let toChangeState = immer.produce(stateObj, (newState) => {
     let calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
-    if (all===true) {
-      newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
-        console.log("dealing " + calculatedDamage + " to monster at index " + monsterIndex + " with health " + monsterObj.currentHP);
-        if (monsterObj.hunted > 0) {
+    if (calculatedDamage > 0) {
+      if (all===true) {
+        newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
+          if (monsterObj.hunted > 0) {
+            calculatedDamage *=2;
+          }
+          if (monsterObj.encounterBlock == 0) {
+            console.log("You dealt " + calculatedDamage + " to " + monsterObj.name);
+            monsterObj.currentHP -= calculatedDamage;
+          } else if (monsterObj.encounterBlock >= calculatedDamage) {
+            console.log(monsterObj.name + " blocked for " + calculatedDamage);
+            monsterObj.encounterBlock -= calculatedDamage;
+          } else {
+            console.log(monsterObj.name + " blocked for " + calculatedDamage + " and took " + (calculatedDamage - monsterObj.encounterBlock) + " damage");
+            monsterObj.currentHP -= (calculatedDamage - monsterObj.encounterBlock);
+            monsterObj.encounterBlock = 0;
+          }
+        })
+      } else {
+        if (newState.opponentMonster[newState.targetedMonster].hunted > 0) {
           calculatedDamage *=2;
         }
-        if (monsterObj.encounterBlock == 0) {
-          monsterObj.currentHP -= calculatedDamage;
-        } else if (monsterObj.encounterBlock >= calculatedDamage) {
-          monsterObj.encounterBlock -= calculatedDamage;
+        if (newState.opponentMonster[newState.targetedMonster].encounterBlock == 0) {
+          console.log("You dealt " + calculatedDamage + " to " + newState.opponentMonster[newState.targetedMonster].name);
+          newState.opponentMonster[newState.targetedMonster].currentHP -= calculatedDamage;
+        } else if (newState.opponentMonster[newState.targetedMonster].encounterBlock >= calculatedDamage) {
+          console.log(newState.opponentMonster[newState.targetedMonster].name + " blocked for " + calculatedDamage);
+          newState.opponentMonster[newState.targetedMonster].encounterBlock -= calculatedDamage;
         } else {
-          monsterObj.currentHP -= (calculatedDamage - monsterObj.encounterBlock);
-          monsterObj.encounterBlock = 0;
+          console.log(newState.opponentMonster[newState.targetedMonster].name + " blocked for " + calculatedDamage + " and took " + (calculatedDamage - newState.opponentMonster[newState.targetedMonster].encounterBlock) + " damage");
+          newState.opponentMonster[newState.targetedMonster].currentHP -= (calculatedDamage - newState.opponentMonster[newState.targetedMonster].encounterBlock);
+          newState.opponentMonster[newState.targetedMonster].encounterBlock = 0;
         }
-      })
-    } else {
-      if (newState.opponentMonster[newState.targetedMonster].hunted > 0) {
-        calculatedDamage *=2;
-      }
-      if (newState.opponentMonster[newState.targetedMonster].encounterBlock == 0) {
-        newState.opponentMonster[newState.targetedMonster].currentHP -= calculatedDamage;
-      } else if (newState.opponentMonster[newState.targetedMonster].encounterBlock >= calculatedDamage) {
-        newState.opponentMonster[newState.targetedMonster].encounterBlock -= calculatedDamage;
-      } else {
-        newState.opponentMonster[newState.targetedMonster].currentHP -= (calculatedDamage - newState.opponentMonster[newState.targetedMonster].encounterBlock);
-        newState.opponentMonster[newState.targetedMonster].encounterBlock = 0;
       }
     }
-
-
-    
   });
   return toChangeState;
 }
@@ -120,13 +130,18 @@ function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, all=false)
 function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, attackNumber = 1) {
   let toChangeState = immer.produce(stateObj, (newState) => {
     calculatedDamage = ((damageNumber + newState.opponentMonster[monsterIndex].strength) * attackNumber);
-    if (newState.playerMonster.encounterBlock == 0) {
-      newState.playerMonster.currentHP -= calculatedDamage;
-    } else if (newState.playerMonster.encounterBlock >= calculatedDamage) {
-      newState.playerMonster.encounterBlock -= calculatedDamage;
-    } else {
-      newState.playerMonster.currentHP -= (calculatedDamage - newState.playerMonster.encounterBlock);
-      newState.playerMonster.encounterBlock = 0;
+    if (calculatedDamage > 0) {
+      if (newState.playerMonster.encounterBlock == 0) {
+        console.log("you took " + calculatedDamage + " damage")
+        newState.playerMonster.currentHP -= calculatedDamage;
+      } else if (newState.playerMonster.encounterBlock >= calculatedDamage) {
+        newState.playerMonster.encounterBlock -= calculatedDamage;
+        console.log("you blocked " + calculatedDamage + " damage")
+      } else {
+        console.log("you blocked " + newState.playerMonster.encounterBlock + " damage and took " + (calculatedDamage - newState.playerMonster.encounterBlock) + " damage" )
+        newState.playerMonster.currentHP -= (calculatedDamage - newState.playerMonster.encounterBlock);
+        newState.playerMonster.encounterBlock = 0;
+      }
     }
   });
   return toChangeState;

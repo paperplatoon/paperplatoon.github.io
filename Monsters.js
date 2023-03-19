@@ -321,7 +321,7 @@ let opponentMonsters = {
           minReq: 5,
           action: (state, index, array) => {
             let toChangeState = immer.produce(state, (newState) => {
-              let tempState = dealPlayerDamage(newState, 30, index);
+              let tempState = dealPlayerDamage(newState, (6*array[index].baseDamage), index);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
               newState.opponentMonster[index].encounterEnergy -= 5;
@@ -369,8 +369,10 @@ let opponentMonsters = {
               if (array[index].currentHP < (array[index].maxHP - (array[index].baseHeal+1))) {
                 newState.opponentMonster[index].currentHP += array[index].baseHeal;
                 newState.enemyFightHealTotal += array[index].baseHeal;
+                console.log("fight heal totla increased to " + newState.enemyFightHealTotal);
               } else {
                 newState.enemyFightHealTotal += (newState.opponentMonster[index].maxHP - newState.opponentMonster[index].currentHP)
+                console.log("fight heal totla increased to " + newState.enemyFightHealTotal);
                 newState.opponentMonster[index].currentHP = newState.opponentMonster[index].maxHP;
               }; 
               newState.opponentMonster[index].encounterEnergy += 1;    
@@ -428,8 +430,7 @@ let opponentMonsters = {
           minReq: 0,
           action: (state, index, array) => {
             let toChangeState = immer.produce(state, (newState) => {
-              calculatedDamage = array[index].baseDamage + array[index].strength;
-              let tempState = dealPlayerDamage(newState, calculatedDamage, index);
+              let tempState = dealPlayerDamage(newState, array[index].baseDamage, index);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
               newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
@@ -625,7 +626,7 @@ let opponentMonsters = {
           minReq: 10,
           action: (state, index, array) => {
             let toChangeState = immer.produce(state, (newState) => {
-              let tempState = dealPlayerDamage(newState, array[index].strength, index, 2);
+              let tempState = dealPlayerDamage(newState, 0, index, 2);
               newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
               newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock; 
               newState.opponentMonster[index].encounterEnergy -= 10; 
@@ -696,9 +697,9 @@ let gym3 = [
 ]
 
  let gyms = [
-  gym1,
+  gym2,
   gym3,
-  gym2
+  gym1
  ]
 
  

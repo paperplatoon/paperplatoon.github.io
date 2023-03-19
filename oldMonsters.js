@@ -47,14 +47,9 @@ let playerMonsters = {
         fireCardPool.fireEnergy,
         //11 attacks
         fireCardPool.explode,
-        fireCardPool.gainstrength,
         fireCardPool.withdraw,
-        fireCardPool.withdraw,
-        fireCardPool.withdraw,
-        fireCardPool.withdraw,
+        fireCardPool.throwsand,
         fireCardPool.kindle,
-        fireCardPool.tackle,
-        fireCardPool.tackle,
         fireCardPool.tackle,
         fireCardPool.tackle
       ],
