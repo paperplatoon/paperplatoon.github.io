@@ -1559,11 +1559,56 @@ let fireCardPool = {
       action: (stateObj, index, array) => {
         stateObj = immer.produce(stateObj, (newState) => {
           randomIndex  = Math.floor(Math.random() * newState.playerDeck.length)
-          console.log('upgrading card at deck index ' + randomIndex)
+          console.log('upgrading ' + newState.playerDeck[randomIndex].name + ' two times')
           newState.playerDeck[randomIndex].upgrades += (1+array[index].upgrades);
-          console.log('card upgrades for card ' + newState.playerDeck[randomIndex].name + 'are now  ' + newState.playerDeck[randomIndex].upgrades)
         })
         
+        return stateObj;
+      }
+    },
+
+    mastery: {
+      rare: true,
+      cardID: 52,
+      name: "Mastery",
+      text: (state, index, array) => {
+        if (state.status === Status.InEncounter) {
+          const allCardsArray = state.encounterHand.concat(state.encounterDraw, state.encounterDiscard)
+          let totalEncounterUpgrades = allCardsArray.reduce(function(acc, obj) {
+            return acc + obj["upgrades"];
+          }, 0); 
+          return `Deal ${(array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength)} damage for each upgrade you have (${totalEncounterUpgrades + array[index].baseHits})`
+        } else {
+          let totalEncounterUpgrades = state.playerDeck.reduce(function(acc, obj) {
+            return acc + obj["upgrades"];
+          }, 0); 
+          return `Deal ${(array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength)} damage for each upgrade you have (${totalEncounterUpgrades + array[index].baseHits})`   
+        }
+      },
+      minReq: (state, index, array) => {
+        return array[index].baseCost;
+      },
+      upgrades: 0,
+      baseCost: 1,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      baseHits: 0,
+      baseDamage: 5,
+      cardType: "ability",
+      elementType: "fire",
+      energyDrain: 1,
+      action: (stateObj, index, array) => {
+        const allCardsArray = state.encounterHand.concat(state.encounterDraw, state.encounterDiscard);
+        let totalEncounterUpgrades = allCardsArray.reduce(function(acc, obj) {
+            return acc + obj["upgrades"];
+          }, 0); 
+        stateObj = immer.produce(stateObj, (newState) => {
+          let tempState = dealOpponentDamage(stateObj, (array[index].baseDamage + (array[index].upgrades*2)), (totalEncounterUpgrades + array[index].baseHits) );
+          newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
+          newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
+          newState.playerMonster.encounterEnergy -= array[index].baseCost;
+        })
         return stateObj;
       }
     },

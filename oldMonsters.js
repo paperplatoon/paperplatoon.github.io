@@ -18,13 +18,11 @@ let playerMonsters = {
       startingDeck: [
         fireCardPool.setaflame,
         fireCardPool.darkknowledge,
-        fireCardPool.darkknowledge,
-        fireCardPool.rewindtime,
-        fireCardPool.rewindtime,
+        fireCardPool.expertsforge,
+        fireCardPool.mastery,
         fireCardPool.hammerandtongs,
-        fireCardPool.setaflame,
         fireCardPool.forgeshield,
-        fireCardPool.redirect
+        fireCardPool.bloatedbomb
       ],
     },
   
