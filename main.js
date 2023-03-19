@@ -1,6 +1,6 @@
-//negative strength bug
-//card bug fix
 
+
+//fixed addBackstepstoHand bceause the card isn't discarded yet
 
 
 
@@ -75,6 +75,7 @@ let gameStartState = {
   fightEnergyDrainCount: 0,
   fightEnergyDrainTotal: 0,
   cardsPerTurn: 0,
+  comboPerTurn: 0,
   gainLifePerCard: 0,
   townEventChosen: false,
   availableCardPoolForShop: false
@@ -182,7 +183,7 @@ function renderChooseMonster(stateObj) {
 };
 
 function chooseThisMonster(stateObj, index) {
-  gyms = fisherYatesShuffle(gyms);
+  //gyms = fisherYatesShuffle(gyms);
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster = potentialMonsterChoices[index];
     newState.playerDeck = potentialMonsterChoices[index].startingDeck;
@@ -582,6 +583,7 @@ function setUpEncounter(stateObj) {
     newState.fightEnergyDrainCount = 0;
     newState.fightEnergyDrainTotal = 0;
     newState.gainLifePerCard = 0;
+    newState.comboPerTurn = 0;
     
     newState.cardsPerTurn = 0;
     if (!stateObj.playerDeck) {
@@ -654,7 +656,7 @@ function shuffleDiscardIntoDeck(stateObj) {
 function addBackstepsToHand(stateObj, numberToAdd=1) {
   stateObj = immer.produce(stateObj, (newState) => {
     for (let i=0; i < numberToAdd; i++) {
-      if (newState.encounterHand.length >= 8) {
+      if (newState.encounterHand.length > 8) {
         console.log("hand was full, backstep was not added")
       } else
       newState.encounterHand.push(fireCardPool.backstep)
@@ -812,7 +814,12 @@ function renderPlayerMonster(stateObj) {
   playerEnergyText.classList.add("player-energy")
   let playerStrengthandDexText = document.createElement("H4");
   playerEnergyText.textContent = "Energy: " + stateObj.playerMonster.encounterEnergy;
-  playerStrengthandDexText.textContent = "Strength: " + (stateObj.playerMonster.strength) + " Dex: " + (stateObj.playerMonster.dex);
+  if (stateObj.comboPerTurn > 0) {
+    playerStrengthandDexText.textContent = "Strength: " + stateObj.playerMonster.strength + "  Dex: " + stateObj.playerMonster.dex + "  Combo: " + stateObj.comboPerTurn;
+  } else {
+    playerStrengthandDexText.textContent = "Strength: " + stateObj.playerMonster.strength + "  Dex: " + stateObj.playerMonster.dex;
+  }
+  
   document.getElementById("playerStats").appendChild(playerEnergyText)
   document.getElementById("playerStats").appendChild(playerStrengthandDexText);
 
@@ -1514,6 +1521,9 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
         if (cardObj.rare) {
           cardDiv.classList.add("rare-card")
         }
+        if (cardObj.trigger && cardObj.trigger(stateObj, index, cardArray)) {
+          cardDiv.classList.add("trigger-condition-met")
+        }
         document.getElementById(divName).appendChild(cardDiv);
 }
 
@@ -1824,6 +1834,7 @@ function endTurnIncrement(stateObj) {
     newState.playerMonster.tempStrength = 0;
     newState.playerMonster.tempDex = 0;
     newState.cardsPerTurn = 0;
+    newState.comboPerTurn = 0;
     newState.opponentMonster.forEach(function (monsterObj, index) {
       if (monsterObj.hunted > 0) {
         monsterObj.hunted -=1;

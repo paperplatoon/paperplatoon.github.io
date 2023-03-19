@@ -1,6 +1,6 @@
 let playerMonsters = {
     devCheat: {
-      name: "Easy Mode",
+      name: "Testing Mode",
       type: "fire",
       encounterEnergy: 0,
       opponentMoveIndex: false,
@@ -19,11 +19,10 @@ let playerMonsters = {
         fireCardPool.setaflame,
         fireCardPool.setaflame,
         fireCardPool.essencedrain,
-        fireCardPool.essencedrain,
-        fireCardPool.siphon,
-        fireCardPool.redirect,
-        fireCardPool.hammerandtongs,
-        fireCardPool.bloatedbomb
+        fireCardPool.coatofarms,
+        fireCardPool.cursedritual,
+        fireCardPool.followupslap,
+        fireCardPool.combofinisher
       ],
     },
   
@@ -96,6 +95,40 @@ let playerMonsters = {
         fireCardPool.tackle,
       ],
     },
+
+    funCards: {
+        name: "Fun Cards (but OP af)",
+        type: "fire",
+        encounterEnergy: 0,
+        opponentMoveIndex: false,
+        cardPool: fireCardPool,
+        maxHP: 100,
+        currentHP: 100,
+        strength: 0,
+        dex: 0,
+        tempStrength: 0,
+        tempDex: 0,
+        fightStrength: 0,
+        fightDex: 0,
+        turnEnergy: 3,
+        avatar: "img/fireMonster.png",
+        startingDeck: [
+          fireCardPool.vampiricstrike,
+          fireCardPool.bloatedbomb,
+          fireCardPool.skipaway,
+          fireCardPool.rareupgrade,
+          fireCardPool.disablingblow,
+          fireCardPool.throwsand,
+          fireCardPool.bloodshield,
+          fireCardPool.precisionstrike,
+          fireCardPool.enjoin,
+          fireCardPool.powerup,
+          fireCardPool.mentalblock,
+          fireCardPool.hammerandtongs,
+          fireCardPool.thiefshield,
+
+        ],
+      },
   
   // swirly: {
   //   name: "Swirly",

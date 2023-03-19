@@ -732,3 +732,14 @@ button:hover {
   display: block;
 }
 
+.trigger-condition-met {
+    background-image: linear-gradient(to bottom, #3acfd5 0%, #3a4ed5 100%); 
+
+}
+
+.trigger-condition-met:hover {
+  cursor: pointer;
+  box-shadow: 0 0 10px rgb(0, 141, 207); 
+  background: linear-gradient(90deg, rgb(47, 109, 150),rgb(43, 69, 108), rgb(43, 77, 88), rgb(12, 8, 87));
+  color: white;
+}

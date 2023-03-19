@@ -555,7 +555,7 @@ let opponentMonsters = {
             let tempState = dealPlayerDamage(newState, calculatedDamage, index, 5);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].strength += array[index].calculatedDamage;
+            newState.opponentMonster[index].strength += calculatedDamage;
           })
           return toChangeState;
         }
@@ -697,8 +697,8 @@ let gym3 = [
 ]
 
 let gyms = [
-  gym2,
   gym3,
+  gym2,
   gym1
 ]
 
