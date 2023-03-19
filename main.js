@@ -903,6 +903,7 @@ function renderTownDiv(stateObj, idNameString, imgSrcString, imgTextString, trig
 
 
 function renderTown(stateObj) {
+  console.log('renderin town')
 
   let eventsArray = [
     // {
@@ -987,15 +988,14 @@ function renderTown(stateObj) {
     townDiv.setAttribute("id", "town");
 
   if (stateObj.townEventChosen === false) {
-    console.log("inside Town Event")
     shuffledEventsArray = fisherYatesShuffle(eventsArray);
 
     stateObj = immer.produce(stateObj, (newState) => {
       newState.townEventChosen = shuffledEventsArray[0].eventID
-      console.log("event set")
+      console.log("Be careful before clicking on the event on the far right - you can only use it once!")
     })
 
-    changeState(stateObj);
+    //changeState(stateObj);
   }
   
 
