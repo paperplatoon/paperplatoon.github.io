@@ -165,7 +165,7 @@ function renderChooseMonster(stateObj) {
 };
 
 function chooseThisMonster(stateObj, index) {
-  //gyms = fisherYatesShuffle(gyms);
+  gyms = fisherYatesShuffle(gyms);
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster = potentialMonsterChoices[index];
     newState.playerDeck = potentialMonsterChoices[index].startingDeck;
