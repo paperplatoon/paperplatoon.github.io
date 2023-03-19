@@ -1344,6 +1344,7 @@ let fireCardPool = {
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
           newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
           newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
+          newState.playerMonster.fightDex += 1+array[index].upgrades
           newState.playerMonster.dex += 1+array[index].upgrades
         })
         return toChangeState;

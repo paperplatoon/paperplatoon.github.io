@@ -604,13 +604,13 @@ function setUpEncounter(stateObj) {
     newState.opponentMonster.forEach(function (monster, index) {
       newState.opponentMonster[index].encounterEnergy = 0;
       newState.opponentMonster[index].encounterBlock = 0;
-      let gym = newState.gymCount+1;
-      newState.opponentMonster[index].maxHP += (gym-1)*30;
-      newState.opponentMonster[index].currentHP += (gym-1)*30;
-      newState.opponentMonster[index].baseDamage *= gym;
-      newState.opponentMonster[index].baseBlock *= gym;
-      newState.opponentMonster[index].baseHeal *= gym;
-      newState.opponentMonster[index].baseScale *= gym;
+      let gym = newState.gymCount
+      newState.opponentMonster[index].maxHP += (newState.gymCount*30);
+      newState.opponentMonster[index].currentHP += (newState.gymCount*30);
+      newState.opponentMonster[index].baseDamage += (newState.gymCount*5);
+      newState.opponentMonster[index].baseBlock += (newState.gymCount*5);
+      newState.opponentMonster[index].baseHeal += (newState.gymCount*5);
+      newState.opponentMonster[index].baseScale += (newState.gymCount*5);
     })
   })
 
