@@ -50,6 +50,7 @@ const Status = {
   ChooseRareEvent: "Choose a rare card to add to your deck",
   ShowCardPool: "showing card pool",
   HealersShop: "Restore your health for a price",
+  cardShop: "Buy cards to add to your deck",
   DeathScreen: "You stupid, stupid asshole! You got your Neo-Neopet killed! Refresh the page to try again",
   VictoryScreen: "You and your little Neo-Neopet have beaten all the content available in this demo! Check back soon!"
 };
@@ -76,6 +77,7 @@ let gameStartState = {
   cardsPerTurn: 0,
   gainLifePerCard: 0,
   townEventChosen: false,
+  availableCardPoolForShop: false
 };
 
 playerMonsterArray = Object.values(playerMonsters);
@@ -206,6 +208,7 @@ function fisherYatesShuffle(arrayObj) {
 }
 
 function changeStatus(stateObj, newStatus, countsAsEventSkipForChangeStatus=false) {
+  console.log("changing status to " + newStatus)
   stateObj = immer.produce(stateObj, (newState) => {
     if (countsAsEventSkipForChangeStatus === true) {
       console.log("changing status, and this counts as skipping the events")
@@ -255,6 +258,27 @@ function chooseThisCard(stateObj, index, sampledCardPool) {
 
     newState.status = Status.InTown;   
   })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function buyThisCard(stateObj, index, cardArray) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    if (cardArray[index].rare === true && stateObj.gold >= 150) {
+      newState.gold -= 150;
+      newState.availableCardPoolForShop.splice(index, 1)
+      newState.playerDeck.push(cardArray[index]); 
+    } else if (stateObj.gold >= 75) {
+      newState.gold -= 75;
+      newState.availableCardPoolForShop.splice(index, 1)
+      newState.playerDeck.push(cardArray[index]); 
+    } else {
+      console.log("not enough gold")
+    }  
+    
+    newState.status = Status.cardShop;
+  })
+
   changeState(stateObj);
   return stateObj;
 }
@@ -448,6 +472,8 @@ function resetAfterFight(stateObj) {
     newState.enemyFightHealTotal = 0;
     newState.gainLifePerCard = 0;
 
+
+
     newState.gold += gyms[newState.gymCount][newState.gymFightCount].goldReward
     
     console.log("gym count is " + newState.gymCount);
@@ -457,6 +483,7 @@ function resetAfterFight(stateObj) {
       newState.gymFightCount = 0;
       newState.gymCount += 1;
       newState.eventUsed = false; 
+      newState.availableCardPoolForShop = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
       newState.status = Status.EncounterRewards;
     } else {
       newState.gymFightCount += 1;
@@ -972,7 +999,8 @@ function renderTown(stateObj) {
   }
   
 
-  let townHealDiv = renderTownDiv(stateObj, "TownHealer", "img/healer.PNG", "Visit Healer", (stateObj.gold >= Math.floor(stateObj.healCost/2)), changeStatus, Status.HealersShop, "Not enough gold");
+  //let townHealDiv = renderTownDiv(stateObj, "TownHealer", "img/healer.PNG", "Visit Healer", (stateObj.gold >= Math.floor(stateObj.healCost/2)), changeStatus, Status.HealersShop, "Not enough gold");
+  let townShopDiv = renderTownDiv(stateObj, "TownShop", "img/healer.PNG", "Visit Shop", true, changeStatus, Status.cardShop);
   let townRemoveDiv = renderTownDiv(stateObj, "TownRemove", "img/tavern2.PNG", "Remove A Card",  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `Not enough gold (${stateObj.cardRemoveCost} needed)`);
   let townUpgradeDiv = renderTownDiv(stateObj, "TownUpgrade", "img/forge.PNG", "Upgrade A Card", (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `Not enough gold (${stateObj.cardUpgradeCost} needed)`);
   let townGymDiv = renderTownDiv(stateObj, "TownFight", "img/dracula.png", "Fight Town Gym", true, TownFight)
@@ -980,7 +1008,7 @@ function renderTown(stateObj) {
   let mysteryDiv = renderTownDiv(stateObj, eventsArray[stateObj.townEventChosen].divID, eventsArray[stateObj.townEventChosen].imgSrc, eventsArray[stateObj.townEventChosen].divText, (stateObj.eventUsed == false), changeStatus, eventsArray[stateObj.townEventChosen].newStatus, "Already used");
 
 
-  townDiv.append(townHealDiv, townRemoveDiv, townUpgradeDiv, townGymDiv, mysteryDiv);
+  townDiv.append(townShopDiv, townRemoveDiv, townUpgradeDiv, townGymDiv, mysteryDiv);
   document.getElementById("app").append(townDiv);
 
   //     <div id="TownDecrease" class="town-div">
@@ -1151,6 +1179,40 @@ function renderChooseCardReward(stateObj) {
   divContainer("app");
   renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
   skipToTownButton(stateObj, "I don't want to add any of these cards to my deck", ".remove-div", cardSkip=true);
+};
+
+function renderShop(stateObj) {
+  if (stateObj.availableCardPoolForShop === false) {
+    stateObj = immer.produce(stateObj, (newState) => {
+      console.log("setting cards for shop")
+      newState.availableCardPoolForShop = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
+    }) 
+  }
+  
+  let sampledCardPool = stateObj.availableCardPoolForShop.slice(0, 3);
+
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+  renderClickableCardList(stateObj, sampledCardPool, "remove-div", buyThisCard, goldCost="cardshop");
+  let cheapHealButton = document.createElement("Button");
+  cheapHealButton.addEventListener("click", function () {
+    cheapHeal(stateObj);
+  });
+  cheapHealButton.classList.add("cheap-heal-button");
+  cheapHealButton.classList.add("heal-button");
+  cheapHealButton.textContent = `Heal 25% of your max health (${Math.floor(stateObj.playerMonster.maxHP/4)}) for ${Math.floor(stateObj.healCost/2)} gold`
+  document.getElementById("remove-div").append(cheapHealButton);
+
+  let HealButton = document.createElement("Button");
+  HealButton.addEventListener("click", function () {
+    fullHeal(stateObj);
+  });
+  HealButton.classList.add("full-heal-button");
+  HealButton.classList.add("heal-button");
+  HealButton.textContent = `Spend ${stateObj.healCost} gold to fully heal`
+  document.getElementById("remove-div").append(HealButton);
+  skipToTownButton(stateObj, "I don't want to buy anything right now", ".remove-div");
 };
 
 function renderChooseRareCard(stateObj) {
@@ -1399,8 +1461,21 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
             topCardRowDiv.innerHTML = "";
             topCardRowDiv.append(cardAltCost, cardCost, cardName);
             cardDiv.append(topCardRowDiv, altUpgradeText, cardText);
+        } else if (goldCost === "cardshop") {
+          let costText = document.createElement("P");
+          if (cardObj.rare && stateObj.gold >= 150) {
+            costText.textContent = "(150 gold to buy)";
+          } else if (stateObj.gold >= 75) {
+            costText.textContent = "(75 gold to buy)";
+          } else if (cardObj.rare && stateObj.gold <= 150) {
+            costText.textContent = "Not enough gold (150)";
+          } else {
+            costText.textContent = "Not enough gold (75)";
+          }
+          
+          costText.classList.add("invisible-cost")
+          cardDiv.append(costText);
         }
-        
         
         //if cardArray is the hand, add playable class to the cards if energy > card.minReq
         if (cardArray === stateObj.encounterHand) {
@@ -1640,6 +1715,9 @@ function renderScreen(stateObj) {
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.DeathScreen || stateObj.status == Status.VictoryScreen) {
     renderWinLoseScreen(stateObj);
+  }else if (stateObj.status == Status.cardShop) {
+    renderShop(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else {
     renderDivs(stateObj);
     renderPlayerMonster(stateObj);

@@ -145,12 +145,12 @@
   background-color: rgb(181, 172, 0);
 }
 
-#TownHealer {
+#TownShop {
   background-color: crimson;
 }
 
 .heal-button {
-  margin: 5vmax;
+  margin: 2vmax;
 }
 
 .healer-div {
@@ -626,7 +626,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 
 .skip-button{
-  margin: 5vmax;
+  margin: 2vmax;
 }
 
 .hunted {
@@ -659,7 +659,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
  .fire-energy {
   background: linear-gradient(90deg, rgb(174, 4, 4),rgb(200, 58, 58), rgb(172, 10, 10), rgb(128, 8, 8));
-  line-height: 6vh;
+  line-height: 3vh;
   text-align: center;
   font-weight: bold;
   color: white;
@@ -675,7 +675,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 .water-energy {
   background: linear-gradient(90deg, rgb(168, 165, 255),rgb(55, 55, 194), rgb(44, 40, 175), rgb(23, 1, 110));
-  line-height: 6vh;
+  line-height: 3vh;
   text-align: center;
   font-weight: bold;
   color: white;
