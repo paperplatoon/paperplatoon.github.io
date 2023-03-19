@@ -458,13 +458,13 @@
   background-image: url(img/sky.jpeg);
   background-size: cover;
   height: 80vh;
-  padding-left: 11vw;
-  padding-top: 9vh;
-  padding-right: 11vw;
+  padding-left: 1vw;
+  padding-top: 3vh;
+  padding-right: 1vw;
 }
 
 .card {
-  border: 0.5px solid rgb(255, 211, 101);
+  border: 3px solid rgb(255, 211, 101);
   background: linear-gradient(90deg, rgb(255, 238, 208),rgb(230, 171, 94), rgb(255, 200, 127), rgb(243, 133, 23));
   margin: 0.4vmax;
   width: 13vw;
@@ -605,7 +605,8 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
  .card-reward {
   margin-left: 2vw;
-  width: 15vw;
+  width: 16vw;
+  height: 12vh;
 }
 
  .card-top-row {
