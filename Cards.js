@@ -578,7 +578,7 @@ let fireCardPool = {
       },
       upgrades: 0,
       baseDamage: 10,
-      baseHeal: 3,
+      baseHeal: 2,
       baseHits: 1,
       rare: true,
       cardType: "attack",
