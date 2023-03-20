@@ -369,28 +369,30 @@ function encounterUpgradeCard(stateObj, index) {
 }
 
 function fullHeal(stateObj) {
-  stateObj = immer.produce(stateObj, (newState) => {
-    newState.gold -= newState.healCost;
-    newState.healCost += 25;
-    newState.playerMonster.currentHP = newState.playerMonster.maxHP;
-    newState.status = Status.InTown;
-  })
-  changeState(stateObj);
+  if (stateObj.gold >= stateObj.healCost) {
+    stateObj = immer.produce(stateObj, (newState) => {
+      newState.gold -= newState.healCost;
+      newState.healCost += 25;
+      newState.playerMonster.currentHP = newState.playerMonster.maxHP;
+    })
+    changeState(stateObj);
+  }
   return stateObj;
 }
 
 function cheapHeal(stateObj) {
-  stateObj = immer.produce(stateObj, (newState) => {
-    newState.gold -= (Math.floor(newState.healCost/2));
-    healAmount = Math.floor(newState.playerMonster.maxHP/4)
-    if ((newState.playerMonster.maxHP - newState.playerMonster.currentHP) <= (healAmount + newState.extraHeal)) {
-      newState.playerMonster.currentHP = newState.playerMonster.maxHP;
-    } else {
-      newState.playerMonster.currentHP += (healAmount + newState.extraHeal)
-    }       
-    newState.status = Status.InTown;
-  })
-  changeState(stateObj);
+  if (stateObj.gold >= Math.floor(stateObj.healCost/2)) {
+    stateObj = immer.produce(stateObj, (newState) => {  
+      newState.gold -= (Math.floor(newState.healCost/2));
+      healAmount = Math.floor(newState.playerMonster.maxHP/4)
+      if ((newState.playerMonster.maxHP - newState.playerMonster.currentHP) <= (healAmount + newState.extraHeal)) {
+        newState.playerMonster.currentHP = newState.playerMonster.maxHP;
+      } else {
+        newState.playerMonster.currentHP += (healAmount + newState.extraHeal)
+      }    
+    })
+    changeState(stateObj);
+  }
   return stateObj;
 }
 
