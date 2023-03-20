@@ -488,11 +488,7 @@ let fireCardPool = {
       cardID: 17,
       name: "Pirouette Spin",
       text: (state, index, array) => { 
-        if (array[index].baseHits === 1) {
-          return `Deal ${(array[index].baseDamage + (array[index].upgrades*3) + state.playerMonster.strength)} damage for each card played this turn (${state.cardsPerTurn})`;
-        } else {
-          return `Deal ${(array[index].baseDamage + (array[index].upgrades*3) + state.playerMonster.strength)} damage for each card played this turn (${state.cardsPerTurn}) ${array[index].baseHits} times.`
-        } 
+          return `Deal ${(array[index].baseDamage + (array[index].upgrades*3) + state.playerMonster.strength)} damage for each card played this turn (${state.cardsPerTurn + array[index].baseHits})`; 
       },
       minReq: (state, index, array) => {
         return array[index].baseCost;
@@ -508,7 +504,7 @@ let fireCardPool = {
       elementType: "fire",
       action: (state, index, array) => {
         let toChangeState = immer.produce(state, (newState) => {
-          let tempState = dealOpponentDamage(newState, ((array[index].baseDamage + (array[index].upgrades*3)) * newState.cardsPerTurn), array[index].baseHits);
+          let tempState = dealOpponentDamage(newState, (array[index].baseDamage + (array[index].upgrades*3)), (state.cardsPerTurn + array[index].baseHits));
           newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
           newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
@@ -1853,10 +1849,36 @@ let fireCardPool = {
         })
         return stateObj;
       }
-    },
+    },    
+};
 
-    
-  };
+
+let specialCardPool = {
+  fataltoxin: {
+    cardID: 56,
+    name: "Fatal Toxin",
+    text: (state, index, array) => { return `Apply ${array[index].basePoison + (array[index].upgrades*2)} poison to the enemy.`},
+    minReq: (stateObj, index, array) => {
+      return array[index].baseCost;
+    },
+    upgrades: 0,
+    baseCost: 1,
+    cost:  (stateObj, index, array) => {
+      return array[index].baseCost;
+    },
+    basePoison: 5,
+    cardType: "ability",
+    elementType: "special",
+    action: (stateObj, index, array) => {
+      stateObj = immer.produce(stateObj, (newState) => {
+        newState.opponentMonster[newState.targetedMonster].poison += array[index].basePoison+(array[index].upgrades*2);
+        newState.playerMonster.encounterEnergy -= array[index].baseCost;
+      })
+      return stateObj;
+    }
+  },
+
+}
   
   let waterCardPool = {
     waterEnergy: {

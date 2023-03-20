@@ -48,6 +48,8 @@ const Status = {
   DoubleUpgradeEvent: "Choose a card. Upgrade it twice",
   LevelUpEvent: "Choose a trait to permanently level up",
   ChooseRareEvent: "Choose a rare card to add to your deck",
+  PaidRemovalEvent: "Choose a card to sell for 50 gold (rare cards are worth 100 gold)",
+  AssassinTrainingEvent: "Remove all attacks from your deck. Add a Fatal Toxin (applies 5 poison)",
   ShowCardPool: "showing card pool",
   HealersShop: "Restore your health for a price",
   cardShop: "Buy cards to add to your deck",
@@ -274,12 +276,12 @@ function chooseThisCard(stateObj, index, sampledCardPool) {
 
 function buyThisCard(stateObj, index, cardArray) {
   stateObj = immer.produce(stateObj, (newState) => {
-    if (cardArray[index].rare === true && stateObj.gold >= 150) {
-      newState.gold -= 150;
+    if (cardArray[index].rare === true && stateObj.gold >= 125) {
+      newState.gold -= 125;
       newState.availableCardPoolForShop.splice(index, 1)
       newState.playerDeck.push(cardArray[index]); 
-    } else if (stateObj.gold >= 75) {
-      newState.gold -= 75;
+    } else if (stateObj.gold >= 65) {
+      newState.gold -= 65;
       newState.availableCardPoolForShop.splice(index, 1)
       newState.playerDeck.push(cardArray[index]); 
     } else {
@@ -299,6 +301,39 @@ function removeCard(stateObj, index) {
     newState.gold -= newState.cardRemoveCost;
     newState.cardRemoveCost += 25;
     newState.playerDeck.splice(index, 1);
+    newState.status = Status.InTown
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function assassinTraining(stateObj) {
+  let indexesToDelete = [];
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerDeck.forEach(function (cardObj, cardIndex) {
+      if (cardObj.cardType === "attack") {
+        console.log("removing the attack " + cardObj.name)
+        indexesToDelete.push(cardIndex);
+      }
+    });
+
+    indexesToDelete.reverse()
+    for (let i = 0; i < indexesToDelete.length; i++) {
+     newState.playerDeck.splice(indexesToDelete[i], 1)
+    }
+    newState.playerDeck.push(specialCardPool.fataltoxin)
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function paidRemoval(stateObj, index) {
+  console.log("removed " + stateObj.playerDeck[index].name + " from deck")
+  stateObj = immer.produce(stateObj, (newState) => {
+    let goldReward = (stateObj.playerDeck[index].rare === true) ? 100 : 50;
+    newState.gold += goldReward;
+    newState.playerDeck.splice(index, 1);
+    newState.eventUsed = true;
     newState.status = Status.InTown
   })
   changeState(stateObj);
@@ -375,6 +410,8 @@ function fullHeal(stateObj) {
       newState.townFreeHealUsed = true;
       newState.playerMonster.currentHP = newState.playerMonster.maxHP;
     })
+    changeState(stateObj);
+    return stateObj
   } else if (stateObj.townFreeHealUsed === true && stateObj.gold >= stateObj.healCost) {
       if (stateObj.playerMonster.currentHP < stateObj.playerMonster.maxHP) {
         stateObj = immer.produce(stateObj, (newState) => {
@@ -382,12 +419,15 @@ function fullHeal(stateObj) {
           newState.healCost += 25;
           newState.playerMonster.currentHP = newState.playerMonster.maxHP;
         })
-      } 
+        changeState(stateObj);
+        return stateObj
+      } else {
+        return stateObj
+      }
   } else {
     return stateObj;
-  }
-  changeState(stateObj);
-  return stateObj;
+  } 
+  
 }
 
 function cheapHeal(stateObj) {
@@ -975,6 +1015,20 @@ function renderTown(stateObj) {
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.PNG",
+      divText: "Assassin Training",
+      newStatus: Status.AssassinTrainingEvent,
+      eventID: 10
+    },
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.PNG",
+      divText: "Get Paid to Remove Card",
+      newStatus: Status.PaidRemovalEvent,
+      eventID: 9
+    },
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.PNG",
       divText: "Choose Rare Card",
       newStatus: Status.ChooseRareEvent,
       eventID: 0
@@ -1197,6 +1251,31 @@ function renderRemoveCard(stateObj) {
   skipToTownButton(stateObj, "I don't want to remove any of these cards from my deck", ".remove-div");
 };
 
+function renderPaidRemoval(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", paidRemoval);
+  skipToTownButton(stateObj, "I choose not to remove any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
+};
+
+function renderAssassinTraining(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+  let removeAttacksButton = document.createElement("Button");
+  removeAttacksButton.addEventListener("click", function () {
+    assassinTraining(stateObj);
+  });
+  removeAttacksButton.classList.add("assassin-training-button");
+  removeAttacksButton.classList.add("heal-button");
+  removeAttacksButton.textContent = `Remove all your attacks. Gain a Fatal Toxin`
+  document.getElementById("remove-div").append(removeAttacksButton);
+  skipToTownButton(stateObj, "I choose not to trade my attacks for a Fatal Toxin (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
+};
+
 function renderWinLoseScreen(stateObj) {
   document.getElementById("app").innerHTML = `
   <div id="death" class="win-lose">
@@ -1218,7 +1297,7 @@ function renderDuplicateCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", duplicateCard);
-  skipToTownButton(stateObj, "I don't want to duplicate any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I choose not to duplicate any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
   skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
@@ -1227,11 +1306,12 @@ function renderDoubleUpgradeCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", doubleUpgradeCard, goldCost="doubleupgrade");
-  skipToTownButton(stateObj, "I don't want to upgrade any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I choose not to upgrade any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
   skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 function renderChooseCardReward(stateObj) {
+  console.log('triggering card reward')
   let shuffledCardPool = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
   let sampledCardPool = shuffledCardPool.slice(0, 3);
 
@@ -1239,7 +1319,7 @@ function renderChooseCardReward(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
-  skipToTownButton(stateObj, "I don't want to add any of these cards to my deck", ".remove-div", cardSkip=true);
+  skipToTownButton(stateObj, "I choose not to add any of these cards to my deck", ".remove-div", cardSkip=true);
 };
 
 function renderShop(stateObj) {
@@ -1294,7 +1374,7 @@ function renderChooseRareCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
-  skipToTownButton(stateObj, "I don't want to add any of these cards to my deck (+50 gold)", ".remove-div", cardSkip=true,  isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I choose not to add any of these cards to my deck (+50 gold)", ".remove-div", cardSkip=true,  isEventUsedForSkipButton=true);
   skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
@@ -1338,7 +1418,7 @@ function renderLevelUp(stateObj) {
   document.getElementById("level-up-div").append(strengthDiv, DexDiv, energyDiv);
   
   
-  skipToTownButton(stateObj, "I don't want to level up for some reason even though I probably should (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I choose not to level up for some reason even though I probably should (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
   skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
   
 };
@@ -1360,7 +1440,7 @@ function renderDecreaseCardCost(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", decreaseCardCost, goldCost="decreasecost")
     }
   });
-  skipToTownButton(stateObj, "I don't want to decrease the cost of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I choose not to decrease the cost of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
   skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
@@ -1373,7 +1453,7 @@ function renderIncreaseCardBlock(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardBlock, goldCost="increaseblock")
     }
   });
-  skipToTownButton(stateObj, "I don't want to increase the block of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I choose not to increase the block of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
   skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
@@ -1386,7 +1466,7 @@ function renderIncreaseCardAttack(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardAttack, goldCost="increaseattack")
     }
   });
-  skipToTownButton(stateObj, "I don't want to increase the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I choose not to increase the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
   skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div"); 
 };
 
@@ -1399,7 +1479,7 @@ function renderDoubleCardAttack(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", doubleCardAttack, goldCost="doubleattack")
     }
   });
-  skipToTownButton(stateObj, "I don't want to double the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  skipToTownButton(stateObj, "I choose not to double the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
   skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div"); 
 };
 
@@ -1412,7 +1492,7 @@ function renderIncreaseBaseHit(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseBaseHits, goldCost="moreHits")
     }
   });
-  skipToTownButton(stateObj, "I don't want more hits for any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I choose not more hits for any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
   skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
@@ -1538,14 +1618,14 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
             cardDiv.append(topCardRowDiv, altUpgradeText, cardText);
         } else if (goldCost === "cardshop") {
           let costText = document.createElement("P");
-          if (cardObj.rare && stateObj.gold >= 150) {
-            costText.textContent = "(150 gold to buy)";
-          } else if (stateObj.gold >= 75) {
-            costText.textContent = "(75 gold to buy)";
+          if (cardObj.rare && stateObj.gold >= 125) {
+            costText.textContent = "(125 gold to buy)";
+          } else if (stateObj.gold >= 65) {
+            costText.textContent = "(65 gold to buy)";
           } else if (cardObj.rare && stateObj.gold <= 150) {
-            costText.textContent = "Not enough gold (150)";
+            costText.textContent = "Not enough gold (125)";
           } else {
-            costText.textContent = "Not enough gold (75)";
+            costText.textContent = "Not enough gold (65)";
           }
           
           costText.classList.add("invisible-cost")
@@ -1793,8 +1873,14 @@ function renderScreen(stateObj) {
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.DeathScreen || stateObj.status == Status.VictoryScreen) {
     renderWinLoseScreen(stateObj);
-  }else if (stateObj.status == Status.cardShop) {
+  } else if (stateObj.status == Status.cardShop) {
     renderShop(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.PaidRemovalEvent) {
+    renderPaidRemoval(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.AssassinTrainingEvent) {
+    renderAssassinTraining(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else {
     renderDivs(stateObj);
@@ -1835,11 +1921,12 @@ function pickOpponentMove(stateObj) {
       for (var i = 0; i < monsterObj.moves.length; i++) {
         if (monsterObj.encounterEnergy >= monsterObj.moves[i].minReq) {
           newState.opponentMonster[index].opponentMoveIndex = i;
-          console.log(monsterObj.name + " picks " + monsterObj.moves[i].name + " to use next turn");
         }
       }
+    console.log(monsterObj.name + " picked " + monsterObj.moves[monsterObj.opponentMoveIndex]);  
     });
   });
+  
   //changeState(toChangeState);
   return toChangeState;
 }
