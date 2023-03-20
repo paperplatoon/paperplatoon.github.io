@@ -74,6 +74,8 @@ let gameStartState = {
   fightSelfDamageTotal: 0,
   fightEnergyDrainCount: 0,
   fightEnergyDrainTotal: 0,
+  selfDamageBlock: 5,
+  selfDamageAttack: 5,
   cardsPerTurn: 0,
   comboPerTurn: 0,
   gainLifePerCard: 0,
@@ -88,7 +90,8 @@ waterCardArray = Object.values(waterCardPool);
 
 let potentialMonsterChoices = playerMonsterArray;
 
-function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, all=false) {
+function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, all=false, specifiedIndex=false) {
+  let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster 
   let toChangeState = immer.produce(stateObj, (newState) => {
     let calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
     if (calculatedDamage > 0) {
@@ -110,19 +113,19 @@ function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, all=false)
           }
         })
       } else {
-        if (newState.opponentMonster[newState.targetedMonster].hunted > 0) {
+        if (newState.opponentMonster[targetIndex].hunted > 0) {
           calculatedDamage *=2;
         }
-        if (newState.opponentMonster[newState.targetedMonster].encounterBlock == 0) {
-          console.log("You dealt " + calculatedDamage + " to " + newState.opponentMonster[newState.targetedMonster].name);
-          newState.opponentMonster[newState.targetedMonster].currentHP -= calculatedDamage;
-        } else if (newState.opponentMonster[newState.targetedMonster].encounterBlock >= calculatedDamage) {
-          console.log(newState.opponentMonster[newState.targetedMonster].name + " blocked for " + calculatedDamage);
-          newState.opponentMonster[newState.targetedMonster].encounterBlock -= calculatedDamage;
+        if (newState.opponentMonster[targetIndex].encounterBlock == 0) {
+          console.log("You dealt " + calculatedDamage + " to " + newState.opponentMonster[targetIndex].name);
+          newState.opponentMonster[targetIndex].currentHP -= calculatedDamage;
+        } else if (newState.opponentMonster[targetIndex].encounterBlock >= calculatedDamage) {
+          console.log(newState.opponentMonster[targetIndex].name + " blocked for " + calculatedDamage);
+          newState.opponentMonster[targetIndex].encounterBlock -= calculatedDamage;
         } else {
-          console.log(newState.opponentMonster[newState.targetedMonster].name + " blocked for " + calculatedDamage + " and took " + (calculatedDamage - newState.opponentMonster[newState.targetedMonster].encounterBlock) + " damage");
-          newState.opponentMonster[newState.targetedMonster].currentHP -= (calculatedDamage - newState.opponentMonster[newState.targetedMonster].encounterBlock);
-          newState.opponentMonster[newState.targetedMonster].encounterBlock = 0;
+          console.log(newState.opponentMonster[targetIndex].name + " blocked for " + calculatedDamage + " and took " + (calculatedDamage - newState.opponentMonster[targetIndex].encounterBlock) + " damage");
+          newState.opponentMonster[targetIndex].currentHP -= (calculatedDamage - newState.opponentMonster[targetIndex].encounterBlock);
+          newState.opponentMonster[targetIndex].encounterBlock = 0;
         }
       }
     }
@@ -472,6 +475,8 @@ function resetAfterFight(stateObj) {
     newState.fightEnergyDrainTotal = 0;
     newState.enemyFightHealTotal = 0;
     newState.gainLifePerCard = 0;
+    newState.selfDamageAttack = 0;
+    newState.selfDamageBlock = 0;
 
 
 
@@ -653,18 +658,6 @@ function shuffleDiscardIntoDeck(stateObj) {
   return stateObj;
 }
 
-function addBackstepsToHand(stateObj, numberToAdd=1) {
-  stateObj = immer.produce(stateObj, (newState) => {
-    for (let i=0; i < numberToAdd; i++) {
-      if (newState.encounterHand.length > 8) {
-        console.log("hand was full, backstep was not added")
-      } else
-      newState.encounterHand.push(fireCardPool.backstep)
-    }
-  })
-
-  return stateObj
-}
 
 function drawACard(stateObj) {
   let toChangeState = immer.produce(stateObj, (newState) => {
@@ -759,6 +752,42 @@ function targetThisMonster(stateObj, monsterIndex) {
 
   changeState(toChangeState);
 }
+
+
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+// - - - - - -  - - - - - Functions for Cards - - - - - -  - - - - -
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+function addBackstepsToHand(stateObj, numberToAdd=1) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    for (let i=0; i < numberToAdd; i++) {
+      if (newState.encounterHand.length > 8) {
+        console.log("hand was full, backstep was not added")
+      } else
+      newState.encounterHand.push(fireCardPool.backstep)
+    }
+  })
+  return stateObj
+}
+
+function dealSelfDamage(stateObj, damageToDo) {
+  stateObj = immer.produce(stateObj, (newState) => {
+      newState.playerMonster.currentHP -= damageToDo
+      newState.fightSelfDamageCount += 1;
+      newState.fightSelfDamageTotal += damageToDo;
+
+      if (newState.selfDamageBlock > 0) {
+        newState.playerMonster.encounterBlock += newState.selfDamageBlock;
+      }
+      if (newState.selfDamageAttack > 0) {
+        let randomIndex = Math.floor(Math.random() * (newState.opponentMonster.length))
+        let tempState = dealOpponentDamage(newState, newState.selfDamageAttack, specifiedIndex=randomIndex);
+        newState.opponentMonster[targetIndex].currentHP = tempState.opponentMonster[targetIndex].currentHP;
+        newState.opponentMonster[targetIndex].encounterBlock = tempState.opponentMonster[targetIndex].encounterBlock;
+      }
+    });
+  return stateObj; 
+};
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // - - - - - -  - - - - - Rendering - - - - - -  - - - - -
@@ -1297,7 +1326,7 @@ function renderDecreaseCardCost(stateObj) {
   topRowDiv(stateObj, "app")
   divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
-    if (cardObj.baseCost && typeof cardObj.baseCost === 'number') {
+    if (cardObj.baseCost && cardObj.baseCost > 0) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", decreaseCardCost, goldCost="decreasecost")
     }
   });

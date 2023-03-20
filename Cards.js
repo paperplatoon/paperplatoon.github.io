@@ -230,7 +230,7 @@ let fireCardPool = {
     darkknowledge: {
       cardID: 9,
       name: "Dark Knowledge",
-      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage}. Draw ${4+array[index].upgrades} cards` },
+      text: (state, index, array) => { return `Self-damage ${array[index].baseSelfDamage-array[index].upgrades}. Draw ${4+array[index].upgrades} cards` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -242,17 +242,15 @@ let fireCardPool = {
       baseSelfDamage: 5,
       cardType: "ability",
       elementType: "fire",
-      action: (state, index, array) => {
-        let toChangeState = immer.produce(state, (newState) => {
-          newState.fightSelfDamageCount += 1;
-          newState.fightSelfDamageTotal += array[index].baseSelfDamage;  
-          newState.playerMonster.currentHP -= array[index].baseSelfDamage;        
+      action: (stateObj, index, array) => {
+        stateObj = immer.produce(state, (newState) => {      
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
         })
+        stateObj = dealSelfDamage(stateObj, array[index].baseSelfDamage);
         for (let i=0; i < 4+array[index].upgrades; i++) {
-          toChangeState = drawACard(toChangeState);
+          stateObj = drawACard(stateObj);
         }
-        return toChangeState;
+        return stateObj;
       }
     },
 
@@ -272,16 +270,14 @@ let fireCardPool = {
       baseSelfDamage: 5,
       cardType: "ability",
       elementType: "fire",
-      action: (state, index, array) => {
-        let toChangeState = immer.produce(state, (newState) => {
-          newState.fightSelfDamageCount += 1;
-          newState.fightSelfDamageTotal += array[index].baseSelfDamage;  
-          newState.playerMonster.fightStrength += 5+(array[index].upgrades*5);
+      action: (stateObj, index, array) => {
+        stateObj = immer.produce(stateObj, (newState) => {
+         newState.playerMonster.fightStrength += 5+(array[index].upgrades*5);
           newState.playerMonster.strength += 5+(array[index].upgrades*5)
-          newState.playerMonster.currentHP -= array[index].baseSelfDamage; 
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
         })
-        return toChangeState;
+        stateObj = dealSelfDamage(stateObj, array[index].baseSelfDamage)
+        return stateObj;
       }
     },
 
@@ -980,6 +976,7 @@ let fireCardPool = {
     },
 
     thiefshield: {
+      rare: true,
       cardID: 33,
       name: "Thief's Shield",
       text: (state, index, array) => { return `Drain ${(array[index].energyDrain + array[index].upgrades)} energy. Gain ${array[index].baseBlock} block for each energy drained.` },
@@ -991,7 +988,7 @@ let fireCardPool = {
       cost:  (state, index, array) => {
         return array[index].baseCost;
       },
-      baseBlock: 15,
+      baseBlock: 20,
       cardType: "ability",
       elementType: "fire",
       energyDrain: 1,
@@ -1618,12 +1615,12 @@ let fireCardPool = {
       exhaust: true,
       cardID: 53,
       trigger:  (stateObj, index, array) => { 
-        return (stateObj.comboPerTurn === 2);
+        return ((stateObj.comboPerTurn+1) % 3 === 0);
       },
       name: "Combo Finisher",
       text: (stateObj, index, array) => {
         let cardDamage = array[index].baseDamage + (array[index].upgrades*5)
-        cardDamage = (stateObj.comboPerTurn === 2) ? cardDamage*2 : cardDamage; 
+        cardDamage = ((stateObj.comboPerTurn+1) % 3 === 0) ? cardDamage*2 : cardDamage; 
         if (array[index].baseHits === 1) {
           return `Deal ${cardDamage + stateObj.playerMonster.strength} damage. Copies. Combo 3`;
         } else {
@@ -1652,8 +1649,9 @@ let fireCardPool = {
           newState.opponentMonster[newState.targetedMonster].currentHP = tempState.opponentMonster[tempState.targetedMonster].currentHP;
           newState.opponentMonster[newState.targetedMonster].encounterBlock = tempState.opponentMonster[tempState.targetedMonster].encounterBlock;
           
-          let cardClone = {...fireCardPool.combofinisher};
-          cardClone.upgrades = array[index].upgrades
+          let cardClone = {...array[index]};
+          cardClone.upgrades = array[index].upgrades;
+          cardClone.baseCost = 1;
           newState.encounterHand.push(cardClone);
         })
         return stateObj;
@@ -1758,29 +1756,42 @@ let fireCardPool = {
       }
     },
 
-    coatofarms: {
-      cardID: 56,
-      name: "Coat of Arms",
-      text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex + state.playerMonster.strength + (5*array[index].upgrades))} block. Increased by strength` },
+    dancersgrace: {
+      rare: true,
+      exhaust: true,
+      cardID: 57,
+      name: "Dancer's Grace",
+      text: (state, index, array) => { 
+        if (array[index].upgrades === 0) {
+          return `Gain ${5+array[index].upgrades} Dexterity. Remove`;
+        } else {
+          return `Gain ${5+array[index].upgrades} Dexterity.`;
+        }
+      },
       minReq: (stateObj, index, array) => {
         return array[index].baseCost;
       },
       upgrades: 0,
-      baseCost: 1,
+      baseCost: 2,
       cost:  (stateObj, index, array) => {
         return array[index].baseCost;
       },
-      baseBlock: 15,
       cardType: "ability",
       elementType: "fire",
       action: (stateObj, index, array) => {
         stateObj = immer.produce(stateObj, (newState) => {
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
-          newState.playerMonster.encounterBlock += (array[index].baseBlock + newState.playerMonster.dex + state.playerMonster.dex + (5*array[index].upgrades));
+          newState.playerMonster.dex += 5+array[index].upgrades;
+          if (array[index].upgrades > 0) {
+              let thisCard = {...array[index]};
+              newState.encounterDiscard.push(thisCard);
+          }
         })
         return stateObj;
       }
     },
+
+    
   };
   
   let waterCardPool = {

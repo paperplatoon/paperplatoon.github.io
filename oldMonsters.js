@@ -21,8 +21,8 @@ let playerMonsters = {
         fireCardPool.essencedrain,
         fireCardPool.coatofarms,
         fireCardPool.cursedritual,
-        fireCardPool.followupslap,
-        fireCardPool.combofinisher
+        fireCardPool.combofinisher,
+        fireCardPool.darkknowledge
       ],
     },
   
