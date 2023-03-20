@@ -232,9 +232,14 @@
   justify-content: space-between;
 }
 
-.clickable-monster:hover, .clickable-town-div:hover {
+.clickable-town-div:hover {
   cursor: pointer;
-  box-shadow: 0 0 20px rgba(33,33,33); 
+  box-shadow: 0 0 35px rgba(33,33,33); 
+}
+
+.clickable-monster:hover {
+  cursor: pointer;
+  box-shadow: 0 0 30px rgb(154, 15, 15);
 }
 
 .monster-to-choose:hover {
@@ -327,7 +332,8 @@
 
 
 .targeted {
-    border: 4px dashed red;
+    border: 6px dashed red;
+    background-color: #50010163;
 }
 
 #playerStats {
