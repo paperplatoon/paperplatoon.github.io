@@ -844,7 +844,7 @@ let fireCardPool = {
       },
       upgrades: 0,
       baseHits: 1,
-      baseDamage: 60,
+      baseDamage: 70,
       cardType: "attack",
       elementType: "fire",
       action: (state, index, array) => {
