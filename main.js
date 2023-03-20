@@ -241,6 +241,7 @@ function skipCards(stateObj, isUsedForEventSkip=false) {
       newState.gold += 50
     }
     newState.cardsSkipped += 1;
+    newState.gold += 5;
     newState.status = Status.InTown;
   })
   changeState(stateObj);
@@ -553,6 +554,11 @@ function resetAfterFight(stateObj) {
       newState.townEventChosen = false;
       newState.availableCardPoolForShop = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
       newState.status = Status.EncounterRewards;
+
+      if (newState.townFreeHealUsed === false) {
+        newState.gold += 30;
+      }
+      newState.townFreeHealUsed === false;
     } else {
       newState.gymFightCount += 1;
       newState.status = Status.EncounterRewards;
@@ -1319,7 +1325,7 @@ function renderChooseCardReward(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
-  skipToTownButton(stateObj, "I choose not to add any of these cards to my deck", ".remove-div", cardSkip=true);
+  skipToTownButton(stateObj, "I choose not to add any of these cards to my deck (+5 gold)", ".remove-div", cardSkip=true);
 };
 
 function renderShop(stateObj) {
@@ -1350,7 +1356,7 @@ function renderShop(stateObj) {
   HealButton.classList.add("heal-button");
 
   if (stateObj.townFreeHealUsed === false) {
-    HealButton.textContent = `Heal to full HP. One free heal offered per town - the heal afterwards will cost ${stateObj.healCost}`
+    HealButton.textContent = `Heal to full HP. One free heal offered per town - the heal afterwards will cost ${stateObj.healCost}. You earn a bonus 30 gold if you beat the boss without having used the free heal.`
   } else {
     HealButton.textContent = `Spend ${stateObj.healCost} gold to fully heal`
   }
