@@ -1633,7 +1633,7 @@ let fireCardPool = {
       elementType: "fire",
       action: (stateObj, index, array) => {
         let cardDamage = array[index].baseDamage + (array[index].upgrades*5)
-        cardDamage = (stateObj.comboPerTurn === 2) ? cardDamage*2 : cardDamage;
+        cardDamage = ((stateObj.comboPerTurn+1) % 3 === 0) ? cardDamage*2 : cardDamage;
         stateObj = immer.produce(stateObj, (newState) => {  
           let tempState = dealOpponentDamage(newState, cardDamage, array[index].baseHits);
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
