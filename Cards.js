@@ -1414,15 +1414,12 @@ let fireCardPool = {
           newState.playerMonster.encounterEnergy -= array[index].baseCost-array[index].upgrades;
           newState.encounterHand.forEach(function (cardObj) {
             cardObj["upgrades"] +=1;
-            return cardObj
           });
           newState.encounterDeck.forEach(function (cardObj) {
             cardObj["upgrades"] +=1;
-            return cardObj
           });
           newState.encounterDiscard.forEach(function (cardObj) {
             cardObj["upgrades"] +=1;
-            return cardObj
           });
 
         })
