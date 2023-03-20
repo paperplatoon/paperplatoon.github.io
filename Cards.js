@@ -1611,12 +1611,12 @@ let fireCardPool = {
       },
       name: "Combo Finisher",
       text: (stateObj, index, array) => {
-        let cardDamage = array[index].baseDamage + (array[index].upgrades*5)
+        let cardDamage = array[index].baseDamage + (array[index].upgrades*5) + stateObj.playerMonster.strength;
         cardDamage = ((stateObj.comboPerTurn+1) % 3 === 0) ? cardDamage*2 : cardDamage; 
         if (array[index].baseHits === 1) {
-          return `Deal ${cardDamage + stateObj.playerMonster.strength} damage. Copies. Combo 3`;
+          return `Deal ${cardDamage} damage. Copies. Combo 3: double damage`;
         } else {
-          return `Combo. Deal ${cardDamage + stateObj.playerMonster.strength} damage ${array[index].baseHits} times. Copies. Combo 3`
+          return `Combo. Deal ${cardDamage} damage ${array[index].baseHits} times. Copies. Combo 3: double damage`
         }
     },
     minReq: (state, index, array) => {
@@ -1660,7 +1660,7 @@ let fireCardPool = {
         let cardDamage = array[index].baseDamage + (array[index].upgrades*5)
         cardDamage = (stateObj.cardsPerTurn === 2) ? cardDamage+10 : cardDamage; 
         if (array[index].baseHits === 1) {
-          return `Deal ${cardDamage + stateObj.playerMonster.strength} damage. Bonus if third card played this turn`;
+          return `Deal ${cardDamage + stateObj.playerMonster.strength} damage. +10 damage if third card played this turn`;
         } else {
           return `Combo. Deal ${cardDamage + stateObj.playerMonster.strength} damage ${array[index].baseHits} times. Bonus if third card played this turn`
         }

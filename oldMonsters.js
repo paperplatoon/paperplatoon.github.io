@@ -23,7 +23,7 @@ let playerMonsters = {
         fireCardPool.religiousfervor,
         fireCardPool.cursedritual,
         fireCardPool.combofinisher,
-        fireCardPool.darkknowledge
+        fireCardPool.followupslap
       ],
     },
   
