@@ -74,8 +74,8 @@ let gameStartState = {
   fightSelfDamageTotal: 0,
   fightEnergyDrainCount: 0,
   fightEnergyDrainTotal: 0,
-  selfDamageBlock: 5,
-  selfDamageAttack: 5,
+  selfDamageBlock: 0,
+  selfDamageAttack: 0,
   cardsPerTurn: 0,
   comboPerTurn: 0,
   gainLifePerCard: 0,
@@ -92,9 +92,14 @@ let potentialMonsterChoices = playerMonsterArray;
 
 function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, all=false, specifiedIndex=false) {
   let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster 
+  console.log('target index in dealoppdmg is ' + targetIndex)
+  console.log('damage number is ' + damageNumber)
+  console.log('attack number is ' + attackNumber)
   let toChangeState = immer.produce(stateObj, (newState) => {
     let calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
+    console.log('calc dmg is ' + calculatedDamage)
     if (calculatedDamage > 0) {
+      console.log('calc dmg is >0 is ' + calculatedDamage)
       if (all===true) {
         newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
           if (monsterObj.hunted > 0) {
@@ -568,10 +573,6 @@ renderScreen(state);
 //Encounter Set-up
 //setUpEncounter block is undefined because opponentMonster hasn't been set yet
 function setUpEncounter(stateObj) {
-  //shuffle monster array and pick two randomly
-  // let opponentMonsterArray = OpponentMonsterFightCountArray[stateObj.fightCount]
-  // let potentialOpponents = fisherYatesShuffle(opponentMonsterArray);
-
 
   stateObj = immer.produce(stateObj, (newState) => {
     console.log("setting up encounter");
@@ -585,6 +586,8 @@ function setUpEncounter(stateObj) {
     newState.fightHealTotal = 0;
     newState.fightSelfDamageCount = 0;
     newState.fightSelfDamageTotal = 0;
+    newState.selfDamageAttack = 0;
+    newState.selfDamageBlock = 0;
     newState.fightEnergyDrainCount = 0;
     newState.fightEnergyDrainTotal = 0;
     newState.gainLifePerCard = 0;
@@ -777,11 +780,14 @@ function dealSelfDamage(stateObj, damageToDo) {
       newState.fightSelfDamageTotal += damageToDo;
 
       if (newState.selfDamageBlock > 0) {
+        console.log('target block' + newState.selfDamageBlock)
         newState.playerMonster.encounterBlock += newState.selfDamageBlock;
       }
+      console.log('self attack ' + newState.selfDamageAttack)
       if (newState.selfDamageAttack > 0) {
-        let randomIndex = Math.floor(Math.random() * (newState.opponentMonster.length))
-        let tempState = dealOpponentDamage(newState, newState.selfDamageAttack, specifiedIndex=randomIndex);
+        let targetIndex = Math.floor(Math.random() * (newState.opponentMonster.length))
+        console.log('target index is ' + targetIndex)
+        let tempState = dealOpponentDamage(newState, (newState.selfDamageAttack-stateObj.playerMonster.strength), attackNumber=1, all=false, specifiedIndex=targetIndex);
         newState.opponentMonster[targetIndex].currentHP = tempState.opponentMonster[targetIndex].currentHP;
         newState.opponentMonster[targetIndex].encounterBlock = tempState.opponentMonster[targetIndex].encounterBlock;
       }
