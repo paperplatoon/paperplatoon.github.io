@@ -895,9 +895,7 @@ let fireCardPool = {
       minReq: 0,
       upgrades: 0,
       baseCost: 0,
-      cost:  (state, index, array) => {
-        return array[index].baseCost;
-      },
+      cost:  0,
       baseSelfDamage: 5,
       cardType: "ability",
       elementType: "fire",
@@ -905,7 +903,10 @@ let fireCardPool = {
         stateObj = immer.produce(stateObj, (newState) => {
           newState.playerMonster.encounterEnergy += (3+array[index].upgrades);
         })
-        stateObj = dealSelfDamage(stateObj, array[index].baseSelfDamage - array[index].upgrades);
+        if (array[index].upgrades < array[index].baseSelfDamage) {
+          stateObj = dealSelfDamage(stateObj, array[index].baseSelfDamage - array[index].upgrades);
+        }
+        return stateObj;
       }
     },
 
@@ -1405,7 +1406,7 @@ let fireCardPool = {
         return array[index].baseCost-array[index].upgrades;
       },
       upgrades: 0,
-      baseCost: 2,
+      baseCost: 1,
       cost:  (state, index, array) => {
         return array[index].baseCost-array[index].upgrades;
       },

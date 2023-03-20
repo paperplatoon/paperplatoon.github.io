@@ -80,6 +80,7 @@ let gameStartState = {
   comboPerTurn: 0,
   gainLifePerCard: 0,
   townEventChosen: false,
+  townFreeHealUsed: false,
   availableCardPoolForShop: false
 };
 
@@ -369,19 +370,28 @@ function encounterUpgradeCard(stateObj, index) {
 }
 
 function fullHeal(stateObj) {
-  if (stateObj.gold >= stateObj.healCost) {
+  if (stateObj.townFreeHealUsed === false && stateObj.playerMonster.currentHP < stateObj.playerMonster.maxHP) {
     stateObj = immer.produce(stateObj, (newState) => {
-      newState.gold -= newState.healCost;
-      newState.healCost += 25;
+      newState.townFreeHealUsed = true;
       newState.playerMonster.currentHP = newState.playerMonster.maxHP;
     })
-    changeState(stateObj);
+  } else if (stateObj.townFreeHealUsed === true && stateObj.gold >= stateObj.healCost) {
+      if (stateObj.playerMonster.currentHP < stateObj.playerMonster.maxHP) {
+        stateObj = immer.produce(stateObj, (newState) => {
+          newState.gold -= newState.healCost;
+          newState.healCost += 25;
+          newState.playerMonster.currentHP = newState.playerMonster.maxHP;
+        })
+      } 
+  } else {
+    return stateObj;
   }
+  changeState(stateObj);
   return stateObj;
 }
 
 function cheapHeal(stateObj) {
-  if (stateObj.gold >= Math.floor(stateObj.healCost/2)) {
+  if (stateObj.gold >= Math.floor(stateObj.healCost/2) && stateObj.playerMonster.currentHP < stateObj.playerMonster.maxHP) {
     stateObj = immer.produce(stateObj, (newState) => {  
       newState.gold -= (Math.floor(newState.healCost/2));
       healAmount = Math.floor(newState.playerMonster.maxHP/4)
@@ -484,6 +494,8 @@ function resetAfterFight(stateObj) {
     newState.gainLifePerCard = 0;
     newState.selfDamageAttack = 0;
     newState.selfDamageBlock = 0;
+    newState.cardsPerTurn = 0;
+    newState.comboPerTurn = 0;
 
 
 
@@ -495,7 +507,10 @@ function resetAfterFight(stateObj) {
     } else if (gyms[newState.gymCount][newState.gymFightCount].boss) {
       newState.gymFightCount = 0;
       newState.gymCount += 1;
+      newState.playerMonster.maxHP += 10
+      console.log("gincreasing gym count to " + newState.gymCount);
       newState.eventUsed = false; 
+      newState.townEventChosen = false;
       newState.availableCardPoolForShop = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
       newState.status = Status.EncounterRewards;
     } else {
@@ -717,6 +732,7 @@ function upgradeCard(stateObj) {
 async function playACard(stateObj, cardIndexInHand, arrayObj) {
   console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
   stateObj = stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
+  console.log(stateObj.cardsPerTurn)
   stateObj = immer.produce(stateObj, (newState) => {
     newState.cardsPerTurn += 1;
     if (stateObj.encounterHand[cardIndexInHand].exhaust == true) {
@@ -785,7 +801,6 @@ function dealSelfDamage(stateObj, damageToDo) {
         console.log('target block' + newState.selfDamageBlock)
         newState.playerMonster.encounterBlock += newState.selfDamageBlock;
       }
-      console.log('self attack ' + newState.selfDamageAttack)
       if (newState.selfDamageAttack > 0) {
         let targetIndex = Math.floor(Math.random() * (newState.opponentMonster.length))
         console.log('target index is ' + targetIndex)
@@ -875,7 +890,7 @@ function renderDivs(stateObj) {
   document.getElementById("app").innerHTML = `
   <div id="town-top-row">
     <div id="status-text-div">
-      <p>Gym: ${stateObj.gymCount}   Fight: ${stateObj.gymFightCount}/3</p>
+      <p>Gym: ${stateObj.gymCount+1}   Fight: ${stateObj.gymFightCount+1}/3</p>
     </div>
     <button id="shuffleDrawButton">Start Encounter</button>
     <button id="endTurnButton">End Turn</button>
@@ -1251,12 +1266,19 @@ function renderShop(stateObj) {
   document.getElementById("remove-div").append(cheapHealButton);
 
   let HealButton = document.createElement("Button");
+  HealButton.classList.add("full-heal-button");
+  HealButton.classList.add("heal-button");
+
+  if (stateObj.townFreeHealUsed === false) {
+    HealButton.textContent = `Heal to full HP. One free heal offered per town - the heal afterwards will cost ${stateObj.healCost}`
+  } else {
+    HealButton.textContent = `Spend ${stateObj.healCost} gold to fully heal`
+  }
+
   HealButton.addEventListener("click", function () {
     fullHeal(stateObj);
   });
-  HealButton.classList.add("full-heal-button");
-  HealButton.classList.add("heal-button");
-  HealButton.textContent = `Spend ${stateObj.healCost} gold to fully heal`
+  
   document.getElementById("remove-div").append(HealButton);
   skipToTownButton(stateObj, "I don't want to buy anything right now", ".remove-div");
 };

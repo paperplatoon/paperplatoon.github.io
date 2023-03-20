@@ -17,13 +17,12 @@ let playerMonsters = {
       avatar: "img/fireMonster.png",
       startingDeck: [
         fireCardPool.setaflame,
-        fireCardPool.setaflame,
         fireCardPool.darkknowledge,
         fireCardPool.bloodpact,
         fireCardPool.religiousfervor,
         fireCardPool.cursedritual,
         fireCardPool.combofinisher,
-        fireCardPool.followupslap
+        fireCardPool.brand
       ],
     },
   
