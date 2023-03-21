@@ -81,7 +81,7 @@ let gameStartState = {
   cardsPerTurn: 0,
   comboPerTurn: 0,
   gainLifePerCard: 0,
-  townEventChosen: false,
+  townEventChosen: 1,
   townFreeHealUsed: false,
   availableCardPoolForShop: false
 };
@@ -277,12 +277,12 @@ function chooseThisCard(stateObj, index, sampledCardPool) {
 
 function buyThisCard(stateObj, index, cardArray) {
   stateObj = immer.produce(stateObj, (newState) => {
-    if (cardArray[index].rare === true && stateObj.gold >= 125) {
-      newState.gold -= 125;
+    if (cardArray[index].rare === true && stateObj.gold >= 100) {
+      newState.gold -= 100;
       newState.availableCardPoolForShop.splice(index, 1)
       newState.playerDeck.push(cardArray[index]); 
-    } else if (stateObj.gold >= 65) {
-      newState.gold -= 65;
+    } else if (stateObj.gold >= 50) {
+      newState.gold -= 50;
       newState.availableCardPoolForShop.splice(index, 1)
       newState.playerDeck.push(cardArray[index]); 
     } else {
@@ -1662,14 +1662,14 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
             cardDiv.append(topCardRowDiv, altUpgradeText, cardText);
         } else if (goldCost === "cardshop") {
           let costText = document.createElement("P");
-          if (cardObj.rare && stateObj.gold >= 125) {
-            costText.textContent = "(125 gold to buy)";
-          } else if (stateObj.gold >= 65) {
-            costText.textContent = "(65 gold to buy)";
+          if (cardObj.rare && stateObj.gold >= 100) {
+            costText.textContent = "(100 gold to buy)";
+          } else if (stateObj.gold >= 50) {
+            costText.textContent = "(50 gold to buy)";
           } else if (cardObj.rare && stateObj.gold <= 150) {
-            costText.textContent = "Not enough gold (125)";
+            costText.textContent = "Not enough gold (100)";
           } else {
-            costText.textContent = "Not enough gold (65)";
+            costText.textContent = "Not enough gold (50)";
           }
           
           costText.classList.add("invisible-cost")

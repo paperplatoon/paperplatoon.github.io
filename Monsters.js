@@ -145,7 +145,7 @@ let opponentMonsters = {
         minReq: 0,
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
-            newState.opponentMonster[index].encounterBlock += (array[index].baseBlock + 5 + array[index].dex);
+            newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock*2)  + array[index].dex);
             newState.opponentMonster[index].encounterEnergy += 1;
           })
           return toChangeState;
@@ -160,7 +160,7 @@ let opponentMonsters = {
         minReq: 1,
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
-            let tempState = dealPlayerDamage(newState, (array[index].baseDamage + 5 + array[index].dex), index);
+            let tempState = dealPlayerDamage(newState, ((array[index].baseDamage*2) + array[index].dex), index);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
             newState.opponentMonster[index].encounterEnergy -= 1;
@@ -567,12 +567,12 @@ let opponentMonsters = {
         name: "Enrage",
         cost: "1",
         text: (state, index, array) => {
-          return `Gain ${(array[index].baseBlock*2) + array[index].dex} block. Gain ${array[index].baseScale5} strength. -1 energy`
+          return `Gain ${(array[index].baseBlock*2) + array[index].dex} block. Gain ${array[index].baseScale*5} strength. -1 energy`
         },
         minReq: 1,
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
-            newState.opponentMonster[index].encounterBlock += (array[index].baseBlock + 5 + array[index].dex);
+            newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock*2) + array[index].dex);
             newState.opponentMonster[index].encounterEnergy -= 1;
             newState.opponentMonster[index].strength += array[index].baseScale*5;
           })

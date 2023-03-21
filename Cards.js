@@ -1764,7 +1764,7 @@ let fireCardPool = {
       action: (stateObj, index, array) => {
         stateObj = immer.produce(stateObj, (newState) => {
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
-          newState.playerMonster.encounterBlock += (array[index].baseBlock + newState.playerMonster.dex + state.playerMonster.dex + (5*array[index].upgrades));
+          newState.playerMonster.encounterBlock += (array[index].baseBlock + stateObj.playerMonster.dex + stateObj.playerMonster.dex + (5*array[index].upgrades));
         })
         return stateObj;
       }
