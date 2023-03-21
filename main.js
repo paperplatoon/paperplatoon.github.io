@@ -311,6 +311,7 @@ function removeCard(stateObj, index) {
 function assassinTraining(stateObj) {
   let indexesToDelete = [];
   stateObj = immer.produce(stateObj, (newState) => {
+    newState.eventUsed = true;
     newState.playerDeck.forEach(function (cardObj, cardIndex) {
       if (cardObj.cardType === "attack") {
         console.log("removing the attack " + cardObj.name)
@@ -407,14 +408,17 @@ function encounterUpgradeCard(stateObj, index) {
 
 function fullHeal(stateObj) {
   if (stateObj.townFreeHealUsed === false && stateObj.playerMonster.currentHP < stateObj.playerMonster.maxHP) {
+    console.log("current use of free heal should be false " + stateObj.townFreeHealUsed)
     stateObj = immer.produce(stateObj, (newState) => {
       newState.townFreeHealUsed = true;
+      console.log("current use of free heal should now be true " + newState.townFreeHealUsed)
       newState.playerMonster.currentHP = newState.playerMonster.maxHP;
     })
     changeState(stateObj);
     return stateObj
   } else if (stateObj.townFreeHealUsed === true && stateObj.gold >= stateObj.healCost) {
       if (stateObj.playerMonster.currentHP < stateObj.playerMonster.maxHP) {
+        console.log("current use of free heal shuld be used " + stateObj.townFreeHealUsed)
         stateObj = immer.produce(stateObj, (newState) => {
           newState.gold -= newState.healCost;
           newState.healCost += 25;
@@ -558,7 +562,9 @@ function resetAfterFight(stateObj) {
       if (newState.townFreeHealUsed === false) {
         newState.gold += 30;
       }
-      newState.townFreeHealUsed === false;
+      console.log("current use of free heal in fight reset should be true " + newState.townFreeHealUsed)
+      newState.townFreeHealUsed = false;
+      console.log("current use of free heal in fight reset should be false " + newState.townFreeHealUsed)
     } else {
       newState.gymFightCount += 1;
       newState.status = Status.EncounterRewards;
@@ -1382,6 +1388,7 @@ function renderShop(stateObj) {
   (stateObj.gold >= Math.floor(stateObj.healCost/2) && healthDiff > 0), 
   cheapHeal, statusToChange=false, altText=`${Math.floor(stateObj.healCost/2)} gold required`);
   
+  console.log("current use of free heal in shop is " + stateObj.townFreeHealUsed)
   document.getElementById("shop-div").append(cheapHealDiv);
   let fullHealDiv = renderChoiceDiv(stateObj, ["heal-div"], "img/potion.svg", `Heal to full for free once per town. +30 gold if you beat the boss without healing`, 
   ((stateObj.townFreeHealUsed === false && healthDiff>0) || (stateObj.gold >= stateObj.healCost && healthDiff>0)), 
