@@ -1052,6 +1052,13 @@ function renderTown(stateObj) {
     {
       divID: "TownEvent",
       imgSrc: "img/wizardshop.PNG",
+      divText: "Choose Rare Card",
+      newStatus: Status.ChooseRareEvent,
+      eventID: 0
+    },
+    {
+      divID: "TownEvent",
+      imgSrc: "img/wizardshop.PNG",
       divText: "Assassin Training",
       newStatus: Status.AssassinTrainingEvent,
       eventID: 10
@@ -1062,13 +1069,6 @@ function renderTown(stateObj) {
       divText: "Get Paid to Remove Card",
       newStatus: Status.PaidRemovalEvent,
       eventID: 9
-    },
-    {
-      divID: "TownEvent",
-      imgSrc: "img/wizardshop.PNG",
-      divText: "Choose Rare Card",
-      newStatus: Status.ChooseRareEvent,
-      eventID: 0
     },
     {
       divID: "TownEvent",
