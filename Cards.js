@@ -1900,6 +1900,38 @@ let specialCardPool = {
     }
   },
 
+  pickoff: {
+    cardID: 56,
+    name: "Pick Off",
+    text: (state, index, array) => { return `If there is more than 1 opponent, kill targeted monster`},
+    minReq: (stateObj, index, array) => {
+      return array[index].baseCost;
+    },
+    trigger:  (stateObj, index, array) => { 
+      if (stateObj.status !== Status.InEncounter) {
+        return false;
+      } else {
+        return (stateObj.opponentMonster.length > 1);
+      }
+    },
+    upgrades: 0,
+    baseCost: 4,
+    cost:  (stateObj, index, array) => {
+      return array[index].baseCost;
+    },
+    cardType: "ability",
+    elementType: "special",
+    action: (stateObj, index, array) => {
+        stateObj = immer.produce(stateObj, (newState) => {
+          if (stateObj.opponentMonster.length > 1) {
+            newState.opponentMonster[newState.targetedMonster].currentHP = 0;
+          }
+          newState.playerMonster.encounterEnergy -= array[index].baseCost;
+        })
+      return stateObj;
+    }
+  },
+
 }
   
   let waterCardPool = {

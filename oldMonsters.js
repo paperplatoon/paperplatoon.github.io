@@ -18,8 +18,7 @@ let playerMonsters = {
       startingDeck: [
         fireCardPool.setaflame,
         fireCardPool.darkknowledge,
-        fireCardPool.bloodpact,
-        fireCardPool.religiousfervor,
+        specialCardPool.pickoff,
         fireCardPool.cursedritual,
         fireCardPool.combofinisher,
         fireCardPool.brand
