@@ -197,7 +197,7 @@ let playerMonsters = {
 
   //   ]
   // }
-  };
+};
 
 let oldMonsters= {
 opponent1: {

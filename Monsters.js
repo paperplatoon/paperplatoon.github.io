@@ -759,7 +759,6 @@ let gyms = [
   gym1,
   gym2,
   gym3,
-  gym1
 ]
 
 

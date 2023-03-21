@@ -378,7 +378,7 @@ let fireCardPool = {
       elementType: "fire",
       energyDrain: 2,
       action: (stateObj, index, array) => {
-        let stateObj = immer.produce(stateObj, (newState) => {
+        stateObj = immer.produce(stateObj, (newState) => {
           if (newState.opponentMonster[newState.targetedMonster].encounterEnergy > (array[index].energyDrain + array[index].upgrades)) {
             newState.fightEnergyDrainCount += 1;
             newState.fightEnergyDrainTotal += (array[index].energyDrain + array[index].upgrades);
