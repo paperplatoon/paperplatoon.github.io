@@ -45,7 +45,7 @@ let playerMonsters = {
         //1 energy
         fireCardPool.fireEnergy,
         //3 special
-        fireCardPool.explode,
+        fireCardPool.followupslap,
         fireCardPool.gainstrength,
         fireCardPool.kindle,
         //8 starter
