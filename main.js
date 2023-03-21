@@ -509,10 +509,16 @@ function increaseBaseHits(stateObj, index, array) {
 
 
 function changeState(newStateObj) {
-  state = {...newStateObj}
   //console.log("current state is " + state.status)
-  //state = { ...handleDeaths() };
-  renderScreen(state);
+  let stateObj = {...newStateObj}
+  if (newStateObj.status === Status.InEncounter) {
+    stateObj = handleDeaths(newStateObj);
+  }
+  
+  state = {...stateObj}
+  renderScreen(stateObj);
+
+  return stateObj
 }
 
 function resetAfterFight(stateObj) {
@@ -784,7 +790,6 @@ function upgradeCard(stateObj) {
 async function playACard(stateObj, cardIndexInHand, arrayObj) {
   console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
   stateObj = stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
-  console.log(stateObj.cardsPerTurn)
   stateObj = immer.produce(stateObj, (newState) => {
     newState.cardsPerTurn += 1;
     if (stateObj.encounterHand[cardIndexInHand].exhaust == true) {
@@ -812,9 +817,10 @@ async function playACard(stateObj, cardIndexInHand, arrayObj) {
     }
 
   })
-  stateObj = handleDeaths(stateObj);
+  
+  stateObj = changeState(stateObj);
   stateObj = pickOpponentMove(stateObj);
-  changeState(stateObj);
+  return stateObj
 }
 
 
@@ -2045,19 +2051,29 @@ function endTurnIncrement(stateObj) {
     })
     newState.turnDouble = false;
   })
-  stateObj = handleDeaths(stateObj);
   return stateObj;
 }
 
 //if you flip the order of this around, discard works, but not playing the move
 async function endTurn(stateObj) {
+  stateObj = endTurnIncrement(stateObj);
+  stateObj = changeState(stateObj);
+  await pause(500);
+
+  if (stateObj.opponentMonster.length === 0) {
+    console.log("breaking out of function endTurn")
+    return stateObj
+  }
+
   stateObj = discardHand(stateObj);
   stateObj = immer.produce(stateObj, (newState) => {
     newState.opponentMonster.forEach(function (monsterObj, index) {
       monsterObj.encounterBlock = 0;
     })
   });
-  stateObj = endTurnIncrement(stateObj);
+  
+
+  console.log("picking opponent move");
   stateObj = pickOpponentMove(stateObj);
   changeState(stateObj);
   await pause(500);

@@ -19,7 +19,7 @@ let playerMonsters = {
         fireCardPool.setaflame,
         fireCardPool.darkknowledge,
         specialCardPool.pickoff,
-        fireCardPool.cursedritual,
+        specialCardPool.testkill,
         fireCardPool.combofinisher,
         fireCardPool.brand
       ],

@@ -1577,12 +1577,12 @@ let fireCardPool = {
       cardID: 52,
       name: "Mastery",
       text: (state, index, array) => {
+        let totalDamage = (array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength);
         if (state.status === Status.InEncounter) {
           const allCardsArray = state.encounterHand.concat(state.encounterDraw, state.encounterDiscard)
           let totalEncounterUpgrades = allCardsArray.reduce(function(acc, obj) {
             return acc + obj["upgrades"];
           }, 0); 
-          let totalDamage = (array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength);
           return `Deal ${totalDamage} damage. +${totalDamage} for each upgrade you have (${totalEncounterUpgrades + array[index].baseHits})`
         } else {
           let totalEncounterUpgrades = state.playerDeck.reduce(function(acc, obj) {
@@ -1880,7 +1880,7 @@ let fireCardPool = {
 
 let specialCardPool = {
   fataltoxin: {
-    cardID: 56,
+    cardID: 001,
     name: "Fatal Toxin",
     text: (state, index, array) => { return `Apply ${array[index].basePoison + (array[index].upgrades*2)} poison to the enemy.`},
     minReq: (stateObj, index, array) => {
@@ -1904,7 +1904,7 @@ let specialCardPool = {
   },
 
   pickoff: {
-    cardID: 56,
+    cardID: 002,
     name: "Pick Off",
     text: (state, index, array) => { return `If there is more than 1 opponent, kill targeted monster`},
     minReq: (stateObj, index, array) => {
@@ -1929,6 +1929,29 @@ let specialCardPool = {
           if (stateObj.opponentMonster.length > 1) {
             newState.opponentMonster[newState.targetedMonster].currentHP = 0;
           }
+          newState.playerMonster.encounterEnergy -= array[index].baseCost;
+        })
+      return stateObj;
+    }
+  },
+
+  testkill: {
+    cardID: 003,
+    name: "Murder",
+    text: (state, index, array) => { return `Kill targeted monster`},
+    minReq: (stateObj, index, array) => {
+      return array[index].baseCost;
+    },
+    upgrades: 0,
+    baseCost: 1,
+    cost:  (stateObj, index, array) => {
+      return array[index].baseCost;
+    },
+    cardType: "ability",
+    elementType: "special",
+    action: (stateObj, index, array) => {
+        stateObj = immer.produce(stateObj, (newState) => {
+            newState.opponentMonster[newState.targetedMonster].currentHP = 0;
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
         })
       return stateObj;
