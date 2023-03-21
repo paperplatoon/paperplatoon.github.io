@@ -81,7 +81,7 @@ let gameStartState = {
   cardsPerTurn: 0,
   comboPerTurn: 0,
   gainLifePerCard: 0,
-  townEventChosen: 1,
+  townEventChosen: false,
   townFreeHealUsed: false,
   availableCardPoolForShop: false
 };
