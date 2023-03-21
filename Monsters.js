@@ -121,10 +121,10 @@ let opponentMonsters = {
   blockgym1: {
     name: "Block Gym Disciple",
     type: "Air",
-    maxHP: 75,
+    maxHP: 90,
     encounterEnergy: 0,
     opponentMoveIndex: false,
-    currentHP: 75,
+    currentHP: 90,
     strength: 0,
     dex: 0,
     drown: 0,
@@ -132,7 +132,7 @@ let opponentMonsters = {
     poison: 0,
     baseBlock: 10,
     baseDamage: 10,
-    baseScale: 5,
+    baseScale: 1,
     baseHeal: 0,
     avatar: "img/dracula.png",
     moves: [
@@ -155,7 +155,7 @@ let opponentMonsters = {
         name: "Shield Throw",
         cost: "1",
         text: (state, index, array) => {
-          return `Deal ${(array[index].baseDamage*2) + array[index].dex + array[index].strength} damage. Gain ${array[index].baseScale} dexterity. -1 energy`
+          return `Deal ${(array[index].baseDamage*2) + array[index].dex + array[index].strength} damage. Gain ${array[index].baseScale*5} dexterity. -1 energy`
         },
         minReq: 1,
         action: (state, index, array) => {
@@ -164,7 +164,7 @@ let opponentMonsters = {
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
             newState.opponentMonster[index].encounterEnergy -= 1;
-            newState.opponentMonster[index].dex += array[index].baseScale;
+            newState.opponentMonster[index].dex += array[index].baseScale*5;
           })
           return toChangeState;
         }
@@ -541,7 +541,7 @@ let opponentMonsters = {
     poison: 0,
     baseBlock: 10,
     baseDamage: 10,
-    baseScale: 5,
+    baseScale: 1,
     baseHeal: 0,
     avatar: "img/firesheep.png",
     moves: [
@@ -567,14 +567,14 @@ let opponentMonsters = {
         name: "Enrage",
         cost: "1",
         text: (state, index, array) => {
-          return `Gain ${(array[index].baseBlock*2) + array[index].dex} block. Gain ${array[index].baseScale} strength. -1 energy`
+          return `Gain ${(array[index].baseBlock*2) + array[index].dex} block. Gain ${array[index].baseScale5} strength. -1 energy`
         },
         minReq: 1,
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             newState.opponentMonster[index].encounterBlock += (array[index].baseBlock + 5 + array[index].dex);
             newState.opponentMonster[index].encounterEnergy -= 1;
-            newState.opponentMonster[index].strength += array[index].baseScale;
+            newState.opponentMonster[index].strength += array[index].baseScale*5;
           })
           return toChangeState;
         }
@@ -636,15 +636,15 @@ let opponentMonsters = {
     poison: 0,
     baseBlock: 10,
     baseDamage: 10,
-    baseScale: 10,
+    baseScale: 2,
     baseHeal: 0,
     avatar: "img/firebeard.png",
     moves: [
       {
-        name: "Whirling Dervish",
+        name: "Roll Up",
         cost: "0",
         text: (state, index, array) => {
-          return `Deal ${array[index].baseDamage + array[index].strength} damage. Gain 10 strength. +3 energy`
+          return `Deal ${array[index].baseDamage + array[index].strength} damage. Gain ${array[index].baseScale*5} strength. +3 energy`
         },
         minReq: 0,
         action: (state, index, array) => {
@@ -652,7 +652,7 @@ let opponentMonsters = {
             let tempState = dealPlayerDamage(newState, array[index].baseDamage, index);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].strength += array[index].baseScale;
+            newState.opponentMonster[index].strength += array[index].baseScale*5;
             newState.opponentMonster[index].encounterEnergy += 3;
           })
           return toChangeState;

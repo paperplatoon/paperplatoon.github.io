@@ -683,7 +683,7 @@ function setUpEncounter(stateObj) {
       newState.opponentMonster[index].baseDamage += (newState.gymCount*5);
       newState.opponentMonster[index].baseBlock += (newState.gymCount*5);
       newState.opponentMonster[index].baseHeal += (newState.gymCount*5);
-      newState.opponentMonster[index].baseScale += (newState.gymCount*5);
+      newState.opponentMonster[index].baseScale += (newState.gymCount*1);
     })
   })
 
