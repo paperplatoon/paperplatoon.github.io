@@ -431,7 +431,7 @@
 
 #drawPile #drawDiv,
 #discardPile #discardDiv,
-#playerDeckPile #deckDiv, .invisible-cost {
+#playerDeckPile #deckDiv, .invisible-cost, .paid-invisible-cost {
   display: none;
   z-index: 10;
 }
@@ -443,13 +443,17 @@
   display: block;
 }
 
-.card-reward:hover .invisible-cost {
+.card-reward:hover .invisible-cost, .card-reward:hover .paid-invisible-cost {
   animation: fadeIn 0.3s;
   display: block;
 }
 
 .invisible-cost {
   color: rgb(255, 117, 117);
+}
+
+.paid-invisible-cost {
+  color: rgb(189, 255, 189);
 }
 
 @keyframes fadeIn {

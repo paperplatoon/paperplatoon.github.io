@@ -1304,7 +1304,7 @@ function renderPaidRemoval(stateObj) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app");
-  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", paidRemoval);
+  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", paidRemoval, goldCost="paidremoval");
   skipToTownButton(stateObj, "I choose not to remove any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
   skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
@@ -1590,6 +1590,12 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
           let costText = document.createElement("P");
           costText.textContent = "(" + stateObj.cardRemoveCost+ " gold to remove)";
           costText.classList.add("invisible-cost")
+          cardDiv.append(costText);
+        } else if (goldCost === "paidremoval") {
+          let removalpayment = (cardObj.rare === true) ? 100 : 50;
+          let costText = document.createElement("P");
+          costText.textContent = "(Get paid " + removalpayment + " gold to remove)";
+          costText.classList.add("paid-invisible-cost")
           cardDiv.append(costText);
         } else if (goldCost === "upgrade") {
           cardDiv.classList.add("card-change-text");
