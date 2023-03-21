@@ -1010,11 +1010,11 @@ let fireCardPool = {
             newState.fightEnergyDrainCount += 1;
             newState.fightEnergyDrainTotal += (array[index].energyDrain + array[index].upgrades);
             newState.opponentMonster[newState.targetedMonster].encounterEnergy -= (array[index].energyDrain + array[index].upgrades);
-            newState.playerMonster.encounterBlock += ((array[index].energyDrain + array[index].upgrades) * 15);
+            newState.playerMonster.encounterBlock += ((array[index].energyDrain + array[index].upgrades) * array[index].baseBlock);
           } else if (newState.opponentMonster[newState.targetedMonster].encounterEnergy > 0) {
               newState.fightEnergyDrainCount += 1;
               newState.fightEnergyDrainTotal += newState.opponentMonster[newState.targetedMonster].encounterEnergy;
-              newState.playerMonster.encounterBlock += (newState.opponentMonster[newState.targetedMonster].encounterEnergy*15);
+              newState.playerMonster.encounterBlock += (newState.opponentMonster[newState.targetedMonster].encounterEnergy*array[index].baseBlock);
               newState.opponentMonster[newState.targetedMonster].encounterEnergy = 0
           } else {}
 
