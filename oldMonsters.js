@@ -54,7 +54,7 @@ let playerMonsters = {
         fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,   
-        fireCardPool.expertsforge,
+        fireCardPool.tackle,
         fireCardPool.tackle,
         fireCardPool.tackle,
         fireCardPool.tackle

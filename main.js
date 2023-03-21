@@ -1003,6 +1003,37 @@ function renderTownDiv(stateObj, idNameString, imgSrcString, imgTextString, trig
     newTownDiv.append(newDivText);
     return newTownDiv
 }
+let cheapHealDiv = renderChoiceDiv(stateObj, ["heal-div"], "img/potion.svg", `Heal 25% of your max health (${Math.floor(stateObj.playerMonster.maxHP/4)}) for ${Math.floor(stateObj.healCost/2)} gold`, (stateObj.gold >= Math.floor(stateObj.healCost/2) && stateObj.playerMonster.currentHP < stateObj.playerMonster.maxHP), cheapHeal, statusToChange=false, altText=`${Math.floor(stateObj.healCost/2)} gold required`)
+
+function renderChoiceDiv(stateObj, classesArray, imgSrcString, divTextString, triggerCondition, functionToAdd, statusToChange=false, altText=false) {
+  let newTownDiv = document.createElement("Div");
+  for (i=0; i < classesArray.length; i++) {
+    newTownDiv.classList.add(classesArray[i]);
+  };
+  let newDivImg = document.createElement("Img");
+  newDivImg.src = imgSrcString;
+  newDivImg.classList.add("bg-image");
+  newTownDiv.append(newDivImg);
+
+  let newDivText = document.createElement("H3");
+  newDivText.textContent = divTextString
+  newDivText.classList.add("fight-text");
+  
+  
+
+  if (triggerCondition===true) {
+      newTownDiv.classList.add("playable")
+      newTownDiv.onclick = function () {
+        functionToAdd(stateObj, statusToChange);
+      }
+    } else {
+      newDivText.textContent = altText;
+    };
+    newTownDiv.append(newDivText);
+    return newTownDiv
+}
+
+
   
   
 
@@ -1328,6 +1359,8 @@ function renderChooseCardReward(stateObj) {
   skipToTownButton(stateObj, "I choose not to add any of these cards to my deck (+5 gold)", ".remove-div", cardSkip=true);
 };
 
+
+
 function renderShop(stateObj) {
   if (stateObj.availableCardPoolForShop === false) {
     stateObj = immer.produce(stateObj, (newState) => {
@@ -1340,34 +1373,32 @@ function renderShop(stateObj) {
 
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
-  divContainer("app");
-  renderClickableCardList(stateObj, sampledCardPool, "remove-div", buyThisCard, goldCost="cardshop");
-  let cheapHealButton = document.createElement("Button");
-  cheapHealButton.addEventListener("click", function () {
-    cheapHeal(stateObj);
-  });
-  cheapHealButton.classList.add("cheap-heal-button");
-  cheapHealButton.classList.add("heal-button");
-  cheapHealButton.textContent = `Heal 25% of your max health (${Math.floor(stateObj.playerMonster.maxHP/4)}) for ${Math.floor(stateObj.healCost/2)} gold`
-  document.getElementById("remove-div").append(cheapHealButton);
-
-  let HealButton = document.createElement("Button");
-  HealButton.classList.add("full-heal-button");
-  HealButton.classList.add("heal-button");
-
+  divContainer("app", "shop-div");
+  renderClickableCardList(stateObj, sampledCardPool, "shop-div", buyThisCard, goldCost="cardshop");
+  let healthDiff = stateObj.playerMonster.maxHP - stateObj.playerMonster.currentHP;
+  
+  let cheapHealDiv = renderChoiceDiv(stateObj, ["heal-div"], "img/potion.svg", 
+  `Heal 25% of your max health (${Math.floor(stateObj.playerMonster.maxHP/4)}) for ${Math.floor(stateObj.healCost/2)} gold`, 
+  (stateObj.gold >= Math.floor(stateObj.healCost/2) && healthDiff > 0), 
+  cheapHeal, statusToChange=false, altText=`${Math.floor(stateObj.healCost/2)} gold required`);
+  
+  document.getElementById("shop-div").append(cheapHealDiv);
+  let fullHealDiv = renderChoiceDiv(stateObj, ["heal-div"], "img/potion.svg", `Heal to full for free once per town. +30 gold if you beat the boss without healing`, 
+  ((stateObj.townFreeHealUsed === false && healthDiff>0) || (stateObj.gold >= stateObj.healCost && healthDiff>0)), 
+  fullHeal, statusToChange=false, altText=`Pay ${stateObj.healCost} gold. Heal to full`);
+  
   if (stateObj.townFreeHealUsed === false) {
-    HealButton.textContent = `Heal to full HP. One free heal offered per town - the heal afterwards will cost ${stateObj.healCost}. You earn a bonus 30 gold if you beat the boss without having used the free heal.`
+    fullHealDiv.querySelector(".fight-text").textContent = `Heal to full HP for free once per town. +30 gold if you beat the boss without using it`
   } else {
-    HealButton.textContent = `Spend ${stateObj.healCost} gold to fully heal`
+    fullHealDiv.querySelector(".fight-text").textContent = `Spend ${stateObj.healCost} gold to fully heal`
   }
 
-  HealButton.addEventListener("click", function () {
-    fullHeal(stateObj);
-  });
+  document.getElementById("shop-div").append(fullHealDiv);
+  skipToTownButton(stateObj, "I don't want to buy anything right now", "#shop-div");
   
-  document.getElementById("remove-div").append(HealButton);
-  skipToTownButton(stateObj, "I don't want to buy anything right now", ".remove-div");
 };
+  
+  
 
 function renderChooseRareCard(stateObj) {
   console.log("status while choosing rare is " + stateObj.status);
@@ -1498,7 +1529,7 @@ function renderIncreaseBaseHit(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseBaseHits, goldCost="moreHits")
     }
   });
-  skipToTownButton(stateObj, "I choose not more hits for any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  skipToTownButton(stateObj, "I choose not to make any of these cards hit another time (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
   skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
