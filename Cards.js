@@ -814,10 +814,10 @@ let fireCardPool = {
       }
     },
 
-    claritystrike: {
+    clarity: {
       rare: true,
       cardID: 27,
-      name: "",
+      name: "Clarity",
       text: (state, index, array) => {
           return `Deal ${array[index].baseDamage + (array[index].upgrades*5) + state.playerMonster.strength} damage. +${array[index].baseDamage + (array[index].upgrades*5)+ state.playerMonster.strength} for each time you've skipped a card (${state.cardsSkipped + array[index].baseHits} total)`;
       },
