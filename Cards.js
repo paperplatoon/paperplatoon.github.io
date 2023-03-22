@@ -42,10 +42,10 @@ let fireCardPool = {
       text: (state, index, array) => {
         if (array[index].baseHits === 1) {
           return `Deal ${array[index].baseDamage + (array[index].playCount*(10 + (array[index].upgrades*10))) + state.playerMonster.strength} damage. 
-          Increase this card's damage by ${5 + (array[index].upgrades*10)}`;
+          Increase this card's damage by ${10 + (array[index].upgrades*10)}`;
         } else {
           return `Deal ${array[index].baseDamage + array[index].playCount*(10 + (array[index].upgrades*10)) + state.playerMonster.strength} damage ${array[index].baseHits} times. 
-          Increase this card's damage by ${5 + (array[index].upgrades*10)}`
+          Increase this card's damage by ${10 + (array[index].upgrades*10)}`
         }
       },
       minReq: (state, index, array) => {
