@@ -5,31 +5,24 @@
 
 
 //import clone from "https://cdn.skypack.dev/clone@2.1.2";
-//NEXT STEPS
-//CARDS THAT NEED A TURN COMBO COUNTER TO BE AT A CERTAIN AMOUNT BEFORE PLAYING
-//PUTS DECK BUILDING LIMITATION - can only have so many multi combo cards
 
 //TO-DO
-//add card costs to Choose/remove card screens
-//same with strength and dex for all monsters
 //figure out some way to render energy inside the right icon (flame/water/etc)
 //add 
-
 //figure out a way to do tooltips
 
 //add in a monster flag that, if true, does not set block to 0 between cards
 //add in a card that allows you to keep block between turns
 
-//add in gold for skipping a card; also add to button
-
-//MANA - figure out images, add to cards, add costs to moves
+//MANA - css images, add to cards, add costs to moves
 //add css backgrounds to moves and cards based on what their type is?
 
 
-
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // - - - - - -  - - - - -Creating the State - - - - - -  - - - - -
-
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 const Status = {
   ChoosingMonster: "Choose a monster",
   UpgradingCards: "Choose any card from your deck to upgrade",
@@ -93,6 +86,26 @@ waterCardArray = Object.values(waterCardPool);
 
 let potentialMonsterChoices = playerMonsterArray;
 
+function changeState(newStateObj) {
+  let stateObj = {...newStateObj}
+  if (newStateObj.status === Status.InEncounter) {
+    stateObj = handleDeaths(newStateObj);
+  }
+  
+  state = {...stateObj}
+  renderScreen(stateObj);
+
+  return stateObj
+}
+
+let state = {...gameStartState};
+renderScreen(state);
+
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+// - - - - - -  - - - - -Functions used by Cards.js and Monsters.js - - - - - -  - - - - -
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, all=false, specifiedIndex=false) {
   let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster 
   console.log('target index in dealoppdmg is ' + targetIndex)
@@ -161,10 +174,30 @@ function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, attackNumber
   return toChangeState;
 }
 
+function fisherYatesShuffle(arrayObj) {
+  let arrayCopy = [...arrayObj];
+  for (x = arrayCopy.length-1; x > 0; x--) { 
+    let y = Math.floor(Math.random() * (x)); 
+    let temp = arrayCopy[x] 
+    arrayCopy[x] = arrayCopy[y] 
+    arrayCopy[y] = temp 
+ } 
+ return arrayCopy;
+}
+
+function shuffleArray(array) {
+  return array
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
+}
 
 
-
-
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+// - - - - - -  - - - - -Rendering the Screen - - - - - -  - - - - -
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 function renderChooseMonster(stateObj) {
   document.getElementById("app").innerHTML = ""
@@ -198,26 +231,18 @@ function chooseThisMonster(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster = potentialMonsterChoices[index];
     newState.playerDeck = potentialMonsterChoices[index].startingDeck;
-    //newState.status = Status.InEncounter;
     newState.status = Status.InTown;
 
   })
-  //stateObj = setUpEncounter(stateObj);
   changeState(stateObj);
   return stateObj;
 }
 
-
-function fisherYatesShuffle(arrayObj) {
-  let arrayCopy = [...arrayObj];
-  for (x = arrayCopy.length-1; x > 0; x--) { 
-    let y = Math.floor(Math.random() * (x)); 
-    let temp = arrayCopy[x] 
-    arrayCopy[x] = arrayCopy[y] 
-    arrayCopy[y] = temp 
- } 
- return arrayCopy;
-}
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+// - - - - - -  - - - - -Click functions to add to stuff - - - - - -  - - - - -
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 function changeStatus(stateObj, newStatus, countsAsEventSkipForChangeStatus=false) {
   console.log("changing status to " + newStatus)
@@ -251,19 +276,13 @@ function skipCards(stateObj, isUsedForEventSkip=false) {
 function TownFight(stateObj) {
   stateObj = setUpEncounter(stateObj)
   changeState(stateObj);
-  stateObj = immer.produce(stateObj, (newState) => {
-    newState.status = Status.InEncounter;
-  })
-  changeState(stateObj);
   return stateObj;
 }
 
 function chooseThisCard(stateObj, index, sampledCardPool) {
-  console.log("status before adding card is " + stateObj.status)
   console.log("added " + sampledCardPool[index].name + " to deck")
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerDeck.push(sampledCardPool[index]); 
-    console.log("status outside of ChooseThisCard is " + newState.status)
 
     if (newState.townEventChosen === 0){
       newState.eventUsed = true;
@@ -345,7 +364,7 @@ function paidRemoval(stateObj, index) {
 function increaseStrengthEvent(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.eventUsed = true;
-    newState.playerMonster.strength += 5;
+    newState.playerMonster.strength += 10;
     newState.status = Status.InTown
   })
   changeState(stateObj);
@@ -355,7 +374,7 @@ function increaseStrengthEvent(stateObj) {
 function increaseDexEvent(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.eventUsed = true;
-    newState.playerMonster.dex += 5;
+    newState.playerMonster.dex += 10;
     newState.status = Status.InTown
   })
   changeState(stateObj);
@@ -393,8 +412,6 @@ function doubleUpgradeCard(stateObj, index) {
   return stateObj;
 }
 
-
-
 function encounterUpgradeCard(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.gold -= newState.cardUpgradeCost;
@@ -408,17 +425,14 @@ function encounterUpgradeCard(stateObj, index) {
 
 function fullHeal(stateObj) {
   if (stateObj.townFreeHealUsed === false && stateObj.playerMonster.currentHP < stateObj.playerMonster.maxHP) {
-    console.log("current use of free heal should be false " + stateObj.townFreeHealUsed)
     stateObj = immer.produce(stateObj, (newState) => {
       newState.townFreeHealUsed = true;
-      console.log("current use of free heal should now be true " + newState.townFreeHealUsed)
       newState.playerMonster.currentHP = newState.playerMonster.maxHP;
     })
     changeState(stateObj);
     return stateObj
   } else if (stateObj.townFreeHealUsed === true && stateObj.gold >= stateObj.healCost) {
       if (stateObj.playerMonster.currentHP < stateObj.playerMonster.maxHP) {
-        console.log("current use of free heal shuld be used " + stateObj.townFreeHealUsed)
         stateObj = immer.produce(stateObj, (newState) => {
           newState.gold -= newState.healCost;
           newState.healCost += 25;
@@ -432,7 +446,6 @@ function fullHeal(stateObj) {
   } else {
     return stateObj;
   } 
-  
 }
 
 function cheapHeal(stateObj) {
@@ -463,7 +476,7 @@ function decreaseCardCost(stateObj, index, array) {
 
 function increaseCardBlock(stateObj, index, array) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerDeck[index].baseBlock += 10;
+    newState.playerDeck[index].baseBlock += 20;
     newState.eventUsed = true;
     newState.status = Status.InTown;
   })
@@ -473,7 +486,7 @@ function increaseCardBlock(stateObj, index, array) {
 
 function increaseCardAttack(stateObj, index, array) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerDeck[index].baseDamage += 10;
+    newState.playerDeck[index].baseDamage += 20;
     newState.eventUsed = true;
     newState.status = Status.InTown;
   })
@@ -504,333 +517,6 @@ function increaseBaseHits(stateObj, index, array) {
 
 
 
-
-
-
-
-function changeState(newStateObj) {
-  //console.log("current state is " + state.status)
-  let stateObj = {...newStateObj}
-  if (newStateObj.status === Status.InEncounter) {
-    stateObj = handleDeaths(newStateObj);
-  }
-  
-  state = {...stateObj}
-  renderScreen(stateObj);
-
-  return stateObj
-}
-
-function resetAfterFight(stateObj) {
-  stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerMonster.strength -= newState.playerMonster.tempStrength;
-    newState.playerMonster.dex -= newState.playerMonster.tempDex;
-    newState.playerMonster.tempStrength = 0;
-    newState.playerMonster.tempDex = 0;
-
-    newState.playerMonster.strength -= newState.playerMonster.fightStrength;
-    newState.playerMonster.dex -= newState.playerMonster.fightDex;
-    newState.playerMonster.fightStrength = 0;
-    newState.playerMonster.fightDex = 0;
-
-    newState.playerMonster.encounterBlock = 0;
-
-    newState.fightHealCount = 0;
-    newState.fightHealTotal = 0;
-    newState.fightSelfDamageCount = 0;
-    newState.fightSelfDamageTotal = 0;
-    newState.fightEnergyDrainCount = 0;
-    newState.fightEnergyDrainTotal = 0;
-    newState.enemyFightHealTotal = 0;
-    newState.gainLifePerCard = 0;
-    newState.selfDamageAttack = 0;
-    newState.selfDamageBlock = 0;
-    newState.cardsPerTurn = 0;
-    newState.comboPerTurn = 0;
-
-
-
-    newState.gold += gyms[newState.gymCount][newState.gymFightCount].goldReward
-    
-    console.log("gym count is " + newState.gymCount);
-    if (gyms[newState.gymCount][newState.gymFightCount].boss && newState.gymCount === 2) {
-      newState.status = Status.VictoryScreen;
-    } else if (gyms[newState.gymCount][newState.gymFightCount].boss) {
-      newState.gymFightCount = 0;
-      newState.gymCount += 1;
-      newState.playerMonster.maxHP += 10
-      console.log("gincreasing gym count to " + newState.gymCount);
-      newState.eventUsed = false; 
-      newState.townEventChosen = false;
-      newState.availableCardPoolForShop = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
-      newState.status = Status.EncounterRewards;
-
-      if (newState.townFreeHealUsed === false) {
-        newState.gold += 30;
-      }
-      console.log("current use of free heal in fight reset should be true " + newState.townFreeHealUsed)
-      newState.townFreeHealUsed = false;
-      console.log("current use of free heal in fight reset should be false " + newState.townFreeHealUsed)
-    } else {
-      newState.gymFightCount += 1;
-      newState.status = Status.EncounterRewards;
-    }
-  })
-
-  return stateObj;
-}
-
-function handleDeaths(stateObj) {
-  let shouldUpgrade = false;
-  if (stateObj.opponentMonster) {
-    stateObj = immer.produce(stateObj, (newState) => {
-      let indexesToDelete = [];
-      newState.opponentMonster.forEach(function (monster, index) {
-
-        if (monster.drown >= monster.currentHP && monster.currentHP > 0) {
-          console.log("opponent monster at index " + index + " has drowned.")
-          indexesToDelete.push(index);
-          newState.targetedMonster = 0;
-        }
-        if (monster.currentHP <= 0) {
-          console.log("opponent monster at index " + index + " has died.")
-          indexesToDelete.push(index);
-          newState.targetedMonster = 0;
-        }
-      });
-
-      indexesToDelete.reverse()
-      for (let i = 0; i < indexesToDelete.length; i++) {
-       newState.opponentMonster.splice(indexesToDelete[i], 1)
-      }
-
-      if (newState.opponentMonster.length == 0) {
-        console.log("all opponents dead");
-        Object.assign(newState, resetAfterFight(newState))
-        
-          //return newState;
-        }
-        //something that goes through and resets card tempUpgrades and playCount for each card
-        
-        //newState = resetAfterEncounter(state);
-
-      if (newState.playerMonster.currentHP <= 0) {
-        // all monsters are dead
-        console.log("we deads");
-        //newState.status = Status.lostEncounter;
-        newState.status = Status.DeathScreen;
-      }
-    })
-  }
-  // check if all opponents are dead
-
-  return stateObj;
-};
-
-// maybe don’t look at this too closely
-function pause(timeValue) {
-  return new Promise(res => setTimeout(res, timeValue))
-}
-
-
-
-//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-// - - - - - -  - - - - - Game Set-up  - - - - - -  - - - - -
-//----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-//Game Logic
-
-
-let state = {...gameStartState};
-renderScreen(state);
-
-
-
-//Encounter Set-up
-//setUpEncounter block is undefined because opponentMonster hasn't been set yet
-function setUpEncounter(stateObj) {
-
-  stateObj = immer.produce(stateObj, (newState) => {
-    console.log("setting up encounter");
-    newState.playerMonster.encounterBlock = 0;
-    //pick first two monsters from shuffled array
-    newState.opponentMonster = gyms[newState.gymCount][newState.gymFightCount].opponents;
-    newState.encounterHand = [];
-    newState.encounterDiscard = [];
-    newState.enemyFightHealTotal = 0;
-    newState.fightHealCount = 0;
-    newState.fightHealTotal = 0;
-    newState.fightSelfDamageCount = 0;
-    newState.fightSelfDamageTotal = 0;
-    newState.selfDamageAttack = 0;
-    newState.selfDamageBlock = 0;
-    newState.fightEnergyDrainCount = 0;
-    newState.fightEnergyDrainTotal = 0;
-    newState.gainLifePerCard = 0;
-    newState.comboPerTurn = 0;
-    
-    newState.cardsPerTurn = 0;
-    if (!stateObj.playerDeck) {
-      console.log("player has no playerDeck")
-      newState.playerDeck = [...stateObj.playerMonster.startingDeck];
-      newState.encounterDeck = [...stateObj.playerMonster.startingDeck];
-      newState.encounterDraw = [...stateObj.playerMonster.startingDeck];
-    } else {
-      console.log("player had playerDeck")
-      newState.encounterDeck = [...stateObj.playerDeck];
-      newState.encounterDraw = [...stateObj.playerDeck];
-    }
-    newState.targetedMonster = 0;
-    newState.playerMonster.encounterEnergy = newState.playerMonster.turnEnergy;
-  });
-
-  stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerMonster.tempStrength = 0;
-    newState.playerMonster.tempDex = 0;
-    newState.opponentMonster.forEach(function (monster, index) {
-      newState.opponentMonster[index].encounterEnergy = 0;
-      newState.opponentMonster[index].encounterBlock = 0;
-      let gym = newState.gymCount
-      newState.opponentMonster[index].maxHP += (newState.gymCount*30);
-      newState.opponentMonster[index].currentHP += (newState.gymCount*30);
-      newState.opponentMonster[index].baseDamage += (newState.gymCount*5);
-      newState.opponentMonster[index].baseBlock += (newState.gymCount*5);
-      newState.opponentMonster[index].baseHeal += (newState.gymCount*5);
-      newState.opponentMonster[index].baseScale += (newState.gymCount*1);
-    })
-  })
-
-  return stateObj;
-};
-
-
-function resetAfterEncounter(stateObj) {
-  let newState = { ...stateObj };
-  newState.status = Status.OutOfCombat;
-  newState.opponentMonster = {};
-
-  newState.playerMonster.encounterEnergy = 0;
-  newState.opponentEncounterEnergy = 0;
-  newState.encounterDiscard = [];
-  newState.encounterDeck = [];
-  newState.encounterHand = [];
-
-  return newState;
-}
-
-//takes an array and returns the same array but shuffled
-function shuffleArray(array) {
-  return array
-    .map((value) => ({ value, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ value }) => value);
-}
-
-//REWEITE FOR IMMER>PRODUCE
-function shuffleDiscardIntoDeck(stateObj) {
-  stateObj = immer.produce(stateObj, (newState) => {
-    newState.encounterDraw = [...newState.encounterDiscard];
-    newState.encounterDiscard = [];
-    newState.encounterDraw = shuffleArray(newState.encounterDraw);
-  })
-  
-  return stateObj;
-}
-
-
-function drawACard(stateObj) {
-  let toChangeState = immer.produce(stateObj, (newState) => {
-    const handLength = newState.encounterHand.length;
-    if (handLength > 7 ) {
-      console.log("hand is full");
-      return newState;
-    }
-
-    // if deck is empty, shuffle discard and change newState to reflect that
-    if (newState.encounterDraw.length === 0) {
-      Object.assign(newState, shuffleDiscardIntoDeck(newState));
-      //console.log("shuffling");
-    }
-
-    // draw a card if possible
-    let testState
-    let topCard = newState.encounterDraw.shift();
-    if (!topCard) {
-      console.log("all cards are in play");
-      return newState;
-    }
-
-    // put it in your hand
-    newState.encounterHand.push(topCard);
-  })
-  return toChangeState;
-}
-
-//Need to figure out some way to make this terminate early if encounterDiscard and encounterDraw are both empty
-function drawAHand(stateObj) {
-  let toChangeState = immer.produce(stateObj, (newState) => {
-    for (let i = 0; i < 6; i++) {
-      if (
-        newState.encounterDraw.length !== 0 ||
-        newState.encounterDiscard.length !== 0
-      ) {
-        Object.assign(newState, drawACard(newState));
-      }
-    }
-  });
-  return toChangeState;
-}
-
-function upgradeCard(stateObj) {
-  stateObj = immer.produce(stateObj, (newState) => {
-    newState.encounterHand[0].upgrades +=1;
-  });
-  return stateObj;
-}
-
-async function playACard(stateObj, cardIndexInHand, arrayObj) {
-  console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
-  stateObj = stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
-  stateObj = immer.produce(stateObj, (newState) => {
-    newState.cardsPerTurn += 1;
-    if (stateObj.encounterHand[cardIndexInHand].exhaust == true) {
-      console.log("you exhausted " + stateObj.encounterHand[cardIndexInHand].name);
-      newState.encounterHand.splice(cardIndexInHand, 1);
-    } else {
-      newState.encounterDiscard.push(stateObj.encounterHand[cardIndexInHand]);
-      newState.encounterHand.splice(cardIndexInHand, 1);
-    }
-    //trigger if life gain
-    if (newState.gainLifePerCard > 0) {
-      //trigger if player is not at full health
-      if (newState.playerMonster.currentHP < newState.playerMonster.maxHP) {
-        //if the lifegain is less than total HP loss, do heal to full, otherwise, heal per card
-        if (newState.playerMonster.maxHP-newState.playerMonster.currentHP > 0 && newState.playerMonster.maxHP-newState.playerMonster.currentHP < newState.gainLifePerCard) {
-          newState.fightHealTotal += newState.playerMonster.maxHP-newState.playerMonster.currentHP;
-          newState.playerMonster.currentHP = newState.playerMonster.maxHP;
-          newState.fightHealCount +=1;
-        } else if (newState.playerMonster.maxHP-newState.playerMonster.currentHP >= newState.gainLifePerCard) {
-          newState.fightHealTotal += newState.gainLifePerCard;
-          newState.playerMonster.currentHP += newState.gainLifePerCard;
-          newState.fightHealCount +=1;
-        }
-      }
-    }
-
-  })
-  
-  stateObj = changeState(stateObj);
-  stateObj = pickOpponentMove(stateObj);
-  return stateObj
-}
-
-
-function targetThisMonster(stateObj, monsterIndex) {
-  let toChangeState = immer.produce(stateObj, (newState) => {
-    newState.targetedMonster = monsterIndex;
-  })
-
-  changeState(toChangeState);
-}
 
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -1173,16 +859,264 @@ function renderTown(stateObj) {
   townDiv.append(townShopDiv, townRemoveDiv, townUpgradeDiv, townGymDiv, mysteryDiv);
   document.getElementById("app").append(townDiv);
 
-  //     <div id="TownDecrease" class="town-div">
-  //       <img src="img/wizardshop.png" class="bg-image"></img>
-  //       <h3 id="decreaseText" class="fight-text">Increase Card Block</h3> 
-  //     </div>
-  // </div>
-  // `;
 
 }
 
+// ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== 
+// ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== 
+// ====== ====== ====== ====== ====== Encounter Logic Functions ====== ====== ====== ====== ====== ====== 
+// ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== 
+// ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ======
 
+function resetAfterFight(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerMonster.strength -= newState.playerMonster.tempStrength;
+    newState.playerMonster.dex -= newState.playerMonster.tempDex;
+    newState.playerMonster.tempStrength = 0;
+    newState.playerMonster.tempDex = 0;
+    newState.playerMonster.strength -= newState.playerMonster.fightStrength;
+    newState.playerMonster.dex -= newState.playerMonster.fightDex;
+    newState.playerMonster.fightStrength = 0;
+    newState.playerMonster.fightDex = 0;
+    newState.playerMonster.encounterBlock = 0;
+
+    newState.fightHealCount = 0;
+    newState.fightHealTotal = 0;
+    newState.fightSelfDamageCount = 0;
+    newState.fightSelfDamageTotal = 0;
+    newState.fightEnergyDrainCount = 0;
+    newState.fightEnergyDrainTotal = 0;
+    newState.enemyFightHealTotal = 0;
+    newState.gainLifePerCard = 0;
+    newState.selfDamageAttack = 0;
+    newState.selfDamageBlock = 0;
+    newState.cardsPerTurn = 0;
+    newState.comboPerTurn = 0;
+
+    newState.gold += gyms[newState.gymCount][newState.gymFightCount].goldReward
+    
+    console.log("gym count is " + newState.gymCount);
+    if (gyms[newState.gymCount][newState.gymFightCount].boss && newState.gymCount === 2) {
+      newState.status = Status.VictoryScreen;
+    } else if (gyms[newState.gymCount][newState.gymFightCount].boss) {
+      newState.gymFightCount = 0;
+      newState.gymCount += 1;
+      newState.playerMonster.maxHP += 10
+      console.log("gincreasing gym count to " + newState.gymCount);
+      newState.eventUsed = false; 
+      newState.townEventChosen = false;
+      newState.availableCardPoolForShop = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
+      newState.status = Status.EncounterRewards;
+
+      if (newState.townFreeHealUsed === false) {
+        newState.gold += 30;
+      }
+      console.log("current use of free heal in fight reset should be true " + newState.townFreeHealUsed)
+      newState.townFreeHealUsed = false;
+      console.log("current use of free heal in fight reset should be false " + newState.townFreeHealUsed)
+    } else {
+      newState.gymFightCount += 1;
+      newState.status = Status.EncounterRewards;
+    }
+  })
+
+  return stateObj;
+}
+
+function handleDeaths(stateObj) {
+  let shouldUpgrade = false;
+  if (stateObj.opponentMonster) {
+    stateObj = immer.produce(stateObj, (newState) => {
+      let indexesToDelete = [];
+      newState.opponentMonster.forEach(function (monster, index) {
+        if (monster.currentHP <= 0) {
+          console.log("opponent monster at index " + index + " has died.")
+          indexesToDelete.push(index);
+          newState.targetedMonster = 0;
+        }
+      });
+      indexesToDelete.reverse()
+      for (let i = 0; i < indexesToDelete.length; i++) {
+        newState.opponentMonster.splice(indexesToDelete[i], 1)
+      }
+
+      if (newState.opponentMonster.length == 0) {
+        console.log("all opponents dead");
+        Object.assign(newState, resetAfterFight(newState))
+      }
+
+      if (newState.playerMonster.currentHP <= 0) {
+        console.log("we deads");
+        newState.status = Status.DeathScreen;
+      }
+    })
+  }
+  return stateObj;
+};
+
+// maybe don’t look at this too closely
+function pause(timeValue) {
+  return new Promise(res => setTimeout(res, timeValue))
+}
+
+function setUpEncounter(stateObj) {
+
+  stateObj = immer.produce(stateObj, (newState) => {
+    console.log("setting up encounter");
+    newState.opponentMonster = gyms[newState.gymCount][newState.gymFightCount].opponents;
+    newState.encounterHand = [];
+    newState.encounterDiscard = [];
+    newState.enemyFightHealTotal = 0;
+    newState.fightHealCount = 0;
+    newState.fightHealTotal = 0;
+    newState.fightSelfDamageCount = 0;
+    newState.fightSelfDamageTotal = 0;
+    newState.selfDamageAttack = 0;
+    newState.selfDamageBlock = 0;
+    newState.fightEnergyDrainCount = 0;
+    newState.fightEnergyDrainTotal = 0;
+    newState.gainLifePerCard = 0;
+    newState.comboPerTurn = 0;
+    
+    newState.cardsPerTurn = 0;
+    if (!stateObj.playerDeck) {
+      console.log("player has no playerDeck")
+      newState.playerDeck = [...stateObj.playerMonster.startingDeck];
+      newState.encounterDeck = [...stateObj.playerMonster.startingDeck];
+      newState.encounterDraw = [...stateObj.playerMonster.startingDeck];
+    } else {
+      console.log("player had playerDeck")
+      newState.encounterDeck = [...stateObj.playerDeck];
+      newState.encounterDraw = [...stateObj.playerDeck];
+    }
+    newState.targetedMonster = 0;
+    newState.playerMonster.encounterEnergy = newState.playerMonster.turnEnergy;
+  });
+
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerMonster.tempStrength = 0;
+    newState.playerMonster.tempDex = 0;
+    newState.playerMonster.encounterBlock = 0;
+    newState.opponentMonster.forEach(function (monster, index) {
+      newState.opponentMonster[index].encounterEnergy = 0;
+      newState.opponentMonster[index].encounterBlock = 0;
+      newState.opponentMonster[index].maxHP += (newState.gymCount*60);
+      newState.opponentMonster[index].currentHP += (newState.gymCount*60);
+      newState.opponentMonster[index].baseDamage += (newState.gymCount*10);
+      newState.opponentMonster[index].baseBlock += (newState.gymCount*10);
+      newState.opponentMonster[index].baseHeal += (newState.gymCount*10);
+      newState.opponentMonster[index].baseScale += (newState.gymCount*1);
+
+      newState.status = Status.InEncounter
+    })
+  })
+  return stateObj;
+};
+
+//REWEITE FOR IMMER>PRODUCE
+function shuffleDiscardIntoDeck(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.encounterDraw = [...newState.encounterDiscard];
+    newState.encounterDiscard = [];
+    newState.encounterDraw = shuffleArray(newState.encounterDraw);
+  })
+  
+  return stateObj;
+}
+
+
+
+
+function drawACard(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    console.log(stateObj.encounterHand.length);
+    const handLength = newState.encounterHand.length;
+    if (handLength > 7 ) {
+      console.log("hand is full");
+      return newState;
+    }
+
+    // if deck is empty, shuffle discard and change newState to reflect that
+    if (newState.encounterDraw.length === 0) {
+      Object.assign(newState, shuffleDiscardIntoDeck(newState));
+      //console.log("shuffling");
+    }
+
+    let topCard = newState.encounterDraw.shift();
+    if (!topCard) {
+      console.log("all cards are in play");
+      return newState;
+    }
+
+    newState.encounterHand.push(topCard);
+  })
+  return stateObj;
+}
+
+function drawAHand(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    for (let i = 0; i < 6; i++) {
+      if (
+        newState.encounterDraw.length !== 0 ||
+        newState.encounterDiscard.length !== 0
+      ) {
+        Object.assign(newState, drawACard(newState));
+      }
+    }
+  });
+  return stateObj;
+}
+
+function upgradeCard(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.encounterHand[0].upgrades +=1;
+  });
+  return stateObj;
+}
+
+async function playACard(stateObj, cardIndexInHand, arrayObj) {
+  console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
+  stateObj = stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.cardsPerTurn += 1;
+    if (stateObj.encounterHand[cardIndexInHand].exhaust == true) {
+      console.log("you exhausted " + stateObj.encounterHand[cardIndexInHand].name);
+      newState.encounterHand.splice(cardIndexInHand, 1);
+    } else {
+      newState.encounterDiscard.push(stateObj.encounterHand[cardIndexInHand]);
+      newState.encounterHand.splice(cardIndexInHand, 1);
+    }
+    //trigger if life gain
+    if (newState.gainLifePerCard > 0) {
+      //trigger if player is not at full health
+      if (newState.playerMonster.currentHP < newState.playerMonster.maxHP) {
+        //if the lifegain is less than total HP loss, do heal to full, otherwise, heal per card
+        if (newState.playerMonster.maxHP-newState.playerMonster.currentHP > 0 && newState.playerMonster.maxHP-newState.playerMonster.currentHP < newState.gainLifePerCard) {
+          newState.fightHealTotal += newState.playerMonster.maxHP-newState.playerMonster.currentHP;
+          newState.playerMonster.currentHP = newState.playerMonster.maxHP;
+          newState.fightHealCount +=1;
+        } else if (newState.playerMonster.maxHP-newState.playerMonster.currentHP >= newState.gainLifePerCard) {
+          newState.fightHealTotal += newState.gainLifePerCard;
+          newState.playerMonster.currentHP += newState.gainLifePerCard;
+          newState.fightHealCount +=1;
+        }
+      }
+    }
+
+  })
+  
+  stateObj = changeState(stateObj);
+  stateObj = pickOpponentMove(stateObj);
+  return stateObj
+}
+
+function targetThisMonster(stateObj, monsterIndex) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.targetedMonster = monsterIndex;
+  })
+  changeState(stateObj);
+  return stateObj;
+}
 
 // ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== 
 // ====== ====== ====== ====== ====== RENDERING CARDS AND CARD PILES ====== ====== ====== ====== ====== ====== 
@@ -1218,8 +1152,6 @@ function topRowDiv(stateObj, divName) {
   } else {
     statusText.textContent = stateObj.status;
   }
-
-  
   
   statusTextDiv.append(statusText);
   topRowDiv.append(statusTextDiv);
@@ -1266,9 +1198,7 @@ function divContainer(divName, newDivName=false) {
   }
   removeDiv.classList.add("remove-div")
   removeDiv.classList.add("screen-inner-div")
-
   document.getElementById(divName).append(removeDiv);
-
   return removeDiv
 }
 
@@ -1371,8 +1301,6 @@ function renderChooseCardReward(stateObj) {
   skipToTownButton(stateObj, "I choose not to add any of these cards to my deck (+5 gold)", ".remove-div", cardSkip=true);
 };
 
-
-
 function renderShop(stateObj) {
   if (stateObj.availableCardPoolForShop === false) {
     stateObj = immer.produce(stateObj, (newState) => {
@@ -1461,8 +1389,8 @@ function renderLevelUp(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app", "level-up-div");
 
-  let strengthDiv = renderTownDiv(stateObj, "increaseStrength", "img/forge.PNG", "+5 permanent Strength", true, increaseStrengthEvent, Status.InTown, altText=false);
-  let DexDiv = renderTownDiv(stateObj, "increaseDex", "img/forge.PNG", "+5 permanent Dexterity", true, increaseDexEvent, Status.InTown, altText=false);
+  let strengthDiv = renderTownDiv(stateObj, "increaseStrength", "img/forge.PNG", "+10 permanent Strength", true, increaseStrengthEvent, Status.InTown, altText=false);
+  let DexDiv = renderTownDiv(stateObj, "increaseDex", "img/forge.PNG", "+10 permanent Dexterity", true, increaseDexEvent, Status.InTown, altText=false);
   let energyDiv = renderTownDiv(stateObj, "increaseEnergy", "img/forge.PNG", "+1 energy per turn", true, increaseEnergyEvent, Status.InTown, altText=false);
   
   document.getElementById("level-up-div").append(strengthDiv, DexDiv, energyDiv);
@@ -2052,7 +1980,7 @@ function endTurnIncrement(stateObj) {
       };
 
       if (monsterObj.poison > 0) {
-        monsterObj.currentHP -= (monsterObj.poison*5)
+        monsterObj.currentHP -= (monsterObj.poison*10)
       }
     })
     newState.turnDouble = false;

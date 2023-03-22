@@ -412,9 +412,9 @@ let opponentMonsters = {
         hunted: 0,
         poison: 0,
         baseBlock: 0,
-        baseDamage: 10,
+        baseDamage: 20,
         baseScale: 0,
-        baseHeal: 10,
+        baseHeal: 20,
         avatar: "img/earthevil.png",
         moves: [
           {
@@ -595,7 +595,7 @@ let opponentMonsters = {
     hunted: 0,
     poison: 0,
     baseBlock: 0,
-    baseDamage: 4,
+    baseDamage: 20,
     baseScale: 2,
     baseHeal: 0,
     avatar: "img/firebaby.png",
@@ -604,7 +604,7 @@ let opponentMonsters = {
         name: "Whirling Dervish",
         cost: "0",
         text: (state, index, array) => {
-            return `Deal ${array[index].baseDamage + array[index].strength} damage 5 times. Gain ${array[index].baseScale} strength`
+            return `Deal ${(array[index].baseDamage/4) + array[index].strength} damage 5 times. Gain ${array[index].baseScale} strength`
         },
         minReq: 0,
         action: (state, index, array) => {
