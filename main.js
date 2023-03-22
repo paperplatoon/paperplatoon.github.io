@@ -364,7 +364,7 @@ function paidRemoval(stateObj, index) {
 function increaseStrengthEvent(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.eventUsed = true;
-    newState.playerMonster.strength += 10;
+    newState.playerMonster.strength += 2;
     newState.status = Status.InTown
   })
   changeState(stateObj);
@@ -374,7 +374,7 @@ function increaseStrengthEvent(stateObj) {
 function increaseDexEvent(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.eventUsed = true;
-    newState.playerMonster.dex += 10;
+    newState.playerMonster.dex += 2;
     newState.status = Status.InTown
   })
   changeState(stateObj);
@@ -476,7 +476,7 @@ function decreaseCardCost(stateObj, index, array) {
 
 function increaseCardBlock(stateObj, index, array) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerDeck[index].baseBlock += 20;
+    newState.playerDeck[index].baseBlock += 7;
     newState.eventUsed = true;
     newState.status = Status.InTown;
   })
@@ -486,7 +486,7 @@ function increaseCardBlock(stateObj, index, array) {
 
 function increaseCardAttack(stateObj, index, array) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerDeck[index].baseDamage += 20;
+    newState.playerDeck[index].baseDamage += 6;
     newState.eventUsed = true;
     newState.status = Status.InTown;
   })
@@ -1389,8 +1389,8 @@ function renderLevelUp(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app", "level-up-div");
 
-  let strengthDiv = renderTownDiv(stateObj, "increaseStrength", "img/forge.PNG", "+10 permanent Strength", true, increaseStrengthEvent, Status.InTown, altText=false);
-  let DexDiv = renderTownDiv(stateObj, "increaseDex", "img/forge.PNG", "+10 permanent Dexterity", true, increaseDexEvent, Status.InTown, altText=false);
+  let strengthDiv = renderTownDiv(stateObj, "increaseStrength", "img/forge.PNG", "+2 permanent Strength", true, increaseStrengthEvent, Status.InTown, altText=false);
+  let DexDiv = renderTownDiv(stateObj, "increaseDex", "img/forge.PNG", "+2 permanent Dexterity", true, increaseDexEvent, Status.InTown, altText=false);
   let energyDiv = renderTownDiv(stateObj, "increaseEnergy", "img/forge.PNG", "+1 energy per turn", true, increaseEnergyEvent, Status.InTown, altText=false);
   
   document.getElementById("level-up-div").append(strengthDiv, DexDiv, energyDiv);
@@ -1980,7 +1980,7 @@ function endTurnIncrement(stateObj) {
       };
 
       if (monsterObj.poison > 0) {
-        monsterObj.currentHP -= (monsterObj.poison*10)
+        monsterObj.currentHP -= (monsterObj.poison*3)
       }
     })
     newState.turnDouble = false;
