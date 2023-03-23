@@ -82,15 +82,14 @@ let playerMonsters = {
       startingDeck: [
         //1 energy
         fireCardPool.fireEnergy,
-        fireCardPool.fireBlockEnergy,
         //5 block
         fireCardPool.puffofsmoke,
-        fireCardPool.skipaway,
+        fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
         // 5 attack
-        fireCardPool.retreatingslash,
+        fireCardPool.tackle,
         fireCardPool.pirouettespin,
         fireCardPool.precisionstrike,
         fireCardPool.tackle,
