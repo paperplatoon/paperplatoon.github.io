@@ -791,7 +791,7 @@ button:hover {
 .map-square {
   height: 15vh;
   width: 15vw;
-  background-color: green;
+  border: 1px solid green;
   margin: 2vmax;
   text-align: center;
   line-height: 15vh;
@@ -819,3 +819,10 @@ button:hover {
   background-color: red;
 }
 
+#shop-div .playable:hover {
+  box-shadow: 0 0 35px rgb(221, 249, 8); 
+}
+
+.non-buyable-card {
+  color: red;
+}
