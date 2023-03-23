@@ -1938,7 +1938,7 @@ let fireCardPool = {
       cardType: "fireEnergy",
       elementType: "fire",
       action: (stateObj, index, array) => {
-        let stateObj = immer.produce(state, (newState) => {
+        stateObj = immer.produce(state, (newState) => {
           newState.playerMonster.encounterEnergy += (1 + array[index].upgrades);
         })
         stateObj = addBackstepsToHand(stateObj, (1 + array[index].upgrades))
