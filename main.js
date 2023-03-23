@@ -1105,8 +1105,9 @@ async function playACard(stateObj, cardIndexInHand, arrayObj) {
 
   })
   
-  stateObj = changeState(stateObj);
+  
   stateObj = pickOpponentMove(stateObj);
+  stateObj = changeState(stateObj);
   return stateObj
 }
 

@@ -21,7 +21,7 @@ let playerMonsters = {
         specialCardPool.pickoff,
         specialCardPool.testkill,
         fireCardPool.combofinisher,
-        fireCardPool.brand
+        fireCardPool.essencedrain
       ],
     },
   
