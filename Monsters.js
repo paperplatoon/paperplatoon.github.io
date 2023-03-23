@@ -616,7 +616,7 @@ let opponentMonsters = {
         minReq: 0,
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
-            let tempState = dealPlayerDamage(newState, array[index].baseDamage, index, 4);
+            let tempState = dealPlayerDamage(newState, Math.floor(array[index].baseDamage/4), index, 4);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
             newState.opponentMonster[index].strength += array[index].baseScale;
@@ -649,7 +649,7 @@ let opponentMonsters = {
         name: "Roll Up",
         cost: "0",
         text: (state, index, array) => {
-          return `Deal ${array[index].baseDamage + array[index].strength} damage. Gain ${array[index].baseScale*10} strength. +3 energy`
+          return `Deal ${array[index].baseDamage + array[index].strength} damage. Gain ${array[index].baseScale*5} strength. +3 energy`
         },
         minReq: 0,
         action: (state, index, array) => {
@@ -657,7 +657,7 @@ let opponentMonsters = {
             let tempState = dealPlayerDamage(newState, array[index].baseDamage, index);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].strength += array[index].baseScale*10;
+            newState.opponentMonster[index].strength += array[index].baseScale*5;
             newState.opponentMonster[index].encounterEnergy += 3;
           })
           return toChangeState;

@@ -149,9 +149,9 @@ let fireCardPool = {
     rareExplode: {
       cardID: 6,
       name: "Erupt",
-      text: (state, index, array) => {
+      text: (stateObj, index, array) => {
         let damageValue = (array[index].baseDamage + state.playerMonster.strength + (5 * array[index].upgrades));
-        let hitsValue = newState.playerMonster.encounterEnergy+array[index].baseHits;
+        let hitsValue = stateObj.playerMonster.encounterEnergy+array[index].baseHits;
         return `Deal ${damageValue} damage ${hitsValue} times.`
       },
       minReq: 0,
@@ -1747,7 +1747,7 @@ let fireCardPool = {
       cost:  (state, index, array) => {
         return array[index].baseCost;
       },
-      baseBlock: 5,
+      baseBlock: 6,
       cardType: "ability",
       elementType: "fire",
       action: (stateObj, index, array) => {
@@ -1922,6 +1922,27 @@ let fireCardPool = {
             }
             newState.playerMonster.encounterEnergy -= array[index].baseCost;
           })
+        return stateObj;
+      }
+    },
+
+    fireBlockEnergy: {
+      cardID: 61,
+      name: "",
+      text: (state, index, array) => {
+        return `Gain ${1 + array[index].upgrades} energy. Gain ${1 + array[index].upgrades} backstep`
+      },
+      minReq: -99,
+      cost: "energy",
+      upgrades: 0,
+      cardType: "fireEnergy",
+      elementType: "fire",
+      action: (stateObj, index, array) => {
+        let stateObj = immer.produce(state, (newState) => {
+          newState.playerMonster.encounterEnergy += (1 + array[index].upgrades);
+        })
+        stateObj = addBackstepsToHand(stateObj, (1 + array[index].upgrades))
+
         return stateObj;
       }
     },

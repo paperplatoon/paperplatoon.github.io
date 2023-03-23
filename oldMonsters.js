@@ -42,21 +42,22 @@ let playerMonsters = {
       turnEnergy: 3,
       avatar: "img/flamingbaby.png",
       startingDeck: [
-        //1 energy
+        //2 energy
         fireCardPool.fireEnergy,
-        //3 special
-        fireCardPool.followupslap,
         fireCardPool.gainstrength,
+        //5 attack
+        fireCardPool.tackle,
+        fireCardPool.tackle,
+        fireCardPool.tackle,
+        fireCardPool.followupslap,
         fireCardPool.kindle,
-        //8 starter
+        //5 block
+        fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,   
-        fireCardPool.tackle,
-        fireCardPool.tackle,
-        fireCardPool.tackle,
-        fireCardPool.tackle
+        
 
       ],
     },
@@ -78,15 +79,16 @@ let playerMonsters = {
       turnEnergy: 3,
       avatar: "img/adorablefire.png",
       startingDeck: [
+        //1 energy
         fireCardPool.fireEnergy,
-        fireCardPool.sunlight,
-        //
+        fireCardPool.fireBlockEnergy,
+        //5 block
         fireCardPool.puffofsmoke,
         fireCardPool.skipaway,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,
-        //
+        // 5 attack
         fireCardPool.retreatingslash,
         fireCardPool.pirouettespin,
         fireCardPool.precisionstrike,

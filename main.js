@@ -1,6 +1,5 @@
 
 
-//fixed addBackstepstoHand bceause the card isn't discarded yet
 
 
 
@@ -1002,9 +1001,9 @@ function setUpEncounter(stateObj) {
       newState.opponentMonster[index].encounterBlock = 0;
       newState.opponentMonster[index].maxHP += (newState.gymCount*20);
       newState.opponentMonster[index].currentHP += (newState.gymCount*20);
-      newState.opponentMonster[index].baseDamage += (newState.gymCount*5);
-      newState.opponentMonster[index].baseBlock += (newState.gymCount*5);
-      newState.opponentMonster[index].baseHeal += (newState.gymCount*5);
+      newState.opponentMonster[index].baseDamage += (newState.gymCount*4);
+      newState.opponentMonster[index].baseBlock += (newState.gymCount*4);
+      newState.opponentMonster[index].baseHeal += (newState.gymCount*4);
       newState.opponentMonster[index].baseScale += (newState.gymCount*1);
 
       newState.status = Status.InEncounter
