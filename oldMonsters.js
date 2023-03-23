@@ -18,10 +18,11 @@ let playerMonsters = {
       startingDeck: [
         fireCardPool.setaflame,
         fireCardPool.darkknowledge,
-        specialCardPool.pickoff,
+        fireCardPool.withdraw,
         specialCardPool.testkill,
-        fireCardPool.combofinisher,
-        fireCardPool.essencedrain
+        fireCardPool.expertsforge,
+        fireCardPool.expertsforge,
+        fireCardPool.tackle
       ],
     },
   

@@ -1453,12 +1453,15 @@ let fireCardPool = {
           newState.playerMonster.encounterEnergy -= array[index].baseCost-array[index].upgrades;
           newState.encounterHand.forEach(function (cardObj) {
             cardObj["upgrades"] +=1;
+            console.log(cardObj["upgrades"])
           });
-          newState.encounterDeck.forEach(function (cardObj) {
+          newState.encounterDraw.forEach(function (cardObj) {
             cardObj["upgrades"] +=1;
+            console.log(cardObj["upgrades"])
           });
           newState.encounterDiscard.forEach(function (cardObj) {
             cardObj["upgrades"] +=1;
+            console.log(cardObj["upgrades"])
           });
 
         })
@@ -1493,7 +1496,6 @@ let fireCardPool = {
     },
 
     rewindtime: {
-      rare: true,
       exhaust: true,
       cardID: 49,
       name: "Rewind Time",
@@ -1666,7 +1668,7 @@ let fireCardPool = {
       elementType: "fire",
       action: (stateObj, index, array) => {
         let cardDamage = array[index].baseDamage + (array[index].upgrades*3)
-        cardDamage = ((stateObj.comboPerTurn+1) % 3 === 0) ? cardDamage*2 : cardDamage;
+        cardDamage = ((stateObj.comboPerTurn+1) % 3 === 0) ? ((cardDamage*2)+stateObj.playerMonster.strength) : cardDamage;
         stateObj = immer.produce(stateObj, (newState) => {  
           let tempState = dealOpponentDamage(newState, cardDamage, array[index].baseHits);
           newState.playerMonster.encounterEnergy -= array[index].baseCost;

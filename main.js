@@ -1569,13 +1569,13 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
         } else if (goldCost === "increaseblock") {
           cardDiv.classList.add("card-change-text");
           let altUpgradeText =  document.createElement("P");
-          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseBlock", 10)
+          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseBlock", 7)
           altUpgradeText.classList.add("alt-card-text");
           cardDiv.append(altUpgradeText);
         } else if (goldCost === "increaseattack") {
           cardDiv.classList.add("card-change-text");
           let altUpgradeText =  document.createElement("P");
-          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseDamage", 10)
+          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseDamage", 6)
           altUpgradeText.classList.add("alt-card-text");
           cardDiv.append(altUpgradeText);
         } else if (goldCost === "doubleattack") {

@@ -4,7 +4,7 @@
 let opponentBaseDamage = 5;
 let opponentBaseBlock = 5;
 let opponentBaseHeal = 5;
-let opponentBaseScale = 1;
+let opponentBaseScale = 3;
 let opponentMaxHP = 5;
 
 let opponentMonsters = {
@@ -138,7 +138,7 @@ let opponentMonsters = {
     poison: 0,
     baseBlock: opponentBaseBlock,
     baseDamage: opponentBaseDamage,
-    baseScale: 1,
+    baseScale: opponentBaseScale,
     baseHeal: 0,
     avatar: "img/dracula.png",
     moves: [
@@ -161,7 +161,7 @@ let opponentMonsters = {
         name: "Shield Throw",
         cost: "1",
         text: (state, index, array) => {
-          return `Deal ${(array[index].baseDamage*2) + array[index].dex + array[index].strength} damage. Gain ${array[index].baseScale*5} dexterity. -1 energy`
+          return `Deal ${(array[index].baseDamage*2) + array[index].dex + array[index].strength} damage. Gain ${array[index].baseScale*2} dexterity. -1 energy`
         },
         minReq: 1,
         action: (state, index, array) => {
@@ -170,7 +170,7 @@ let opponentMonsters = {
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
             newState.opponentMonster[index].encounterEnergy -= 1;
-            newState.opponentMonster[index].dex += array[index].baseScale*5;
+            newState.opponentMonster[index].dex += array[index].baseScale*2;
           })
           return toChangeState;
         }
@@ -192,7 +192,7 @@ let opponentMonsters = {
     hunted: 0,
     poison: 0,
     baseDamage: opponentBaseDamage,
-    baseScale: 2,
+    baseScale: opponentBaseScale,
     baseBlock: opponentBaseBlock,
     baseHeal: 0,
     avatar: "img/hugeair.png",
@@ -208,7 +208,7 @@ let opponentMonsters = {
           if (state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name)) {
             damageValue += (Math.floor((array[index].baseBlock/2)) + state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex)
           }
-          return `Deal ${damageValue + array[index].strength} damage. Other monsters gain ${array[index].baseScale*5} dexterity. +1 energy`
+          return `Deal ${damageValue + array[index].strength} damage. Other monsters gain ${array[index].baseScale} dexterity. +1 energy`
         },
 
         minReq: 0,
@@ -227,10 +227,10 @@ let opponentMonsters = {
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
 
             if (newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name)) {
-              newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name).dex += array[index].baseScale*5;
+              newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name).dex += array[index].baseScale;
             }
             if (newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name)) {
-              newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex += array[index].baseScale*5;
+              newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex += array[index].baseScale;
             }
 
             newState.opponentMonster[index].encounterEnergy += 1;
@@ -548,7 +548,7 @@ let opponentMonsters = {
     poison: 0,
     baseBlock: opponentBaseBlock,
     baseDamage: opponentBaseDamage,
-    baseScale: 2,
+    baseScale: opponentBaseScale,
     baseHeal: 0,
     avatar: "img/firesheep.png",
     moves: [
@@ -611,7 +611,7 @@ let opponentMonsters = {
         name: "Whirling Dervish",
         cost: "0",
         text: (state, index, array) => {
-            return `Deal ${Math.floor(array[index].baseDamage/4) + array[index].strength} damage 4 times. Gain ${array[index].baseScale/2} strength`
+            return `Deal ${Math.floor(array[index].baseDamage/4) + array[index].strength} damage 4 times. Gain ${array[index].baseScale/3} strength`
         },
         minReq: 0,
         action: (state, index, array) => {
@@ -619,7 +619,7 @@ let opponentMonsters = {
             let tempState = dealPlayerDamage(newState, Math.floor(array[index].baseDamage/4), index, 4);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].strength += array[index].baseScale;
+            newState.opponentMonster[index].strength += (array[index].baseScale/3);
           })
           return toChangeState;
         }
@@ -649,7 +649,7 @@ let opponentMonsters = {
         name: "Roll Up",
         cost: "0",
         text: (state, index, array) => {
-          return `Deal ${array[index].baseDamage + array[index].strength} damage. Gain ${array[index].baseScale*5} strength. +3 energy`
+          return `Deal ${array[index].baseDamage + array[index].strength} damage. Gain ${array[index].baseScale*2} strength. +3 energy`
         },
         minReq: 0,
         action: (state, index, array) => {
