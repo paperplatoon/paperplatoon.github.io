@@ -787,3 +787,23 @@ button:hover {
   background: linear-gradient(90deg, rgb(47, 109, 150),rgb(43, 69, 108), rgb(43, 77, 88), rgb(12, 8, 87));
   color: white;
 }
+
+.map-square {
+  height: 20vh;
+  width: 15vw;
+  background-color: green;
+  margin: 2vmax;
+  text-align: center;
+  line-height: 20vh;
+}
+
+.hidden-square {
+  visibility: hidden;
+}
+
+.map-div {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: 80vh;
+}

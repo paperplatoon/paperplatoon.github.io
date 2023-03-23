@@ -16,6 +16,14 @@
 //MANA - css images, add to cards, add costs to moves
 //add css backgrounds to moves and cards based on what their type is?
 
+//9 total
+//Event - 2 per town
+//fight - 4 per town
+//heal shop - 1 per town
+//free heal - 1 per town
+//card shop - 1 per town
+
+
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -26,6 +34,7 @@ const Status = {
   ChoosingMonster: "Choose a monster",
   UpgradingCards: "Choose any card from your deck to upgrade",
   EncounterRewards: "Choose a card to add to your deck",
+  OverworldMap: "choose where to go next",
   InEncounter: "in encounter",
   WonEncounter: "won encounter",
   RemovingCards: "choose a card to remove from your deck",
@@ -75,8 +84,65 @@ let gameStartState = {
   gainLifePerCard: 0,
   townEventChosen: false,
   townFreeHealUsed: false,
-  availableCardPoolForShop: false
+  availableCardPoolForShop: false,
+  townMapSquares: [
+    ["X", 0, "X"],
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+    ["X", 0, "X"]
+  ]
 };
+
+let mapFillArray = ["Event", "Event", "Fight", "Fight", "Fight", "Fight", "Healer", "Shop", "Healer"]
+
+function renderMapScreen(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  let mapDiv = document.createElement("Div");
+  mapDiv.classList.add("map-div");
+  let newMapFillArray = fisherYatesShuffle(mapFillArray);
+  //container div
+  
+
+  //render each map square  
+  stateObj.townMapSquares.forEach(function (mapSquareRow, mapRowIndex) {
+    if (mapRowIndex === 0) {
+      console.log("creating first row")
+      let mapStart1 = createMapSquareDiv(stateObj, ["hidden-square"])
+      let mapStart2 = createMapSquareDiv(stateObj, ["start-point"])
+      mapStart2.textContent = "Start";
+      let mapStart3 = createMapSquareDiv(stateObj, ["hidden-square"])
+      mapDiv.append(mapStart1, mapStart2, mapStart3);
+    } else if (mapRowIndex === 4) {
+      let mapEnd1 = createMapSquareDiv(stateObj, ["hidden-square"])
+      let mapEnd2 = createMapSquareDiv(stateObj, ["end-point"])
+      mapEnd2.textContent = "End";
+      let mapEnd3 = createMapSquareDiv(stateObj, ["hidden-square"])
+      mapDiv.append(mapEnd1, mapEnd2, mapEnd3);
+    } else {
+      mapSquareRow.forEach(function (mapSquare, mapSquareIndex) {
+        let newMapDiv = createMapSquareDiv(stateObj, [newMapFillArray[mapRowIndex*mapSquareIndex]])
+        mapDiv.append(newMapDiv);
+      })
+    }
+    document.getElementById("app").append(mapDiv);
+  })
+}
+
+//need to add in some logic to determine if the div is clickable
+//add in some logic where, if the equivalent value in state = "here", then show player as there
+function createMapSquareDiv(stateObj, classesToAdd) {
+  let mapSquareDiv = document.createElement("Div");
+  mapSquareDiv.classList.add("map-square");
+  mapSquareDiv.textContent = classesToAdd[0];
+  classesToAdd.forEach(function (myClass, classIndex) {
+    mapSquareDiv.classList.add(myClass);
+  }) 
+
+  return mapSquareDiv;
+}
+
 
 playerMonsterArray = Object.values(playerMonsters);
 opponentMonsterArray = Object.values(opponentMonsters);
@@ -230,7 +296,7 @@ function chooseThisMonster(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster = potentialMonsterChoices[index];
     newState.playerDeck = potentialMonsterChoices[index].startingDeck;
-    newState.status = Status.InTown;
+    newState.status = Status.OverworldMap;
 
   })
   changeState(stateObj);
@@ -1810,6 +1876,9 @@ function renderOpponents(stateObj) {
 function renderScreen(stateObj) {
   if (!stateObj.playerMonster) {
     renderChooseMonster(stateObj);
+  } else if (stateObj.status == Status.OverworldMap) {
+    renderMapScreen(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.EncounterRewards) {
     renderChooseCardReward(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
