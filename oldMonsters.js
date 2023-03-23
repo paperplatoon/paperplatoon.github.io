@@ -50,8 +50,8 @@ let playerMonsters = {
         fireCardPool.tackle,
         fireCardPool.tackle,
         fireCardPool.tackle,
+        fireCardPool.tackle,
         fireCardPool.followupslap,
-        fireCardPool.kindle,
         //5 block
         fireCardPool.withdraw,
         fireCardPool.withdraw,

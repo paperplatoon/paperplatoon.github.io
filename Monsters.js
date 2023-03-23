@@ -16,7 +16,7 @@ let opponentMonsters = {
     opponentMoveIndex: false,
     currentHP: opponentMaxHP*7,
     strength: 0,
-    dex: 15,
+    dex: 2,
     drown: 0,
     hunted: 0,
     poison: 0,
@@ -75,7 +75,7 @@ let opponentMonsters = {
     opponentMoveIndex: false,
     currentHP: opponentMaxHP*6,
     strength: 0,
-    dex: 10,
+    dex: 1,
     drown: 0,
     hunted: 0,
     poison: 0,
@@ -208,7 +208,7 @@ let opponentMonsters = {
           if (state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name)) {
             damageValue += (Math.floor((array[index].baseBlock/2)) + state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex)
           }
-          return `Deal ${damageValue + array[index].strength} damage. Other monsters gain ${array[index].baseScale} dexterity. +1 energy`
+          return `Deal ${damageValue + array[index].strength} damage. Other monsters gain ${Math.floor(array[index].baseScale/2)} dexterity. +2 energy`
         },
 
         minReq: 0,
@@ -227,13 +227,13 @@ let opponentMonsters = {
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
 
             if (newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name)) {
-              newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name).dex += array[index].baseScale;
+              newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name).dex += Math.floor(array[index].baseScale/2);
             }
             if (newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name)) {
-              newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex += array[index].baseScale;
+              newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex += Math.floor(array[index].baseScale/2);
             }
 
-            newState.opponentMonster[index].encounterEnergy += 1;
+            newState.opponentMonster[index].encounterEnergy += 2;
           })
 
 
@@ -244,11 +244,11 @@ let opponentMonsters = {
 
       {
         name: "Rear Up",
-        cost: "5",
+        cost: "7",
         text: (state, index, array) => {
-          return `Deal ${(array[index].baseDamage * 5) + array[index].strength} damage. -1 energy`
+          return `Deal ${(array[index].baseDamage * 5) + array[index].strength} damage. -2 energy`
         },
-        minReq: 5,
+        minReq: 7,
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             let tempState = dealPlayerDamage(newState, (array[index].baseDamage*5), index);
@@ -611,7 +611,7 @@ let opponentMonsters = {
         name: "Whirling Dervish",
         cost: "0",
         text: (state, index, array) => {
-            return `Deal ${Math.floor(array[index].baseDamage/4) + array[index].strength} damage 4 times. Gain ${array[index].baseScale/3} strength`
+            return `Deal ${Math.floor(array[index].baseDamage/4) + array[index].strength} damage 4 times. Gain ${Math.floor(array[index].baseScale/3)} strength`
         },
         minReq: 0,
         action: (state, index, array) => {
@@ -619,7 +619,7 @@ let opponentMonsters = {
             let tempState = dealPlayerDamage(newState, Math.floor(array[index].baseDamage/4), index, 4);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].strength += (array[index].baseScale/3);
+            newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
           })
           return toChangeState;
         }
@@ -657,7 +657,7 @@ let opponentMonsters = {
             let tempState = dealPlayerDamage(newState, array[index].baseDamage, index);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].strength += array[index].baseScale*5;
+            newState.opponentMonster[index].strength += array[index].baseScale*2;
             newState.opponentMonster[index].encounterEnergy += 3;
           })
           return toChangeState;
