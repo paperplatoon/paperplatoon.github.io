@@ -266,7 +266,7 @@ let opponentMonsters = {
   healgym1: {
     name: "Heal Gym Disciple",
     type: "Air",
-    maxHP: opponentMaxHP*10,
+    maxHP: opponentMaxHP*12,
     encounterEnergy: 0,
     opponentMoveIndex: false,
     currentHP: opponentMaxHP*12,
