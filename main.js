@@ -379,7 +379,7 @@ function skipCards(stateObj, isUsedForEventSkip=false) {
     }
     newState.cardsSkipped += 1;
     newState.gold += 5;
-    newState.status = Status.InTown;
+    newState.status = Status.OverworldMap;
   })
   changeState(stateObj);
   return stateObj;
@@ -400,7 +400,7 @@ function chooseThisCard(stateObj, index, sampledCardPool) {
       newState.eventUsed = true;
     }
 
-    newState.status = Status.InTown;   
+    newState.status = Status.OverworldMap;   
   })
   changeState(stateObj);
   return stateObj;
@@ -1002,6 +1002,8 @@ function resetAfterFight(stateObj) {
     newState.comboPerTurn = 0;
 
     newState.gold += gyms[newState.gymCount][newState.gymFightCount].goldReward
+
+    newState.townMapSquares[newState.playerHere] = "completed";
     
     console.log("gym count is " + newState.gymCount);
     if (gyms[newState.gymCount][newState.gymFightCount].boss && newState.gymCount === 2) {
@@ -1314,7 +1316,7 @@ function skipToTownButton(stateObj, buttonString, divName, cardSkip=false, isEve
   if (!cardSkip) {
     console.log("no cardskip")
     skipButton.addEventListener("click", function () {
-      changeStatus(stateObj, Status.InTown, isEventUsedForSkipButton);
+      changeStatus(stateObj, Status.OverworldMap, isEventUsedForSkipButton);
     });
   } else {
     console.log("yes cardskip and isEventUsed = " + isEventUsedForSkipButton)
