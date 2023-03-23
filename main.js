@@ -85,62 +85,118 @@ let gameStartState = {
   townEventChosen: false,
   townFreeHealUsed: false,
   availableCardPoolForShop: false,
-  townMapSquares: [
-    ["X", 0, "X"],
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0],
-    ["X", 0, "X"]
-  ]
+  townMapSquares: ["hidden", "here", "hidden", 0, 0, 0, 0, 0, 0, 0, 0, 0, "hidden", "end", "hidden"],
+  //townMapSquares: [...Array(15).keys()],
+  playerHere: 1,
+  //townMapSquares: ["hidden", "start", "hidden", "event", "event", "event", "event", "event", "event", "event", "event", "event", "event", "hidden", "end", "hidden"],
+  townMapSet: false,
 };
 
-let mapFillArray = ["Event", "Event", "Fight", "Fight", "Fight", "Fight", "Healer", "Shop", "Healer"]
+//takes a stateObject and fills its map with events
+function fillMapWithArray(stateObj) {
+  let mapFillArray = ["Event", "Event", "Fight", "Fight", "Fight", "Fight", "Healer", "Shop", "Healer"];
+  let shuffledMap = fisherYatesShuffle(mapFillArray);
+
+    //fill the actual map
+    stateObj = immer.produce(stateObj, (newState) => {
+      for (i=0; i <stateObj.townMapSquares.length; i++) {
+        if (i > 2  && i < 12 ) {
+          newState.townMapSquares[i] = shuffledMap[i-3];
+      }
+    }
+    //newState.status = Status.InTown;
+    newState.townMapSet = true;
+    newState.playerHere = 1;
+    newState.status = Status.OverworldMap
+  })
+  // console.log(stateObj.townMapSquares)
+  changeState(stateObj);
+  return stateObj
+}
 
 function renderMapScreen(stateObj) {
+  if (stateObj.townMapSet === false) {
+    stateObj = fillMapWithArray(stateObj);
+  }
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   let mapDiv = document.createElement("Div");
   mapDiv.classList.add("map-div");
-  let newMapFillArray = fisherYatesShuffle(mapFillArray);
-  //container div
-  
-
   //render each map square  
-  stateObj.townMapSquares.forEach(function (mapSquareRow, mapRowIndex) {
-    if (mapRowIndex === 0) {
-      console.log("creating first row")
-      let mapStart1 = createMapSquareDiv(stateObj, ["hidden-square"])
-      let mapStart2 = createMapSquareDiv(stateObj, ["start-point"])
-      mapStart2.textContent = "Start";
-      let mapStart3 = createMapSquareDiv(stateObj, ["hidden-square"])
-      mapDiv.append(mapStart1, mapStart2, mapStart3);
-    } else if (mapRowIndex === 4) {
-      let mapEnd1 = createMapSquareDiv(stateObj, ["hidden-square"])
-      let mapEnd2 = createMapSquareDiv(stateObj, ["end-point"])
-      mapEnd2.textContent = "End";
-      let mapEnd3 = createMapSquareDiv(stateObj, ["hidden-square"])
-      mapDiv.append(mapEnd1, mapEnd2, mapEnd3);
+  stateObj.townMapSquares.forEach(function (mapSquare, squareIndex) {
+    if (mapSquare in [0, 2, 12, 14]) {
+      let mapSquareDiv = createMapSquareDiv(stateObj, squareIndex, [stateObj.townMapSquares[squareIndex]])
+      mapDiv.append(mapSquareDiv);
+    } else if (squareIndex === 1) {
+      let mapSquareDiv = createMapSquareDiv(stateObj, squareIndex, ["Start"])
+      mapDiv.append(mapSquareDiv);
+    } else if (squareIndex === 13) {
+      let mapSquareDiv = createMapSquareDiv(stateObj, squareIndex, ["End"])
+      mapDiv.append(mapSquareDiv);
     } else {
-      mapSquareRow.forEach(function (mapSquare, mapSquareIndex) {
-        let newMapDiv = createMapSquareDiv(stateObj, [newMapFillArray[mapRowIndex*mapSquareIndex]])
-        mapDiv.append(newMapDiv);
-      })
+      let newMapDiv = createMapSquareDiv(stateObj, squareIndex, [stateObj.townMapSquares[squareIndex]])
+      mapDiv.append(newMapDiv);
     }
     document.getElementById("app").append(mapDiv);
   })
 }
 
+
+function isSquareReachable(stateObj, indexOfSquare) {
+  return (
+    ( stateObj.townMapSquares.length >= stateObj.playerHere+3 && indexOfSquare === stateObj.playerHere+3) ||
+    (stateObj.playerHere-3 >= 0 && indexOfSquare === stateObj.playerHere-3) ||
+    (stateObj.playerHere-1 >= 0  && indexOfSquare === stateObj.playerHere-1) ||
+    (stateObj.townMapSquares.length >= stateObj.playerHere+1 && indexOfSquare === stateObj.playerHere+1)
+  ) 
+}
+
 //need to add in some logic to determine if the div is clickable
 //add in some logic where, if the equivalent value in state = "here", then show player as there
-function createMapSquareDiv(stateObj, classesToAdd) {
+function createMapSquareDiv(stateObj, indexOfSquare, classesToAdd) {
   let mapSquareDiv = document.createElement("Div");
   mapSquareDiv.classList.add("map-square");
-  mapSquareDiv.textContent = classesToAdd[0];
+  
+
+  if (indexOfSquare === stateObj.playerHere) {
+    mapSquareDiv.textContent = "here";
+    mapSquareDiv.classList.add("here");
+  } else if (isSquareReachable(stateObj, indexOfSquare) === true) {
+    mapSquareDiv.textContent = classesToAdd[0];
+    mapSquareDiv.classList.add("clickable-square")
+    mapSquareDiv.addEventListener("click", function() {
+      //the state getting passed here somehow has 
+      changeMapSquare(stateObj, indexOfSquare)
+    })
+  } else {
+    mapSquareDiv.textContent = classesToAdd[0];
+  } 
+  
+  
   classesToAdd.forEach(function (myClass, classIndex) {
     mapSquareDiv.classList.add(myClass);
   }) 
-
   return mapSquareDiv;
+}
+
+function changeMapSquare(stateObj, indexToMoveTo) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerHere = indexToMoveTo
+  })
+    if (stateObj.townMapSquares[indexToMoveTo] === "Fight") {
+      console.log("clicked on a fight")
+      stateObj = setUpEncounter(stateObj);
+      stateObj = immer.produce(stateObj, (newState) => {
+        newState.Status = Status.InEncounter
+      })
+    } else {
+      console.log("clicked on a non fight")
+      stateObj = immer.produce(stateObj, (newState) => {
+        newState.Status = Status.OverworldMap
+      })
+    }
+  changeState(stateObj);
+  return stateObj;
 }
 
 
@@ -156,7 +212,6 @@ function changeState(newStateObj) {
   if (newStateObj.status === Status.InEncounter) {
     stateObj = handleDeaths(newStateObj);
   }
-  
   state = {...stateObj}
   renderScreen(stateObj);
 
@@ -173,14 +228,9 @@ renderScreen(state);
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, all=false, specifiedIndex=false) {
   let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster 
-  console.log('target index in dealoppdmg is ' + targetIndex)
-  console.log('damage number is ' + damageNumber)
-  console.log('attack number is ' + attackNumber)
   let toChangeState = immer.produce(stateObj, (newState) => {
     let calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
-    console.log('calc dmg is ' + calculatedDamage)
     if (calculatedDamage > 0) {
-      console.log('calc dmg is >0 is ' + calculatedDamage)
       if (all===true) {
         newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
           if (monsterObj.hunted > 0) {
@@ -310,10 +360,8 @@ function chooseThisMonster(stateObj, index) {
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 function changeStatus(stateObj, newStatus, countsAsEventSkipForChangeStatus=false) {
-  console.log("changing status to " + newStatus)
   stateObj = immer.produce(stateObj, (newState) => {
     if (countsAsEventSkipForChangeStatus === true) {
-      console.log("changing status, and this counts as skipping the events")
       newState.eventUsed = true;
       newState.gold += 50
     }
@@ -326,7 +374,6 @@ function changeStatus(stateObj, newStatus, countsAsEventSkipForChangeStatus=fals
 function skipCards(stateObj, isUsedForEventSkip=false) {
   stateObj = immer.produce(stateObj, (newState) => {
     if (isUsedForEventSkip) {
-      console.log("skpping cards, and this counts as skipping the events")
       newState.eventUsed = true
       newState.gold += 50
     }
@@ -398,7 +445,6 @@ function assassinTraining(stateObj) {
     newState.eventUsed = true;
     newState.playerDeck.forEach(function (cardObj, cardIndex) {
       if (cardObj.cardType === "attack") {
-        console.log("removing the attack " + cardObj.name)
         indexesToDelete.push(cardIndex);
       }
     });
@@ -607,12 +653,10 @@ function dealSelfDamage(stateObj, damageToDo) {
       newState.fightSelfDamageTotal += damageToDo;
 
       if (newState.selfDamageBlock > 0) {
-        console.log('target block' + newState.selfDamageBlock)
         newState.playerMonster.encounterBlock += newState.selfDamageBlock;
       }
       if (newState.selfDamageAttack > 0) {
         let targetIndex = Math.floor(Math.random() * (newState.opponentMonster.length))
-        console.log('target index is ' + targetIndex)
         let tempState = dealOpponentDamage(newState, (newState.selfDamageAttack-stateObj.playerMonster.strength), attackNumber=1, all=false, specifiedIndex=targetIndex);
         newState.opponentMonster[targetIndex].currentHP = tempState.opponentMonster[targetIndex].currentHP;
         newState.opponentMonster[targetIndex].encounterBlock = tempState.opponentMonster[targetIndex].encounterBlock;
@@ -734,10 +778,10 @@ function renderDivs(stateObj) {
   document.getElementById("goldText").textContent = stateObj.gold;
 }
 
-let monsterHP = document.createElement("H3");
-  monsterHP.textContent = stateObj.playerMonster.currentHP + "/" + stateObj.playerMonster.maxHP;
-  monsterHP.classList.add("monster-hp-town");
-  topRowDiv.appendChild(monsterHP);
+// let monsterHP = document.createElement("H3");
+//   monsterHP.textContent = stateObj.playerMonster.currentHP + "/" + stateObj.playerMonster.maxHP;
+//   monsterHP.classList.add("monster-hp-town");
+//   topRowDiv.appendChild(monsterHP);
 
 
 
@@ -905,7 +949,6 @@ function renderTown(stateObj) {
 
     stateObj = immer.produce(stateObj, (newState) => {
       newState.townEventChosen = shuffledEventsArray[0].eventID
-      console.log("Be careful before clicking on the event on the far right - you can only use it once!")
     })
 
     //changeState(stateObj);
@@ -976,9 +1019,7 @@ function resetAfterFight(stateObj) {
       if (newState.townFreeHealUsed === false) {
         newState.gold += 30;
       }
-      console.log("current use of free heal in fight reset should be true " + newState.townFreeHealUsed)
       newState.townFreeHealUsed = false;
-      console.log("current use of free heal in fight reset should be false " + newState.townFreeHealUsed)
     } else {
       newState.gymFightCount += 1;
       newState.status = Status.EncounterRewards;
@@ -1213,7 +1254,7 @@ function topRowDiv(stateObj, divName) {
   statusTextDiv.setAttribute("id", "status-text-div");
   let statusText = document.createElement("p");
 
-  if (stateObj.status = Status.InTown || Status.InEncounter) {
+  if (stateObj.status === Status.InTown || stateObj.status === Status.InEncounter) {
     statusText.textContent = `Gym: ${stateObj.gymCount}   Fight: ${stateObj.gymFightCount}/3`
   } else {
     statusText.textContent = stateObj.status;
@@ -1356,7 +1397,6 @@ function renderDoubleUpgradeCard(stateObj) {
 };
 
 function renderChooseCardReward(stateObj) {
-  console.log('triggering card reward')
   let shuffledCardPool = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
   let sampledCardPool = shuffledCardPool.slice(0, 3);
 
@@ -1408,7 +1448,6 @@ function renderShop(stateObj) {
   
 
 function renderChooseRareCard(stateObj) {
-  console.log("status while choosing rare is " + stateObj.status);
   let cardPool = Object.values(stateObj.playerMonster.cardPool);
   let rareCards = cardPool.filter(card => card.rare);
   let shuffledCardPool = fisherYatesShuffle(rareCards);
@@ -1654,7 +1693,6 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
           cardDiv.classList.add("card-change-text");
             let cardAltCost = document.createElement("H3");
             cardAltCost.textContent = showChangedUpgradeCost(stateObj, index, cardArray, cardObj, "baseCost", -1)
-            console.log(cardAltCost)
             cardAltCost.classList.add("alt-cost")
 
             cardDiv.classList.add("card-change-text");
@@ -1859,9 +1897,6 @@ function renderOpponents(stateObj) {
         moveText.textContent = moveObj.text;
       }
       
-      
-
-
       moveDiv.append(moveNameCostDiv, moveText);
       opponentMoveListDiv.appendChild(moveDiv);
     });
@@ -1874,7 +1909,7 @@ function renderOpponents(stateObj) {
 
 
 function renderScreen(stateObj) {
-  if (!stateObj.playerMonster) {
+  if (stateObj.status === Status.ChoosingMonster) {
     renderChooseMonster(stateObj);
   } else if (stateObj.status == Status.OverworldMap) {
     renderMapScreen(stateObj);
