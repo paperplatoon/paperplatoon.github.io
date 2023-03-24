@@ -1533,7 +1533,7 @@ function renderUpgradeCard(stateObj) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app");
-  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", encounterUpgradeCard);
+  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", encounterUpgradeCard, goldCost="upgrade");
   skipToTownButton(stateObj, "I don't want to upgrade any of these cards", ".remove-div");
 };
 
@@ -1670,10 +1670,10 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
             cardDiv.append(topCardRowDiv, altUpgradeText, cardText);
           }  else {}
 
-          let costText = document.createElement("P");
-          costText.textContent = "(" + stateObj.cardUpgradeCost + " gold to upgrade)";
-          costText.classList.add("invisible-cost")
-          cardDiv.append(costText);
+          // let costText = document.createElement("P");
+          // costText.textContent = "(" + stateObj.cardUpgradeCost + " gold to upgrade)";
+          // costText.classList.add("invisible-cost")
+          // cardDiv.append(costText);
         } else if (goldCost === "moreHits") {
           cardDiv.classList.add("card-change-text");
           let altHitsText =  document.createElement("P");
