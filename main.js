@@ -65,7 +65,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 50,
-  cardRemoveCost: 50,
+  cardRemoveCost: 75,
   cardUpgradeCost: 50,
   healCost: 50,
   cardsSkipped: 0,
@@ -86,7 +86,9 @@ let gameStartState = {
   townFreeHealUsed: false,
   availableCardPoolForShop: false,
   fightStarted: false,
-  townMapSquares: ["hidden", "here", "hidden", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "hidden", "Boss", "hidden"],
+  fightingBoss: false,
+  InTown: false,
+  townMapSquares: ["hidden", "here", "hidden", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "hidden", "Town", "hidden"],
   townMonsterArray: [],
   townBossEncounter: false,
   //townMapSquares: [...Array(15).keys()],
@@ -184,6 +186,7 @@ const eventsArray = [
 
 //takes a stateObject and fills its map with events
 function fillMapWithArray(stateObj) {
+  console.log("fill Mpa with Array is being called")
   let mapFillArray = ["Event", "Event", "Fight", "Fight", "Fight", "Fight", "Fight", "Fight", "Shop", "Healer", "Upgrade", "Remove"];
   let shuffledMap = fisherYatesShuffle(mapFillArray);
 
@@ -204,10 +207,12 @@ function fillMapWithArray(stateObj) {
     newState.playerHere = 1;
     newState.status = Status.OverworldMap
     newState.townMonsterArray = townMonsterEncounters;
-    newState.townBossEncounter = bossEncounters[0];
-    console.log(newState.townMonsterArray)
+    if (stateObj.townMonsterArray.length > 0) {
+      console.log("town mosnters changing from " + stateObj.townMonsterArray[1].name + stateObj.townMonsterArray[2].name  + " to " + newState.townMonsterArray[1] + stateObj.townMonsterArray[2].name)
+  
+    }
+     newState.townBossEncounter = bossEncounters[0];
   })
-  // console.log(stateObj.townMapSquares)
   changeState(stateObj);
   return stateObj
 }
@@ -230,7 +235,7 @@ function renderMapScreen(stateObj) {
       mapSquareDiv.classList.add("completed")
       mapDiv.append(mapSquareDiv);
     } else if (squareIndex === 16) {
-      let mapSquareDiv = createMapSquareDiv(stateObj, squareIndex, ["Boss"])
+      let mapSquareDiv = createMapSquareDiv(stateObj, squareIndex, ["Town"])
       mapDiv.append(mapSquareDiv);
     } else {
       let newMapDiv = createMapSquareDiv(stateObj, squareIndex, [stateObj.townMapSquares[squareIndex]])
@@ -268,6 +273,8 @@ function createMapSquareDiv(stateObj, indexOfSquare, classesToAdd) {
   if (classesToAdd.includes("Remove") || classesToAdd.includes("Upgrade")) {
     mapSquareDiv.textContent = "Event"
     mapSquareDiv.classList.add("Event")
+  } else if (classesToAdd.includes("Town")) {
+    mapSquareDiv.textContent = "Go to Town";
   } else {
     mapSquareDiv.textContent = classesToAdd[0];
   } 
@@ -294,11 +301,11 @@ function changeMapSquare(stateObj, indexToMoveTo) {
       stateObj = immer.produce(stateObj, (newState) => {
         newState.status = Status.cardShop
       })
-    }  else if (stateObj.townMapSquares[indexToMoveTo] === "Boss") {
-      console.log("clicked on a boss")
-      stateObj = setUpEncounter(stateObj, isBoss=true);
+    }  else if (indexToMoveTo === 16) {
+      console.log("clicked on a town")
       stateObj = immer.produce(stateObj, (newState) => {
-        newState.Status = Status.InEncounter
+        newState.status = Status.InTown;
+        newState.InTown = true;
       })
     } else if (stateObj.townMapSquares[indexToMoveTo] === "Event") {
       console.log("clicked on an event")
@@ -340,15 +347,12 @@ waterCardArray = Object.values(waterCardPool);
 let potentialMonsterChoices = playerMonsterArray;
 
 function changeState(newStateObj) {
-  console.log("new hand is " + newStateObj.encounterHand)
   let stateObj = {...newStateObj}
   if (newStateObj.status === Status.InEncounter) {
     stateObj = handleDeaths(stateObj);
   }
   state = {...stateObj}
-  console.log("new hand is " + state.encounterHand)
-  console.log("new hand is " + stateObj.encounterHand)
-
+ 
   renderScreen(stateObj);
   return stateObj
 }
@@ -520,7 +524,7 @@ function skipCards(stateObj, isUsedForEventSkip=false) {
 }
 
 function TownFight(stateObj) {
-  stateObj = setUpEncounter(stateObj)
+  stateObj = setUpEncounter(stateObj, isBoss=true)
   changeState(stateObj);
   return stateObj;
 }
@@ -563,11 +567,19 @@ function buyThisCard(stateObj, index, cardArray) {
 
 function removeCard(stateObj, index) {
   console.log("removed " + stateObj.playerDeck[index].name + " from deck")
+
   
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerDeck.splice(index, 1);
-    newState.townMapSquares[newState.playerHere] = "completed"
-    newState.status = Status.OverworldMap
+
+    if (stateObj.InTown === true) {
+      newState.status = Status.InTown;
+      newState.gold -= newState.cardUpgradeCost
+      newState.cardUpgradeCost += 25;
+    } else {
+      newState.townMapSquares[newState.playerHere] = "completed"
+      newState.status = Status.OverworldMap
+    }
   })
   changeState(stateObj);
   return stateObj;
@@ -666,8 +678,15 @@ function doubleUpgradeCard(stateObj, index) {
 function encounterUpgradeCard(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerDeck[index].upgrades +=1;
-    newState.townMapSquares[newState.playerHere] = "completed"
-    newState.status = Status.OverworldMap
+
+    if (stateObj.InTown === true) {
+      newState.status = Status.InTown;
+      newState.gold -= newState.cardRemoveCost
+      newState.cardRemoveCost += 50;
+    } else {
+      newState.townMapSquares[newState.playerHere] = "completed"
+      newState.status = Status.OverworldMap
+    }
   })
   changeState(stateObj);
   return stateObj;
@@ -884,8 +903,6 @@ async function renderDivs(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
       newState.fightStarted = true;
     })
-    console.log("new fight started state " + stateObj.fightStarted)
-    console.log("player hand " + stateObj.encounterHand)
     changeState(stateObj);
   }
 
@@ -1042,7 +1059,7 @@ function resetAfterFight(stateObj) {
     console.log("gym count is " + newState.gymCount);
     if (newState.playerHere === 16 && newState.gymCount === 2) {
       newState.status = Status.VictoryScreen;
-    } else if (newState.playerHere === 16) {
+    } else if (newState.fightingBoss === true) {
       newState.gymFightCount = 0;
       newState.gymCount += 1;
       newState.playerMonster.maxHP += 10
@@ -1051,6 +1068,8 @@ function resetAfterFight(stateObj) {
       newState.availableCardPoolForShop = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
 
       newState.townMapSet = false;
+      newState.fightingBoss = false;
+      newState.InTown = false;
       newState.playerHere = 1;
       
       newState.status = Status.EncounterRewards;
@@ -1081,12 +1100,10 @@ function handleDeaths(stateObj) {
       }
 
       if (newState.opponentMonster.length == 0) {
-        console.log("all opponents dead");
         Object.assign(newState, resetAfterFight(newState))
       }
 
       if (newState.playerMonster.currentHP <= 0) {
-        console.log("we deads");
         newState.status = Status.DeathScreen;
       }
     })
@@ -1102,9 +1119,9 @@ function pause(timeValue) {
 function setUpEncounter(stateObj, isBoss=false) {
 
   stateObj = immer.produce(stateObj, (newState) => {
-    console.log("setting up encounter");
     if (isBoss) {
       newState.opponentMonster = newState.townBossEncounter.opponents;
+      newState.fightingBoss = true;
     } else {
       newState.opponentMonster = newState.townMonsterArray[newState.gymFightCount].opponents;
     }
@@ -1124,12 +1141,10 @@ function setUpEncounter(stateObj, isBoss=false) {
     
     newState.cardsPerTurn = 0;
     if (!stateObj.playerDeck) {
-      console.log("player has no playerDeck")
       newState.playerDeck = [...stateObj.playerMonster.startingDeck];
       newState.encounterDeck = [...stateObj.playerMonster.startingDeck];
       newState.encounterDraw = [...stateObj.playerMonster.startingDeck];
     } else {
-      console.log("player had playerDeck")
       newState.encounterDeck = [...stateObj.playerDeck];
       newState.encounterDraw = [...stateObj.playerDeck];
     }
@@ -1173,7 +1188,6 @@ function shuffleDiscardIntoDeck(stateObj) {
 
 function drawACard(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
-    console.log(stateObj.encounterHand.length);
     const handLength = newState.encounterHand.length;
     if (handLength > 7 ) {
       console.log("hand is full");
@@ -1183,12 +1197,10 @@ function drawACard(stateObj) {
     // if deck is empty, shuffle discard and change newState to reflect that
     if (newState.encounterDraw.length === 0) {
       Object.assign(newState, shuffleDiscardIntoDeck(newState));
-      //console.log("shuffling");
     }
 
     let topCard = newState.encounterDraw.shift();
     if (!topCard) {
-      console.log("all cards are in play");
       return newState;
     }
 
@@ -1350,12 +1362,10 @@ function divContainer(divName, newDivName=false) {
 function skipToTownButton(stateObj, buttonString, divName, cardSkip=false, isEventUsedForSkipButton=false, skipGoldGift=50) {
   let skipButton = document.createElement("Button");
   if (!cardSkip) {
-    console.log("no cardskip")
     skipButton.addEventListener("click", function () {
       changeStatus(stateObj, Status.OverworldMap, isEventUsedForSkipButton, skipGoldGift);
     });
   } else {
-    console.log("yes cardskip and isEventUsed = " + isEventUsedForSkipButton)
     skipButton.addEventListener("click", function () {
       skipCards(stateObj, isEventUsedForSkipButton);
     });
@@ -1934,6 +1944,31 @@ function renderOpponents(stateObj) {
   });
 }
 
+function renderTown(stateObj) {
+  console.log('renderin town')
+
+
+    document.getElementById("app").innerHTML = ""
+    topRowDiv(stateObj, "app");
+    let townDiv = document.createElement("Div");
+    townDiv.classList.add("flex-container")
+    townDiv.setAttribute("id", "town");
+
+  
+
+  //let townHealDiv = renderTownDiv(stateObj, "TownHealer", "img/healer.PNG", "Visit Healer", (stateObj.gold >= Math.floor(stateObj.healCost/2)), changeStatus, Status.HealersShop, "Not enough gold");
+  let townShopDiv = renderTownDiv(stateObj, "TownShop", "img/healer.PNG", "Visit Shop", true, changeStatus, Status.cardShop);
+  let townRemoveDiv = renderTownDiv(stateObj, "TownRemove", "img/tavern2.PNG", "Pay to remove A Card",  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `Not enough gold (${stateObj.cardRemoveCost} needed)`);
+  let townUpgradeDiv = renderTownDiv(stateObj, "TownUpgrade", "img/forge.PNG", "Pay to upgrade A Card", (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `Not enough gold (${stateObj.cardUpgradeCost} needed)`);
+  let townGymDiv = renderTownDiv(stateObj, "TownFight", "img/dracula.png", "Fight Gym Boss", true, TownFight)
+
+
+  townDiv.append(townShopDiv, townRemoveDiv, townUpgradeDiv, townGymDiv);
+  document.getElementById("app").append(townDiv);
+
+
+}
+
 
 function renderScreen(stateObj) {
   if (stateObj.status === Status.ChoosingMonster) {
@@ -1998,7 +2033,6 @@ function renderScreen(stateObj) {
     renderAssassinTraining(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else {
-    console.log("render screen is " + stateObj.encounterHand)
     renderDivs(stateObj);
     //renderOpponents(stateObj);
    
@@ -2098,7 +2132,6 @@ function startEncounter(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.fightStarted = true;
   })
-  console.log("start encounter hand" + stateObj.encounterHand)
   changeState(stateObj);
   return stateObj
 }

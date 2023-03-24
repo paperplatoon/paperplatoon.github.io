@@ -1782,7 +1782,7 @@ let fireCardPool = {
       action: (stateObj, index, array) => {
         stateObj = immer.produce(stateObj, (newState) => {
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
-          newState.playerMonster.encounterBlock += (array[index].baseBlock + stateObj.playerMonster.dex + stateObj.playerMonster.dex + (4*array[index].upgrades));
+          newState.playerMonster.encounterBlock += (array[index].baseBlock + stateObj.playerMonster.dex + stateObj.playerMonster.strength + (4*array[index].upgrades));
         })
         return stateObj;
       }
@@ -1901,19 +1901,19 @@ let fireCardPool = {
       name: "Pick Off",
       text: (state, index, array) => { return `If there is more than 1 opponent, kill targeted monster`},
       minReq: (stateObj, index, array) => {
-        return array[index].baseCost;
+        return array[index].baseCost-array[index].upgrades;
       },
       trigger:  (stateObj, index, array) => { 
         if (stateObj.status !== Status.InEncounter) {
           return false;
         } else {
-          return (stateObj.opponentMonster.length > 1);
+          return (stateObj.opponentMonster.length > 1 && (stateObj.opponentMonster[stateObj.targetedMonster].name in bossNames === false));
         }
       },
       upgrades: 0,
-      baseCost: 4,
+      baseCost: 5,
       cost:  (stateObj, index, array) => {
-        return array[index].baseCost;
+        return array[index].baseCost-array[index].upgrades;
       },
       cardType: "ability",
       elementType: "special",
@@ -1922,7 +1922,7 @@ let fireCardPool = {
             if (stateObj.opponentMonster.length > 1) {
               newState.opponentMonster[newState.targetedMonster].currentHP = 0;
             }
-            newState.playerMonster.encounterEnergy -= array[index].baseCost;
+            newState.playerMonster.encounterEnergy -= array[index].baseCost-array[index].upgrades;
           })
         return stateObj;
       }
