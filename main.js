@@ -924,9 +924,8 @@ async function renderDivs(stateObj) {
     endTurn(state);
   };
   document.getElementById("goldText").textContent = stateObj.gold;
-
+  
   renderOpponents(stateObj);
-  await pause(1100);
   renderHand(stateObj);
   
   }
@@ -1032,6 +1031,7 @@ function resetAfterFight(stateObj) {
     newState.selfDamageBlock = 0;
     newState.cardsPerTurn = 0;
     newState.comboPerTurn = 0;
+    newState.fightStarted = false;
 
     newState.gold += newState.townMonsterArray[newState.gymFightCount].goldReward
 
@@ -2000,12 +2000,12 @@ function renderScreen(stateObj) {
   } else {
     console.log("render screen is " + stateObj.encounterHand)
     renderDivs(stateObj);
+    //renderOpponents(stateObj);
+   
     renderPlayerMonster(stateObj);
-    //renderHand(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
     renderCardPile(stateObj, stateObj.encounterDraw, "drawDiv");
     renderCardPile(stateObj, stateObj.encounterDiscard, "discardDiv");
-    //renderOpponents(stateObj);
   }
 }
 
