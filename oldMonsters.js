@@ -20,9 +20,8 @@ let playerMonsters = {
         fireCardPool.darkknowledge,
         fireCardPool.withdraw,
         specialCardPool.testkill,
-        fireCardPool.expertsforge,
-        fireCardPool.expertsforge,
-        fireCardPool.tackle
+        specialCardPool.testkill,
+        specialCardPool.testkill,
       ],
     },
   

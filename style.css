@@ -199,6 +199,11 @@
   margin-block-end: 0.1em;
 }
 
+#endTurnButton {
+  width: 10vw;
+  color: rgb(0, 58, 3);
+}
+
  /* * { border: 1px solid black; } */
 
  .fishbowl {
@@ -786,4 +791,70 @@ button:hover {
   box-shadow: 0 0 10px rgb(0, 141, 207); 
   background: linear-gradient(90deg, rgb(47, 109, 150),rgb(43, 69, 108), rgb(43, 77, 88), rgb(12, 8, 87));
   color: white;
+}
+
+.map-square {
+  height: 17vh;
+  width: 10vw;
+  border: 1px solid green;
+  background: linear-gradient(135deg, rgba(252, 255, 248, 0.792), rgba(198, 255, 197, 0.764));
+  margin: 2vmax;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.map-div {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  
+  height: 80vh;
+}
+
+.clickable-square:hover {
+  background-color:rgb(0, 0, 0);
+  cursor: pointer;
+  box-shadow: 0 0 35px rgb(100, 104, 100); 
+  color: white;
+}
+
+
+
+.Healer {
+  background: linear-gradient( rgba(255, 187, 187, 0.916), rgba(230, 104, 104, 0.9));
+  color: rgb(30, 0, 0);
+}
+
+.Shop {
+  background: linear-gradient( rgba(255, 255, 244, 0.916), rgba(255, 255, 162, 0.9));
+}
+
+.Event {
+  background: linear-gradient( rgba(255, 232, 253, 0.916), rgba(241, 189, 255, 0.9));
+  color: rgb(27, 0, 30);
+}
+
+#shop-div .playable:hover {
+  box-shadow: 0 0 35px rgb(221, 249, 8); 
+}
+
+.completed {
+  background: linear-gradient(215deg, rgba(255, 240, 236, 0.916), rgba(196, 92, 92, 0.9));
+}
+
+.here {
+  background: linear-gradient(215deg, rgba(255, 227, 219, 0.916), rgba(229, 151, 151, 0.9));
+  color: rgb(67, 0, 81);
+  font-size: 1.4em;
+  box-shadow: 0 0 50px rgb(109, 0, 0); 
+}
+
+.non-buyable-card {
+  color: rgb(46, 84, 0);
 }

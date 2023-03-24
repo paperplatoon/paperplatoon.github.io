@@ -766,6 +766,69 @@ let gyms = [
   gym3,
 ]
 
+let easyEncountersMjs = [
+  {
+    opponents: [opponentMonsters.strengthgym1],
+    goldReward: 25
+  },
+  {
+    opponents: [opponentMonsters.healgym1],
+    goldReward: 25
+  },
+  {
+    opponents: [opponentMonsters.blockgym1],
+    goldReward: 25
+  },
+]
 
+let mediumEncountersMjs = [
+  {
+    opponents: [opponentMonsters.strengthgym1, opponentMonsters.strengthgymguard],
+    goldReward: 35
+  },
+  {
+    opponents: [opponentMonsters.healgymguard2, opponentMonsters.healgym1],
+    goldReward: 35
+  },
+  {
+    opponents: [opponentMonsters.blockbossguard2, opponentMonsters.blockgym1],
+    goldReward: 35
+  },
+  {
+    opponents: [opponentMonsters.strengthgymguard, opponentMonsters.blockgym1],
+    goldReward: 35
+  },
+  {
+    opponents: [opponentMonsters.strengthgymguard, opponentMonsters.healgym1],
+    goldReward: 35
+  },
+  {
+    opponents: [opponentMonsters.blockbossguard2, opponentMonsters.healgym1],
+    goldReward: 35
+  },
+  {
+    opponents: [opponentMonsters.blockbossguard2, opponentMonsters.strengthgym1],
+    goldReward: 35
+  },
+]
+
+let bossEncountersMjs = [
+  {
+    opponents: [opponentMonsters.strengthgymguard, opponentMonsters.strengthgymboss, opponentMonsters.strengthgymguard],
+    goldReward: 125,
+    boss: true
+  },
+
+  {
+    opponents: [opponentMonsters.healgymboss, opponentMonsters.healgymguard2, opponentMonsters.healgymguard1],
+    goldReward: 125,
+    boss: true
+  },
+  {
+    opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockgymboss, opponentMonsters.blockbossguard2],
+    goldReward: 125,
+    boss: true
+  },
+]
 
 
