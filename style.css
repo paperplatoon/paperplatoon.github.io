@@ -833,8 +833,8 @@ button:hover {
   height: 12vh;
   width: 10vw;
   border: 1px solid green;
-  background: linear-gradient(135deg, rgba(252, 255, 248, 0.792), rgba(198, 255, 197, 0.764));
-  margin: 1vmax;
+  background: linear-gradient(135deg, rgba(148, 255, 148, 0.85), rgba(22, 177, 19, 0.85));
+  margin: 2vmin;
   text-align: center;
   display: flex;
   align-items: center;
@@ -856,26 +856,26 @@ button:hover {
 }
 
 .clickable-square:hover {
-  background-color:rgb(0, 0, 0);
+  background-color:rgb(222, 222, 70);
   cursor: pointer;
-  box-shadow: 0 0 35px rgb(100, 104, 100); 
-  color: white;
+  box-shadow: 0 0 35px rgb(186, 172, 20); 
+  color: rgb(255, 254, 177);
 }
 
 
 
 .Healer {
-  background: linear-gradient( rgba(255, 187, 187, 0.916), rgba(230, 104, 104, 0.9));
-  color: rgb(30, 0, 0);
+  background: linear-gradient( rgb(255, 197, 197, 0.85), rgb(197, 1, 1, 0.85));
+  color: rgb(255, 255, 255);
 }
 
 .Shop {
-  background: linear-gradient( rgba(255, 255, 244, 0.916), rgba(255, 255, 162, 0.9));
+  background: linear-gradient( rgba(255, 255, 186, 0.85), rgba(187, 187, 24, 0.85));
 }
 
 .Event {
-  background: linear-gradient( rgba(255, 232, 253, 0.916), rgba(241, 189, 255, 0.9));
-  color: rgb(27, 0, 30);
+  background: linear-gradient( rgb(255, 186, 249, 0.85), rgb(128, 0, 163, 0.85));
+  color: rgb(255, 255, 255);
 }
 
 #shop-div .playable:hover {
@@ -883,13 +883,14 @@ button:hover {
 }
 
 .completed {
-  background: linear-gradient(215deg, rgba(255, 240, 236, 0.916), rgba(196, 92, 92, 0.9));
+  background: linear-gradient(215deg, rgba(249, 249, 249, 0.916), rgba(150, 150, 150, 0.9));
+  color: rgb(63, 63, 63);
 }
 
 .here {
   background: linear-gradient(215deg, rgba(255, 227, 219, 0.916), rgba(229, 151, 151, 0.9));
-  color: rgb(67, 0, 81);
-  font-size: 1.4em;
+  color: rgb(64, 9, 94);
+  font-size: 1.3em;
   box-shadow: 0 0 50px rgb(109, 0, 0); 
 }
 
