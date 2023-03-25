@@ -1956,7 +1956,7 @@ function renderOpponents(stateObj) {
       } else {
         moveDiv.classList.add("fake-move-div");
         if (moveIndex <= monsterObj.encounterEnergy) {
-          moveDiv.classList.add("chosen");
+          moveDiv.classList.add("energy-filled");
         }
       }
 
