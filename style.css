@@ -882,13 +882,13 @@ button:hover {
   box-shadow: 0 0 35px rgb(221, 249, 8); 
 }
 
-.completed {
-  background: linear-gradient(215deg, rgba(249, 249, 249, 0.916), rgba(150, 150, 150, 0.9));
+.completed, .path {
+  background: linear-gradient(215deg, rgba(255, 236, 219, 0.916), rgba(229, 181, 151, 0.9));
   color: rgb(63, 63, 63);
 }
 
 .here {
-  background: linear-gradient(215deg, rgba(255, 227, 219, 0.916), rgba(229, 151, 151, 0.9));
+  background: linear-gradient( rgb(255, 218, 185, 0.85), rgba(243, 179, 133, 0.85),rgba(244, 181, 98, 0.85));  
   color: rgb(64, 9, 94);
   font-size: 1.3em;
   box-shadow: 0 0 50px rgb(109, 0, 0); 

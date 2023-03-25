@@ -187,7 +187,7 @@ const eventsArray = [
 //takes a stateObject and fills its map with events
 function fillMapWithArray(stateObj) {
   console.log("fill Mpa with Array is being called")
-  let mapFillArray = ["Event", "Event", "Fight", "Fight", "Fight", "Fight", "Fight", "Fight", "Shop", "Healer", "Upgrade", "Remove"];
+  let mapFillArray = ["Event", "Event", "Fight", "Fight", "path", "path", "path", "Fight", "Shop", "Healer", "Upgrade", "Remove"];
   let shuffledMap = fisherYatesShuffle(mapFillArray);
 
 
@@ -344,6 +344,7 @@ waterCardArray = Object.values(waterCardPool);
 let potentialMonsterChoices = playerMonsterArray;
 
 function changeState(newStateObj) {
+  console.log("state changing: fightStarted changing from " + state.fightStarted + " to " + newStateObj.fightStarted)
   let stateObj = {...newStateObj}
   if (newStateObj.status === Status.InEncounter) {
     stateObj = handleDeaths(stateObj);
@@ -953,7 +954,7 @@ async function renderDivs(stateObj) {
   
   renderOpponents(stateObj);
   renderHand(stateObj);
-  
+  renderPlayerMonster(stateObj);
   }
 
 
@@ -1219,6 +1220,7 @@ function drawACard(stateObj) {
 }
 
 function drawAHand(stateObj) {
+  console.log("drawing a hand");
   stateObj = immer.produce(stateObj, (newState) => {
     for (let i = 0; i < 6; i++) {
       if (
@@ -2058,9 +2060,7 @@ function renderScreen(stateObj) {
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else {
     renderDivs(stateObj);
-    //renderOpponents(stateObj);
-   
-    renderPlayerMonster(stateObj);
+    //renderOpponents(stateObj)
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
     renderCardPile(stateObj, stateObj.encounterDraw, "drawDiv");
     renderCardPile(stateObj, stateObj.encounterDiscard, "discardDiv");
@@ -2097,7 +2097,7 @@ function pickOpponentMove(stateObj) {
           newState.opponentMonster[index].opponentMoveIndex = i;
         }
       }
-    console.log(monsterObj.name + " picked " + monsterObj.moves[monsterObj.opponentMoveIndex]);  
+    //console.log(monsterObj.name + " picked " + monsterObj.moves[monsterObj.opponentMoveIndex]);  
     });
   });
   
@@ -2150,6 +2150,7 @@ function shuffleDraw(stateObj) {
 }
 
 function startEncounter(stateObj) {
+  console.log('triggering start encounter');
   stateObj = pickOpponentMove(stateObj);
   stateObj = shuffleDraw(stateObj);
   stateObj = drawAHand(stateObj);
@@ -2184,7 +2185,11 @@ function endTurnIncrement(stateObj) {
 
 //if you flip the order of this around, discard works, but not playing the move
 async function endTurn(stateObj) {
+  console.log("endTurn start: fightStarted changing from " + state.fightStarted + " to " + stateObj.fightStarted)
+  stateObj = discardHand(stateObj);
+  console.log("endTurn post-discard: fightStarted changing from " + stateObj.fightStarted + " to " + stateObj.fightStarted)
   stateObj = endTurnIncrement(stateObj);
+  console.log("endTurn post-Increment: fightStarted changing from " + stateObj.fightStarted + " to " + stateObj.fightStarted)
   stateObj = changeState(stateObj);
   await pause(500);
 
@@ -2193,7 +2198,7 @@ async function endTurn(stateObj) {
     return stateObj
   }
 
-  stateObj = discardHand(stateObj);
+  
   stateObj = immer.produce(stateObj, (newState) => {
     newState.opponentMonster.forEach(function (monsterObj, index) {
       monsterObj.encounterBlock = 0;
