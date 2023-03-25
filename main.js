@@ -88,7 +88,7 @@ let gameStartState = {
   fightStarted: false,
   fightingBoss: false,
   InTown: false,
-  townMapSquares: ["hidden", "here", "hidden", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "hidden", "Town", "hidden"],
+  townMapSquares: ["hidden", "here", "hidden", "Fight", "Fight", "Fight", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "hidden", "Town", "hidden"],
   townMonsterArray: [],
   townBossEncounter: false,
   //townMapSquares: [...Array(15).keys()],
@@ -199,8 +199,8 @@ function fillMapWithArray(stateObj) {
 
     //fill the actual map
     stateObj = immer.produce(stateObj, (newState) => {
-      for (i=3; i < 15; i++) {
-          newState.townMapSquares[i] = shuffledMap[i-3];
+      for (i=6; i < 18; i++) {
+          newState.townMapSquares[i] = shuffledMap[i-6];
     }
     //newState.status = Status.InTown;
     newState.townMapSet = true;
@@ -227,14 +227,11 @@ function renderMapScreen(stateObj) {
   mapDiv.classList.add("map-div");
   //render each map square  
   stateObj.townMapSquares.forEach(function (mapSquare, squareIndex) {
-    if (mapSquare in [0, 2, 12, 14]) {
-      let mapSquareDiv = createMapSquareDiv(stateObj, squareIndex, [stateObj.townMapSquares[squareIndex]])
-      mapDiv.append(mapSquareDiv);
-    } else if (squareIndex === 1) {
+    if (squareIndex === 1) {
       let mapSquareDiv = createMapSquareDiv(stateObj, squareIndex, ["Start"])
       mapSquareDiv.classList.add("completed")
       mapDiv.append(mapSquareDiv);
-    } else if (squareIndex === 16) {
+    } else if (squareIndex === 19) {
       let mapSquareDiv = createMapSquareDiv(stateObj, squareIndex, ["Town"])
       mapDiv.append(mapSquareDiv);
     } else {
@@ -301,7 +298,7 @@ function changeMapSquare(stateObj, indexToMoveTo) {
       stateObj = immer.produce(stateObj, (newState) => {
         newState.status = Status.cardShop
       })
-    }  else if (indexToMoveTo === 16) {
+    }  else if (indexToMoveTo === 19) {
       console.log("clicked on a town")
       stateObj = immer.produce(stateObj, (newState) => {
         newState.status = Status.InTown;
@@ -872,6 +869,20 @@ function renderPlayerMonster(stateObj) {
 
   document.getElementById("playerStats").appendChild(topRowDiv);
 
+  let turnEnergyStrengthDiv = document.createElement("Div");
+  turnEnergyStrengthDiv.classList.add("flex", "row", "space-evenly");
+  let EnergyStrengthDiv = document.createElement("Div");
+  let turnButtonDiv = document.createElement("Div");
+
+
+  let endTurnButton = document.createElement("Button");
+  endTurnButton.classList.add("font5vmin")
+  endTurnButton.addEventListener("click", function() {
+    endTurn(stateObj)
+  })
+  endTurnButton.textContent = "End Turn";
+  turnButtonDiv.append(endTurnButton)
+
   let playerEnergyText = document.createElement("H4");
   playerEnergyText.classList.add("player-energy")
   let playerStrengthandDexText = document.createElement("H4");
@@ -881,9 +892,11 @@ function renderPlayerMonster(stateObj) {
   } else {
     playerStrengthandDexText.textContent = "Strength: " + stateObj.playerMonster.strength + "  Dex: " + stateObj.playerMonster.dex;
   }
+
+  EnergyStrengthDiv.append(playerEnergyText, playerStrengthandDexText);
+  turnEnergyStrengthDiv.append(EnergyStrengthDiv, turnButtonDiv);
   
-  document.getElementById("playerStats").appendChild(playerEnergyText)
-  document.getElementById("playerStats").appendChild(playerStrengthandDexText);
+  document.getElementById("playerStats").appendChild(turnEnergyStrengthDiv);
 
   
 
@@ -927,7 +940,6 @@ async function renderDivs(stateObj) {
       <div id="playerStats"> </div>
       
       <div id="handContainer2"> </div>
-      <button id="endTurnButton">End Turn</button>
     </div>
 
     <div id="opponents"></div>
@@ -937,9 +949,6 @@ async function renderDivs(stateObj) {
   <!-- <button id="resetButton">Reset</button> -->
 
   </div>`;
-  document.getElementById("endTurnButton").onclick = function () {
-    endTurn(state);
-  };
   document.getElementById("goldText").textContent = stateObj.gold;
   
   renderOpponents(stateObj);
@@ -1057,7 +1066,7 @@ function resetAfterFight(stateObj) {
     
     
     console.log("gym count is " + newState.gymCount);
-    if (newState.playerHere === 16 && newState.gymCount === 2) {
+    if (newState.playerHere === 19 && newState.gymCount === 2) {
       newState.status = Status.VictoryScreen;
     } else if (newState.fightingBoss === true) {
       newState.gymFightCount = 0;
@@ -1912,29 +1921,44 @@ function renderOpponents(stateObj) {
 
     monsterObj.moves.forEach(function (moveObj, moveIndex) {
       let moveDiv = document.createElement("Div");
-      moveDiv.id = moveIndex;
-      moveDiv.classList.add("move");
+
       if (moveIndex === monsterObj.opponentMoveIndex) {
         moveDiv.classList.add("chosen");
       }
-      let moveNameCostDiv = document.createElement("Div");
-      moveNameCostDiv.classList.add("move-name-cost");
 
-      let moveName = document.createElement("H3");
-      let moveCost = document.createElement("P");
-      moveName.textContent = moveObj.name;
-      moveCost.textContent = moveObj.cost;
-      moveCost.classList.add("energy-cost");
-      moveNameCostDiv.append(moveName, moveCost);
+      if (moveObj.name) {
+        moveDiv.id = moveIndex;
+        moveDiv.classList.add("move");
+        let moveNameCostDiv = document.createElement("Div");
+        moveNameCostDiv.classList.add("move-name-cost");
 
-      let moveText = document.createElement("P");
-      if (typeof moveObj.text === "function") {
-        moveText.textContent = moveObj.text(stateObj, index, stateObj.opponentMonster);
+        let moveName = document.createElement("H3");
+        let moveCost = document.createElement("P");
+        moveName.textContent = moveObj.name;
+        moveCost.textContent = moveObj.energyChange;
+        moveCost.classList.add("energy-cost");
+        moveNameCostDiv.append(moveName, moveCost);
+
+        let moveText = document.createElement("P");
+        if (typeof moveObj.text === "function") {
+          moveText.textContent = moveObj.text(stateObj, index, stateObj.opponentMonster);
+        } else {
+          moveText.textContent = moveObj.text;
+        }
+
+        if (moveIndex < monsterObj.opponentMoveIndex) {
+          moveDiv.classList.add("not-chosen");
+        }
+        
+        moveDiv.append(moveNameCostDiv, moveText);
       } else {
-        moveText.textContent = moveObj.text;
+        moveDiv.classList.add("fake-move-div");
+        if (moveIndex <= monsterObj.encounterEnergy) {
+          moveDiv.classList.add("chosen");
+        }
       }
+
       
-      moveDiv.append(moveNameCostDiv, moveText);
       opponentMoveListDiv.appendChild(moveDiv);
     });
 

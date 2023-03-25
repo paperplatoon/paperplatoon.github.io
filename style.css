@@ -9,6 +9,28 @@
   flex-direction: column;
 }
 
+.flex {
+  display: flex;
+}
+
+.row {
+  flex-direction: row;
+}
+
+.space-evenly {
+  justify-content: space-evenly;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.font5vmin {
+  font-size: 3vmin;
+}
+
+
+
 .card h3 {
   font-size: 2vmin;
   padding: 0;
@@ -251,10 +273,27 @@
   border-radius: 0.6vw;
 }
 
+.fake-move-div {
+  border: 1px dashed;
+  padding: 0.05vh 0.05vw;
+  border-radius: 0.6vw;
+  height: 2vh;
+}
+
+.map-div {
+  background-image: url("img/forest2.png");
+  background-size: contain;
+}
+
 .chosen {
   background: rgba(255, 83, 83, 0.636);
   border: 2px dashed silver;
 }
+
+.not-chosen {
+  background: rgba(253, 99, 99, 0.312);
+}
+
 
 .monster {
   border: 0.2px solid red;
@@ -736,9 +775,6 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   border: 3px double yellow;
 }
 
-button {
-  font-size: 1.3em;
-}
 
 button:hover {
   background-color: rgb(213, 212, 212);
@@ -794,11 +830,11 @@ button:hover {
 }
 
 .map-square {
-  height: 17vh;
+  height: 12vh;
   width: 10vw;
   border: 1px solid green;
   background: linear-gradient(135deg, rgba(252, 255, 248, 0.792), rgba(198, 255, 197, 0.764));
-  margin: 2vmax;
+  margin: 1vmax;
   text-align: center;
   display: flex;
   align-items: center;
@@ -813,8 +849,10 @@ button:hover {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
+  padding-top: 15vh;
+  padding-bottom: 15vh;
   
-  height: 80vh;
+  height: 50vh;
 }
 
 .clickable-square:hover {

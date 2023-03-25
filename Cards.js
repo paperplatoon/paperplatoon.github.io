@@ -1907,7 +1907,7 @@ let fireCardPool = {
         if (stateObj.status !== Status.InEncounter) {
           return false;
         } else {
-          return (stateObj.opponentMonster.length > 1 && (stateObj.opponentMonster[stateObj.targetedMonster].name in bossNames === false));
+          return (stateObj.opponentMonster.length > 1);
         }
       },
       upgrades: 0,
