@@ -201,6 +201,12 @@ function fillMapWithArray(stateObj) {
       for (i=6; i < 18; i++) {
           newState.townMapSquares[i] = shuffledMap[i-6];
     }
+
+    if (stateObj.gymCount > 0) {
+      newState.townMapSquares[4] = "Fight";
+      
+    }
+    console.log("town Squares going from " + state.townMapSquares + " to " + newState.townMapSquares)
     //newState.status = Status.InTown;
     newState.townMapSet = true;
     newState.playerHere = 1;
@@ -273,6 +279,8 @@ function createMapSquareDiv(stateObj, indexOfSquare, classesToAdd) {
   } else if (classesToAdd.includes("Town")) {
     mapSquareDiv.textContent = "Go to Town";
     mapSquareDiv.textContent = classesToAdd[0];
+  } else if (classesToAdd.includes("path") || classesToAdd.includes("completed") || classesToAdd.includes("Start")) {
+    mapSquareDiv.textContent = "";
   } else {}
 
   if (indexOfSquare === stateObj.playerHere) {

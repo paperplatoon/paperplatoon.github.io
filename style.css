@@ -886,6 +886,7 @@ button:hover {
 .Event {
   background: linear-gradient( rgb(255, 186, 249, 0.85), rgb(128, 0, 163, 0.85));
   color: rgb(255, 255, 255);
+  font-size: 3em;
 }
 
 #shop-div .playable:hover {
