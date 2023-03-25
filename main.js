@@ -93,7 +93,6 @@ let gameStartState = {
   townBossEncounter: false,
   //townMapSquares: [...Array(15).keys()],
   playerHere: 1,
-  //townMapSquares: ["hidden", "start", "hidden", "event", "event", "event", "event", "event", "event", "event", "event", "event", "event", "hidden", "end", "hidden"],
   townMapSet: false,
 };
 
@@ -187,7 +186,7 @@ const eventsArray = [
 //takes a stateObject and fills its map with events
 function fillMapWithArray(stateObj) {
   console.log("fill Mpa with Array is being called")
-  let mapFillArray = ["Event", "Event", "Fight", "Fight", "path", "path", "path", "Fight", "Shop", "Healer", "Upgrade", "Remove"];
+  let mapFillArray = ["?", "?", "Fight", "Fight", "path", "path", "path", "Fight", "Shop", "Healer", "Upgrade", "Remove"];
   let shuffledMap = fisherYatesShuffle(mapFillArray);
 
 
@@ -259,6 +258,7 @@ function createMapSquareDiv(stateObj, indexOfSquare, classesToAdd) {
 
   if (isSquareReachable(stateObj, indexOfSquare) === true) {
     mapSquareDiv.classList.add("clickable-square")
+    mapSquareDiv.textContent = classesToAdd[0]
     mapSquareDiv.addEventListener("click", function() {
       //the state getting passed here somehow has 
       changeMapSquare(stateObj, indexOfSquare)
@@ -267,14 +267,14 @@ function createMapSquareDiv(stateObj, indexOfSquare, classesToAdd) {
     mapSquareDiv.textContent = classesToAdd[0];
   }
 
-  if (classesToAdd.includes("Remove") || classesToAdd.includes("Upgrade")) {
-    mapSquareDiv.textContent = "Event"
+  if (classesToAdd.includes("Remove") || classesToAdd.includes("Upgrade") || classesToAdd.includes("?")) {
+    mapSquareDiv.textContent = "?"
     mapSquareDiv.classList.add("Event")
   } else if (classesToAdd.includes("Town")) {
     mapSquareDiv.textContent = "Go to Town";
-  } else {
     mapSquareDiv.textContent = classesToAdd[0];
-  } 
+  } else {}
+
   if (indexOfSquare === stateObj.playerHere) {
     mapSquareDiv.textContent = "You are here";
     mapSquareDiv.classList.add("here");
@@ -304,7 +304,7 @@ function changeMapSquare(stateObj, indexToMoveTo) {
         newState.status = Status.InTown;
         newState.InTown = true;
       })
-    } else if (stateObj.townMapSquares[indexToMoveTo] === "Event") {
+    } else if (stateObj.townMapSquares[indexToMoveTo] === "?") {
       console.log("clicked on an event")
       shuffledEventsArray = fisherYatesShuffle(eventsArray);
       stateObj = immer.produce(stateObj, (newState) => {
@@ -1374,7 +1374,11 @@ function skipToTownButton(stateObj, buttonString, divName, cardSkip=false, isEve
   let skipButton = document.createElement("Button");
   if (!cardSkip) {
     skipButton.addEventListener("click", function () {
-      changeStatus(stateObj, Status.OverworldMap, isEventUsedForSkipButton, skipGoldGift);
+      if (stateObj.InTown == true) {
+        changeStatus(stateObj, Status.InTown, isEventUsedForSkipButton, skipGoldGift);
+      } else {
+        changeStatus(stateObj, Status.OverworldMap, isEventUsedForSkipButton, skipGoldGift);
+      }
     });
   } else {
     skipButton.addEventListener("click", function () {
@@ -1392,7 +1396,7 @@ function renderRemoveCard(stateObj) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app");
-  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", removeCard);
+  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", removeCard, goldCost="remove");
   skipToTownButton(stateObj, "I don't want to remove any of these cards from my deck", ".remove-div");
 };
 
@@ -1664,10 +1668,12 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
         cardDiv.append(cardText);
 
         if (goldCost === "remove") {
-          let costText = document.createElement("P");
-          costText.textContent = "(" + stateObj.cardRemoveCost+ " gold to remove)";
-          costText.classList.add("invisible-cost")
-          cardDiv.append(costText);
+          if (stateObj.InTown === true) {
+            let costText = document.createElement("P");
+            costText.textContent = "(" + stateObj.cardRemoveCost+ " gold to remove)";
+            costText.classList.add("invisible-cost")
+            cardDiv.append(costText);
+          }
         } else if (goldCost === "paidremoval") {
           let removalpayment = (cardObj.rare === true) ? 100 : 50;
           let costText = document.createElement("P");
@@ -1680,6 +1686,12 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
           altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "upgrades", 1)
           altUpgradeText.classList.add("alt-card-text");
           cardDiv.append(altUpgradeText);
+          if (stateObj.InTown === true) {
+            let costText = document.createElement("P");
+            costText.textContent = "(" + stateObj.cardUpgradeCost+ " gold to upgrade)";
+            costText.classList.add("invisible-cost")
+            cardDiv.append(costText);
+          }
 
           if (typeof cardObj.cost === 'function') {
             let cardAltCost = document.createElement("H3");
