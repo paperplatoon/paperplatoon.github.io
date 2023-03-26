@@ -94,7 +94,11 @@ let gameStartState = {
   //townMapSquares: [...Array(15).keys()],
   playerHere: 1,
   townMapSet: false,
+  playerXP: 0,
+  playerLevel: 1
 };
+
+let levelXPRequirements = [0, 30, 70, 120, 180, 250, 330, 420, 520];
 
 const eventsArray = [
   // {
@@ -367,6 +371,10 @@ function changeState(newStateObj) {
   if (newStateObj.status === Status.InEncounter) {
     stateObj = handleDeaths(stateObj);
   }
+
+  if (newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
+    stateObj = monsterLevelUp(stateObj);
+  }
   state = {...stateObj}
  
   renderScreen(stateObj);
@@ -515,6 +523,8 @@ function chooseThisMonster(stateObj, index) {
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 function changeStatus(stateObj, newStatus, countsAsEventSkipForChangeStatus=false, skipGoldGift=50) {
+  //HUGE HACK, deal with this later, console.log
+  document.querySelector("#playerDeckPile").classList.remove("upgrade-animation");
   stateObj = immer.produce(stateObj, (newState) => {
     if (countsAsEventSkipForChangeStatus === true) {
       newState.townMapSquares[newState.playerHere] = "completed";
@@ -942,6 +952,7 @@ async function renderDivs(stateObj) {
   <div id="town-top-row">
     <div id="status-text-div">
       <p>Gym: ${stateObj.gymCount+1}   Fight: ${stateObj.gymFightCount+1}/3</p>
+      <p>Level: ${stateObj.playerLevel} XP: ${stateObj.playerXP - levelXPRequirements[stateObj.playerLevel-1]} / ${levelXPRequirements[stateObj.playerLevel] - levelXPRequirements[stateObj.playerLevel-1]}</p>
     </div>
     
     <div id="playerDeckPile" class="remove-pile">View Current Deck
@@ -1087,6 +1098,7 @@ function resetAfterFight(stateObj) {
       newState.status = Status.VictoryScreen;
     } else if (newState.fightingBoss === true) {
       newState.gold += newState.townBossEncounter.goldReward
+      newState.playerXP += newState.townBossEncounter.XP
       newState.gymFightCount = 0;
       newState.gymCount += 1;
       newState.playerMonster.maxHP += 10
@@ -1102,6 +1114,7 @@ function resetAfterFight(stateObj) {
       newState.status = Status.EncounterRewards;
     } else {
       newState.gold += newState.townMonsterArray[newState.gymFightCount].goldReward
+      newState.playerXP += newState.townMonsterArray[newState.gymFightCount].XP
       newState.gymFightCount += 1;
       newState.status = Status.EncounterRewards;
     }
@@ -1259,6 +1272,28 @@ function upgradeCard(stateObj) {
   return stateObj;
 }
 
+function monsterLevelUp(stateObj) {
+  let targetIndex = Math.floor(Math.random() * (stateObj.playerDeck.length));
+
+  stateObj = immer.produce(stateObj, (newState) => {
+    
+    if (stateObj.playerXP >= levelXPRequirements[newState.playerLevel+1]) {
+      newState.playerDeck[targetIndex].upgrades +=2;
+      newState.playerLevel += 2;
+      let upgradeText = `You leveled up and upgraded the card ` + stateObj.playerDeck[targetIndex].name + ` two times`.
+      alert(upgradeText);
+      document.querySelector("#playerDeckPile").classList.add("upgrade-animation");
+    } else if (stateObj.playerXP >= levelXPRequirements[newState.playerLevel]) {
+      newState.playerDeck[targetIndex].upgrades +=1;
+      newState.playerLevel += 1;
+      let upgradeText = `You leveled up and upgraded the card ` + stateObj.playerDeck[targetIndex].name;
+      alert(upgradeText);
+
+    } else {}
+  });
+  return stateObj
+}
+
 async function playACard(stateObj, cardIndexInHand, arrayObj) {
   console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
   stateObj = stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
@@ -1341,6 +1376,13 @@ function topRowDiv(stateObj, divName) {
   
   statusTextDiv.append(statusText);
   topRowDiv.append(statusTextDiv);
+
+  let monsterXP = document.createElement("H3");
+  let calcXP = stateObj.playerXP - levelXPRequirements[stateObj.playerLevel-1]; 
+  let newXP = levelXPRequirements[stateObj.playerLevel] - levelXPRequirements[stateObj.playerLevel-1]
+  monsterXP.textContent = `Level: ${stateObj.playerLevel}` + "      "+ calcXP + "/" + newXP;
+  monsterXP.classList.add("monster-xp");
+  topRowDiv.appendChild(monsterXP);
 
   let monsterHP = document.createElement("H3");
   monsterHP.textContent = stateObj.playerMonster.currentHP + "/" + stateObj.playerMonster.maxHP;

@@ -2015,19 +2015,19 @@ let specialCardPool = {
     name: "Murder",
     text: (state, index, array) => { return `Kill targeted monster`},
     minReq: (stateObj, index, array) => {
-      return array[index].baseCost;
+      return array[index].baseCost - array[index].upgrades;
     },
     upgrades: 0,
     baseCost: 1,
     cost:  (stateObj, index, array) => {
-      return array[index].baseCost;
+      return array[index].baseCost - array[index].upgrades;
     },
     cardType: "ability",
     elementType: "special",
     action: (stateObj, index, array) => {
         stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[newState.targetedMonster].currentHP = 0;
-          newState.playerMonster.encounterEnergy -= array[index].baseCost;
+          newState.playerMonster.encounterEnergy -= array[index].baseCost-array[index].upgrades;
         })
       return stateObj;
     }
