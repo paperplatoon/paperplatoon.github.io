@@ -204,18 +204,14 @@ function fillMapWithArray(stateObj) {
 
     if (stateObj.gymCount > 0) {
       newState.townMapSquares[4] = "Fight";
-      
+
     }
-    console.log("town Squares going from " + state.townMapSquares + " to " + newState.townMapSquares)
     //newState.status = Status.InTown;
     newState.townMapSet = true;
     newState.playerHere = 1;
     newState.status = Status.OverworldMap
     newState.townMonsterArray = townMonsterEncounters;
-    if (stateObj.townMonsterArray.length > 0) {
-      console.log("town mosnters changing from " + stateObj.townMonsterArray[1].name + stateObj.townMonsterArray[2].name  + " to " + newState.townMonsterArray[1] + stateObj.townMonsterArray[2].name)
   
-    }
      newState.townBossEncounter = bossEncounters[0];
   })
   changeState(stateObj);
@@ -277,10 +273,24 @@ function createMapSquareDiv(stateObj, indexOfSquare, classesToAdd) {
     mapSquareDiv.textContent = "?"
     mapSquareDiv.classList.add("Event")
   } else if (classesToAdd.includes("Town")) {
-    mapSquareDiv.textContent = "Go to Town";
-    mapSquareDiv.textContent = classesToAdd[0];
+    mapSquareDiv.textContent = "";
+    let arrow = document.createElement("Div");
+    arrow.classList.add("arrow-1");
+    mapSquareDiv.append(arrow); 
   } else if (classesToAdd.includes("path") || classesToAdd.includes("completed") || classesToAdd.includes("Start")) {
     mapSquareDiv.textContent = "";
+  } else if (classesToAdd.includes("Fight")) {
+    mapSquareDiv.textContent = "";
+    let pentagram = document.createElement("Div");
+    pentagram.classList.add("pentagram");
+    mapSquareDiv.append(pentagram); 
+  } else if (classesToAdd.includes("Healer")) {
+    mapSquareDiv.textContent = "";
+    let heart = document.createElement("Div");
+    heart.classList.add("monster-hp");
+    mapSquareDiv.append(heart); 
+  } else if (classesToAdd.includes("Shop")) {
+    mapSquareDiv.textContent = "$";
   } else {}
 
   if (indexOfSquare === stateObj.playerHere) {
