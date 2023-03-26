@@ -1078,8 +1078,6 @@ function resetAfterFight(stateObj) {
     newState.comboPerTurn = 0;
     newState.fightStarted = false;
 
-    newState.gold += newState.townMonsterArray[newState.gymFightCount].goldReward
-
     newState.townMapSquares[newState.playerHere] = "completed";
 
     
@@ -1088,6 +1086,7 @@ function resetAfterFight(stateObj) {
     if (newState.playerHere === 19 && newState.gymCount === 2) {
       newState.status = Status.VictoryScreen;
     } else if (newState.fightingBoss === true) {
+      newState.gold += newState.townBossEncounter.goldReward
       newState.gymFightCount = 0;
       newState.gymCount += 1;
       newState.playerMonster.maxHP += 10
@@ -1102,6 +1101,7 @@ function resetAfterFight(stateObj) {
       
       newState.status = Status.EncounterRewards;
     } else {
+      newState.gold += newState.townMonsterArray[newState.gymFightCount].goldReward
       newState.gymFightCount += 1;
       newState.status = Status.EncounterRewards;
     }
