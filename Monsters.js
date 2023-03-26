@@ -30,9 +30,10 @@ let opponentMonsters = {
         name: "Spreading Shield",
         cost: "0",
         text: (state, index, array) => {
-          return `All enemies gain +${Math.floor((array[index].baseBlock / 2)) + array[index].dex} block. +1 energy`
+          return `All enemies gain +${Math.floor((array[index].baseBlock / 2)) + array[index].dex} block`
         },
         minReq: 0,
+        energyChange: "+1",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             newState.opponentMonster.forEach(function (monsterObj) {
@@ -45,21 +46,31 @@ let opponentMonsters = {
           return toChangeState;
         }
       },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
 
       {
         name: "Detonate",
-        cost: "4",
+        cost: "3",
+        energyChange: "-3",
         text: (state, index, array) => {
-          return ` Deal ${(array[index].baseDamage * 4) + array[index].strength} damage. -4 energy`
+          return ` Deal ${(array[index].baseDamage * 4) + array[index].strength} damage`
         },
-        minReq: 4,
+        minReq: 3,
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             let tempState = dealPlayerDamage(newState, array[index].baseDamage * 4, index);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
 
-            newState.opponentMonster[index].encounterEnergy -= 4;
+            newState.opponentMonster[index].encounterEnergy -= 3;
           })
           return toChangeState;
         }
@@ -89,9 +100,10 @@ let opponentMonsters = {
         name: "Spreading Shield",
         cost: "0",
         text: (state, index, array) => {
-          return `All enemies gain +${Math.floor((array[index].baseBlock / 2)) + array[index].dex} block. +1 energy`
+          return `All enemies gain +${Math.floor((array[index].baseBlock / 2)) + array[index].dex} block`
         },
         minReq: 0,
+        energyChange: "+1",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             newState.opponentMonster.forEach(function (monsterObj) {
@@ -105,18 +117,25 @@ let opponentMonsters = {
         }
       },
       {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
         name: "Quick Detonate",
-        cost: "3",
+        cost: "2",
         text: (state, index, array) => {
-          return `Deal ${(array[index].baseDamage * 3) + array[index].strength} block. -3 energy`
+          return `Deal ${(array[index].baseDamage * 3) + array[index].strength} block`
         },
-        minReq: 3,
+        minReq: 2,
+        energyChange: "-2",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             let tempState = dealPlayerDamage(newState, array[index].baseDamage * 3, index);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy -= 3;
+            newState.opponentMonster[index].encounterEnergy -= 2;
           })
           return toChangeState;
         }
@@ -146,7 +165,7 @@ let opponentMonsters = {
         name: "Take Cover",
         cost: "0",
         text: (state, index, array) => {
-          return `Gain ${(array[index].baseBlock*2) + array[index].dex} block. +3 energy`
+          return `Gain ${(array[index].baseBlock*2) + array[index].dex} block`
         },
         minReq: 0,
         energyChange: "+3",
@@ -165,12 +184,14 @@ let opponentMonsters = {
       {
         name: false,
       },
-
+      {
+        name: false,
+      },
       {
         name: "Shield Throw",
-        cost: "1",
+        cost: "3",
         text: (state, index, array) => {
-          return `Deal ${(array[index].baseDamage*2) + array[index].dex + array[index].strength} damage. Gain ${array[index].baseScale*2} dexterity. -2 energy`
+          return `Deal ${(array[index].baseDamage*2) + array[index].dex + array[index].strength} damage. Gain ${array[index].baseScale} dexterity`
         },
         minReq: 3,
         energyChange: "-3",
@@ -179,7 +200,7 @@ let opponentMonsters = {
             let tempState = dealPlayerDamage(newState, ((array[index].baseDamage*2) + array[index].dex), index);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy -= 2;
+            newState.opponentMonster[index].encounterEnergy -= 3;
             newState.opponentMonster[index].dex += array[index].baseScale*2;
           })
           return toChangeState;
@@ -210,6 +231,7 @@ let opponentMonsters = {
       {
         name: "Shielded Strike",
         cost: "0",
+        energyChange: "+2",
         text: (state, index, array) => {
           let damageValue = 0;
           if (state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name)) {
@@ -218,7 +240,7 @@ let opponentMonsters = {
           if (state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name)) {
             damageValue += (Math.floor((array[index].baseBlock/2)) + state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex)
           }
-          return `Deal ${damageValue + array[index].strength} damage. Other monsters gain ${Math.floor(array[index].baseScale/2)} dexterity. +2 energy`
+          return `Deal ${damageValue + array[index].strength} damage. Other monsters gain ${Math.floor(array[index].baseScale/2)} dexterity`
         },
 
         minReq: 0,
@@ -251,20 +273,38 @@ let opponentMonsters = {
           return toChangeState;
         }
       },
-
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
       {
         name: "Rear Up",
-        cost: "7",
+        cost: "6",
         text: (state, index, array) => {
-          return `Deal ${(array[index].baseDamage * 5) + array[index].strength} damage. -2 energy`
+          return `Deal ${(array[index].baseDamage * 5) + array[index].strength} damage`
         },
-        minReq: 7,
+        minReq: 6,
+        energyChange: "-2",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             let tempState = dealPlayerDamage(newState, (array[index].baseDamage*5), index);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy -= 1;
+            newState.opponentMonster[index].encounterEnergy -= 2;
           })
           return toChangeState;
         }
@@ -295,7 +335,7 @@ let opponentMonsters = {
         name: "Replenish",
         cost: "0",
         text: (state, index, array) => {
-          return `Restore ${array[index].baseHeal} health. +2 energy`
+          return `Restore ${array[index].baseHeal} health`
         },
         minReq: 0,
         energyChange: "+2",
@@ -318,10 +358,13 @@ let opponentMonsters = {
         name: false,
       },
       {
+        name: false,
+      },
+      {
         name: "Shield Throw",
         cost: "3",
         text: (state, index, array) => {
-          return `Deal ${Math.floor((array[index].baseDamage/2)) + array[index].strength} damage 5 times. +1 energy`
+          return `Deal ${Math.floor((array[index].baseDamage/2)) + array[index].strength} damage 5 times`
         },
         minReq: 3,
         energyChange: "+1",
@@ -338,12 +381,15 @@ let opponentMonsters = {
       {
         name: false,
       },
+      {
+        name: false,
+      },
 
       {
         name: "Mega Drain",
         cost: "5",
         text: (state, index, array) => {
-          return `Deal ${(3 * array[index].baseDamage) + array[index].strength} damage. Restore ${array[index].baseHeal * 2} health. -5 energy`
+          return `Deal ${(3 * array[index].baseDamage) + array[index].strength} damage. Restore ${array[index].baseHeal * 2} health`
         },
         minReq: 5,
         energyChange: "-5",
@@ -389,9 +435,10 @@ let opponentMonsters = {
         name: "Replenish",
         cost: "0",
         text: (state, index, array) => {
-          return `Restore ${array[index].baseHeal} health. +1 energy`
+          return `Restore ${array[index].baseHeal} health`
         },
         minReq: 0,
+        energyChange: "+1",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             if (array[index].currentHP < (array[index].maxHP - (array[index].baseHeal + 1))) {
@@ -406,14 +453,24 @@ let opponentMonsters = {
           return toChangeState;
         }
       },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
 
       {
         name: "Seed Explosion",
         cost: "3",
         text: (state, index, array) => {
-          return `Deal ${(array[index].baseDamage*3) + array[index].strength} damage. -3 energy`
+          return `Deal ${(array[index].baseDamage*3) + array[index].strength} damage`
         },
         minReq: 3,
+        energyChange: "-3",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             let tempState = dealPlayerDamage(newState, array[index].baseDamage*3, index);
@@ -449,9 +506,10 @@ let opponentMonsters = {
             name: "Replenish",
             cost: "0",
             text: (state, index, array) => {
-              return `Restore ${array[index].baseHeal} health. +1 energy`
+              return `Restore ${array[index].baseHeal} health`
             },
             minReq: 0,
+            energyChange: "+1",
             action: (state, index, array) => {
               let toChangeState = immer.produce(state, (newState) => {
                 if (array[index].currentHP < (array[index].maxHP - (array[index].baseHeal + 1))) {
@@ -466,14 +524,21 @@ let opponentMonsters = {
               return toChangeState;
             }
           },
+          {
+            name: false,
+          },
+          {
+            name: false,
+          },
     
           {
             name: "Seed Eruption",
             cost: "2",
             text: (state, index, array) => {
-              return `Deal ${(array[index].baseDamage*3) + array[index].strength} damage. -2 energy`
+              return `Deal ${(array[index].baseDamage*3) + array[index].strength} damage`
             },
             minReq: 2,
+            energyChange: "-2",
             action: (state, index, array) => {
               let toChangeState = immer.produce(state, (newState) => {
                 let tempState = dealPlayerDamage(newState, (array[index].baseDamage*3), index);
@@ -510,9 +575,10 @@ let opponentMonsters = {
         cost: "0",
         text: (state, index, array) => {
           //maybe scale health restore for a later fight???
-          return `Deal ${array[index].baseDamage + array[index].strength} damage to ALL enemies. Gain 3 energy`
+          return `Deal ${array[index].baseDamage + array[index].strength} damage to ALL enemies`
         },
         minReq: 0,
+        energyChange: "+4",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             let calculatedDamage = array[index].baseDamage + array[index].strength;
@@ -529,25 +595,37 @@ let opponentMonsters = {
                 monsterObj.encounterBlock = 0;
               }
             })
-            newState.opponentMonster[index].encounterEnergy += 3;
+            newState.opponentMonster[index].encounterEnergy += 4;
           })
           return toChangeState;
         }
       },
-
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
       {
         name: "Unleash Growth",
-        cost: "3",
+        cost: "4",
         text: (state, index, array) => {
-          return `Deal damage equal to the total amount healed this fight (${state.enemyFightHealTotal}). -3 energy`
+          return `Deal damage equal to the total amount healed this fight (${state.enemyFightHealTotal})`
         },
-        minReq: 3,
+        minReq: 4,
+        energyChange: "-4",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             let tempState = dealPlayerDamage(newState, state.enemyFightHealTotal, index);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy -= 3;
+            newState.opponentMonster[index].encounterEnergy -= 4;
           })
           return toChangeState;
         }
@@ -578,7 +656,7 @@ let opponentMonsters = {
         name: "Power Strike",
         cost: "0",
         text: (state, index, array) => {
-          return `Deal ${array[index].baseDamage*2 + array[index].strength} damage. +3 energy`
+          return `Deal ${array[index].baseDamage*2 + array[index].strength} damage`
         },
         minReq: 0,
         energyChange: "+3",
@@ -600,13 +678,16 @@ let opponentMonsters = {
         name: false,
       },
       {
+        name: false,
+      },
+      {
         name: "Enrage",
         cost: "3",
         text: (state, index, array) => {
-          return `Gain ${(array[index].baseBlock*2) + array[index].dex} block. Gain ${array[index].baseScale} strength. -3 energy`
+          return `Gain ${(array[index].baseBlock*2) + array[index].dex} block. Gain ${array[index].baseScale} strength`
         },
         minReq: 3,
-        energyChange: "+3",
+        energyChange: "-3",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock*2) + array[index].dex);
@@ -641,19 +722,40 @@ let opponentMonsters = {
         name: "Whirling Dervish",
         cost: "0",
         text: (state, index, array) => {
-            return `Deal ${Math.floor(array[index].baseDamage/4) + array[index].strength} damage 4 times. Gain ${Math.floor(array[index].baseScale/3)} strength`
+            return `Deal ${Math.floor(array[index].baseDamage/4) + array[index].strength} damage 4 times`
         },
         minReq: 0,
+        energyChange: "+1",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             let tempState = dealPlayerDamage(newState, Math.floor(array[index].baseDamage/4), index, 4);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
+            newState.opponentMonster[index].encounterEnergy += 1;
           })
           return toChangeState;
         }
-      }
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Power Up",
+        cost: "1",
+        text: (state, index, array) => {
+            return `Gain ${array[index].baseBlock + array[index].dex} block. Gain ${Math.floor(array[index].baseScale/3)} strength`
+        },
+        minReq: 1,
+        energyChange: "-1",
+        action: (state, index, array) => {
+          let toChangeState = immer.produce(state, (newState) => {
+            newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].dex;
+            newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
+            newState.opponentMonster[index].encounterEnergy -= 1;
+          })
+          return toChangeState;
+        }
+      },
     ]
   },
 
@@ -679,51 +781,66 @@ let opponentMonsters = {
         name: "Roll Up",
         cost: "0",
         text: (state, index, array) => {
-          return `Deal ${array[index].baseDamage + array[index].strength} damage. Gain ${array[index].baseScale*2} strength. +3 energy`
+          return `Deal ${array[index].baseDamage + array[index].strength} damage. Gain ${array[index].baseScale*2} strength`
         },
         minReq: 0,
+        energyChange: "+2",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             let tempState = dealPlayerDamage(newState, array[index].baseDamage, index);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
             newState.opponentMonster[index].strength += array[index].baseScale*2;
-            newState.opponentMonster[index].encounterEnergy += 3;
+            newState.opponentMonster[index].encounterEnergy += 2;
           })
           return toChangeState;
         }
       },
-
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
       {
         name: "Muscle Shield",
-        cost: "5",
+        cost: "3",
         text: (state, index, array) => {
-          return `Gain ${array[index].baseBlock + array[index].strength + array[index].dex} block. Improved by strength. +4 energy`
+          return `Gain ${array[index].baseBlock + array[index].strength + array[index].dex} block. Improved by strength`
         },
-        minReq: 5,
-        baseBlock: 10,
+        minReq: 3,
+        energyChange: "+2",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].strength + array[index].dex;
-            newState.opponentMonster[index].encounterEnergy += 4;
+            newState.opponentMonster[index].encounterEnergy += 2;
           })
           return toChangeState;
         }
       },
-
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
       {
         name: "Body Blows",
-        cost: "10",
+        cost: "5",
         text: (state, index, array) => {
-          return `Deal strength value (${array[index].strength}) two times. -10 energy`
+          return `Deal strength value (${array[index].strength}) two times`
         },
-        minReq: 10,
+        minReq: 5,
+        energyChange: "-5",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             let tempState = dealPlayerDamage(newState, 0, index, 2);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy -= 10;
+            newState.opponentMonster[index].encounterEnergy -= 5;
           })
           return toChangeState;
         }
