@@ -326,7 +326,7 @@ let fireCardPool = {
       name: "Call Demons",
       text: (state, index, array) => { 
         let totalDamage = array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades * 3)
-        return `Deal ${totalDamage} damage. +(${totalDamage}) for each time you Self-damaged this game (${state.fightSelfDamageCount + array[index].baseHits} total)` },
+        return `Deal ${totalDamage} damage. +(${totalDamage}) extra for each time you Self-damaged this game (${state.fightSelfDamageCount + array[index].baseHits} total)` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -432,8 +432,8 @@ let fireCardPool = {
       },
       cardType: "ability",
       elementType: "fire",
-      energyDrain: 2,
-      baseBlock: 6,
+      energyDrain: 1,
+      baseBlock: 8,
       upgrades: 0,
       action: (state, index, array) => {
         let toChangeState = immer.produce(state, (newState) => {
@@ -632,6 +632,7 @@ let fireCardPool = {
         let toChangeState = immer.produce(state, (newState) => {
           newState.playerMonster.tempStrength += (3 + (array[index].upgrades *2));
           newState.playerMonster.strength += (3 + (array[index].upgrades *2));
+          newState
         })
         return toChangeState;
       }
@@ -655,7 +656,7 @@ let fireCardPool = {
         return array[index].baseCost;
       },
       upgrades: 0,
-      baseDamage: 9,
+      baseDamage: 7,
       baseHits: 1,
       cardType: "attack",
       elementType: "fire",

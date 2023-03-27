@@ -2263,7 +2263,7 @@ async function endTurn(stateObj) {
   stateObj = endTurnIncrement(stateObj);
   console.log("endTurn post-Increment: fightStarted changing from " + stateObj.fightStarted + " to " + stateObj.fightStarted)
   stateObj = changeState(stateObj);
-  await pause(500);
+  await pause(200);
 
   if (stateObj.opponentMonster.length === 0) {
     console.log("breaking out of function endTurn")
@@ -2280,11 +2280,9 @@ async function endTurn(stateObj) {
 
   console.log("picking opponent move");
   stateObj = pickOpponentMove(stateObj);
-  changeState(stateObj);
-  await pause(500);
   stateObj = playOpponentMove(stateObj);
   changeState(stateObj);
-  await pause(500);
+  await pause(200);
 
   stateObj = pickOpponentMove(stateObj);
   stateObj = immer.produce(stateObj, (draft) => {
