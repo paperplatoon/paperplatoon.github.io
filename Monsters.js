@@ -922,7 +922,7 @@ let opponentMonsters = {
         name: "River of Flames",
         cost: "6",
         text: (state, index, array) => {
-          return `Deal ${array[index].baseDamage * 5} damage.`
+          return `Deal ${array[index].baseDamage * 3} damage.`
         },
         minReq: 6,
         energyChange: "-6",
