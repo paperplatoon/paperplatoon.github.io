@@ -192,7 +192,7 @@ const eventsArray = [
 //takes a stateObject and fills its map with events
 function fillMapWithArray(stateObj) {
   console.log("fill Mpa with Array is being called")
-  let mapFillArray = ["?", "?", "Fight", "Fight", "path", "path", "path", "Fight", "Shop", "Healer", "Upgrade", "Remove"];
+  let mapFillArray = ["?", "?", "Fight", "Fight", "Fight", "Fight", "path", "path", "path", "Fight", "Shop", "Healer", "Upgrade", "Remove"];
   let shuffledMap = fisherYatesShuffle(mapFillArray);
 
 
@@ -204,8 +204,10 @@ function fillMapWithArray(stateObj) {
 
     //fill the actual map
     stateObj = immer.produce(stateObj, (newState) => {
+      newState.townMapSquares[3] = shuffledMap[0]
+      newState.townMapSquares[5] = shuffledMap[1]
       for (i=6; i < 18; i++) {
-          newState.townMapSquares[i] = shuffledMap[i-6];
+          newState.townMapSquares[i] = shuffledMap[i-4];
     }
 
     if (stateObj.gymCount > 0) {
