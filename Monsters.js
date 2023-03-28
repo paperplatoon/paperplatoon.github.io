@@ -963,7 +963,7 @@ let opponentMonsters = {
         action: (stateObj, index, array) => {
           stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock)  + array[index].dex);
-            newState.opponentMonster[index].strength += Math.ceil(array[index].baseScale/1);
+            newState.opponentMonster[index].strength += Math.ceil(array[index].baseScale/2);
             newState.opponentMonster[index].encounterEnergy += 3;
           })
           return stateObj;
@@ -987,7 +987,7 @@ let opponentMonsters = {
         action: (stateObj, index, array) => {
           stateObj = dealPlayerDamage(stateObj, array[index].baseDamage, index, -3);
           stateObj = immer.produce(state, (newState) => {
-            newState.opponentMonster[index].dex += Math.ceil(array[index].baseScale/1);
+            newState.opponentMonster[index].dex += Math.ceil(array[index].baseScale/2);
           })
           return stateObj;
         }
