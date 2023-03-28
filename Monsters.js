@@ -956,7 +956,7 @@ let opponentMonsters = {
         name: "Study Openings",
         cost: "0",
         text: (state, index, array) => {
-          return `Gain ${(array[index].baseBlock) + array[index].dex} block. Gain ${Math.ceil(array[index].baseScale/1)} strength`
+          return `Gain ${(array[index].baseBlock) + array[index].dex} block. Gain ${Math.ceil(array[index].baseScale/2)} strength`
         },
         minReq: 0,
         energyChange: "+3",
@@ -980,12 +980,12 @@ let opponentMonsters = {
         name: "Graceful Strike",
         cost: "3",
         text: (state, index, array) => {
-          return `Deal ${(array[index].baseDamage) + array[index].strength} damage. Gain ${Math.ceil(array[index].baseScale/1)} dexterity`
+          return `Deal ${(array[index].baseDamage) + array[index].strength} damage. Gain ${Math.ceil(array[index].baseScale/2)} dexterity`
         },
         minReq: 3,
         energyChange: "-3",
         action: (stateObj, index, array) => {
-          stateObj = dealPlayerDamage(newState, array[index].baseDamage, index, -3);
+          stateObj = dealPlayerDamage(stateObj, array[index].baseDamage, index, -3);
           stateObj = immer.produce(state, (newState) => {
             newState.opponentMonster[index].dex += Math.ceil(array[index].baseScale/1);
           })
