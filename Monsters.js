@@ -672,9 +672,6 @@ let opponentMonsters = {
         name: false,
       },
       {
-        name: false,
-      },
-      {
         name: "Enrage",
         cost: "3",
         text: (state, index, array) => {
@@ -863,14 +860,14 @@ let opponentMonsters = {
         name: "Coursing Flames",
         cost: "0",
         text: (state, index, array) => {
-          return `Deal ${array[index].baseDamage - 2} damage. Gain ${array[index].baseScale} strength`
+          return `Deal ${array[index].baseDamage - 2 + array[index].strength} damage. Gain ${array[index].baseScale} strength`
         },
         minReq: 0,
         energyChange: "+1",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             newState.opponentMonster[index].encounterEnergy += 1;
-            let tempState = dealPlayerDamage(newState, array[index].BaseDamage+1, index);
+            let tempState = dealPlayerDamage(newState, array[index].baseDamage-2, index);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
             newState.opponentMonster[index].strength += array[index].baseScale;
@@ -910,7 +907,7 @@ let opponentMonsters = {
         },
         minReq: 4,
         energyChange: "+2",
-        action: (state, inde, array) => {
+        action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             newState.opponentMonster[index].encounterBlock += 1+(array[index].baseBlock*2);
             newState.opponentMonster[index].encounterEnergy += 2;
@@ -929,9 +926,9 @@ let opponentMonsters = {
         },
         minReq: 6,
         energyChange: "-6",
-        action: (state, monsterIndex, array) => {
+        action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
-            newState.opponentMonster[monsterIndex].encounterEnergy -= 6;
+            newState.opponentMonster[index].encounterEnergy -= 6;
             let tempState = dealPlayerDamage(newState, array[index].opponentBaseDamage*5, monsterIndex);
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;

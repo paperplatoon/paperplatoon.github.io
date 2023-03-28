@@ -73,11 +73,13 @@ let gameStartState = {
   extraHeal: 0,
   fightHealCount: 0,
   fightHealTotal: 0,
-  fightSelfDamageCount: 0,
-  fightSelfDamageTotal: 0,
+  fightEnergyGiftCount: 0,
+  fightEnergyGiftTotal: 0,
   fightEnergyDrainCount: 0,
   fightEnergyDrainTotal: 0,
   selfDamageBlock: 0,
+  energyGiftBlock: 0,
+  energyGiftAttack: 0,
   selfDamageAttack: 0,
   cardsPerTurn: 0,
   comboPerTurn: 0,
@@ -389,7 +391,7 @@ renderScreen(state);
 // - - - - - -  - - - - -Functions used by Cards.js and Monsters.js - - - - - -  - - - - -
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, all=false, specifiedIndex=false) {
+function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, energyCost=false, all=false, specifiedIndex=false) {
   let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster 
   let toChangeState = immer.produce(stateObj, (newState) => {
     let calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
@@ -428,6 +430,9 @@ function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, all=false,
         }
       }
     }
+    if (energyCost) {
+      newState.playerMonster.encounterEnergy -= energyCost
+    }
   });
   return toChangeState;
 }
@@ -452,6 +457,30 @@ function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, attackNumber
   return toChangeState;
 }
 
+function healPlayer(stateObj, amountToHeal, energyCost=false) {
+  amountToHeal += stateObj.extraHeal;
+  let healthDiff = stateObj.playerMonster.maxHP - stateObj.playerMonster.currentHP
+  stateObj = immer.produce(stateObj, (newState) => {
+    if (healthDiff <= amountToHeal) {
+      newState.fightHealTotal += newState.playerMonster.maxHP-newState.playerMonster.currentHP;
+      newState.playerMonster.currentHP = newState.playerMonster.maxHP;
+      newState.fightHealTotal += healthDiff    
+      if (healthDiff > 0) {
+        newState.fightHealCount += 1;
+      } 
+    } else {
+      newState.playerMonster.currentHP += amountToHeal;
+      newState.fightHealCount += 1;
+      newState.fightHealTotal += amountToHeal;
+    }
+    if (energyCost) {
+      newState.playerMonster.encounterEnergy -= energyCost;
+    }
+  })
+  
+  return stateObj
+}
+
 function fisherYatesShuffle(arrayObj) {
   let arrayCopy = [...arrayObj];
   for (x = arrayCopy.length-1; x > 0; x--) { 
@@ -469,6 +498,79 @@ function shuffleArray(array) {
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value);
 }
+
+function addBackstepsToHand(stateObj, numberToAdd=1) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    for (let i=0; i < numberToAdd; i++) {
+      if (newState.encounterHand.length > 8) {
+        console.log("hand was full, backstep was not added")
+      } else
+      newState.encounterHand.push(fireCardPool.backstep)
+    }
+  })
+  return stateObj
+}
+
+function energyGift(stateObj, energyToGain, energyCost=false) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.opponentMonster[newState.targetedMonster].encounterEnergy += energyToGain;
+    newState.fightEnergyGiftCount += 1
+    newState.fightEnergyGiftTotal += energyToGain
+    if (energyCost) {
+      newState.playerMonster.encounterEnergy -= energyCost
+    }
+    if (newState.energyGiftBlock > 0) {
+      newState.playerMonster.encounterBlock += newState.energyGiftBlock;
+    }
+  })
+  if (newState.energyGiftAttack > 0) {
+    let targetIndex = Math.floor(Math.random() * (newState.opponentMonster.length))
+    stateObj = dealOpponentDamage(newState, (newState.energyGiftAttack-stateObj.playerMonster.strength), attackNumber=1, all=true);  
+  }
+  return stateObj
+}
+
+function destroyEnergy(stateObj, energyToDestroy, energyCost=false) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.opponentMonster[newState.targetedMonster].encounterEnergy -= energyToDestroy;
+    newState.fightEnergyDrainCount += 1
+    newState.fightEnergyDrainTotal += energyToDestroy
+    if (energyCost) {
+      newState.playerMonster.encounterEnergy -= energyCost
+    }
+  })
+  return stateObj
+}
+
+function gainBlock(stateObj, blockToGain, energyCost=false, blockNumber=1) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerMonster.encounterBlock += (blockToGain + stateObj.playerMonster.dex)*blockNumber;
+    if (energyCost) {
+      newState.playerMonster.encounterEnergy -= energyCost
+    }
+  })
+  return stateObj
+}
+
+
+function dealSelfDamage(stateObj, damageToDo) {
+  stateObj = immer.produce(stateObj, (newState) => {
+      newState.playerMonster.currentHP -= damageToDo
+      newState.fightSelfDamageCount += 1;
+      newState.fightSelfDamageTotal += damageToDo;
+
+      if (newState.selfDamageBlock > 0) {
+        newState.playerMonster.encounterBlock += newState.selfDamageBlock;
+      }
+      if (newState.selfDamageAttack > 0) {
+        let targetIndex = Math.floor(Math.random() * (newState.opponentMonster.length))
+        let tempState = dealOpponentDamage(newState, (newState.selfDamageAttack-stateObj.playerMonster.strength), attackNumber=1, all=false, specifiedIndex=targetIndex);
+        newState.opponentMonster[targetIndex].currentHP = tempState.opponentMonster[targetIndex].currentHP;
+        newState.opponentMonster[targetIndex].encounterBlock = tempState.opponentMonster[targetIndex].encounterBlock;
+      }
+    });
+  return stateObj; 
+};
 
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -817,36 +919,7 @@ function increaseBaseHits(stateObj, index, array) {
 // - - - - - -  - - - - - Functions for Cards - - - - - -  - - - - -
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-function addBackstepsToHand(stateObj, numberToAdd=1) {
-  stateObj = immer.produce(stateObj, (newState) => {
-    for (let i=0; i < numberToAdd; i++) {
-      if (newState.encounterHand.length > 8) {
-        console.log("hand was full, backstep was not added")
-      } else
-      newState.encounterHand.push(fireCardPool.backstep)
-    }
-  })
-  return stateObj
-}
 
-function dealSelfDamage(stateObj, damageToDo) {
-  stateObj = immer.produce(stateObj, (newState) => {
-      newState.playerMonster.currentHP -= damageToDo
-      newState.fightSelfDamageCount += 1;
-      newState.fightSelfDamageTotal += damageToDo;
-
-      if (newState.selfDamageBlock > 0) {
-        newState.playerMonster.encounterBlock += newState.selfDamageBlock;
-      }
-      if (newState.selfDamageAttack > 0) {
-        let targetIndex = Math.floor(Math.random() * (newState.opponentMonster.length))
-        let tempState = dealOpponentDamage(newState, (newState.selfDamageAttack-stateObj.playerMonster.strength), attackNumber=1, all=false, specifiedIndex=targetIndex);
-        newState.opponentMonster[targetIndex].currentHP = tempState.opponentMonster[targetIndex].currentHP;
-        newState.opponentMonster[targetIndex].encounterBlock = tempState.opponentMonster[targetIndex].encounterBlock;
-      }
-    });
-  return stateObj; 
-};
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // - - - - - -  - - - - - Rendering - - - - - -  - - - - -
@@ -1085,6 +1158,8 @@ function resetAfterFight(stateObj) {
     newState.gainLifePerCard = 0;
     newState.selfDamageAttack = 0;
     newState.selfDamageBlock = 0;
+    newState.energyGiftBlock = 0;
+    newState.energyGiftAttack = 0;
     newState.cardsPerTurn = 0;
     newState.comboPerTurn = 0;
     newState.fightStarted = false;
@@ -1175,6 +1250,8 @@ function setUpEncounter(stateObj, isBoss=false) {
     newState.fightSelfDamageTotal = 0;
     newState.selfDamageAttack = 0;
     newState.selfDamageBlock = 0;
+    newState.energyGiftBlock = 0;
+    newState.energyGiftAttack = 0;
     newState.fightEnergyDrainCount = 0;
     newState.fightEnergyDrainTotal = 0;
     newState.gainLifePerCard = 0;

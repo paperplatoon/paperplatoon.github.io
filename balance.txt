@@ -1,0 +1,9 @@
+0-cost -> future archetype
+
+
+bonus
+finisher
+self-damage
+energy drain
+
+stateObj = dealOpponentDamage(stateObj, damageValue, hitsValue);
