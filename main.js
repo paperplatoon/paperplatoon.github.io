@@ -525,9 +525,9 @@ function energyGift(stateObj, energyToGain, energyCost=false) {
       newState.playerMonster.encounterBlock += newState.energyGiftBlock;
     }
   })
-  if (newState.energyGiftAttack > 0) {
-    let targetIndex = Math.floor(Math.random() * (newState.opponentMonster.length))
-    stateObj = dealOpponentDamage(newState, (newState.energyGiftAttack-stateObj.playerMonster.strength), attackNumber=1, all=true);  
+  if (stateObj.energyGiftAttack > 0) {
+    let targetIndex = Math.floor(Math.random() * (stateObj.opponentMonster.length))
+    stateObj = dealOpponentDamage(stateObj, (stateObj.energyGiftAttack-stateObj.playerMonster.strength), attackNumber=1, all=true);  
   }
   return stateObj
 }
