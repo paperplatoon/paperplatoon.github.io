@@ -439,7 +439,7 @@ function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, energyCost
   return toChangeState;
 }
 
-function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, attackNumber = 1) {
+function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energyChange=false, attackNumber = 1) {
   let toChangeState = immer.produce(stateObj, (newState) => {
     calculatedDamage = ((damageNumber + newState.opponentMonster[monsterIndex].strength) * attackNumber);
     if (calculatedDamage > 0) {
@@ -453,6 +453,9 @@ function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, attackNumber
         console.log("you blocked " + newState.playerMonster.encounterBlock + " damage and took " + (calculatedDamage - newState.playerMonster.encounterBlock) + " damage" )
         newState.playerMonster.currentHP -= (calculatedDamage - newState.playerMonster.encounterBlock);
         newState.playerMonster.encounterBlock = 0;
+      }
+      if (energyChange) {
+        newState.opponentMonster[monsterIndex].encounterEnergy += energyChange
       }
     }
   });

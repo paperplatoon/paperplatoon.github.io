@@ -703,7 +703,7 @@ let opponentMonsters = {
     drown: 0,
     hunted: 0,
     poison: 0,
-    baseBlock: 0,
+    baseBlock: opponentBaseBlock,
     baseDamage: opponentBaseDamage,
     baseScale: opponentBaseScale,
     baseHeal: 0,
@@ -732,15 +732,15 @@ let opponentMonsters = {
       },
       {
         name: "Power Up",
-        cost: "1",
+        cost: "2",
         text: (state, index, array) => {
-            return `Gain ${array[index].baseBlock + array[index].dex} block. Gain ${Math.floor(array[index].baseScale/3)} strength`
+            return `Gain ${array[index].baseBlock - 2 + array[index].dex} block. Gain ${Math.floor(array[index].baseScale/3)} strength`
         },
-        minReq: 1,
+        minReq: 2,
         energyChange: "-1",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
-            newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].dex;
+            newState.opponentMonster[index].encounterBlock += array[index].baseBlock - 2 + array[index].dex;
             newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
             newState.opponentMonster[index].encounterEnergy -= 1;
           })
@@ -926,16 +926,73 @@ let opponentMonsters = {
         },
         minReq: 6,
         energyChange: "-6",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            newState.opponentMonster[index].encounterEnergy -= 6;
-            let tempState = dealPlayerDamage(newState, array[index].opponentBaseDamage*5, monsterIndex);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-          })
-          return toChangeState;
+        action: (stateObj, index, array) => {
+          stateObj = dealPlayerDamage(newState, array[index].opponentBaseDamage*5, index, -6);
+          return stateObj;
         }
       },
+    ]
+  },
+
+  balancegym1: {
+    name: "Block Gym Disciple",
+    type: "Air",
+    maxHP: opponentMaxHP*9,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: opponentMaxHP*9,
+    strength: 0,
+    dex: 0,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    baseBlock: opponentBaseBlock,
+    baseDamage: opponentBaseDamage,
+    baseScale: opponentBaseScale,
+    baseHeal: 0,
+    avatar: "img/earthpsycho.png",
+    moves: [
+      {
+        name: "Study Openings",
+        cost: "0",
+        text: (state, index, array) => {
+          return `Gain ${(array[index].baseBlock) + array[index].dex} block. Gain ${Math.ceiling(array[index].baseScale/1)} strength`
+        },
+        minReq: 0,
+        energyChange: "+3",
+        action: (stateObj, index, array) => {
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock)  + array[index].dex);
+            newState.opponentMonster[index].strength += Math.ceiling(array[index].baseScale/1);
+            newState.opponentMonster[index].encounterEnergy += 3;
+          })
+          return stateObj;
+        }
+      },
+
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Graceful Strike",
+        cost: "3",
+        text: (state, index, array) => {
+          return `Deal ${(array[index].baseDamage) + array[index].strength} damage. Gain ${Math.ceiling(array[index].baseScale/1)} dexterity`
+        },
+        minReq: 3,
+        energyChange: "-3",
+        action: (stateObj, index, array) => {
+          stateObj = dealPlayerDamage(newState, array[index].baseDamage, index, -3);
+          stateObj = immer.produce(state, (newState) => {
+            newState.opponentMonster[index].dex += Math.ceiling(array[index].baseScale/1);
+          })
+          return stateObj;
+        }
+      }
+
     ]
   },
 
@@ -1017,7 +1074,7 @@ let easyEncountersMjs = [
     XP: 10,
   },
   {
-    opponents: [opponentMonsters.blockgym1],
+    opponents: [opponentMonsters.balancegym1],
     goldReward: 25,
     XP: 10,
   },
@@ -1030,6 +1087,11 @@ let easyEncountersMjs = [
 ]
 
 let mediumEncountersMjs = [
+  {
+    opponents: [opponentMonsters.blockgym1],
+    goldReward: 25,
+    XP: 10,
+  },
   {
     opponents: [opponentMonsters.strengthgym1, opponentMonsters.strengthgymguard],
     goldReward: 35,
