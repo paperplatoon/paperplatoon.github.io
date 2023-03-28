@@ -50,7 +50,7 @@ let playerMonsters = {
         fireCardPool.tackle,
         fireCardPool.tackle,
         fireCardPool.tackle,
-        fireCardPool.followupslap,
+        fireCardPool.fierymissiles,
         //5 block
         fireCardPool.withdraw,
         fireCardPool.withdraw,

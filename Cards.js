@@ -304,7 +304,7 @@ let fireCardPool = {
     bloodshield: {
       cardID: 11,
       name: "Blood Shield",
-      text: (state, index, array) => { return `Gift opponent ${array[index].energyGift} energy. Gain ${array[index].baseBlock + (array[index].upgrades*6)} block` },
+      text: (state, index, array) => { return `Gift opponent ${array[index].energyGift} energy. Gain ${array[index].baseBlock + (array[index].upgrades*5)} block` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -314,11 +314,11 @@ let fireCardPool = {
         return array[index].baseCost;
       },
       energyGift: 2,
-      baseBlock: 16,
+      baseBlock: 12,
       cardType: "ability",
       elementType: "fire",
       action: (stateObj, index, array) => {
-        stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*6), array[index].baseCost);
+        stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*5), array[index].baseCost);
         stateObj = energyGift(stateObj, array[index].energyGift)
         return stateObj;
       }
@@ -484,7 +484,7 @@ let fireCardPool = {
         return array[index].baseCost;
       },
       upgrades: 0,
-      baseDamage: 9,
+      baseDamage: 6,
       energyGift: 2,
       baseHits: 2,
       cardType: "attack",
@@ -584,7 +584,7 @@ let fireCardPool = {
     ignite: {
       cardID: 20,
       name: "Ignite",
-      text: (state, index, array) => { return `Gift opponent ${array[index].energyGift} energy. Attacks deal +${6 + (array[index].upgrades*2)} damage this turn.` },
+      text: (state, index, array) => { return `Gift opponent ${array[index].energyGift} energy. Attacks deal +${5 + (array[index].upgrades*2)} damage this turn.` },
       minReq: -99,
       baseCost: 0,
       cost:  (state, index, array) => {
@@ -596,8 +596,8 @@ let fireCardPool = {
       energyGift: 1,
       action: (stateObj, index, array) => {
         stateObj = immer.produce(stateObj, (newState) => {
-          newState.playerMonster.tempStrength += (6 + (array[index].upgrades *2));
-          newState.playerMonster.strength += (6 + (array[index].upgrades *2));
+          newState.playerMonster.tempStrength += (5 + (array[index].upgrades *2));
+          newState.playerMonster.strength += (5 + (array[index].upgrades *2));
         })
         stateObj = energyGift(stateObj, array[index].energyGift, array[index].baseCost)
         return stateObj;
@@ -858,8 +858,8 @@ let fireCardPool = {
         stateObj = immer.produce(stateObj, (newState) => {
           newState.playerMonster.encounterEnergy += (3+array[index].upgrades);
         })
-        if (array[index].upgrades < array[index].energyGift) {
-          stateObj = dealSelfDamage(stateObj, array[index].energyGift - array[index].upgrades);
+        if (array[index].upgrades < array[index].baseSelfDamage) {
+          stateObj = dealSelfDamage(stateObj, array[index].baseSelfDamage - array[index].upgrades);
         }
         return stateObj;
       }
