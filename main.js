@@ -1033,7 +1033,6 @@ function renderPlayerMonster(stateObj) {
 
   document.getElementById('playerStats').appendChild(imageRowDiv);
 }
-
 async function renderDivs(stateObj) {
 
   if (stateObj.fightStarted === false) {
@@ -1044,45 +1043,43 @@ async function renderDivs(stateObj) {
     changeState(stateObj);
   }
 
-  document.getElementById("app").innerHTML = `
-  <div id="town-top-row">
-    <div class="monster-xp">
-      <p>Level: ${stateObj.playerLevel} XP: ${stateObj.playerXP - levelXPRequirements[stateObj.playerLevel-1]} / ${levelXPRequirements[stateObj.playerLevel] - levelXPRequirements[stateObj.playerLevel-1]}</p>
-    </div>
-    <div class="gym-text">
-      <p>Gym ${stateObj.gymCount+1}</p>
-    </div>
-    
-    <div id="playerDeckPile" class="remove-pile">View Current Deck
-      <div id="deckDiv"> </div>
-    </div>
-    <div id="goldDiv">
-      <img src="img/goldsack.PNG" class="bg-image"></img>
-      <h3 id="goldText"></h3>
-    </div>
-  </div>
-
-  <div class="flex-container" id="stats">
-    <div class="flex-container" id="playerMonster">
-      
-      <div id="playerStats"> </div>
-      
-      <div id="handContainer2"> </div>
-    </div>
-
-    <div id="opponents"></div>
-  </div>
-
-  </div>
-  <!-- <button id="resetButton">Reset</button> -->
-
-  </div>`;
-  document.getElementById("goldText").textContent = stateObj.gold;
+  document.getElementById("app").innerHTML = ""
+  let topRow = topRowDiv(stateObj, "app")
+  let restOfScreen = renderFightDiv();
+  document.querySelector("#app").append(restOfScreen);
+  
   
   renderOpponents(stateObj);
   renderHand(stateObj);
   renderPlayerMonster(stateObj);
-  }
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  renderCardPile(stateObj, stateObj.encounterDraw, "drawDiv");
+  renderCardPile(stateObj, stateObj.encounterDiscard, "discardDiv");
+}
+
+function renderFightDiv() {
+  let fightContainer = document.createElement("Div");
+  fightContainer.classList.add("flex-container");
+  fightContainer.setAttribute("id", "stats");
+
+  let playerMonsterDiv = document.createElement("Div");
+  playerMonsterDiv.classList.add("flex-container");
+  playerMonsterDiv.setAttribute("id", "playerMonster");
+
+  let playerStatsDiv = document.createElement("Div");
+  playerStatsDiv.setAttribute("id", "playerStats");
+  let handDiv = document.createElement("Div");
+  handDiv.setAttribute("id", "handContainer2");
+  playerMonsterDiv.append(playerStatsDiv, handDiv);
+
+  let opponentsDiv = document.createElement("Div");
+  opponentsDiv.setAttribute("id", "opponents");
+  fightContainer.append(playerMonsterDiv, opponentsDiv);
+
+  return fightContainer;
+
+  
+}
 
 
 
@@ -1495,6 +1492,25 @@ function topRowDiv(stateObj, divName) {
   monsterXP.textContent = `Level: ${stateObj.playerLevel}` + "      "+ calcXP + "/" + newXP;
   monsterXP.classList.add("monster-xp");
   topRowDiv.appendChild(monsterXP);
+
+  let monsterXPBar = document.createElement("Div");
+  monsterXPBar.classList.add("empty-xp-bar");
+  let monsterCurrentXPBar = document.createElement("Div");
+  monsterCurrentXPBar.classList.add("current-xp-bar");
+  let barLength = 0;
+  
+  if (calcXP/newXP > 1) {
+     barLength = 10;
+  } else {
+     barLength = 10*(calcXP/newXP)
+  }
+  let barText = "width:" + barLength + "vw"
+
+  monsterCurrentXPBar.setAttribute("style", barText);
+  monsterXPBar.append(monsterCurrentXPBar);
+  topRowDiv.appendChild(monsterXPBar)
+  
+
 
   let gymCountText = document.createElement("H3");
   gymCountText.textContent = `Gym ${stateObj.gymCount+1}`;
@@ -2250,9 +2266,6 @@ function renderScreen(stateObj) {
   } else {
     renderDivs(stateObj);
     //renderOpponents(stateObj)
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-    renderCardPile(stateObj, stateObj.encounterDraw, "drawDiv");
-    renderCardPile(stateObj, stateObj.encounterDiscard, "discardDiv");
   }
 }
 

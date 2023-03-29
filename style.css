@@ -887,6 +887,21 @@ button:hover {
   }
 }
 
+.empty-xp-bar {
+  width: 10vw;
+  height: 2vh;
+  background-color: grey;
+  position: relative;
+}
+
+.current-xp-bar {
+  background-color: blue;
+  position: absolute;
+  top:-1px;
+  left: -1px;
+  height: 2.2vh;
+}
+
 .monster-xp {
   font-size: 1.6em;
   color: rgb(194, 255, 248);
