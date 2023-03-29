@@ -20,7 +20,7 @@ let playerMonsters = {
         fireCardPool.darkknowledge,
         fireCardPool.fireball,
         fireCardPool.thiefshield,
-        fireCardPool.enjoin,
+        specialCardPool.testkill,
         specialCardPool.testkill,
       ],
     },

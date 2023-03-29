@@ -152,6 +152,7 @@ let opponentMonsters = {
   blockgym1: {
     name: "Block Gym Disciple",
     type: "Air",
+    XPGain: 10,
     maxHP: opponentMaxHP*9,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -316,6 +317,7 @@ let opponentMonsters = {
   healgym1: {
     name: "Heal Gym Disciple",
     type: "Air",
+    XPGain: 10,
     maxHP: opponentMaxHP*12,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -631,6 +633,7 @@ let opponentMonsters = {
   strengthgym1: {
     name: "Strength Gym Disciple",
     type: "Fire",
+    XPGain: 10,
     maxHP: opponentMaxHP*7,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -937,6 +940,7 @@ let opponentMonsters = {
   balancegym1: {
     name: "Block Gym Disciple",
     type: "Air",
+    XPGain: 10,
     maxHP: opponentMaxHP*9,
     encounterEnergy: 0,
     opponentMoveIndex: false,

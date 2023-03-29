@@ -90,6 +90,7 @@ let gameStartState = {
   fightStarted: false,
   fightingBoss: false,
   InTown: false,
+  leveledUpDuringCombat: 0,
   townMapSquares: ["hidden", "here", "hidden", "Fight", "Fight", "Fight", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "hidden", "Town", "hidden"],
   townMonsterArray: [],
   townBossEncounter: false,
@@ -369,6 +370,7 @@ waterCardArray = Object.values(waterCardPool);
 
 let potentialMonsterChoices = playerMonsterArray;
 
+
 function changeState(newStateObj) {
   console.log("state changing: fightStarted changing from " + state.fightStarted + " to " + newStateObj.fightStarted)
   let stateObj = {...newStateObj}
@@ -376,14 +378,30 @@ function changeState(newStateObj) {
     stateObj = handleDeaths(stateObj);
   }
 
-  if (newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
+  if (stateObj.status !== Status.InEncounter && newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
     stateObj = monsterLevelUp(stateObj);
+  } else if (newStateObj.status === Status.InEncounter && newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
+    stateObj = immer.produce(stateObj, (newState) => {
+      newState.leveledUpDuringCombat = findLowestIndex(newStateObj.playerXP, levelXPRequirements);
+    })
   }
   state = {...stateObj}
  
   renderScreen(stateObj);
   return stateObj
 }
+
+
+function findLowestIndex(numberInput, arrayInput) {
+  lowestIndex = 0;
+  for (i=0; i< arrayInput.length; i++) {
+    if (numberInput > arrayInput[i]) {
+      lowestIndex = i;
+    }
+  }
+  return lowestIndex;
+} 
+
 
 let state = {...gameStartState};
 renderScreen(state);
@@ -1144,6 +1162,11 @@ function renderChoiceDiv(stateObj, classesArray, imgSrcString, divTextString, tr
 // ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ======
 
 function resetAfterFight(stateObj) {
+
+  if (stateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
+    stateObj = monsterLevelUp(stateObj);
+  }
+
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster.strength -= newState.playerMonster.tempStrength;
     newState.playerMonster.dex -= newState.playerMonster.tempDex;
@@ -1176,13 +1199,15 @@ function resetAfterFight(stateObj) {
     newState.townMapSquares[newState.playerHere] = "completed";
 
     
+
+    
     
     console.log("gym count is " + newState.gymCount);
     if (newState.playerHere === 19 && newState.gymCount === 2) {
       newState.status = Status.VictoryScreen;
     } else if (newState.fightingBoss === true) {
       newState.gold += newState.townBossEncounter.goldReward
-      newState.playerXP += newState.townBossEncounter.XP
+      //newState.playerXP += newState.townBossEncounter.XP
       newState.gymFightCount = 0;
       newState.gymCount += 1;
       newState.playerMonster.maxHP += 10
@@ -1198,7 +1223,7 @@ function resetAfterFight(stateObj) {
       newState.status = Status.EncounterRewards;
     } else {
       newState.gold += newState.townMonsterArray[newState.gymFightCount].goldReward
-      newState.playerXP += newState.townMonsterArray[newState.gymFightCount].XP
+      //newState.playerXP += newState.townMonsterArray[newState.gymFightCount].XP
       newState.gymFightCount += 1;
       newState.status = Status.EncounterRewards;
     }
@@ -1221,6 +1246,7 @@ function handleDeaths(stateObj) {
       });
       indexesToDelete.reverse()
       for (let i = 0; i < indexesToDelete.length; i++) {
+        newState.playerXP += newState.opponentMonster[i].XPGain
         newState.opponentMonster.splice(indexesToDelete[i], 1)
       }
 
