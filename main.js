@@ -1028,9 +1028,11 @@ async function renderDivs(stateObj) {
 
   document.getElementById("app").innerHTML = `
   <div id="town-top-row">
-    <div id="status-text-div">
-      <p>Gym: ${stateObj.gymCount+1}   Fight: ${stateObj.gymFightCount+1}/3</p>
+    <div class="monster-xp">
       <p>Level: ${stateObj.playerLevel} XP: ${stateObj.playerXP - levelXPRequirements[stateObj.playerLevel-1]} / ${levelXPRequirements[stateObj.playerLevel] - levelXPRequirements[stateObj.playerLevel-1]}</p>
+    </div>
+    <div class="gym-text">
+      <p>Gym ${stateObj.gymCount+1}</p>
     </div>
     
     <div id="playerDeckPile" class="remove-pile">View Current Deck
@@ -1159,6 +1161,8 @@ function resetAfterFight(stateObj) {
     newState.fightSelfDamageTotal = 0;
     newState.fightEnergyDrainCount = 0;
     newState.fightEnergyDrainTotal = 0;
+    newState.fightEnergyGiftCount = 0;
+    newState.fightEnergyGiftTotal = 0;
     newState.enemyFightHealTotal = 0;
     newState.gainLifePerCard = 0;
     newState.selfDamageAttack = 0;
@@ -1465,6 +1469,11 @@ function topRowDiv(stateObj, divName) {
   monsterXP.textContent = `Level: ${stateObj.playerLevel}` + "      "+ calcXP + "/" + newXP;
   monsterXP.classList.add("monster-xp");
   topRowDiv.appendChild(monsterXP);
+
+  let gymCountText = document.createElement("H3");
+  gymCountText.textContent = `Gym ${stateObj.gymCount+1}`;
+  gymCountText.classList.add("gym-text");
+  topRowDiv.appendChild(gymCountText);
 
   let monsterHP = document.createElement("H3");
   monsterHP.textContent = stateObj.playerMonster.currentHP + "/" + stateObj.playerMonster.maxHP;

@@ -888,7 +888,12 @@ button:hover {
 }
 
 .monster-xp {
-  font-size: 2em;
+  font-size: 1.6em;
+  color: rgb(194, 255, 248);
+}
+
+.gym-text {
+  font-size: 1.1em;
   color: white;
 }
 

@@ -475,7 +475,7 @@ let fireCardPool = {
     fierymissiles: {
       cardID: 31,
       name: "Fiery Missiles",
-      text: (state, index, array) => { return `Gift ${array[index].energyGift + array[index].upgrades} energy. Deal ${(array[index].baseDamage + state.playerMonster.strength)} damage ${(array[index].baseHits + array[index].upgrades)} times` },
+      text: (state, index, array) => { return `Gift ${array[index].energyGift} energy. Deal ${(array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*2))} damage ${(array[index].baseHits)} times` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -490,7 +490,7 @@ let fireCardPool = {
       cardType: "attack",
       elementType: "fire",
       action: (stateObj, index, array) => {
-        stateObj = dealOpponentDamage(stateObj, array[index].baseDamage, (array[index].baseHits + array[index].upgrades), array[index].baseCost)
+        stateObj = dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*2), array[index].baseHits, array[index].baseCost)
         stateObj = energyGift(stateObj, array[index].energyGift)
         return stateObj;
       }
