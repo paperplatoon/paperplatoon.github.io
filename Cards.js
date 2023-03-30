@@ -1366,26 +1366,37 @@ let fireCardPool = {
       cardID: 46,
       name: "Energy Conversion",
       text: (state, index, array) => {
+        if (array[index].upgrades < 2) {
           return `Gain 1 energy for each card played this turn`;
+        } else {
+          return `Gain 1 energy for each card played this turn. Gain ${4*(array[index].upgrades-1)} block.` 
+        }
+          
       },
       minReq: (state, index, array) => {
-        return array[index].baseCost - Math.floor(array[index].upgrades/2);
+        if (array[index].upgrades === 0) {
+          return array[index].baseCost
+        } else {
+          return 0
+        }
       },
       baseCost: 1,
       cost:  (state, index, array) => {
-        if (array[index].baseCost > array[index].upgrades) {
-          return array[index].baseCost-array[index].upgrades;
+        if (array[index].upgrades === 0) {
+          return array[index].baseCost
         } else {
-          return 0;
+          return 0
         }
       },
-      upgrades: 1,
+      upgrades: 2,
       cardType: "attack",
       elementType: "fire",
       action: (state, index, array) => {
         let toChangeState = immer.produce(state, (newState) => {
-          if (array[index].baseCost > array[index].upgrades) {
-            newState.playerMonster.encounterEnergy -= array[index].baseCost-Math.floor(array[index].upgrades/2);
+          if (array[index].upgrades < 2) {
+            newState.playerMonster.encounterEnergy -= array[index].baseCost-array[index].upgrades;
+          } else {
+            newState.playerMonster.encounterBlock += (4*(array[index].upgrades-1)) + newState.playerMonster.dex;
           }          
           newState.playerMonster.encounterEnergy += state.cardsPerTurn;
         })
@@ -1438,7 +1449,7 @@ let fireCardPool = {
       cardID: 48,
       name: "Feast",
       text: (state, index, array) => { 
-        if (array[index].upgrades === 1) {
+        if (array[index].upgrades === 0) {
           return `Permanently gain max HP equal to cards played this turn (${state.cardsPerTurn}). Remove`;
         } else {
           return `Permanently gain ${array[index].upgrades+1} max HP for each card played this turn (${state.cardsPerTurn}). Remove`;

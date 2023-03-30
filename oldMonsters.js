@@ -19,7 +19,7 @@ let playerMonsters = {
         fireCardPool.darkknowledge,
         fireCardPool.hammerandtongs,
         fireCardPool.upgrade,
-        fireCardPool.refineenergy,
+        fireCardPool.energyconversion,
         specialCardPool.testkill,
         fireCardPool.setaflame
       ],
