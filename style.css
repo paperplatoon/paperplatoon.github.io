@@ -327,6 +327,23 @@
   animation: fadeIn 0.5s forwards;
 }
 
+.fade-in {
+  animation: fadeIn 0.5s;
+}
+
+.fade-out {
+  animation: fadeOut 1s forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 .monster-hp {
   display:inline-block;
   aspect-ratio: 1;

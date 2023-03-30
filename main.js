@@ -479,6 +479,26 @@ function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energyChange
   return toChangeState;
 }
 
+
+async function upgradeAnimation(stateObj, indexInPlayerDeck, upgradeTimes, divIDName="app") {
+  document.getElementById(divIDName).innerHTML = "";
+  let newText = showChangedUpgradeText(stateObj, indexInPlayerDeck, stateObj.playerDeck, stateObj.playerDeck[indexInPlayerDeck], "upgrades", upgradeTimes);
+  renderCard(stateObj, stateObj.playerDeck, stateObj.playerDeck[indexInPlayerDeck], indexInPlayerDeck, divIDName);
+  queryString = "#"+divIDName+ " .card-text"
+  let textElement = document.querySelector(queryString)
+  textElement.classList.add("fade-out");
+  setTimeout(function() {
+    textElement.textContent = newText;
+    textElement.classList.remove("fade-out");
+    textElement.classList.add("fade-in");
+  }, 1000);
+
+  setTimeout(function() {
+    renderScreen(stateObj);
+  }, upgradeAnimationTiming);
+
+}
+
 function healPlayer(stateObj, amountToHeal, energyCost=false) {
   amountToHeal += stateObj.extraHeal;
   let healthDiff = stateObj.playerMonster.maxHP - stateObj.playerMonster.currentHP
@@ -1403,9 +1423,7 @@ function monsterLevelUp(stateObj) {
   return stateObj
 }
 
-async function playACard(stateObj, cardIndexInHand, arrayObj) {
-  console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
-  stateObj = stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
+function PlayACardImmer(stateObj, cardIndexInHand) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.cardsPerTurn += 1;
     if (stateObj.encounterHand[cardIndexInHand].exhaust == true) {
@@ -1433,11 +1451,36 @@ async function playACard(stateObj, cardIndexInHand, arrayObj) {
     }
 
   })
+  return stateObj;
+}
+
+async function playACard(stateObj, cardIndexInHand, arrayObj) {
+  console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
+  let Flag = false;
+  let timeValue = 0;
+  let tempStateObj = {...stateObj};
+  if (stateObj.encounterHand[cardIndexInHand].timeValue) {
+    Flag = true;
+    timeValue = stateObj.encounterHand[cardIndexInHand].timeValue;
+  }
+  stateObj = stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
+  if (Flag === true) {
+    setTimeout(function() {
+      stateObj = PlayACardImmer(tempStateObj, cardIndexInHand);
+      stateObj = pickOpponentMove(stateObj);
+      stateObj = changeState(stateObj);
+    return stateObj;
+    }, timeValue);
+  } else {
+    stateObj = PlayACardImmer(stateObj, cardIndexInHand);
+    stateObj = pickOpponentMove(stateObj);
+    stateObj = changeState(stateObj);
+    return stateObj;
+  }
   
   
-  stateObj = pickOpponentMove(stateObj);
-  stateObj = changeState(stateObj);
-  return stateObj
+  
+  
 }
 
 function targetThisMonster(stateObj, monsterIndex) {
@@ -1820,7 +1863,7 @@ function renderIncreaseBaseHit(stateObj) {
   //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
-function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=false, goldCost=false) {
+function renderCard(stateObj, cardArray, cardObj, index, divName=false, functionToAdd=false, goldCost=false) {
   let cardDiv = document.createElement("Div");
         cardDiv.id = "card-index-"+index;
         cardDiv.classList.add("card");
@@ -2013,7 +2056,11 @@ function renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd=
         if (cardObj.trigger && cardObj.trigger(stateObj, index, cardArray)) {
           cardDiv.classList.add("trigger-condition-met")
         }
-        document.getElementById(divName).appendChild(cardDiv);
+        if (divName) {
+          document.getElementById(divName).appendChild(cardDiv);
+        }
+        return cardDiv
+        
 }
 
 function renderClickableCardList(stateObj, cardArray, divName, functionToAdd, goldCost=false) {

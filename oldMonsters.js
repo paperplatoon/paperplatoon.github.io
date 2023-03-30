@@ -18,10 +18,9 @@ let playerMonsters = {
       startingDeck: [
         fireCardPool.fierymissiles,
         fireCardPool.darkknowledge,
-        fireCardPool.fireball,
-        fireCardPool.thiefshield,
-        specialCardPool.testkill,
-        specialCardPool.testkill,
+        fireCardPool.hammerandtongs,
+        fireCardPool.tackle,
+        fireCardPool.withdraw,
       ],
     },
   

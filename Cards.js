@@ -14,6 +14,7 @@
 //add a 0-cost card that deals damage for total self-damage dealt in a fight * 2 (rare)
 
 //total = 30
+let upgradeAnimationTiming = 3000;
 
 
 let fireCardPool = {
@@ -1491,7 +1492,7 @@ let fireCardPool = {
       rare: true,
       exhaust: true,
       cardID: 51,
-      name: "Hammer & Tongs",
+      name: "Hammer and Tongs",
       text: (state, index, array) => {
         if (array[index].upgrades === 0) {
           return `Upgrade a random card in your deck permanently. Remove`;
@@ -1503,6 +1504,7 @@ let fireCardPool = {
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
+      timeValue: upgradeAnimationTiming,
       baseCost: 2,
       cost:  (state, index, array) => {
         return array[index].baseCost;
@@ -1510,15 +1512,18 @@ let fireCardPool = {
       upgrades: 0,
       cardType: "ability",
       elementType: "fire",
-      action: (stateObj, index, array) => {
-        stateObj = immer.produce(stateObj, (newState) => {
-          randomIndex  = Math.floor(Math.random() * newState.playerDeck.length)
-          console.log('upgrading ' + newState.playerDeck[randomIndex].name)
-          newState.playerDeck[randomIndex].upgrades += (1+array[index].upgrades);
-          newState.playerMonster.encounterEnergy -= array[index].baseCost;
-        })
+      action: async (stateObj, index, array) => {
+        let randomIndex  = Math.floor(Math.random() * stateObj.playerDeck.length)
+        upgradeAnimation(stateObj, randomIndex, 1+array[index].upgrades, divIDName="handContainer2")       
         
-        return stateObj;
+        setTimeout(function() {
+          stateObj = immer.produce(stateObj, (newState) => {
+            console.log('upgrading ' + newState.playerDeck[randomIndex].name)
+            newState.playerDeck[randomIndex].upgrades += (1+array[index].upgrades);
+            newState.playerMonster.encounterEnergy -= array[index].baseCost;
+          });
+          return stateObj;
+        }, array[index].timeValue+200);
       }
     },
 
