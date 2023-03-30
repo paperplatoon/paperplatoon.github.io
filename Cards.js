@@ -106,13 +106,24 @@ let fireCardPool = {
       cardType: "ability",
       elementType: "fire",
       text: (state, index, array) => {
-        return `You gain ${3} energy. Your opponent gains ${3-array[index].upgrades}.`
+        if (array[index].upgrades < 3) {
+          return `You gain ${3} energy. Your opponent gains ${3-array[index].upgrades}.`
+        } else {
+          return `You gain ${3+(array[index].upgrades-3)} energy`
+        }
+        
       },
       action: (stateObj, index, array) => {
-        stateObj = immer.produce(stateObj, (newState) => {
-          newState.playerMonster.encounterEnergy += 3;
-        })
-        stateObj = energyGift(stateObj, 3-array[index].upgrades)
+        if (array[index].upgrades < 3) {
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.playerMonster.encounterEnergy += 3;
+          })
+          stateObj = energyGift(stateObj, 3-array[index].upgrades)
+        } else {
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.playerMonster.encounterEnergy += 3+(array[index].upgrades-3);
+          })
+        }
         return stateObj;
       }
     },
@@ -687,9 +698,13 @@ let fireCardPool = {
       upgrades: 0,
       baseDamage: 4,
       baseHits: 2,
+      timeValue: upgradeAnimationTiming,
       cardType: "attack",
       elementType: "fire",
-      action: (stateObj, index, array) => {
+      action: async (stateObj, index, array) => {
+        upgradeAnimation(stateObj, 0, stateObj.encounterHand, 1+array[index].upgrades, divIDName="handContainer2")       
+        
+        await pause(array[index].timeValue)
         stateObj = dealOpponentDamage(stateObj, (array[index].baseDamage + array[index].upgrades), array[index].baseHits, array[index].baseCost);
         for (i = 0; i < (1+array[index].upgrades); i++) {
           stateObj = upgradeCard(stateObj);
@@ -714,12 +729,17 @@ let fireCardPool = {
       elementType: "fire",
       upgrades: 0,
       baseBlock: 7,
-      action: (stateObj, index, array) => {
+      timeValue: upgradeAnimationTiming,
+      action: async (stateObj, index, array) => {
+        upgradeAnimation(stateObj, 0, stateObj.encounterHand, 2+array[index].upgrades, divIDName="handContainer2")       
+        
+        await pause(array[index].timeValue)
         stateObj = gainBlock(stateObj, (array[index].baseBlock + (array[index].upgrades*2)), array[index].baseCost )
         for (i = 0; i < (2+array[index].upgrades); i++) {
           stateObj = upgradeCard(stateObj);
         }
        return stateObj;
+       
       }
     },
 
@@ -739,7 +759,11 @@ let fireCardPool = {
       cardType: "ability",
       elementType: "fire",
       baseBlock: 12,
-      action: (stateObj, index, array) => {
+      timeValue: upgradeAnimationTiming,
+      action: async (stateObj, index, array) => {
+        upgradeAnimation(stateObj, 0, stateObj.encounterHand, 2, divIDName="handContainer2")       
+        
+        await pause(array[index].timeValue)
         stateObj = upgradeCard(stateObj);
         stateObj = upgradeCard(stateObj);
         stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*6), array[index].baseCost )
@@ -747,10 +771,10 @@ let fireCardPool = {
       }
     },
 
-    refineEnergy: {
+    refineenergy: {
       cardID: 25,
       name: "Refine Energy",
-      text: (state, index, array) => { return `Destroy ${array[index].energyDrain} energy. Upgrade your top left card ${3 + array[index].upgrades} times.`},
+      text: (state, index, array) => { return `Destroy ${array[index].energyDrain} energy. Upgrade your top left card ${2 + array[index].upgrades} times.`},
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -760,11 +784,15 @@ let fireCardPool = {
       },
       upgrades: 0,
       energyDrain: 2,
+      timeValue: upgradeAnimationTiming,
       cardType: "ability",
       elementType: "fire",
-      action: (stateObj, index, array) => {
+      action: async (stateObj, index, array) => {
+        upgradeAnimation(stateObj, 0, stateObj.encounterHand, 2+array[index].upgrades, divIDName="handContainer2")       
+        
+        await pause(array[index].timeValue)
         stateObj = destroyEnergy(stateObj, array[index].energyDrain, array[index].baseCost)
-        for (i = 0; i < (3+array[index].upgrades); i++) {
+        for (i = 0; i < (2+array[index].upgrades); i++) {
           stateObj = upgradeCard(stateObj);
         }  
         return stateObj;
@@ -1515,7 +1543,8 @@ let fireCardPool = {
       action: async (stateObj, index, array) => {
         let randomIndex  = Math.floor(Math.random() * stateObj.playerDeck.length)
         let cardIndex = 0;
-        upgradeAnimation(stateObj, randomIndex, 1+array[index].upgrades, divIDName="handContainer2")       
+
+        upgradeAnimation(stateObj, randomIndex, stateObj.playerDeck, 1+array[index].upgrades, divIDName="handContainer2")       
         
         await pause(array[index].timeValue)
         stateObj = immer.produce(stateObj, (newState) => {
@@ -1523,15 +1552,18 @@ let fireCardPool = {
           newState.playerDeck[randomIndex].upgrades += (1+array[index].upgrades);
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
           if (stateObj.encounterHand.find(card => card.name === stateObj.playerDeck[randomIndex].name)) {
-            console.log("found card " + stateObj.playerDeck[randomIndex].name + " in hand" )
-            cardIndex = newState.encounterHand.findIndex(card => card.name === stateObj.playerDeck[randomIndex].name)
-            newState.encounterHand[cardIndex].upgrades += (1+array[index].upgrades)
-            console.log("card upgrades after upgrading is " + newState.encounterHand[cardIndex].upgrades)
+            let handIndex = newState.encounterHand.findIndex(card => card.name === stateObj.playerDeck[randomIndex].name)
+            newState.encounterHand[handIndex].upgrades += (1+array[index].upgrades)
+          } else if (stateObj.encounterDiscard.find(card => card.name === stateObj.playerDeck[randomIndex].name)) {
+            let discardIndex = newState.encounterDiscard.findIndex(card => card.name === stateObj.playerDeck[randomIndex].name)
+            newState.encounterDiscard[discardIndex].upgrades += (1+array[index].upgrades)
+          } else if (stateObj.encounterDraw.find(card => card.name === stateObj.playerDeck[randomIndex].name)) {
+            let drawIndex = newState.encounterDraw.findIndex(card => card.name === stateObj.playerDeck[randomIndex].name)
+            newState.encounterDraw[drawIndex].upgrades += (1+array[index].upgrades)
           } else {
-            console.log("did not find card in hand")
+            console.log('could not find card');
           }
         });
-          console.log("after upgrading, card has" + stateObj.encounterHand[cardIndex].upgrades)
           return stateObj;
         }
     },

@@ -16,12 +16,12 @@ let playerMonsters = {
       turnEnergy: 3,
       avatar: "img/fireMonster.png",
       startingDeck: [
-        fireCardPool.fierymissiles,
         fireCardPool.darkknowledge,
         fireCardPool.hammerandtongs,
-        fireCardPool.tackle,
-        fireCardPool.withdraw,
-        specialCardPool.testkill
+        fireCardPool.upgrade,
+        fireCardPool.refineenergy,
+        specialCardPool.testkill,
+        fireCardPool.setaflame
       ],
     },
   

@@ -371,18 +371,39 @@ waterCardArray = Object.values(waterCardPool);
 let potentialMonsterChoices = playerMonsterArray;
 
 
-function changeState(newStateObj) {
+// async function changeState(newStateObj) {
+//   let stateObj = {...newStateObj}
+//   if (newStateObj.status === Status.InEncounter) {
+//     stateObj = handleDeaths(stateObj);
+//   }
+
+//   //if (stateObj.status !== Status.InEncounter && newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
+//   if (newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
+//     stateObj = monsterLevelUp(stateObj);
+//   } else if (newStateObj.status === Status.InEncounter && newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
+//     stateObj = immer.produce(stateObj, (newState) => {
+//       newState.leveledUpDuringCombat = findLowestIndex(newStateObj.playerXP, levelXPRequirements);
+//     })
+//   }
+//   state = {...stateObj}
+ 
+//   renderScreen(stateObj);
+//   return stateObj
+// }
+
+async function changeState(newStateObj) {
   let stateObj = {...newStateObj}
   if (newStateObj.status === Status.InEncounter) {
     stateObj = handleDeaths(stateObj);
   }
 
-  if (stateObj.status !== Status.InEncounter && newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
-    stateObj = monsterLevelUp(stateObj);
-  } else if (newStateObj.status === Status.InEncounter && newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
-    stateObj = immer.produce(stateObj, (newState) => {
-      newState.leveledUpDuringCombat = findLowestIndex(newStateObj.playerXP, levelXPRequirements);
-    })
+  //if (stateObj.status !== Status.InEncounter && newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
+  if (newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
+    console.log("triggering level up")
+    stateObj = await monsterLevelUp(stateObj);
+
+
+    console.log("target card has " + stateObj.playerDeck[0].upgrades + " upgrades")
   }
   state = {...stateObj}
  
@@ -480,10 +501,15 @@ function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energyChange
 }
 
 
-async function upgradeAnimation(stateObj, indexInPlayerDeck, upgradeTimes, divIDName="app") {
+async function upgradeAnimation(stateObj, cardIndex, cardArray, upgradeTimes, divIDName="app", levelUp=false) {
   document.getElementById(divIDName).innerHTML = "";
-  let newText = showChangedUpgradeText(stateObj, indexInPlayerDeck, stateObj.playerDeck, stateObj.playerDeck[indexInPlayerDeck], "upgrades", upgradeTimes);
-  renderCard(stateObj, stateObj.playerDeck, stateObj.playerDeck[indexInPlayerDeck], indexInPlayerDeck, divIDName);
+  let newText = showChangedUpgradeText(stateObj, cardIndex, cardArray, cardArray[cardIndex], "upgrades", upgradeTimes);
+  renderCard(stateObj, cardArray, cardIndex, divIDName);
+  if (levelUp) {
+    let levelUpText = document.createElement("P");
+    levelUpText.textContent = "You leveled up and upgraded a card!"
+    document.getElementById(divIDName).append(levelUpText)
+  }
   queryString = "#"+divIDName+ " .card-text"
   let textElement = document.querySelector(queryString)
   textElement.classList.add("fade-out");
@@ -493,7 +519,9 @@ async function upgradeAnimation(stateObj, indexInPlayerDeck, upgradeTimes, divID
     textElement.classList.add("fade-in");
 
   await pause(upgradeAnimationTiming)
-  console.log("renering screen in upgrade and hand is " + stateObj.encounterHand.length)
+  if (stateObj.status !== Status.InEncounter) {
+    renderScreen(stateObj)
+  }
     // renderScreen(stateObj);
 }
 
@@ -553,9 +581,12 @@ function addBackstepsToHand(stateObj, numberToAdd=1) {
 
 function energyGift(stateObj, energyToGain, energyCost=false) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.opponentMonster[newState.targetedMonster].encounterEnergy += energyToGain;
-    newState.fightEnergyGiftCount += 1
-    newState.fightEnergyGiftTotal += energyToGain
+    if ( (stateObj.opponentMonster[stateObj.targetedMonster].encounterEnergy += energyToGain) > 0 && energyToGain > 0) {
+      newState.opponentMonster[newState.targetedMonster].encounterEnergy += energyToGain;
+      newState.fightEnergyGiftCount += 1
+      newState.fightEnergyGiftTotal += energyToGain
+    }
+    
     if (energyCost) {
       newState.playerMonster.encounterEnergy -= energyCost
     }
@@ -677,7 +708,7 @@ function changeStatus(stateObj, newStatus, countsAsEventSkipForChangeStatus=fals
   return stateObj;
 }
 
-function skipCards(stateObj, isUsedForEventSkip=false) {
+async function skipCards(stateObj, isUsedForEventSkip=false) {
   stateObj = immer.produce(stateObj, (newState) => {
     if (isUsedForEventSkip) {
       newState.gold += 50
@@ -965,7 +996,7 @@ function increaseBaseHits(stateObj, index, array) {
 // - - - - - -  - - - - - Rendering - - - - - -  - - - - -
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 //Render the player's stats
-function renderPlayerMonster(stateObj) {
+async function renderPlayerMonster(stateObj) {
   document.getElementById("playerStats").innerHTML = "";
   let topRowDiv = document.createElement("Div");
   topRowDiv.classList.add("monster-top-row");
@@ -1057,7 +1088,7 @@ async function renderDivs(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
       newState.fightStarted = true;
     })
-    changeState(stateObj);
+    await changeState(stateObj);
   }
 
   document.getElementById("app").innerHTML = ""
@@ -1177,9 +1208,9 @@ function renderChoiceDiv(stateObj, classesArray, imgSrcString, divTextString, tr
 
 function resetAfterFight(stateObj) {
 
-  if (stateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
-    stateObj = monsterLevelUp(stateObj);
-  }
+  // if (stateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
+  //   stateObj = monsterLevelUp(stateObj);
+  // }
 
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster.strength -= newState.playerMonster.tempStrength;
@@ -1399,26 +1430,30 @@ function upgradeCard(stateObj) {
   return stateObj;
 }
 
-function monsterLevelUp(stateObj) {
+async function monsterLevelUp(stateObj) {
   let targetIndex = Math.floor(Math.random() * (stateObj.playerDeck.length));
 
+  if (stateObj.playerXP >= levelXPRequirements[stateObj.playerLevel+1]) {
+    await upgradeAnimation(stateObj, targetIndex, stateObj.playerDeck, 2, divIDName="app", levelUp=true);
+  } else {
+    await upgradeAnimation(stateObj, targetIndex, stateObj.playerDeck, 1, divIDName="app", levelUp=true);
+  }
+  
+
+
   stateObj = immer.produce(stateObj, (newState) => {
-    
     if (stateObj.playerXP >= levelXPRequirements[newState.playerLevel+1]) {
       newState.playerDeck[targetIndex].upgrades +=2;
       newState.playerLevel += 2;
-      let upgradeText = `You leveled up and upgraded the card ` + stateObj.playerDeck[targetIndex].name + ` two times`.
-      alert(upgradeText);
-      document.querySelector("#playerDeckPile").classList.add("upgrade-animation");
+
     } else if (stateObj.playerXP >= levelXPRequirements[newState.playerLevel]) {
       newState.playerDeck[targetIndex].upgrades +=1;
       newState.playerLevel += 1;
-      let upgradeText = `You leveled up and upgraded the card ` + stateObj.playerDeck[targetIndex].name;
-      alert(upgradeText);
-
     } else {}
   });
-  return stateObj
+
+  console.log("upgraded card has upgrades: " + stateObj.playerDeck[targetIndex].upgrades)
+  return stateObj;
 }
 
 function PlayACardImmer(stateObj, cardIndexInHand) {
@@ -1478,7 +1513,7 @@ function renderHand(stateObj) {
   document.getElementById("handContainer2").innerHTML = "";
   if (stateObj.encounterHand.length > 0) {
     stateObj.encounterHand.forEach(function (cardObj, index) {
-      renderCard(stateObj, stateObj.encounterHand, cardObj, index, "handContainer2", functionToAdd=false)
+      renderCard(stateObj, stateObj.encounterHand, index, "handContainer2", functionToAdd=false)
     });
   }
 }
@@ -1487,7 +1522,7 @@ function renderCardPile(stateObj, cardArrayObj, divStringName) {
   document.getElementById(divStringName).innerHTML = "";
   if (cardArrayObj.length > 0) {
     cardArrayObj.forEach(function (cardObj, index) {
-      renderCard(stateObj, cardArrayObj, cardObj, index, divStringName)
+      renderCard(stateObj, cardArrayObj, index, divStringName)
     });
   }
 }
@@ -1784,7 +1819,7 @@ function renderDecreaseCardCost(stateObj) {
   divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
     if (cardObj.baseCost && cardObj.baseCost > 0) {
-      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", decreaseCardCost, goldCost="decreasecost")
+      renderCard(stateObj, stateObj.playerDeck, index, "remove-div", decreaseCardCost, goldCost="decreasecost")
     }
   });
   skipToTownButton(stateObj, "I choose not to decrease the cost of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
@@ -1797,7 +1832,7 @@ function renderIncreaseCardBlock(stateObj) {
   divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
     if (cardObj.baseBlock && typeof cardObj.baseBlock === 'number') {
-      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardBlock, goldCost="increaseblock")
+      renderCard(stateObj, stateObj.playerDeck, index, "remove-div", increaseCardBlock, goldCost="increaseblock")
     }
   });
   skipToTownButton(stateObj, "I choose not to increase the block of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
@@ -1810,7 +1845,7 @@ function renderIncreaseCardAttack(stateObj) {
   divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
     if (cardObj.baseDamage && typeof cardObj.baseDamage === 'number') {
-      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseCardAttack, goldCost="increaseattack")
+      renderCard(stateObj, stateObj.playerDeck, index, "remove-div", increaseCardAttack, goldCost="increaseattack")
     }
   });
   skipToTownButton(stateObj, "I choose not to increase the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
@@ -1823,7 +1858,7 @@ function renderDoubleCardAttack(stateObj) {
   divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
     if (cardObj.baseDamage && cardObj.baseDamage > 0) {
-      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", doubleCardAttack, goldCost="doubleattack")
+      renderCard(stateObj, stateObj.playerDeck, index, "remove-div", doubleCardAttack, goldCost="doubleattack")
     }
   });
   skipToTownButton(stateObj, "I choose not to double the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
@@ -1836,14 +1871,15 @@ function renderIncreaseBaseHit(stateObj) {
   divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
     if (cardObj.baseHits && typeof cardObj.baseHits === 'number') {
-      renderCard(stateObj, stateObj.playerDeck, cardObj, index, "remove-div", increaseBaseHits, goldCost="moreHits")
+      renderCard(stateObj, stateObj.playerDeck, index, "remove-div", increaseBaseHits, goldCost="moreHits")
     }
   });
   skipToTownButton(stateObj, "I choose not to make any of these cards hit another time (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
   //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
-function renderCard(stateObj, cardArray, cardObj, index, divName=false, functionToAdd=false, goldCost=false) {
+function renderCard(stateObj, cardArray, index, divName=false, functionToAdd=false, goldCost=false) {
+  let cardObj = cardArray[index];
   let cardDiv = document.createElement("Div");
         cardDiv.id = "card-index-"+index;
         cardDiv.classList.add("card");
@@ -2045,7 +2081,7 @@ function renderCard(stateObj, cardArray, cardObj, index, divName=false, function
 
 function renderClickableCardList(stateObj, cardArray, divName, functionToAdd, goldCost=false) {
   cardArray.forEach(function (cardObj, index) {
-    renderCard(stateObj, cardArray, cardObj, index, divName, functionToAdd, goldCost)
+    renderCard(stateObj, cardArray, index, divName, functionToAdd, goldCost)
   })
 }
 
@@ -2228,7 +2264,7 @@ function renderTown(stateObj) {
 }
 
 
-function renderScreen(stateObj) {
+async function renderScreen(stateObj) {
   if (stateObj.status === Status.ChoosingMonster) {
     renderChooseMonster(stateObj);
   } else if (stateObj.status == Status.OverworldMap) {
@@ -2290,9 +2326,11 @@ function renderScreen(stateObj) {
   } else if (stateObj.status == Status.AssassinTrainingEvent) {
     renderAssassinTraining(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else {
+  } else if (stateObj.status === Status.InEncounter) {
     renderDivs(stateObj);
     //renderOpponents(stateObj)
+  } else {
+    
   }
 }
 
@@ -2379,7 +2417,7 @@ function startEncounter(stateObj) {
   return stateObj
 }
 
-function endTurnIncrement(stateObj) {
+async function endTurnIncrement(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster.strength -= newState.playerMonster.tempStrength;
     newState.playerMonster.dex -= newState.playerMonster.tempDex;
@@ -2405,8 +2443,7 @@ function endTurnIncrement(stateObj) {
 async function endTurn(stateObj) {
   stateObj = discardHand(stateObj);
   stateObj = endTurnIncrement(stateObj);
-  stateObj = changeState(stateObj);
-  await pause(200);
+  stateObj = await changeState(stateObj);
 
   if (stateObj.opponentMonster.length === 0) {
     console.log("breaking out of function endTurn")
