@@ -487,16 +487,14 @@ async function upgradeAnimation(stateObj, indexInPlayerDeck, upgradeTimes, divID
   queryString = "#"+divIDName+ " .card-text"
   let textElement = document.querySelector(queryString)
   textElement.classList.add("fade-out");
-  setTimeout(function() {
+  await pause(1000)
     textElement.textContent = newText;
     textElement.classList.remove("fade-out");
     textElement.classList.add("fade-in");
-  }, 1000);
 
-  setTimeout(function() {
-    renderScreen(stateObj);
-  }, upgradeAnimationTiming);
-
+  await pause(upgradeAnimationTiming)
+  console.log("renering screen in upgrade and hand is " + stateObj.encounterHand.length)
+    // renderScreen(stateObj);
 }
 
 function healPlayer(stateObj, amountToHeal, energyCost=false) {
@@ -1448,6 +1446,7 @@ function PlayACardImmer(stateObj, cardIndexInHand) {
           newState.fightHealCount +=1;
         }
       }
+
     }
 
   })
@@ -1456,31 +1455,12 @@ function PlayACardImmer(stateObj, cardIndexInHand) {
 
 async function playACard(stateObj, cardIndexInHand, arrayObj) {
   console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
-  let Flag = false;
-  let timeValue = 0;
-  let tempStateObj = {...stateObj};
-  if (stateObj.encounterHand[cardIndexInHand].timeValue) {
-    Flag = true;
-    timeValue = stateObj.encounterHand[cardIndexInHand].timeValue;
-  }
-  stateObj = stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
-  if (Flag === true) {
-    setTimeout(function() {
-      stateObj = PlayACardImmer(tempStateObj, cardIndexInHand);
-      stateObj = pickOpponentMove(stateObj);
-      stateObj = changeState(stateObj);
-    return stateObj;
-    }, timeValue);
-  } else {
-    stateObj = PlayACardImmer(stateObj, cardIndexInHand);
-    stateObj = pickOpponentMove(stateObj);
-    stateObj = changeState(stateObj);
-    return stateObj;
-  }
-  
-  
-  
-  
+  stateObj = await stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
+
+  stateObj = PlayACardImmer(stateObj, cardIndexInHand);
+  stateObj = pickOpponentMove(stateObj);
+  stateObj = changeState(stateObj);
+  return stateObj;
 }
 
 function targetThisMonster(stateObj, monsterIndex) {

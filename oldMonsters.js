@@ -21,6 +21,7 @@ let playerMonsters = {
         fireCardPool.hammerandtongs,
         fireCardPool.tackle,
         fireCardPool.withdraw,
+        specialCardPool.testkill
       ],
     },
   
