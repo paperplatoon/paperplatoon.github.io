@@ -142,7 +142,7 @@ let opponentMonsters = {
         minReq: 5,
         energyChange: "-5",
         action: (stateObj, index, array) => {
-          stateObj = dealPlayerDamage(newState, (array[index].baseDamage * 2) + 1, index, energyCost=5);
+          stateObj = dealPlayerDamage(stateObj, (array[index].baseDamage * 2) + 1, index, energyCost=5);
           return stateObj;
         }
       }
@@ -907,7 +907,7 @@ let opponentMonsters = {
         minReq: 2,
         energyChange: "+2",
         action: (stateObj, monsterIndex, array) => {
-          stateObj = dealPlayerDamage(newState, 0, monsterIndex, attackNumber=2, energyChange=2);
+          stateObj = dealPlayerDamage(stateObj, 0, monsterIndex, attackNumber=2, energyChange=2);
           return stateObj;
         }
       },
