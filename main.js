@@ -2387,7 +2387,7 @@ function playOpponentMove(stateObj) {
 }
 
 
-function discardHand(stateObj) {
+async function discardHand(stateObj) {
   let toChangeState = immer.produce(stateObj, (newState) => {
     newState.encounterDiscard = newState.encounterDiscard.concat(newState.encounterHand);
     newState.encounterHand = [];
@@ -2441,8 +2441,8 @@ async function endTurnIncrement(stateObj) {
 
 //if you flip the order of this around, discard works, but not playing the move
 async function endTurn(stateObj) {
-  stateObj = discardHand(stateObj);
-  stateObj = endTurnIncrement(stateObj);
+  stateObj = await discardHand(stateObj);
+  stateObj = await endTurnIncrement(stateObj);
   stateObj = await changeState(stateObj);
 
   if (stateObj.opponentMonster.length === 0) {
