@@ -496,6 +496,36 @@ let fireCardPool = {
       }
     },
 
+    energyburst: {
+      cardID: 63,
+      name: "Energy Burst",
+      text: (state, index, array) => {
+        if (array[index].baseHits === 1) {
+          return `Gift ${array[index].energyGift} energy. Deal ${(array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*4))} damage`;
+        } else {
+          return `Gift ${array[index].energyGift} energy. Deal ${(array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*4))} damage ${(array[index].baseHits)} times`
+        } 
+      },
+      minReq: (state, index, array) => {
+        return array[index].baseCost;
+      },
+      baseCost: 2,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      upgrades: 0,
+      baseDamage: 16,
+      energyGift: 2,
+      baseHits: 1,
+      cardType: "attack",
+      elementType: "fire",
+      action: (stateObj, index, array) => {
+        stateObj = dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*4), array[index].baseHits, array[index].baseCost)
+        stateObj = energyGift(stateObj, array[index].energyGift)
+        return stateObj;
+      }
+    },
+
     pirouettespin: {
       cardID: 17,
       name: "Pirouette Spin",
@@ -609,9 +639,9 @@ let fireCardPool = {
       name: "Flaming Strike",
       text: (state, index, array) => {
         if (array[index].baseHits === 1) {
-          return `Deal ${array[index].baseDamage + (array[index].upgrades*3) + state.playerMonster.strength} damage. Attacks deal +${(2*array[index].upgrades)} damage this turn`
+          return `Deal ${array[index].baseDamage + (array[index].upgrades*3) + state.playerMonster.strength} damage. Attacks deal +${(2*array[index].upgrades)+4} damage this turn`
         } else {
-          return `Deal ${array[index].baseDamage + (array[index].upgrades*3) + state.playerMonster.strength} damage ${array[index].baseHits} times.. Attacks deal +${2*array[index].upgrades} damage this turn`
+          return `Deal ${array[index].baseDamage + (array[index].upgrades*3) + state.playerMonster.strength} damage ${array[index].baseHits} times.. Attacks deal +${(2*array[index].upgrades)+4} damage this turn`
         }
       },
       minReq: (state, index, array) => {
@@ -628,8 +658,8 @@ let fireCardPool = {
       elementType: "fire",
       action: (stateObj, index, array) => {
         stateObj = immer.produce(state, (newState) => {
-          newState.playerMonster.tempStrength += (2*array[index].upgrades);
-          newState.playerMonster.strength += (2*array[index].upgrades);
+          newState.playerMonster.tempStrength += (2*array[index].upgrades)+4;
+          newState.playerMonster.strength += (2*array[index].upgrades)+4;
         })
         stateObj = dealOpponentDamage(stateObj, (array[index].baseDamage + (array[index].upgrades*3)), array[index].baseHits, array[index].baseCost)
         return stateObj;
@@ -1543,7 +1573,7 @@ let fireCardPool = {
       },
       name: "Flurry Finisher",
       text: (stateObj, index, array) => {
-        let cardDamage = array[index].baseDamage + (array[index].upgrades*3) + stateObj.playerMonster.strength;
+        let cardDamage = array[index].baseDamage + (array[index].upgrades*2) + stateObj.playerMonster.strength;
         cardDamage = (stateObj.playerMonster.encounterEnergy === array[index].baseCost) ? cardDamage*2 : cardDamage; 
         if (array[index].baseHits === 1) {
           return `Deal ${cardDamage} damage. Copies. Finisher: double damage`;
@@ -1564,7 +1594,7 @@ let fireCardPool = {
       cardType: "attack",
       elementType: "fire",
       action: (stateObj, index, array) => {
-        let cardDamage = array[index].baseDamage + (array[index].upgrades*3)
+        let cardDamage = array[index].baseDamage + (array[index].upgrades*2)
         cardDamage = (stateObj.playerMonster.encounterEnergy === array[index].baseCost) ? ((cardDamage*2)+stateObj.playerMonster.strength) : cardDamage;
         stateObj = dealOpponentDamage(stateObj, cardDamage, array[index].baseHits, array[index].baseCost);
     

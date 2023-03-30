@@ -845,6 +845,8 @@ button:hover {
   width: 14vmin;
   /*border: 1px solid green;
   background: linear-gradient(215deg, rgba(197, 255, 199, 0.916), rgba(187, 255, 187, 0.9)); */
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.529);
   margin: 2vmin;
   text-align: center;
   display: flex;
@@ -926,6 +928,8 @@ button:hover {
 .clickable-square:hover {
   cursor: pointer;
   color: rgb(255, 225, 0);
+  background-color: rgba(255, 255, 255, 0.837);
+  animation: fadeIn 0.5s forwards;
   /*background: linear-gradient(215deg, rgba(255, 236, 219, 0.716), rgba(229, 181, 151, 0.7));*/
 }
 
@@ -976,7 +980,8 @@ button:hover {
 .Town {
   font-size: 3em;
   color: rgb(50, 50, 50);
-  background: linear-gradient(90deg, rgba(255, 236, 219, 0.89), rgba(0, 0, 0, 0.85));
+  border-radius: 7%;
+  background: linear-gradient(90deg, rgba(255, 236, 219, 0.89), rgba(56, 56, 56, 0.85));
 }
 
 #shop-div .playable:hover {
@@ -985,13 +990,16 @@ button:hover {
 
 .completed, .path {
   background: linear-gradient(215deg, rgba(255, 236, 219, 0.916), rgba(229, 181, 151, 0.9));
+  border-radius: 7%;
+  width: 18vmin;
+  height: 14vmin;
   color: rgb(63, 63, 63);
 }
 
 .here {
   background: linear-gradient( rgb(255, 218, 185, 0.85), rgba(243, 179, 133, 0.85),rgba(244, 181, 98, 0.85));  
   color: rgb(64, 9, 94);
-  font-size: 2em;
+  font-size: 1.6em;
   box-shadow: 0 0 50px rgb(109, 0, 0); 
 }
 

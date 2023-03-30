@@ -97,7 +97,7 @@ let playerMonsters = {
     },
 
     funCards: {
-        name: "Fun Cards (but OP af)",
+        name: "Energy Manipulation",
         type: "fire",
         encounterEnergy: 0,
         opponentMoveIndex: false,
@@ -113,19 +113,21 @@ let playerMonsters = {
         turnEnergy: 3,
         avatar: "img/fireMonster.png",
         startingDeck: [
-          fireCardPool.vampiricstrike,
-          fireCardPool.bloatedbomb,
-          fireCardPool.skipaway,
-          fireCardPool.rareupgrade,
-          fireCardPool.disablingblow,
-          fireCardPool.throwsand,
-          fireCardPool.bloodshield,
-          fireCardPool.precisionstrike,
-          fireCardPool.enjoin,
-          fireCardPool.powerup,
-          fireCardPool.mentalblock,
-          fireCardPool.hammerandtongs,
-          fireCardPool.thiefshield,
+          //1 energy
+        fireCardPool.fireEnergy,
+        fireCardPool.hammerandtongs,
+        //5 block
+        fireCardPool.essencedrain,
+        fireCardPool.withdraw,
+        fireCardPool.withdraw,
+        fireCardPool.withdraw,
+        fireCardPool.withdraw,
+        // 5 attack
+        fireCardPool.tackle,
+        fireCardPool.energyburst,
+        fireCardPool.tackle,
+        fireCardPool.tackle,
+        fireCardPool.tackle,
 
         ],
       },
