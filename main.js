@@ -32,24 +32,24 @@
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 const Status = {
   ChoosingMonster: "Choose a monster",
-  UpgradingCards: "Choose any card from your deck to upgrade",
-  EncounterRewards: "Choose a card to add to your deck",
+  UpgradingCards: "Choose a card. Upgrade it.",
+  EncounterRewards: "Choose a card. Add it to your deck",
   OverworldMap: "choose where to go next",
-  InEncounter: "in encounter",
+  InEncounter: "In Combat",
   WonEncounter: "won encounter",
-  RemovingCards: "choose a card to remove from your deck",
+  RemovingCards: "cChoose a card. Remove it from your deck",
   Death: "You died",
   InTown: "In Town",
-  DecreasingCost: "Choose a card and decrease its cost by 1",
-  IncreasingBlock: "Choose a card to increase its block by 5",
-  IncreasingHits: "Choose a card to hit 1 extra time",
-  IncreasingAttack: "Choose an attack to deal +10 damage",
+  DecreasingCost: "Choose a card. It costs 1 less",
+  IncreasingBlock: "Choose a card. It gets +7 block",
+  IncreasingHits: "Choose a card. It hits 1 extra time",
+  IncreasingAttack: "Choose an attack. It deals +5 damage",
   DuplicatingCards: "Choose a card. Add a copy of it to your deck",
-  DoublingAttack: "Choose a card. Double its base damage",
+  DoublingAttack: "Choose a card. +50% base damage",
   DoubleUpgradeEvent: "Choose a card. Upgrade it twice",
   LevelUpEvent: "Choose a trait to permanently level up",
-  ChooseRareEvent: "Choose a rare card to add to your deck",
-  PaidRemovalEvent: "Choose a card to sell for 50 gold (rare cards are worth 100 gold)",
+  ChooseRareEvent: "Choose a rare card. Add it to your deck",
+  PaidRemovalEvent: "Choose a card. Sell it for 50 gold (100 gold for rare cards)",
   AssassinTrainingEvent: "Remove all attacks from your deck. Add a Fatal Toxin (applies 5 poison)",
   ShowCardPool: "showing card pool",
   HealersShop: "Restore your health for a price",
@@ -149,7 +149,7 @@ const eventsArray = [
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
-    divText: "Double Card's Attack",
+    divText: "Unimaginable Power",
     newStatus: Status.DoublingAttack,
     eventID: 3
   },
@@ -333,7 +333,7 @@ function changeMapSquare(stateObj, indexToMoveTo) {
       })
     } else if (stateObj.townMapSquares[indexToMoveTo] === "?") {
       console.log("clicked on an event")
-      shuffledEventsArray = fisherYatesShuffle(eventsArray);
+      let shuffledEventsArray = fisherYatesShuffle(eventsArray);
       stateObj = immer.produce(stateObj, (newState) => {
         newState.status = shuffledEventsArray[1].newStatus;
       })
@@ -901,7 +901,7 @@ function increaseCardBlock(stateObj, index, array) {
 
 function increaseCardAttack(stateObj, index, array) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerDeck[index].baseDamage += 6;
+    newState.playerDeck[index].baseDamage += 5;
     newState.eventUsed = true;
     newState.status = Status.OverworldMap
     newState.townMapSquares[newState.playerHere] = "completed"
@@ -911,8 +911,9 @@ function increaseCardAttack(stateObj, index, array) {
 }
 
 function doubleCardAttack(stateObj, index, array) {
+  let newBaseDamage = Math.floor(newState.playerDeck[index].baseDamage * 1.5)
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerDeck[index].baseDamage *= 2;
+    newState.playerDeck[index].baseDamage = newBaseDamage;
     newState.eventUsed = true;
     newState.status = Status.OverworldMap
     newState.townMapSquares[newState.playerHere] = "completed"
