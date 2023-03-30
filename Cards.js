@@ -121,7 +121,7 @@ let fireCardPool = {
       name: "Explode",
       text: (state, index, array) => {
         let damageValue = (array[index].baseDamage + state.playerMonster.strength + (2 * array[index].upgrades));
-        let hitsValue = (state.status = Status.InEncounter) ? state.playerMonster.encounterEnergy+array[index].baseHits : "X";
+        let hitsValue = (state.status === Status.InEncounter) ? state.playerMonster.encounterEnergy+array[index].baseHits : "X";
         return `Deal ${damageValue} damage ${hitsValue} times.`
       },
       minReq: 0,
