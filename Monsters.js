@@ -152,7 +152,7 @@ let opponentMonsters = {
   blockgym1: {
     name: "Block Gym Disciple",
     type: "Air",
-    XPGain: opponentXPGain*6,
+    XPGain: opponentXPGain*2,
     Level: 1,
     maxHP: opponentMaxHP*9,
     encounterEnergy: 0,
@@ -206,7 +206,7 @@ let opponentMonsters = {
             newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
             newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
             newState.opponentMonster[index].encounterEnergy -= 3;
-            newState.opponentMonster[index].dex += array[index].baseScale*2;
+            newState.opponentMonster[index].dex += array[index].baseScale;
           })
           return toChangeState;
         }
@@ -323,7 +323,7 @@ let opponentMonsters = {
   healgym1: {
     name: "Heal Gym Disciple",
     type: "Air",
-    XPGain: opponentXPGain*6,
+    XPGain: opponentXPGain*2,
     Level: 1,
     maxHP: opponentMaxHP*12,
     encounterEnergy: 0,
@@ -646,7 +646,7 @@ let opponentMonsters = {
   strengthgym1: {
     name: "Strength Gym Disciple",
     type: "Fire",
-    XPGain: opponentXPGain*6,
+    XPGain: opponentXPGain*2,
     Level: 1,
     maxHP: opponentMaxHP*7,
     encounterEnergy: 0,
@@ -863,7 +863,7 @@ let opponentMonsters = {
   randomencounter1: {
     name: "Sindur",
     type: "fire",
-    XPGain: opponentXPGain*6,
+    XPGain: opponentXPGain*2,
     Level: 1,
     maxHP: 40,
     encounterEnergy: 0,
@@ -953,7 +953,7 @@ let opponentMonsters = {
   balancegym1: {
     name: "Block Gym Disciple",
     type: "Air",
-    XPGain: opponentXPGain*6,
+    XPGain: opponentXPGain*2,
     Level: 1,
     maxHP: opponentMaxHP*9,
     encounterEnergy: 0,
