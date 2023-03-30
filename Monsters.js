@@ -6,11 +6,14 @@ let opponentBaseBlock = 5;
 let opponentBaseHeal = 5;
 let opponentBaseScale = 3;
 let opponentMaxHP = 5;
+let opponentXPGain = 5
 
 let opponentMonsters = {
   blockbossguard1: {
     name: "Block Gym Guard 1",
     type: "Air",
+    Level: 1,
+    XPGain: opponentXPGain,
     maxHP: opponentMaxHP*7,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -81,6 +84,8 @@ let opponentMonsters = {
   blockbossguard2: {
     name: "Block Gym Guard 2",
     type: "Air",
+    Level: 1,
+    XPGain: opponentXPGain,
     maxHP: opponentMaxHP*6,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -152,7 +157,8 @@ let opponentMonsters = {
   blockgym1: {
     name: "Block Gym Disciple",
     type: "Air",
-    XPGain: 10,
+    XPGain: opponentXPGain*2,
+    Level: 1,
     maxHP: opponentMaxHP*9,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -217,6 +223,8 @@ let opponentMonsters = {
   blockgymboss: {
     name: "Block Gym Boss",
     type: "Air",
+    Level: 1,
+    XPGain: opponentXPGain*3,
     maxHP: opponentMaxHP*12,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -317,7 +325,8 @@ let opponentMonsters = {
   healgym1: {
     name: "Heal Gym Disciple",
     type: "Air",
-    XPGain: 10,
+    XPGain: opponentXPGain*2,
+    Level: 1,
     maxHP: opponentMaxHP*12,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -415,6 +424,8 @@ let opponentMonsters = {
   healgymguard1: {
     name: "Heal Gym Guard",
     type: "Air",
+    XPGain: opponentXPGain,
+    Level: 1,
     maxHP: opponentMaxHP*6,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -483,6 +494,8 @@ let opponentMonsters = {
       healgymguard2: {
         name: "Heal Gym Guard",
         type: "Air",
+        XPGain: opponentXPGain,
+        Level: 1,
         maxHP: opponentMaxHP*6,
         encounterEnergy: 0,
         opponentMoveIndex: false,
@@ -551,6 +564,8 @@ let opponentMonsters = {
   healgymboss: {
     name: "Heal Gym Boss",
     type: "Air",
+    XPGain: opponentXPGain*3,
+    Level: 1,
     maxHP: opponentMaxHP*13,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -633,7 +648,8 @@ let opponentMonsters = {
   strengthgym1: {
     name: "Strength Gym Disciple",
     type: "Fire",
-    XPGain: 10,
+    XPGain: opponentXPGain*2,
+    Level: 1,
     maxHP: opponentMaxHP*7,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -697,6 +713,8 @@ let opponentMonsters = {
   strengthgymguard: {
     name: "Strength Gym Guard",
     type: "Fire",
+    XPGain: opponentXPGain,
+    Level: 1,
     maxHP: opponentMaxHP*6,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -756,6 +774,8 @@ let opponentMonsters = {
   strengthgymboss: {
     name: "Strength Gym Boss",
     type: "Fire",
+    XPGain: opponentXPGain*3,
+    Level: 1,
     maxHP: opponentMaxHP*13,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -845,12 +865,13 @@ let opponentMonsters = {
   randomencounter1: {
     name: "Sindur",
     type: "fire",
+    XPGain: opponentXPGain*2,
+    Level: 1,
     maxHP: 40,
     encounterEnergy: 0,
     opponentMoveIndex: false,
     currentHP: 40,
     strength: 0,
-    XPGain: 15,
     baseScale: opponentBaseScale,
     baseBlock: opponentBaseBlock,
     baseDamage: opponentBaseDamage,
@@ -940,7 +961,8 @@ let opponentMonsters = {
   balancegym1: {
     name: "Block Gym Disciple",
     type: "Air",
-    XPGain: 10,
+    XPGain: opponentXPGain*2,
+    Level: 1,
     maxHP: opponentMaxHP*9,
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -1003,68 +1025,7 @@ let opponentMonsters = {
 
 
 }
-// consuming flames
-// rising tide
 
-let gym1 = [
-  {
-    opponents: [opponentMonsters.blockgym1],
-    goldReward: 25
-  },
-
-  {
-    opponents: [opponentMonsters.blockbossguard2, opponentMonsters.blockgym1],
-    goldReward: 25
-  },
-
-  {
-    opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockgymboss, opponentMonsters.blockbossguard2],
-    goldReward: 125,
-    boss: true
-  },
-]
-
-let gym2 = [
-  {
-    opponents: [opponentMonsters.healgym1],
-    goldReward: 25
-  },
-
-  {
-    opponents: [opponentMonsters.healgymguard2, opponentMonsters.healgym1],
-    goldReward: 25
-  },
-
-  {
-    opponents: [opponentMonsters.healgymboss, opponentMonsters.healgymguard2, opponentMonsters.healgymguard1],
-    goldReward: 125,
-    boss: true
-  },
-]
-
-let gym3 = [
-  {
-    opponents: [opponentMonsters.strengthgym1],
-    goldReward: 25
-  },
-
-  {
-    opponents: [opponentMonsters.strengthgym1, opponentMonsters.strengthgymguard],
-    goldReward: 25
-  },
-
-  {
-    opponents: [opponentMonsters.strengthgymguard, opponentMonsters.strengthgymboss, opponentMonsters.strengthgymguard],
-    goldReward: 125,
-    boss: true
-  },
-]
-
-let gyms = [
-  gym1,
-  gym2,
-  gym3,
-]
 
 let easyEncountersMjs = [
   {

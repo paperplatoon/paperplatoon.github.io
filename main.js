@@ -630,7 +630,6 @@ function renderChooseMonster(stateObj) {
 };
 
 function chooseThisMonster(stateObj, index) {
-  gyms = fisherYatesShuffle(gyms);
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster = potentialMonsterChoices[index];
     newState.playerDeck = potentialMonsterChoices[index].startingDeck;
@@ -1315,6 +1314,7 @@ function setUpEncounter(stateObj, isBoss=false) {
       newState.opponentMonster[index].baseBlock += (newState.gymCount*4);
       newState.opponentMonster[index].baseHeal += (newState.gymCount*4);
       newState.opponentMonster[index].baseScale += (newState.gymCount*1);
+      newState.opponentMonster[index].XPGain += (newState.gymCount*5);
 
       newState.status = Status.InEncounter
     })
