@@ -372,7 +372,6 @@ let potentialMonsterChoices = playerMonsterArray;
 
 
 function changeState(newStateObj) {
-  console.log("state changing: fightStarted changing from " + state.fightStarted + " to " + newStateObj.fightStarted)
   let stateObj = {...newStateObj}
   if (newStateObj.status === Status.InEncounter) {
     stateObj = handleDeaths(stateObj);
@@ -2322,17 +2321,6 @@ function playOpponentMove(stateObj) {
   return stateObj;
 }
 
-function playOpponentMove2(stateObj) {
-  let toChangeState = immer.produce(stateObj, (newState) => {
-    newState.opponentMonster.forEach(function (monsterObj, index) {
-      const move = monsterObj.moves[monsterObj.opponentMoveIndex];
-      //move.action also take a state object and returns a state object, so newState gets updated
-      newState = move.action(newState, index);
-    })
-  });
-  return toChangeState;
-}
-
 
 function discardHand(stateObj) {
   let toChangeState = immer.produce(stateObj, (newState) => {
@@ -2388,11 +2376,8 @@ function endTurnIncrement(stateObj) {
 
 //if you flip the order of this around, discard works, but not playing the move
 async function endTurn(stateObj) {
-  console.log("endTurn start: fightStarted changing from " + state.fightStarted + " to " + stateObj.fightStarted)
   stateObj = discardHand(stateObj);
-  console.log("endTurn post-discard: fightStarted changing from " + stateObj.fightStarted + " to " + stateObj.fightStarted)
   stateObj = endTurnIncrement(stateObj);
-  console.log("endTurn post-Increment: fightStarted changing from " + stateObj.fightStarted + " to " + stateObj.fightStarted)
   stateObj = changeState(stateObj);
   await pause(200);
 
@@ -2409,8 +2394,8 @@ async function endTurn(stateObj) {
   });
   
 
-  console.log("picking opponent move");
-  stateObj = pickOpponentMove(stateObj);
+  // console.log("picking opponent move");
+  // stateObj = pickOpponentMove(stateObj);
   stateObj = playOpponentMove(stateObj);
   changeState(stateObj);
   await pause(200);

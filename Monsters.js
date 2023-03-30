@@ -937,12 +937,13 @@ let opponentMonsters = {
         name: "River of Flames",
         cost: "6",
         text: (state, index, array) => {
-          return `Deal ${array[index].baseDamage * 3} damage.`
+          return `Deal ${(array[index].baseDamage * 2) + array[index].strength} damage.`
         },
         minReq: 6,
         energyChange: "-6",
         action: (stateObj, index, array) => {
-          stateObj = dealPlayerDamage(stateObj, array[index].opponentBaseDamage*5, index, -6);
+          stateObj = dealPlayerDamage(stateObj, (array[index].baseDamage*2), index, energyChange=-6);
+          console.log()
           return stateObj;
         }
       },
@@ -978,6 +979,7 @@ let opponentMonsters = {
         minReq: 0,
         energyChange: "+3",
         action: (stateObj, index, array) => {
+          console.log("playing study openings")
           stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock)  + array[index].dex);
             newState.opponentMonster[index].strength += array[index].baseScale;
@@ -1002,10 +1004,10 @@ let opponentMonsters = {
         minReq: 3,
         energyChange: "-3",
         action: (stateObj, index, array) => {
+          console.log("playing graceful strike")
           stateObj = dealPlayerDamage(stateObj, array[index].baseDamage, index, -3);
-          stateObj = immer.produce(state, (newState) => {
+          stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[index].dex += Math.ceil(array[index].baseScale/2);
-            newState.opponentMonster[index].encounterEnergy -= 3;
           })
           return stateObj;
         }
