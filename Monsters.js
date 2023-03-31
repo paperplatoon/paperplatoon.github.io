@@ -1021,36 +1021,28 @@ let opponentMonsters = {
 }
 
 
-let easyEncountersMjs = [
-  {
-    opponents: [opponentMonsters.strengthgym1],
-    goldReward: 25,
-    XP: 10,
-  },
-  {
-    opponents: [opponentMonsters.healgym1],
-    goldReward: 25,
-    XP: 10,
-  },
-  {
-    opponents: [opponentMonsters.balancegym1],
-    goldReward: 25,
-    XP: 10,
-  },
-
-  {
-    opponents: [opponentMonsters.randomencounter1],
-    goldReward: 25,
-    XP: 15,
-  },
-]
 
 let mediumEncountersMjs = [
   {
     opponents: [opponentMonsters.blockgym1],
     goldReward: 25,
-    XP: 10,
   },
+  {
+    opponents: [opponentMonsters.strengthgym1],
+    goldReward: 25,
+  },
+  {
+    opponents: [opponentMonsters.balancegym1],
+    goldReward: 25,
+  },
+  {
+    opponents: [opponentMonsters.healgym1],
+    goldReward: 25,
+  },
+]
+
+let hardEncountersMjs = [
+
   {
     opponents: [opponentMonsters.strengthgym1, opponentMonsters.strengthgymguard],
     goldReward: 35,

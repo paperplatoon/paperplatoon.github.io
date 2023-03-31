@@ -199,9 +199,10 @@ function fillMapWithArray(stateObj) {
 
   let easyEncounters = fisherYatesShuffle(easyEncountersMjs);
   let mediumEncounters = fisherYatesShuffle(mediumEncountersMjs)
+  let hardEncounters = fisherYatesShuffle(hardEncountersMjs);
   let bossEncounters = fisherYatesShuffle(bossEncountersMjs)
 
-  let townMonsterEncounters = [easyEncounters[0], easyEncounters[1], mediumEncounters[0], mediumEncounters[1], mediumEncounters[2], mediumEncounters[3]];
+  let townMonsterEncounters = [easyEncounters[0], easyEncounters[1], mediumEncounters[0], mediumEncounters[1], hardEncounters[2], hardEncounters[3]];
 
     //fill the actual map
     stateObj = immer.produce(stateObj, (newState) => {
