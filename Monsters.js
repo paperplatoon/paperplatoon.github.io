@@ -1,11 +1,11 @@
 //return `Deal ${5 + array[index].strength} damage. Restore 5 health`
 //randomize some stuff like strength and dex (maybe starting energy) to change stuff up a bit
 
-let opponentBaseDamage = 5;
-let opponentBaseBlock = 5;
-let opponentBaseHeal = 5;
+let opponentBaseDamage = 6;
+let opponentBaseBlock = 8;
+let opponentBaseHeal = 7;
 let opponentBaseScale = 3;
-let opponentMaxHP = 5;
+let opponentMaxHP = 7;
 let opponentXPGain = 5
 
 let opponentMonsters = {
@@ -142,7 +142,7 @@ let opponentMonsters = {
         minReq: 5,
         energyChange: "-5",
         action: (stateObj, index, array) => {
-          stateObj = dealPlayerDamage(stateObj, (array[index].baseDamage * 2) + 1, index, energyCost=5);
+          stateObj = dealPlayerDamage(stateObj, (array[index].baseDamage * 2) + 1, index, energyChange=-5);
           return stateObj;
         }
       }
@@ -306,14 +306,9 @@ let opponentMonsters = {
         },
         minReq: 6,
         energyChange: "-7",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            let tempState = dealPlayerDamage(newState, (array[index].baseDamage*5), index);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy -= 7;
-          })
-          return toChangeState;
+        action: (stateObj, index, array) => {
+          stateObj = dealPlayerDamage(stateObj, (array[index].baseDamage * 5), index, energyChange=-7);
+          return stateObj;
         }
       }
 

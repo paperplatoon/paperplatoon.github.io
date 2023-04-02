@@ -44,12 +44,12 @@ let playerMonsters = {
       startingDeck: [
         //2 energy
         fireCardPool.fireEnergy,
-        fireCardPool.gainstrength,
+        fireCardPool.fireEnergy,
         //5 attack
         fireCardPool.tackle,
         fireCardPool.tackle,
         fireCardPool.tackle,
-        fireCardPool.tackle,
+        fireCardPool.gainstrength,
         fireCardPool.fierymissiles,
         //5 block
         fireCardPool.withdraw,
@@ -57,8 +57,6 @@ let playerMonsters = {
         fireCardPool.withdraw,
         fireCardPool.withdraw,
         fireCardPool.withdraw,   
-        
-
       ],
     },
 
@@ -80,6 +78,7 @@ let playerMonsters = {
       avatar: "img/adorablefire.png",
       startingDeck: [
         //1 energy
+        fireCardPool.fireEnergy,
         fireCardPool.fireEnergy,
         //5 block
         fireCardPool.puffofsmoke,
