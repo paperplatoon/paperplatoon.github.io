@@ -1516,13 +1516,13 @@ let fireCardPool = {
           return 0
         }
       },
-      upgrades: 2,
+      upgrades: 0,
       cardType: "attack",
       elementType: "fire",
       action: (state, index, array) => {
         let toChangeState = immer.produce(state, (newState) => {
-          if (array[index].upgrades < 2) {
-            newState.playerMonster.encounterEnergy -= array[index].baseCost-array[index].upgrades;
+          if (array[index].upgrades === 0) {
+            newState.playerMonster.encounterEnergy -= array[index].baseCost;
           } else {
             newState.playerMonster.encounterBlock += (4*(array[index].upgrades-1)) + newState.playerMonster.dex;
           }          

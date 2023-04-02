@@ -513,19 +513,30 @@ async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energy
 async function upgradeAnimation(stateObj, cardIndex, cardArray, upgradeTimes, divIDName="app", levelUp=false) {
   document.getElementById(divIDName).innerHTML = "";
   let newText = showChangedUpgradeText(stateObj, cardIndex, cardArray, cardArray[cardIndex], "upgrades", upgradeTimes);
+  let newCost = showChangedUpgradeCost(stateObj, cardIndex, cardArray, cardArray[cardIndex], "upgrades", upgradeTimes);
   renderCard(stateObj, cardArray, cardIndex, divIDName);
   if (levelUp) {
     let levelUpText = document.createElement("P");
     levelUpText.textContent = "You leveled up and upgraded a card!"
     document.getElementById(divIDName).append(levelUpText)
   }
-  queryStringText = "#"+divIDName+ " .card-text"
+  let queryStringText = "#"+divIDName+ " .card-text"
   let textElement = document.querySelector(queryStringText)
+  let costText = "#"+divIDName+ " .hand-card-cost"
+  let costElement = document.querySelector(costText)
+
+
   textElement.classList.add("fade-out");
+  costElement.classList.add("fade-out");
   await pause(1000)
-    textElement.textContent = newText;
-    textElement.classList.remove("fade-out");
-    textElement.classList.add("fade-in");
+
+  textElement.textContent = newText;
+  textElement.classList.remove("fade-out");
+  textElement.classList.add("fade-in");
+
+  costElement.textContent = newCost;
+  costElement.classList.remove("fade-out");
+  costElement.classList.add("fade-in");
 
   await pause(upgradeAnimationTiming)
   if (stateObj.status !== Status.InEncounter) {
