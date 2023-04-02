@@ -1636,7 +1636,7 @@ let fireCardPool = {
       text: (state, index, array) => {
         if (array[index].upgrades === 0) {
           return `Upgrade a random card in your deck permanently. Remove`;
-        } else if (array[index].upgrades > 6) {
+        } else {
           return `Upgrade a random card in your deck permanently ${1+Math.floor(array[index].upgrades/3)} times. Remove`;
         }
           ;
