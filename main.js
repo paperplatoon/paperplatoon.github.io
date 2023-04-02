@@ -432,8 +432,15 @@ renderScreen(state);
 // - - - - - -  - - - - -Functions used by Cards.js and Monsters.js - - - - - -  - - - - -
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, energyCost=false, all=false, specifiedIndex=false) {
+async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, energyCost=false, all=false, specifiedIndex=false) {
   let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster 
+
+  document.querySelector("#playerStats .avatar").classList.add("shake");
+  await pause(500);
+  document.querySelector("#playerStats .avatar").classList.remove("shake");
+  document.querySelector(".targeted .avatar").classList.add("impact");
+  await pause(500)
+
   let toChangeState = immer.produce(stateObj, (newState) => {
     let calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
     if (calculatedDamage > 0) {
@@ -478,7 +485,8 @@ function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, energyCost
   return toChangeState;
 }
 
-function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energyChange=false, attackNumber = 1) {
+async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energyChange=false, attackNumber = 1) {
+  
   let toChangeState = immer.produce(stateObj, (newState) => {
     calculatedDamage = ((damageNumber + newState.opponentMonster[monsterIndex].strength) * attackNumber);
     if (calculatedDamage > 0) {

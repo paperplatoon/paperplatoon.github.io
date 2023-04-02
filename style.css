@@ -29,6 +29,30 @@
   font-size: 3vmin;
 }
 
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  75% { transform: translateX(-10px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.5s forwards ;
+}
+
+@keyframes impact {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(40px); }
+  50% { transform: translateX(35px); }
+  75% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
+}
+
+.impact {
+  animation: impact 0.3s forwards ;
+}
+
 
 
 .card h3 {
