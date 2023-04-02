@@ -26,7 +26,7 @@ let playerMonsters = {
     },
   
     charles: {
-      name: "Charles",
+      name: "Test - scales over time",
       type: "fire",
       encounterEnergy: 0,
       opponentMoveIndex: false,
@@ -61,7 +61,7 @@ let playerMonsters = {
     },
 
     genner: {
-      name: "Stronger Charles",
+      name: "Main",
       type: "fire",
       encounterEnergy: 0,
       opponentMoveIndex: false,
@@ -101,8 +101,8 @@ let playerMonsters = {
         encounterEnergy: 0,
         opponentMoveIndex: false,
         cardPool: fireCardPool,
-        maxHP: 35,
-        currentHP: 35,
+        maxHP: 45,
+        currentHP: 45,
         strength: 0,
         dex: 0,
         tempStrength: 0,

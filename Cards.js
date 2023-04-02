@@ -1636,42 +1636,42 @@ let fireCardPool = {
       text: (state, index, array) => {
         if (array[index].upgrades === 0) {
           return `Upgrade a random card in your deck permanently. Remove`;
-        } else {
-          return `Upgrade a random card in your deck permanently ${1+array[index].upgrades} times. Remove`;
+        } else if (array[index].upgrades > 6) {
+          return `Upgrade a random card in your deck permanently ${1+Math.floor(array[index].upgrades/3)} times. Remove`;
         }
           ;
       },
       minReq: (state, index, array) => {
-        return array[index].baseCost;
+        return array[index].baseCost - Math.floor(array[index].upgrades/2);
       },
       timeValue: upgradeAnimationTiming,
       baseCost: 3,
       cost:  (state, index, array) => {
-        return array[index].baseCost;
+        return array[index].baseCost-(Math.floor(array[index].upgrades/2));
       },
-      upgrades: 0,
+      upgrades: 1,
       cardType: "ability",
       elementType: "fire",
       action: async (stateObj, index, array) => {
         let randomIndex  = Math.floor(Math.random() * stateObj.playerDeck.length)
         let cardIndex = 0;
 
-        upgradeAnimation(stateObj, randomIndex, stateObj.playerDeck, 1+array[index].upgrades, divIDName="handContainer2")       
+        upgradeAnimation(stateObj, randomIndex, stateObj.playerDeck, 1+Math.floor(array[index].upgrades/3), divIDName="handContainer2")       
         
         await pause(array[index].timeValue)
         stateObj = immer.produce(stateObj, (newState) => {
           console.log('upgrading ' + newState.playerDeck[randomIndex].name)
-          newState.playerDeck[randomIndex].upgrades += (1+array[index].upgrades);
+          newState.playerDeck[randomIndex].upgrades += 1+Math.floor(array[index].upgrades/3);
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
           if (stateObj.encounterHand.find(card => card.name === stateObj.playerDeck[randomIndex].name)) {
             let handIndex = newState.encounterHand.findIndex(card => card.name === stateObj.playerDeck[randomIndex].name)
-            newState.encounterHand[handIndex].upgrades += (1+array[index].upgrades)
+            newState.encounterHand[handIndex].upgrades += 1+Math.floor(array[index].upgrades/3);
           } else if (stateObj.encounterDiscard.find(card => card.name === stateObj.playerDeck[randomIndex].name)) {
             let discardIndex = newState.encounterDiscard.findIndex(card => card.name === stateObj.playerDeck[randomIndex].name)
-            newState.encounterDiscard[discardIndex].upgrades += (1+array[index].upgrades)
+            newState.encounterDiscard[discardIndex].upgrades += 1+Math.floor(array[index].upgrades/3);
           } else if (stateObj.encounterDraw.find(card => card.name === stateObj.playerDeck[randomIndex].name)) {
             let drawIndex = newState.encounterDraw.findIndex(card => card.name === stateObj.playerDeck[randomIndex].name)
-            newState.encounterDraw[drawIndex].upgrades += (1+array[index].upgrades)
+            newState.encounterDraw[drawIndex].upgrades += 1+Math.floor(array[index].upgrades/3);
           } else {
             console.log('could not find card');
           }
