@@ -105,9 +105,9 @@ let easyEncounters = {
             },
             minReq: 2,
             energyChange: "-2",
-            action: (stateObj, index, array) => {
+            action: async (stateObj, index, array) => {
               console.log("playing graceful strike")
-              stateObj = dealPlayerDamage(stateObj, array[index].baseDamage, index, -2);
+              stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index, -2);
               stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].dex += Math.ceil(array[index].baseScale/2);
               })

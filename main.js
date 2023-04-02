@@ -1,8 +1,8 @@
 //ANIMATIONS
-//dealPlayerDamage
 //energyGift
 //energyDestroy
 //turn like every single function async
+//animation when opponents gain energy
 
 
 
@@ -445,7 +445,7 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
   await pause(300);
   document.querySelector("#playerStats .avatar").classList.remove("player-windup");
   document.querySelector(".targeted .avatar").classList.add("opponent-impact");
-  await pause(300)
+  await pause(300);
 
   let toChangeState = immer.produce(stateObj, (newState) => {
     let calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
@@ -492,6 +492,12 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
 }
 
 async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energyChange=false, attackNumber = 1) {
+  document.querySelectorAll("#opponents .avatar")[monsterIndex].classList.add("opponent-windup");
+  await pause(300);
+  document.querySelectorAll("#opponents .avatar")[monsterIndex].classList.remove("opponent-windup");
+  document.querySelectorAll("#playerStats .avatar")[monsterIndex].classList.add("player-impact");
+  await pause(300);
+  document.querySelectorAll("#playerStats .avatar")[monsterIndex].classList.remove("player-impact");
   
   let toChangeState = immer.produce(stateObj, (newState) => {
     calculatedDamage = ((damageNumber + newState.opponentMonster[monsterIndex].strength) * attackNumber);

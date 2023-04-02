@@ -37,8 +37,20 @@
   100% { transform: translateX(0); }
 }
 
+@keyframes opponentWindup {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(20px); }
+  50% { transform: translateX(-20px); }
+  75% { transform: translateX(-10px); }
+  100% { transform: translateX(0); }
+}
+
 .player-windup {
   animation: playerWindup 0.3s forwards ;
+}
+
+.opponent-windup {
+  animation: opponentWindup 0.3s forwards ;
 }
 
 @keyframes opponentImpact {
@@ -48,8 +60,19 @@
   100% { transform: translateX(0); }
 }
 
+@keyframes playerImpact {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(60px); }
+
+  100% { transform: translateX(0); }
+}
+
 .opponent-impact {
   animation: opponentImpact 0.2s forwards ;
+}
+
+.player-impact {
+  animation: playerImpact 0.2s forwards ;
 }
 
 
