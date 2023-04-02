@@ -519,8 +519,8 @@ async function upgradeAnimation(stateObj, cardIndex, cardArray, upgradeTimes, di
     levelUpText.textContent = "You leveled up and upgraded a card!"
     document.getElementById(divIDName).append(levelUpText)
   }
-  queryString = "#"+divIDName+ " .card-text"
-  let textElement = document.querySelector(queryString)
+  queryStringText = "#"+divIDName+ " .card-text"
+  let textElement = document.querySelector(queryStringText)
   textElement.classList.add("fade-out");
   await pause(1000)
     textElement.textContent = newText;
@@ -1501,9 +1501,9 @@ async function playACard(stateObj, cardIndexInHand, arrayObj) {
   console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
   stateObj = await stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
 
-  stateObj = PlayACardImmer(stateObj, cardIndexInHand);
-  stateObj = pickOpponentMove(stateObj);
-  stateObj = changeState(stateObj);
+  stateObj = await PlayACardImmer(stateObj, cardIndexInHand);
+  stateObj = await pickOpponentMove(stateObj);
+  stateObj = await changeState(stateObj);
   return stateObj;
 }
 
@@ -2098,21 +2098,44 @@ function renderClickableCardList(stateObj, cardArray, divName, functionToAdd, go
 //function that takes a card, a card property, and a change, and returns that card's text IF the change happened
 function showChangedUpgradeText(stateObj, index, array, cardObj, propertyNameString, valueChange) {
   let cardClone = {...cardObj}
-  let newState = immer.produce(stateObj, (draft) => {
-    draft.playerDeck[index][propertyNameString] += valueChange;
-  })
-  return cardClone.text(newState, index, newState.playerDeck)  
+  if (array === stateObj.playerDeck) {
+    let newState = immer.produce(stateObj, (draft) => {
+      draft.playerDeck[index][propertyNameString] += valueChange;
+    })
+    return cardClone.text(newState, index, newState.playerDeck) 
+  } else {
+    let newState = immer.produce(stateObj, (draft) => {
+      draft.encounterHand[index][propertyNameString] += valueChange;
+    })
+    return cardClone.text(newState, index, newState.encounterHand) 
+  }
+  
+   
 }
 
 function showChangedUpgradeCost(stateObj, index, array, cardObj, propertyNameString, valueChange) {
   let cardClone = {...cardObj}
-  let newState = immer.produce(stateObj, (draft) => {
-    draft.playerDeck[index][propertyNameString] += valueChange;
-  })
-  if (typeof cardObj.cost === "function") {
-    return cardClone.cost(newState, index, newState.playerDeck)
+  if (array === stateObj.playerDeck) {
+    let newState = immer.produce(stateObj, (draft) => {
+      draft.playerDeck[index][propertyNameString] += valueChange;
+    })
+
+    if (typeof cardObj.cost === "function") {
+      return cardClone.cost(newState, index, newState.playerDeck)
+    } else {
+      return cardClone.cost;
+    }
+
   } else {
-    return cardClone.cost;
+    let newState = immer.produce(stateObj, (draft) => {
+      draft.encounterHand[index][propertyNameString] += valueChange;
+    })
+
+    if (typeof cardObj.cost === "function") {
+      return cardClone.cost(newState, index, newState.encounterHand)
+    } else {
+      return cardClone.cost;
+    }
   }
     
 }
@@ -2469,8 +2492,8 @@ async function endTurn(stateObj) {
 
   // console.log("picking opponent move");
   // stateObj = pickOpponentMove(stateObj);
-  stateObj = playOpponentMove(stateObj);
-  changeState(stateObj);
+  stateObj = await playOpponentMove(stateObj);
+  await changeState(stateObj);
   await pause(200);
 
   stateObj = pickOpponentMove(stateObj);
@@ -2479,7 +2502,7 @@ async function endTurn(stateObj) {
     draft.playerMonster.encounterEnergy += draft.playerMonster.turnEnergy;
   })
   stateObj = drawAHand(stateObj);
-  changeState(stateObj);
+  await changeState(stateObj);
 
 }
 

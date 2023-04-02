@@ -27,14 +27,9 @@ let easyEncounters = {
             },
             minReq: 0,
             energyChange: "+2",
-            action: (state, index, array) => {
-              let toChangeState = immer.produce(state, (newState) => {
-                let tempState = dealPlayerDamage(newState, Math.floor(array[index].baseDamage/4), index, 4);
-                newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-                newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-                newState.opponentMonster[index].encounterEnergy += 2;
-              })
-              return toChangeState;
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage/4), index, 2, 4);
+              return stateObj;
             }
           },
           {
@@ -178,14 +173,9 @@ let easyEncounters = {
             },
             minReq: 2,
             energyChange: "-2",
-            action: (state, index, array) => {
-              let toChangeState = immer.produce(state, (newState) => {
-                let tempState = dealPlayerDamage(newState, (array[index].baseDamage*2)+2, index);
-                newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-                newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-                newState.opponentMonster[index].encounterEnergy -= 2;
-              })
-              return toChangeState;
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*2)+2, index, -2);
+              return stateObj;
             }
           },
     ]
@@ -194,11 +184,11 @@ let easyEncounters = {
 
 let easyEncountersMjs = [
     {
-      opponents: [easyEncounters.e1],
+      opponents: [easyEncounters.e2],
       goldReward: 15,
     },
     {
-      opponents: [easyEncounters.e2],
+      opponents: [easyEncounters.e1],
       goldReward: 15,
     },
     {
