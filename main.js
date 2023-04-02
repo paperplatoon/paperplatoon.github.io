@@ -1,4 +1,8 @@
-
+//ANIMATIONS
+//dealPlayerDamage
+//energyGift
+//energyDestroy
+//turn like every single function async
 
 
 
@@ -313,13 +317,15 @@ function createMapSquareDiv(stateObj, indexOfSquare, classesToAdd) {
   return mapSquareDiv;
 }
 
-function changeMapSquare(stateObj, indexToMoveTo) {
+async function changeMapSquare(stateObj, indexToMoveTo) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerHere = indexToMoveTo
   })
     if (stateObj.townMapSquares[indexToMoveTo] === "Fight") {
+      console.log("clicked on a fight")
       stateObj = setUpEncounter(stateObj);
       stateObj = immer.produce(stateObj, (newState) => {
+        console.log('changing state to fight')
         newState.Status = Status.InEncounter
       })
     } else if (stateObj.townMapSquares[indexToMoveTo] === "Shop") {
@@ -359,7 +365,7 @@ function changeMapSquare(stateObj, indexToMoveTo) {
         newState.Status = Status.OverworldMap
       })
     }
-  changeState(stateObj);
+  await changeState(stateObj);
   return stateObj;
 }
 
@@ -395,7 +401,7 @@ let potentialMonsterChoices = playerMonsterArray;
 async function changeState(newStateObj) {
   let stateObj = {...newStateObj}
   if (newStateObj.status === Status.InEncounter) {
-    stateObj = handleDeaths(stateObj);
+    stateObj = await handleDeaths(stateObj);
   }
 
   //if (stateObj.status !== Status.InEncounter && newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
@@ -435,11 +441,11 @@ renderScreen(state);
 async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, energyCost=false, all=false, specifiedIndex=false) {
   let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster 
 
-  document.querySelector("#playerStats .avatar").classList.add("shake");
-  await pause(500);
-  document.querySelector("#playerStats .avatar").classList.remove("shake");
-  document.querySelector(".targeted .avatar").classList.add("impact");
-  await pause(500)
+  document.querySelector("#playerStats .avatar").classList.add("player-windup");
+  await pause(300);
+  document.querySelector("#playerStats .avatar").classList.remove("player-windup");
+  document.querySelector(".targeted .avatar").classList.add("opponent-impact");
+  await pause(300)
 
   let toChangeState = immer.produce(stateObj, (newState) => {
     let calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
@@ -509,6 +515,15 @@ async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energy
   return toChangeState;
 }
 
+async function opponentDeathAnimation(toDieIndexArray) {
+  toDieIndexArray.forEach(function(index) {
+    let opponentAvatar = document.querySelectorAll('#opponents .avatar')[index];
+    opponentAvatar.classList.add("fade-out");
+  } )
+  await pause(2000);
+
+}
+
 
 async function upgradeAnimation(stateObj, cardIndex, cardArray, upgradeTimes, divIDName="app", levelUp=false) {
   document.getElementById(divIDName).innerHTML = "";
@@ -528,7 +543,7 @@ async function upgradeAnimation(stateObj, cardIndex, cardArray, upgradeTimes, di
 
   textElement.classList.add("fade-out");
   costElement.classList.add("fade-out");
-  await pause(1000)
+  await pause(500)
 
   textElement.textContent = newText;
   textElement.classList.remove("fade-out");
@@ -714,7 +729,7 @@ function chooseThisMonster(stateObj, index) {
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-function changeStatus(stateObj, newStatus, countsAsEventSkipForChangeStatus=false, skipGoldGift=50) {
+async function changeStatus(stateObj, newStatus, countsAsEventSkipForChangeStatus=false, skipGoldGift=50) {
   //HUGE HACK, deal with this later, console.log
   document.querySelector("#playerDeckPile").classList.remove("upgrade-animation");
   stateObj = immer.produce(stateObj, (newState) => {
@@ -724,7 +739,7 @@ function changeStatus(stateObj, newStatus, countsAsEventSkipForChangeStatus=fals
     }
     newState.status = newStatus;
   })
-  changeState(stateObj);
+  await changeState(stateObj);
   return stateObj;
 }
 
@@ -741,9 +756,9 @@ async function skipCards(stateObj, isUsedForEventSkip=false) {
   return stateObj;
 }
 
-function TownFight(stateObj) {
+async function TownFight(stateObj) {
   stateObj = setUpEncounter(stateObj, isBoss=true)
-  changeState(stateObj);
+  await changeState(stateObj);
   return stateObj;
 }
 
@@ -1159,7 +1174,7 @@ function renderFightDiv() {
 
 
 
-function renderTownDiv(stateObj, idNameString, imgSrcString, imgTextString, triggerCondition, functionToAdd, statusToChange=false, altText=false) {
+async function renderTownDiv(stateObj, idNameString, imgSrcString, imgTextString, triggerCondition, functionToAdd, statusToChange=false, altText=false) {
   let newTownDiv = document.createElement("Div");
   newTownDiv.setAttribute("id", idNameString)
   newTownDiv.classList.add("town-div");
@@ -1184,7 +1199,7 @@ function renderTownDiv(stateObj, idNameString, imgSrcString, imgTextString, trig
     newTownDiv.append(newDivText);
     return newTownDiv
 }
-let cheapHealDiv = renderChoiceDiv(stateObj, ["heal-div"], "img/potion.svg", `Heal 25% of your max health (${Math.floor(stateObj.playerMonster.maxHP/4)}) for ${Math.floor(stateObj.healCost/2)} gold`, (stateObj.gold >= Math.floor(stateObj.healCost/2) && stateObj.playerMonster.currentHP < stateObj.playerMonster.maxHP), cheapHeal, statusToChange=false, altText=`${Math.floor(stateObj.healCost/2)} gold required`)
+
 
 function renderChoiceDiv(stateObj, classesArray, imgSrcString, divTextString, triggerCondition, functionToAdd, statusToChange=false, altText=false) {
   let newTownDiv = document.createElement("Div");
@@ -1297,32 +1312,37 @@ function resetAfterFight(stateObj) {
   return stateObj;
 }
 
-function handleDeaths(stateObj) {
-  let shouldUpgrade = false;
+async function handleDeaths(stateObj) {
+  //push indexes of dead monsters to an array
   if (stateObj.opponentMonster) {
-    stateObj = immer.produce(stateObj, (newState) => {
-      let indexesToDelete = [];
-      newState.opponentMonster.forEach(function (monster, index) {
-        if (monster.currentHP <= 0) {
-          console.log("opponent monster at index " + index + " has died.")
-          indexesToDelete.push(index);
-          newState.targetedMonster = 0;
-        }
-      });
+    let indexesToDelete = [];
+    stateObj.opponentMonster.forEach(function (monster, index) {
+      if (monster.currentHP <= 0) {
+        console.log("opponent monster at index " + index + " has died.")
+        indexesToDelete.push(index);
+      }
+    });
+    //if a monster has died
+    if (indexesToDelete.length > 0) {
       indexesToDelete.reverse()
-      for (let i = 0; i < indexesToDelete.length; i++) {
-        newState.playerXP += newState.opponentMonster[i].XPGain
-        newState.opponentMonster.splice(indexesToDelete[i], 1)
-      }
+      await opponentDeathAnimation(indexesToDelete)
 
-      if (newState.opponentMonster.length == 0) {
-        Object.assign(newState, resetAfterFight(newState))
-      }
+      stateObj = immer.produce(stateObj, (newState) => {
+        for (let i = 0; i < indexesToDelete.length; i++) {
+          newState.playerXP += newState.opponentMonster[i].XPGain
+          newState.opponentMonster.splice(indexesToDelete[i], 1)
+        }
+        newState.targetedMonster = 0;
+      });
+    }
 
-      if (newState.playerMonster.currentHP <= 0) {
-        newState.status = Status.DeathScreen;
-      }
-    })
+    if (stateObj.opponentMonster.length == 0) {
+      stateObj = resetAfterFight(stateObj)
+    }
+
+    if (stateObj.playerMonster.currentHP <= 0) {
+      stateObj = await changeStatus(stateObj, Status.DeathScreen) ;
+    }
   }
   return stateObj;
 };
@@ -1333,6 +1353,7 @@ function pause(timeValue) {
 }
 
 function setUpEncounter(stateObj, isBoss=false) {
+  console.log('executing setUpEncounter')
 
   stateObj = immer.produce(stateObj, (newState) => {
     if (isBoss) {
@@ -1641,7 +1662,7 @@ function divContainer(divName, newDivName=false) {
   return removeDiv
 }
 
-function skipToTownButton(stateObj, buttonString, divName, cardSkip=false, isEventUsedForSkipButton=false, skipGoldGift=50) {
+async function skipToTownButton(stateObj, buttonString, divName, cardSkip=false, isEventUsedForSkipButton=false, skipGoldGift=50) {
   let skipButton = document.createElement("Button");
   if (!cardSkip) {
     skipButton.addEventListener("click", function () {
@@ -1808,14 +1829,14 @@ function renderHealer(stateObj) {
   
 };
 
-function renderLevelUp(stateObj) {
+async function renderLevelUp(stateObj) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app", "level-up-div");
 
-  let strengthDiv = renderTownDiv(stateObj, "increaseStrength", "img/forge.PNG", "+2 permanent Strength", true, increaseStrengthEvent, Status.InTown, altText=false);
-  let DexDiv = renderTownDiv(stateObj, "increaseDex", "img/forge.PNG", "+2 permanent Dexterity", true, increaseDexEvent, Status.InTown, altText=false);
-  let energyDiv = renderTownDiv(stateObj, "increaseEnergy", "img/forge.PNG", "+1 energy per turn", true, increaseEnergyEvent, Status.InTown, altText=false);
+  let strengthDiv = await renderTownDiv(stateObj, "increaseStrength", "img/forge.PNG", "+2 permanent Strength", true, increaseStrengthEvent, Status.InTown, altText=false);
+  let DexDiv = await renderTownDiv(stateObj, "increaseDex", "img/forge.PNG", "+2 permanent Dexterity", true, increaseDexEvent, Status.InTown, altText=false);
+  let energyDiv = await renderTownDiv(stateObj, "increaseEnergy", "img/forge.PNG", "+1 energy per turn", true, increaseEnergyEvent, Status.InTown, altText=false);
   
   document.getElementById("level-up-div").append(strengthDiv, DexDiv, energyDiv);
   
@@ -2281,7 +2302,7 @@ function renderOpponents(stateObj) {
   });
 }
 
-function renderTown(stateObj) {
+async function renderTown(stateObj) {
   console.log('renderin town')
 
 
@@ -2294,10 +2315,10 @@ function renderTown(stateObj) {
   
 
   //let townHealDiv = renderTownDiv(stateObj, "TownHealer", "img/healer.PNG", "Visit Healer", (stateObj.gold >= Math.floor(stateObj.healCost/2)), changeStatus, Status.HealersShop, "Not enough gold");
-  let townShopDiv = renderTownDiv(stateObj, "TownShop", "img/healer.PNG", "Visit Shop", true, changeStatus, Status.cardShop);
-  let townRemoveDiv = renderTownDiv(stateObj, "TownRemove", "img/tavern2.PNG", "Pay to remove A Card",  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `Not enough gold (${stateObj.cardRemoveCost} needed)`);
-  let townUpgradeDiv = renderTownDiv(stateObj, "TownUpgrade", "img/forge.PNG", "Pay to upgrade A Card", (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `Not enough gold (${stateObj.cardUpgradeCost} needed)`);
-  let townGymDiv = renderTownDiv(stateObj, "TownFight", "img/dracula.png", "Fight Gym Boss", true, TownFight)
+  let townShopDiv = await renderTownDiv(stateObj, "TownShop", "img/healer.PNG", "Visit Shop", true, changeStatus, Status.cardShop);
+  let townRemoveDiv = await renderTownDiv(stateObj, "TownRemove", "img/tavern2.PNG", "Pay to remove A Card",  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `Not enough gold (${stateObj.cardRemoveCost} needed)`);
+  let townUpgradeDiv = await renderTownDiv(stateObj, "TownUpgrade", "img/forge.PNG", "Pay to upgrade A Card", (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `Not enough gold (${stateObj.cardUpgradeCost} needed)`);
+  let townGymDiv = await renderTownDiv(stateObj, "TownFight", "img/dracula.png", "Fight Gym Boss", true, TownFight)
 
 
   townDiv.append(townShopDiv, townRemoveDiv, townUpgradeDiv, townGymDiv);

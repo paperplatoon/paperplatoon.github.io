@@ -29,28 +29,27 @@
   font-size: 3vmin;
 }
 
-@keyframes shake {
+@keyframes playerWindup {
   0% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  50% { transform: translateX(10px); }
-  75% { transform: translateX(-10px); }
-  100% { transform: translateX(0); }
-}
-
-.shake {
-  animation: shake 0.5s forwards ;
-}
-
-@keyframes impact {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(40px); }
-  50% { transform: translateX(35px); }
+  25% { transform: translateX(-20px); }
+  50% { transform: translateX(20px); }
   75% { transform: translateX(10px); }
   100% { transform: translateX(0); }
 }
 
-.impact {
-  animation: impact 0.3s forwards ;
+.player-windup {
+  animation: playerWindup 0.3s forwards ;
+}
+
+@keyframes opponentImpact {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(60px); }
+
+  100% { transform: translateX(0); }
+}
+
+.opponent-impact {
+  animation: opponentImpact 0.2s forwards ;
 }
 
 

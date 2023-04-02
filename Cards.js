@@ -14,7 +14,7 @@
 //add a 0-cost card that deals damage for total self-damage dealt in a fight * 2 (rare)
 
 //total = 30
-let upgradeAnimationTiming = 3000;
+let upgradeAnimationTiming = 1500;
 
 
 let fireCardPool = {
@@ -155,7 +155,7 @@ let fireCardPool = {
     },
   
     withdraw: {
-      cardID: 7,
+      cardID: 6,
       name: "Withdraw",
       text: (state, index, array) => { 
         return `Gain ${array[index].baseBlock + state.playerMonster.dex + (3*array[index].upgrades)} block` 
@@ -178,7 +178,7 @@ let fireCardPool = {
     },
 
     peacefulmind: {
-      cardID: 66,
+      cardID: 7,
       name: "Peaceful Mind",
       text: (state, index, array) => { 
         return `Gain ${array[index].baseBlock + state.playerMonster.dex + (5*array[index].upgrades)} block. Gain 2 dexterity` 
@@ -205,7 +205,7 @@ let fireCardPool = {
     },
 
     hugewithdraw: {
-      cardID: 7,
+      cardID: 8,
       name: "Huge Withdraw",
       text: (state, index, array) => { 
         return `Gain ${array[index].baseBlock + state.playerMonster.dex + (6*array[index].upgrades)} block` 
@@ -228,7 +228,7 @@ let fireCardPool = {
     },
   
     simpleheal: {
-      cardID: 8,
+      cardID: 9,
       name: "Simple Heal",
       text: (state, index, array) => { 
         return `Restore ${array[index].baseHeal + (array[index].upgrades * 2) + state.extraHeal} HP` 
@@ -252,7 +252,7 @@ let fireCardPool = {
     },
 
     darkknowledge: {
-      cardID: 9,
+      cardID: 10,
       name: "Dark Knowledge",
       text: (state, index, array) => { 
         return `Gift opponent ${array[index].energyGift-array[index].upgrades} energy. Draw ${2+array[index].upgrades} cards` 
@@ -281,7 +281,7 @@ let fireCardPool = {
     },
 
     cursedritual: {
-      cardID: 10,
+      cardID: 11,
       name: "Cursed Ritual",
       text: (state, index, array) => { 
         return `Gift opponent ${array[index].energyGift} energy. Gain ${3 + array[index].upgrades} strength` 
@@ -310,7 +310,7 @@ let fireCardPool = {
     },
 
     ritual: {
-      cardID: 62,
+      cardID: 12,
       name: "Ritual",
       text: (state, index, array) => { 
         return `Gain ${5 + (2*array[index].upgrades)} strength` 
@@ -337,7 +337,7 @@ let fireCardPool = {
     },
 
     sanguineshield: {
-      cardID: 11,
+      cardID: 13,
       name: "Sanguine Shield",
       text: (state, index, array) => { return `Gift opponent ${array[index].energyGift} energy. Gain ${array[index].baseBlock + (array[index].upgrades*5)} block` },
       minReq: (state, index, array) => {
@@ -360,7 +360,7 @@ let fireCardPool = {
     },
 
     wallofichor: {
-      cardID: 68,
+      cardID: 14,
       name: "Wall of Ichor",
       text: (state, index, array) => { return `Gift opponent ${array[index].energyGift} energy. Gain ${array[index].baseBlock + (array[index].upgrades*7)} block` },
       minReq: (state, index, array) => {
@@ -382,9 +382,9 @@ let fireCardPool = {
       }
     },
 
-    wallofichor: {
-      cardID: 68,
-      name: "Wall of Ichor",
+    shatteringshield: {
+      cardID: 15,
+      name: "Shattering Shield",
       text: (state, index, array) => { return `Destroy ${array[index].energyDestroy} energy. Gain ${array[index].baseBlock + (array[index].upgrades*4)} block` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
@@ -406,7 +406,7 @@ let fireCardPool = {
     },
 
     generosity: {
-      cardID: 12,
+      cardID: 16,
       name: "Generosity",
       text: (state, index, array) => { 
         let totalDamage = array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades)
@@ -437,7 +437,7 @@ let fireCardPool = {
   
     gainstrength: {
       rare: true,
-      cardID: 13,
+      cardID: 17,
       name: "Gain Strength",
       text: (state, index, array) => {
         return `+1 permanent strength. Remove`;
@@ -465,7 +465,7 @@ let fireCardPool = {
     },
   
     siphon: {
-      cardID: 14,
+      cardID: 18,
       name: "Siphon",
       text: (stateObj, index, array) => {
         if (array[index].baseHits === 0) {
@@ -508,7 +508,7 @@ let fireCardPool = {
     
   
     essencedrain: {
-      cardID: 15,
+      cardID: 19,
       name: "Essence Drain",
       cardType: "fire",
       text: (state, index, array) => { return `Destroy ${array[index].energyDrain} energy. Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*3)} block` },
@@ -537,7 +537,7 @@ let fireCardPool = {
     },
   
     fireball: {
-      cardID: 16,
+      cardID: 20,
       name: "Fireball",
       text: (state, index, array) => { return `Deal ${(array[index].baseDamage + state.playerMonster.strength)} damage ${(array[index].baseHits + (array[index].upgrades))} times` },
       minReq: (state, index, array) => {
@@ -559,7 +559,7 @@ let fireCardPool = {
     },
 
     fierymissiles: {
-      cardID: 31,
+      cardID: 21,
       name: "Fiery Missiles",
       text: (state, index, array) => { return `Gift ${array[index].energyGift} energy. Deal ${(array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*2))} damage ${(array[index].baseHits)} times` },
       minReq: (state, index, array) => {
@@ -583,7 +583,7 @@ let fireCardPool = {
     },
 
     energyburst: {
-      cardID: 63,
+      cardID: 22,
       name: "Energy Burst",
       text: (state, index, array) => {
         if (array[index].baseHits === 1) {
@@ -613,7 +613,7 @@ let fireCardPool = {
     },
 
     pirouettespin: {
-      cardID: 17,
+      cardID: 23,
       name: "Pirouette Spin",
       text: (stateObj, index, array) => { 
         let totalDamage = (array[index].baseDamage + (array[index].upgrades*2) + stateObj.playerMonster.strength);
@@ -644,7 +644,7 @@ let fireCardPool = {
     },
 
     tackle: {
-      cardID: 18,
+      cardID: 24,
       name: "Tackle",
       text: (state, index, array) => { 
         if (array[index].baseHits === 1) {
@@ -672,7 +672,7 @@ let fireCardPool = {
     },
 
     bigtackle: {
-      cardID: 64,
+      cardID: 25,
       name: "Big Tackle",
       text: (state, index, array) => { 
         if (array[index].baseHits === 1) {
@@ -700,7 +700,7 @@ let fireCardPool = {
     },
 
     hugetackle: {
-      cardID: 65,
+      cardID: 26,
       name: "Huge Tackle",
       text: (state, index, array) => { 
         if (array[index].baseHits === 1) {
@@ -728,7 +728,7 @@ let fireCardPool = {
     },
 
     vampiricstrike: {
-      cardID: 19,
+      cardID: 27,
       name: "Vampiric Strike",
       text: (state, index, array) => { 
         if (array[index].baseHits === 1) {
@@ -761,7 +761,7 @@ let fireCardPool = {
 
 
     flamingStrike: {
-      cardID: 21,
+      cardID: 28,
       name: "Flaming Strike",
       text: (state, index, array) => {
         if (array[index].baseHits === 1) {
@@ -793,7 +793,7 @@ let fireCardPool = {
     },
 
     upgrade: {
-      cardID: 22,
+      cardID: 29,
       name: "Upgrade",
       text: (state, index, array) => { 
         if (array[index].upgrades === 0) {
@@ -828,7 +828,7 @@ let fireCardPool = {
     },
 
     rareupgrade: {
-      cardID: 23,
+      cardID: 30,
       rare: true,
       name: "Rare Upgrade",
       text: (state, index, array) => { return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} block. Upgrade your top left card ${2+array[index].upgrades} times.`},
@@ -858,7 +858,7 @@ let fireCardPool = {
     },
 
     invigorate: {
-      cardID: 67,
+      cardID: 31,
       rare: true,
       name: "Invigorate",
       text: (state, index, array) => { return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} block. Gain ${2+array[index].upgrades} strength.`},
@@ -888,7 +888,7 @@ let fireCardPool = {
 
 
     infuse: {
-      cardID: 24,
+      cardID: 32,
       rare: true,
       name: "Infuse",
       text: (state, index, array) => { return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*6)} block. Upgrade your top left card 2 times.`},
@@ -916,7 +916,7 @@ let fireCardPool = {
     },
 
     refineenergy: {
-      cardID: 25,
+      cardID: 33,
       name: "Refine Energy",
       text: (state, index, array) => { return `Destroy ${array[index].energyDrain} energy. Upgrade your top left card ${2 + array[index].upgrades} times.`},
       minReq: (state, index, array) => {
@@ -943,11 +943,9 @@ let fireCardPool = {
       }
     },
 
-    
-
     clarity: {
       rare: true,
-      cardID: 27,
+      cardID: 34,
       name: "Clarity",
       text: (state, index, array) => {
         if (state.status === Status.InEncounter) {
@@ -976,7 +974,7 @@ let fireCardPool = {
 
     bloatedbomb: {
       rare: true,
-      cardID: 28,
+      cardID: 35,
       name: "Bloated Bomb",
       text: (state, index, array) => {
         if (array[index].baseHits === 1) {
@@ -1004,7 +1002,7 @@ let fireCardPool = {
     },
 
     sparkBarrage: {
-      cardID: 29,
+      cardID: 36,
       name: "Spark Barrage",
       text: (state, index, array) => { return `Deal ${array[index].baseDamage + state.playerMonster.strength} damage ${array[index].baseHits + array[index].upgrades} times`},
       minReq: (state, index, array) => {
@@ -1026,7 +1024,7 @@ let fireCardPool = {
     }, 
 
     brand: {
-      cardID: 30,
+      cardID: 37,
       name: "Branding Iron",
       text: (state, index, array) => { return `Deal ${array[index].baseSelfDamage - array[index].upgrades} damage to yourself. Gain ${3+Math.ceil(array[index].upgrades/2)} energy` },
       minReq: 0,
@@ -1048,7 +1046,7 @@ let fireCardPool = {
     },
 
     enjoin: {
-      cardID: 32,
+      cardID: 38,
       name: "Enjoin",
       text: (state, index, array) => { return `Restore ${array[index].baseHeal + array[index].upgrades + state.extraHeal} enemy HP. You restore triple the amount gained` },
       minReq: (state, index, array) => {
@@ -1103,7 +1101,7 @@ let fireCardPool = {
 
     thiefshield: {
       rare: true,
-      cardID: 33,
+      cardID: 39,
       name: "Thief's Shield",
       text: (state, index, array) => { return `Destroy ${array[index].energyDrain + Math.floor(array[index].upgrades/2)} energy. Gain ${array[index].baseBlock + array[index].upgrades} block for each energy drained.` },
       minReq: (state, index, array) => {
@@ -1135,7 +1133,7 @@ let fireCardPool = {
     },
 
     puffofsmoke: {
-      cardID: 34,
+      cardID: 40,
       name: "Puff Of Smoke",
       text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex)} block. Add ${(1+array[index].upgrades)} Backstep cards to your hand` },
       minReq: (state, index, array) => {
@@ -1159,7 +1157,7 @@ let fireCardPool = {
     },
 
     backstep: {
-      cardID: 35,
+      cardID: 41,
       name: "Backstep",
       text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex) + (2*array[index].upgrades)} block. Remove` },
       minReq: -99,
@@ -1179,7 +1177,7 @@ let fireCardPool = {
     },
 
     retreatingslash: {
-      cardID: 36,
+      cardID: 42,
       name: "Retreating Slash",
       text: (state, index, array) => { 
         if (array[index].baseHits === 1 && array[index].upgrades === 0) {
@@ -1215,7 +1213,7 @@ let fireCardPool = {
 
     sunlight: {
       rare: true,
-      cardID: 37,
+      cardID: 43,
       name: "Sunlight",
       text: (state, index, array) => { return `Restore ${Math.floor(array[index].upgrades/3) + 1} health per card played for rest of combat. Remove` },
       minReq: (state, index, array) => {
@@ -1250,7 +1248,7 @@ let fireCardPool = {
     },
 
     skipaway: {
-      cardID: 38,
+      cardID: 44,
       name: "Skip Away",
       text: (state, index, array) => { return `Add ${(2+array[index].upgrades)} Backstep cards to your hand` },
       minReq: (state, index, array) => {
@@ -1273,7 +1271,7 @@ let fireCardPool = {
     },
 
     powerup: {
-      cardID: 39,
+      cardID: 45,
       name: "Power Up",
       minReq: (state, index, array) => {
         return array[index].baseCost;
@@ -1299,7 +1297,7 @@ let fireCardPool = {
 
     forgeshield: {
       rare: true,
-      cardID: 40,
+      cardID: 46,
       name: "Forge's Shield",
       text: (state, index, array) => {
         if (state.status === Status.InEncounter) {
@@ -1339,7 +1337,7 @@ let fireCardPool = {
     },
 
     mentalblock: {
-      cardID: 41,
+      cardID: 47,
       name: "Mental Block",
       text: (stateObj, index, array) => { 
         if (array[index].upgrades === 0) {
@@ -1366,7 +1364,7 @@ let fireCardPool = {
     },
 
     disablingblow: {
-      cardID: 42,
+      cardID: 48,
       name: "Disabling Blow",
       text: (state, index, array) => { 
         if (array[index].baseHits === 1) {
@@ -1397,7 +1395,7 @@ let fireCardPool = {
     },
 
     throwsand: {
-      cardID: 43,
+      cardID: 49,
       name: "Throw Sand",
       text: (stateObj, index, array) => { 
         if (array[index].upgrades === 0) {
@@ -1428,7 +1426,7 @@ let fireCardPool = {
     },
 
     precisionstrike: {
-      cardID: 44,
+      cardID: 50,
       name: "Precision Strike",
       text: (state, index, array) => { 
         if (array[index].baseHits === 1) {
@@ -1461,7 +1459,7 @@ let fireCardPool = {
 
     friendship: {
       rare: true,
-      cardID: 45,
+      cardID: 51,
       name: "Protective Aura",
       text: (state, index, array) => {
         if (state.status === Status.InEncounter) {
@@ -1491,7 +1489,7 @@ let fireCardPool = {
 
     energyconversion: {
       rare: true,
-      cardID: 46,
+      cardID: 52,
       name: "Energy Conversion",
       text: (state, index, array) => {
         if (array[index].upgrades < 2) {
@@ -1535,7 +1533,7 @@ let fireCardPool = {
 
     expertsforge: {
       rare: true,
-      cardID: 47,
+      cardID: 53,
       name: "Expert's Forge",
       text: (state, index, array) => {
           return `Upgrade all cards in your deck for this combat. Remove`   
@@ -1574,7 +1572,7 @@ let fireCardPool = {
     feast: {
       rare: true,
       exhaust: true,
-      cardID: 48,
+      cardID: 54,
       name: "Feast",
       text: (state, index, array) => { 
         if (array[index].upgrades === 0) {
@@ -1600,7 +1598,7 @@ let fireCardPool = {
 
     redirect: {
       rare: true,
-      cardID: 50,
+      cardID: 55,
       name: "Redirect",
       text: (state, index, array) => {
         if (state.status === Status.InEncounter) {
@@ -1631,7 +1629,7 @@ let fireCardPool = {
     hammerandtongs: {
       rare: true,
       exhaust: true,
-      cardID: 51,
+      cardID: 56,
       name: "Hammer and Tongs",
       text: (state, index, array) => {
         if (array[index].upgrades === 0) {
@@ -1683,7 +1681,7 @@ let fireCardPool = {
     finalblow: {
       rare: true,
       exhaust: true,
-      cardID: 53,
+      cardID: 57,
       trigger:  (stateObj, index, array) => { 
         return (stateObj.playerMonster.encounterEnergy === array[index].baseCost);
       },
@@ -1724,7 +1722,7 @@ let fireCardPool = {
     },
 
     followupslap: {
-      cardID: 54,
+      cardID: 58,
       trigger:  (stateObj, index, array) => { 
         return (stateObj.cardsPerTurn === 2);
       },
@@ -1759,7 +1757,7 @@ let fireCardPool = {
     },
 
     fortify: {
-      cardID: 55,
+      cardID: 59,
       name: "Fortify",
       text: (stateObj, index, array) => {
         let cardBlock = (array[index].baseBlock + stateObj.playerMonster.dex + (2*array[index].upgrades));
@@ -1794,7 +1792,7 @@ let fireCardPool = {
     },
 
     coatofarms: {
-      cardID: 56,
+      cardID: 60,
       name: "Coat of Arms",
       text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex + state.playerMonster.strength + (3*array[index].upgrades))} block. Increased by strength` },
       minReq: (stateObj, index, array) => {
@@ -1818,7 +1816,7 @@ let fireCardPool = {
     dancersgrace: {
       rare: true,
       exhaust: true,
-      cardID: 57,
+      cardID: 61,
       name: "Dancer's Grace",
       text: (state, index, array) => { 
         if (array[index].upgrades === 0) {
@@ -1854,7 +1852,7 @@ let fireCardPool = {
     religiousfervor: {
       rare: true,
       exhaust: true,
-      cardID: 58,
+      cardID: 62,
       name: "Religious Fervor",
       text: (state, index, array) => { 
         if (array[index].upgrades === 0) {
@@ -1885,12 +1883,10 @@ let fireCardPool = {
         return stateObj;
       }
     },
-
-
-    
+ 
     pickoff: {
       rare: true,
-      cardID: 60,
+      cardID: 63,
       name: "Pick Off",
       text: (state, index, array) => {
         if (array[index].baseHits === 1) {
@@ -1928,7 +1924,7 @@ let fireCardPool = {
 
     fireBlockEnergy: {
       rare: true,
-      cardID: 61,
+      cardID: 64,
       name: "",
       text: (state, index, array) => {
         return `Gain ${1 + array[index].upgrades} energy. Gain ${1 + array[index].upgrades} backstep`
@@ -1949,7 +1945,7 @@ let fireCardPool = {
     },
 
     ignite: {
-      cardID: 20,
+      cardID: 65,
       name: "Ignite",
       text: (state, index, array) => { return `Gift opponent ${array[index].energyGift} energy. Attacks deal +${5 + (array[index].upgrades*2)} damage this turn.` },
       minReq: -99,
@@ -1972,7 +1968,7 @@ let fireCardPool = {
     },
   
     microFlames: {
-      cardID: 26,
+      cardID: 66,
       name: "Micro Flames",
       text: (state, index, array) => { return `Destroy 2 energy. All attacks this turn do +${(3 + array[index].upgrades)}  damage`},
       minReq: (state, index, array) => {
@@ -1998,7 +1994,7 @@ let fireCardPool = {
   
     rewindtime: {
       exhaust: true,
-      cardID: 49,
+      cardID: 67,
       name: "Rewind Time",
       text: (state, index, array) => { 
         if (array[index].upgrades === 0) {
