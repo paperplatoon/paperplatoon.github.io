@@ -607,7 +607,7 @@ let fireCardPool = {
       elementType: "fire",
       action: async (stateObj, index, array) => {
         stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*4), array[index].baseHits, array[index].baseCost)
-        stateObj = energyGift(stateObj, array[index].energyGift)
+        stateObj = await energyGift(stateObj, array[index].energyGift)
         return stateObj;
       }
     },

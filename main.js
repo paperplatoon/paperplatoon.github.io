@@ -228,7 +228,7 @@ function fillMapWithArray(stateObj) {
   
      newState.townBossEncounter = bossEncounters[0];
   })
-  changeState(stateObj);
+   changeState(stateObj);
   return stateObj
 }
 
@@ -380,7 +380,6 @@ let potentialMonsterChoices = playerMonsterArray;
 async function changeState(newStateObj) {
   let stateObj = {...newStateObj}
   if (newStateObj.status === Status.InEncounter) {
-    console.log("changstate - opponent 2 block is " + stateObj.opponentMonster[1].encounterBlock)
     stateObj = await handleDeaths(stateObj);
   }
 
@@ -524,7 +523,7 @@ async function opponentDeathAnimation(toDieIndexArray) {
 
 async function energyGainAnimation(stateObj) {
   let index = stateObj.targetedMonster;
-  let opponentEnergyBar = document.querySelectorAll('.targeted .monster-energy')[index];
+  let opponentEnergyBar = document.querySelector('.targeted .monster-energy');
   opponentEnergyBar.classList.add("energy-gain");
   await pause(200);
   opponentEnergyBar.classList.remove("energy-gain");
@@ -1328,7 +1327,8 @@ async function handleDeaths(stateObj) {
 
       stateObj = immer.produce(stateObj, (newState) => {
         for (let i = 0; i < indexesToDelete.length; i++) {
-          newState.playerXP += newState.opponentMonster[i].XPGain
+          console.log("deleting opponent at index " + i);
+          newState.playerXP += newState.opponentMonster[indexesToDelete[i]].XPGain
           newState.opponentMonster.splice(indexesToDelete[i], 1)
         }
         newState.targetedMonster = 0;
