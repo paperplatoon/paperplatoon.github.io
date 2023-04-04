@@ -199,8 +199,8 @@ let opponentMonsters = {
         minReq: 3,
         energyChange: "-3",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(newState, ((array[index].baseDamage*2) + array[index].dex), index, -3);
-          stateObj = immer.produce(state, (newState) => {
+          stateObj = await dealPlayerDamage(stateObj, ((array[index].baseDamage*2) + array[index].dex), index, -3);
+          stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[index].dex += array[index].baseScale;
           })
           return stateObj;
