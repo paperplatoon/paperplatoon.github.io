@@ -1,9 +1,9 @@
 //return `Deal ${5 + array[index].strength} damage. Restore 5 health`
 //randomize some stuff like strength and dex (maybe starting energy) to change stuff up a bit
 
-let opponentBaseDamage = 6;
-let opponentBaseBlock = 8;
-let opponentBaseHeal = 7;
+let opponentBaseDamage = 5;
+let opponentBaseBlock = 6;
+let opponentBaseHeal = 6;
 let opponentBaseScale = 3;
 let opponentMaxHP = 7;
 let opponentXPGain = 5
@@ -115,8 +115,6 @@ let opponentMonsters = {
               monsterObj.encounterBlock += (Math.floor((array[index].baseBlock / 2)) + array[index].dex);
             })
             newState.opponentMonster[index].encounterEnergy += 2;
-
-
           })
           return toChangeState;
         }
@@ -200,15 +198,12 @@ let opponentMonsters = {
         },
         minReq: 3,
         energyChange: "-3",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            let tempState = dealPlayerDamage(newState, ((array[index].baseDamage*2) + array[index].dex), index);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy -= 3;
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(newState, ((array[index].baseDamage*2) + array[index].dex), index, -3);
+          stateObj = immer.produce(state, (newState) => {
             newState.opponentMonster[index].dex += array[index].baseScale;
           })
-          return toChangeState;
+          return stateObj;
         }
       }
 
@@ -240,39 +235,21 @@ let opponentMonsters = {
         cost: "0",
         energyChange: "+2",
         text: (state, index, array) => {
-          let damageValue = 0;
-          if (state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name)) {
-            damageValue += Math.floor(array[index].baseBlock + state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name).dex)
-          }
-          if (state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name)) {
-            damageValue += Math.floor(array[index].baseBlock + state.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex)
-          }
-          return `Deal ${damageValue + array[index].strength} damage. Other monsters gain ${Math.floor(array[index].baseScale/2)} dexterity`
+          return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage. All enemies gain ${Math.floor(array[index].baseScale/2)} strength`
         },
 
         minReq: 0,
-        action: (state, index, array) => {
+        action: async (state, index, array) => {
+          stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage*2), index, 2)
           let toChangeState = immer.produce(state, (newState) => {
-            let damageValue = 0;
+            newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/2);
+          
             if (newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name)) {
-              damageValue += Math.floor(array[index].baseBlock + newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name).dex)
+              newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name).strength += Math.floor(array[index].baseScale/2);
             }
             if (newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name)) {
-              damageValue += Math.floor(array[index].baseBlock + newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex)
+              newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).strength += Math.floor(array[index].baseScale/2);
             }
-
-            let tempState = dealPlayerDamage(newState, damageValue, index);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-
-            if (newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name)) {
-              newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name).dex += Math.floor(array[index].baseScale/2);
-            }
-            if (newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name)) {
-              newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard2.name).dex += Math.floor(array[index].baseScale/2);
-            }
-
-            newState.opponentMonster[index].encounterEnergy += 2;
           })
 
 
@@ -731,14 +708,9 @@ let opponentMonsters = {
         },
         minReq: 0,
         energyChange: "+1",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            let tempState = dealPlayerDamage(newState, Math.floor(array[index].baseDamage/4), index, 4);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy += 1;
-          })
-          return toChangeState;
+        action: async (stateObj, index, array) => {
+          stateObj = dealPlayerDamage(newState, Math.floor(array[index].baseDamage/4), index, 1, 4);
+          return stateObj;
         }
       },
       {
@@ -998,9 +970,9 @@ let opponentMonsters = {
         },
         minReq: 3,
         energyChange: "-3",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
           console.log("playing graceful strike")
-          stateObj = dealPlayerDamage(stateObj, array[index].baseDamage, index, -3);
+          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index, -3);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[index].dex += Math.ceil(array[index].baseScale/2);
           })
@@ -1010,92 +982,11 @@ let opponentMonsters = {
 
     ]
   },
-
-
-
 }
 
 
 
-let mediumEncountersMjs = [
-  {
-    opponents: [opponentMonsters.blockgym1],
-    goldReward: 25,
-  },
-  {
-    opponents: [opponentMonsters.strengthgym1],
-    goldReward: 25,
-  },
-  {
-    opponents: [opponentMonsters.balancegym1],
-    goldReward: 25,
-  },
-  {
-    opponents: [opponentMonsters.healgym1],
-    goldReward: 25,
-  },
-]
 
-let hardEncountersMjs = [
-
-  {
-    opponents: [opponentMonsters.strengthgym1, opponentMonsters.strengthgymguard],
-    goldReward: 35,
-    XP: 20,
-  },
-  {
-    opponents: [opponentMonsters.healgymguard2, opponentMonsters.healgym1],
-    goldReward: 35,
-    XP: 20
-  },
-  {
-    opponents: [opponentMonsters.blockbossguard2, opponentMonsters.blockgym1],
-    goldReward: 35,
-    XP: 20
-  },
-  {
-    opponents: [opponentMonsters.strengthgymguard, opponentMonsters.blockgym1],
-    goldReward: 35,
-    XP: 20
-  },
-  {
-    opponents: [opponentMonsters.strengthgymguard, opponentMonsters.healgym1],
-    goldReward: 35,
-    XP: 20
-  },
-  {
-    opponents: [opponentMonsters.blockbossguard2, opponentMonsters.healgym1],
-    goldReward: 35,
-    XP: 20
-  },
-  {
-    opponents: [opponentMonsters.blockbossguard2, opponentMonsters.strengthgym1],
-    goldReward: 35,
-    XP: 20
-  },
-]
-
-let bossEncountersMjs = [
-  {
-    opponents: [opponentMonsters.strengthgymguard, opponentMonsters.strengthgymboss, opponentMonsters.strengthgymguard],
-    goldReward: 125,
-    boss: true,
-    XP: 70
-  },
-
-  {
-    opponents: [opponentMonsters.healgymboss, opponentMonsters.healgymguard2, opponentMonsters.healgymguard1],
-    goldReward: 125,
-    boss: true,
-    XP: 70
-  },
-  {
-    opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockgymboss, opponentMonsters.blockbossguard2],
-    goldReward: 125,
-    boss: true,
-    XP: 70
-  },
-]
 
 
 

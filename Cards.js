@@ -577,7 +577,7 @@ let fireCardPool = {
       elementType: "fire",
       action: async (stateObj, index, array) => {
         stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*2), array[index].baseHits, array[index].baseCost)
-        stateObj = energyGift(stateObj, array[index].energyGift)
+        stateObj = await energyGift(stateObj, array[index].energyGift)
         return stateObj;
       }
     },
@@ -633,7 +633,7 @@ let fireCardPool = {
         return array[index].baseCost;
       },
       upgrades: 0,
-      baseDamage: 3,
+      baseDamage: 4,
       baseHits: 0,
       cardType: "attack",
       elementType: "fire",
@@ -1023,20 +1023,21 @@ let fireCardPool = {
       }
     }, 
 
-    brand: {
+    brandingiron: {
       cardID: 37,
       name: "Branding Iron",
-      text: (state, index, array) => { return `Deal ${array[index].baseSelfDamage - array[index].upgrades} damage to yourself. Gain ${3+Math.ceil(array[index].upgrades/2)} energy` },
+      text: (state, index, array) => { return `Deal ${array[index].baseSelfDamage - array[index].upgrades} damage to yourself. Gain ${3+Math.ceil(array[index].upgrades/2)} strength` },
       minReq: 0,
       upgrades: 0,
       baseCost: 0,
       cost:  0,
-      baseSelfDamage: 2,
+      baseSelfDamage: 5,
       cardType: "ability",
       elementType: "fire",
       action: (stateObj, index, array) => {
         stateObj = immer.produce(stateObj, (newState) => {
-          newState.playerMonster.encounterEnergy += (3+array[index].upgrades);
+          newState.playerMonster.fightStrength += (3+array[index].upgrades);
+          newState.playerMonster.strength += (3+array[index].upgrades);
         })
         if (array[index].upgrades < array[index].baseSelfDamage) {
           stateObj = dealSelfDamage(stateObj, array[index].baseSelfDamage - array[index].upgrades);
@@ -1152,26 +1153,6 @@ let fireCardPool = {
         for (let i=0; i < 1+array[index].upgrades; i++) {
           stateObj = addBackstepsToHand(stateObj)
         }
-        return stateObj;
-      }
-    },
-
-    backstep: {
-      cardID: 41,
-      name: "Backstep",
-      text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex) + (2*array[index].upgrades)} block. Remove` },
-      minReq: -99,
-      upgrades: 0,
-      baseCost: 0,
-      cost:  (state, index, array) => {
-        return array[index].baseCost;
-      },
-      baseBlock: 4,
-      exhaust: true,
-      cardType: "ability",
-      elementType: "fire",
-      action: (stateObj, index, array) => {
-        stateObj = gainBlock(stateObj, array[index].baseBlock+(array[index].upgrades*3), array[index].baseCost);
         return stateObj;
       }
     },
@@ -1632,7 +1613,7 @@ let fireCardPool = {
       cardID: 56,
       name: "Hammer and Tongs",
       text: (state, index, array) => {
-        if (array[index].upgrades === 0) {
+        if (array[index].upgrades < 2) {
           return `Upgrade a random card in your deck permanently. Remove`;
         } else {
           return `Upgrade a random card in your deck permanently ${1+Math.floor(array[index].upgrades/3)} times. Remove`;
@@ -2025,6 +2006,38 @@ let fireCardPool = {
       }
     },
 
+    flamedome: {
+      rare: true,
+      cardID: 51,
+      name: "Flame Dome",
+      text: (state, index, array) => {
+        if (array[index].baseHits===1) {
+          return `Gain ${array[index].baseBlock + (array[index].upgrades*4) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*3)} damage`;
+        } else {
+          return `Gain ${array[index].baseBlock + (array[index].upgrades*4) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*3)} damage ${array[index].baseHits} times`;
+        }
+          
+      },
+      minReq: (state, index, array) => {
+        return array[index].baseCost;
+      },
+      baseCost: 2,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      upgrades: 0,
+      baseBlock: 11,
+      baseDamage: 6,
+      baseHits: 1,
+      cardType: "attack",
+      elementType: "fire",
+      action: async (stateObj, index, array) => {
+        stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*4), array[index].baseCost)
+        stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*3), array[index].baseHits, energyCost=false, all=true)
+        return stateObj;
+      }
+    },
+
 }
 
 
@@ -2106,6 +2119,26 @@ let specialCardPool = {
             newState.opponentMonster[newState.targetedMonster].currentHP = 0;
           newState.playerMonster.encounterEnergy -= array[index].baseCost-array[index].upgrades;
         })
+      return stateObj;
+    }
+  },
+
+  backstep: {
+    cardID: 004,
+    name: "Backstep",
+    text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex) + (2*array[index].upgrades)} block. Remove` },
+    minReq: -99,
+    upgrades: 0,
+    baseCost: 0,
+    cost:  (state, index, array) => {
+      return array[index].baseCost;
+    },
+    baseBlock: 4,
+    exhaust: true,
+    cardType: "ability",
+    elementType: "fire",
+    action: (stateObj, index, array) => {
+      stateObj = gainBlock(stateObj, array[index].baseBlock+(array[index].upgrades*3), array[index].baseCost);
       return stateObj;
     }
   },

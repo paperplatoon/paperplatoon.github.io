@@ -377,30 +377,10 @@ waterCardArray = Object.values(waterCardPool);
 
 let potentialMonsterChoices = playerMonsterArray;
 
-
-// async function changeState(newStateObj) {
-//   let stateObj = {...newStateObj}
-//   if (newStateObj.status === Status.InEncounter) {
-//     stateObj = handleDeaths(stateObj);
-//   }
-
-//   //if (stateObj.status !== Status.InEncounter && newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
-//   if (newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
-//     stateObj = monsterLevelUp(stateObj);
-//   } else if (newStateObj.status === Status.InEncounter && newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
-//     stateObj = immer.produce(stateObj, (newState) => {
-//       newState.leveledUpDuringCombat = findLowestIndex(newStateObj.playerXP, levelXPRequirements);
-//     })
-//   }
-//   state = {...stateObj}
- 
-//   renderScreen(stateObj);
-//   return stateObj
-// }
-
 async function changeState(newStateObj) {
   let stateObj = {...newStateObj}
   if (newStateObj.status === Status.InEncounter) {
+    console.log("changstate - opponent 2 block is " + stateObj.opponentMonster[1].encounterBlock)
     stateObj = await handleDeaths(stateObj);
   }
 
@@ -408,9 +388,6 @@ async function changeState(newStateObj) {
   if (newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
     console.log("triggering level up")
     stateObj = await monsterLevelUp(stateObj);
-
-
-    console.log("target card has " + stateObj.playerDeck[0].upgrades + " upgrades")
   }
   state = {...stateObj}
  
@@ -439,13 +416,25 @@ renderScreen(state);
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, energyCost=false, all=false, specifiedIndex=false) {
-  let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster 
-
+  let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster;
+  
   document.querySelector("#playerStats .avatar").classList.add("player-windup");
-  await pause(300);
-  document.querySelector("#playerStats .avatar").classList.remove("player-windup");
-  document.querySelector(".targeted .avatar").classList.add("opponent-impact");
-  await pause(300);
+    await pause(200);
+    document.querySelector("#playerStats .avatar").classList.remove("player-windup");
+
+  if (all===false) {
+    document.querySelector(".targeted .avatar").classList.add("opponent-impact");
+    await pause(100);
+    document.querySelector(".targeted .avatar").classList.remove("opponent-impact");
+  } else {
+    stateObj.opponentMonster.forEach(function (monsterObj, index) {
+      document.querySelectorAll("#opponents .avatar")[index].classList.add("opponent-impact");
+    })
+    await pause(100);
+    stateObj.opponentMonster.forEach(function (monsterObj, index) {
+      document.querySelectorAll("#opponents .avatar")[index].classList.remove("opponent-impact");
+    })
+  }
 
   let toChangeState = immer.produce(stateObj, (newState) => {
     let calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
@@ -524,10 +513,21 @@ async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energy
 async function opponentDeathAnimation(toDieIndexArray) {
   toDieIndexArray.forEach(function(index) {
     let opponentAvatar = document.querySelectorAll('#opponents .avatar')[index];
+    let opponentMoveDiv = document.querySelectorAll('#opponents .opponent-move-list')[index];
+    let opponentHPDiv = document.querySelectorAll('#opponents .monster-hp')[index];
     opponentAvatar.classList.add("fade-out");
+    opponentMoveDiv.classList.add("hidden");
+    opponentHPDiv.classList.add("hidden");
   } )
   await pause(2000);
+}
 
+async function energyGainAnimation(stateObj) {
+  let index = stateObj.targetedMonster;
+  let opponentEnergyBar = document.querySelectorAll('.targeted .monster-energy')[index];
+  opponentEnergyBar.classList.add("energy-gain");
+  await pause(200);
+  opponentEnergyBar.classList.remove("energy-gain");
 }
 
 
@@ -614,13 +614,13 @@ function addBackstepsToHand(stateObj, numberToAdd=1) {
       if (newState.encounterHand.length > 8) {
         console.log("hand was full, backstep was not added")
       } else
-      newState.encounterHand.push(fireCardPool.backstep)
+      newState.encounterHand.push(specialCardPool.backstep)
     }
   })
   return stateObj
 }
 
-function energyGift(stateObj, energyToGain, energyCost=false) {
+async function energyGift(stateObj, energyToGain, energyCost=false) {
   stateObj = immer.produce(stateObj, (newState) => {
     if ( (stateObj.opponentMonster[stateObj.targetedMonster].encounterEnergy += energyToGain) > 0 && energyToGain > 0) {
       newState.opponentMonster[newState.targetedMonster].encounterEnergy += energyToGain;
@@ -639,6 +639,7 @@ function energyGift(stateObj, energyToGain, energyCost=false) {
     let targetIndex = Math.floor(Math.random() * (stateObj.opponentMonster.length))
     stateObj = dealOpponentDamage(stateObj, (stateObj.energyGiftAttack-stateObj.playerMonster.strength), attackNumber=1, all=true);  
   }
+  await energyGainAnimation(stateObj)
   return stateObj
 }
 
@@ -1125,7 +1126,7 @@ async function renderPlayerMonster(stateObj) {
 async function renderDivs(stateObj) {
 
   if (stateObj.fightStarted === false) {
-    stateObj = startEncounter(stateObj);
+    stateObj = await startEncounter(stateObj);
     stateObj = immer.produce(stateObj, (newState) => {
       newState.fightStarted = true;
     })
@@ -1249,10 +1250,6 @@ function renderChoiceDiv(stateObj, classesArray, imgSrcString, divTextString, tr
 
 function resetAfterFight(stateObj) {
 
-  // if (stateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
-  //   stateObj = monsterLevelUp(stateObj);
-  // }
-
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster.strength -= newState.playerMonster.tempStrength;
     newState.playerMonster.dex -= newState.playerMonster.tempDex;
@@ -1263,7 +1260,6 @@ function resetAfterFight(stateObj) {
     newState.playerMonster.fightStrength = 0;
     newState.playerMonster.fightDex = 0;
     newState.playerMonster.encounterBlock = 0;
-
     newState.fightHealCount = 0;
     newState.fightHealTotal = 0;
     newState.fightSelfDamageCount = 0;
@@ -1284,10 +1280,6 @@ function resetAfterFight(stateObj) {
 
     newState.townMapSquares[newState.playerHere] = "completed";
 
-    
-
-    
-    
     console.log("gym count is " + newState.gymCount);
     if (newState.playerHere === 19 && newState.gymCount === 2) {
       newState.status = Status.VictoryScreen;
@@ -1297,7 +1289,8 @@ function resetAfterFight(stateObj) {
       newState.gymFightCount = 0;
       newState.gymCount += 1;
       newState.playerMonster.maxHP += 10
-      console.log("increasing gym count to " + newState.gymCount);
+      newState.playerMonster.currentHP += 10
+      console.log("You head out to face Gym # " + newState.gymCount);
       newState.townEventChosen = false;
       newState.availableCardPoolForShop = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
 
@@ -2258,6 +2251,7 @@ function renderOpponents(stateObj) {
     }
 
     let opponentMoveListDiv = document.createElement("Div");
+    opponentMoveListDiv.classList.add("opponent-move-list");
 
     monsterObj.moves.forEach(function (moveObj, moveIndex) {
       let moveDiv = document.createElement("Div");
@@ -2426,7 +2420,7 @@ function resetState() {
 
 //needs to return when it reaches the first playable move to prevent it from always playing the last move
 //chooses a random number based on the length of the opponent' moves and highlights it
-function pickOpponentMove(stateObj) {
+async function pickOpponentMove(stateObj) {
   let toChangeState = immer.produce(stateObj, (newState) => {
     newState.opponentMonster.forEach(function (monsterObj, index) {
       for (var i = 0; i < monsterObj.moves.length; i++) {
@@ -2443,19 +2437,34 @@ function pickOpponentMove(stateObj) {
 }
 
 
-function playOpponentMove(stateObj) {
-  //each opponent Monster plays its own move
-  stateObj.opponentMonster.forEach(function (monsterObj, index) {
-    console.log(monsterObj.name + " uses " + monsterObj.moves[monsterObj.opponentMoveIndex].name);
-    const move = monsterObj.moves[monsterObj.opponentMoveIndex];
-    //move.action also take a state object and returns a state object, so newState gets updated
-    stateObj = move.action(stateObj, index, stateObj.opponentMonster);
-  });
+// async function playOpponentMove2(stateObj) {
+//   let testMonster = stateObj.opponentMonster[0]
+//   stateObj = await testMonster.moves[testMonster.opponentMoveIndex].action(stateObj, 0, stateObj.opponentMonster);
+//   stateObj = await handleDeaths(stateObj);
+//   return stateObj;
+// }
 
-  stateObj = handleDeaths(stateObj);
+async function playOpponentMove(stateObj) {
+  //each opponent Monster plays its own move
+  if (stateObj.opponentMonster.length === 3) {
+    const move = stateObj.opponentMonster[0].moves[stateObj.opponentMonster[0].opponentMoveIndex];
+    stateObj = await move.action(stateObj, 0, stateObj.opponentMonster);
+    const move1 = stateObj.opponentMonster[1].moves[stateObj.opponentMonster[1].opponentMoveIndex];
+    stateObj = await move1.action(stateObj, 1, stateObj.opponentMonster);
+    const move2 = stateObj.opponentMonster[2].moves[stateObj.opponentMonster[2].opponentMoveIndex];
+    stateObj = await move.action(stateObj, 2, stateObj.opponentMonster);
+  } else if (stateObj.opponentMonster.length === 2) {
+    const move = stateObj.opponentMonster[0].moves[stateObj.opponentMonster[0].opponentMoveIndex];
+    stateObj = await move.action(stateObj, 0, stateObj.opponentMonster);
+    const move1 = stateObj.opponentMonster[1].moves[stateObj.opponentMonster[1].opponentMoveIndex];
+    stateObj = await move1.action(stateObj, 1, stateObj.opponentMonster);
+  } else if (stateObj.opponentMonster.length === 1) {
+    const move = stateObj.opponentMonster[0].moves[stateObj.opponentMonster[0].opponentMoveIndex];
+    stateObj = await move.action(stateObj, 0, stateObj.opponentMonster);
+  }
+
   return stateObj;
 }
-
 
 async function discardHand(stateObj) {
   let toChangeState = immer.produce(stateObj, (newState) => {
@@ -2475,15 +2484,15 @@ function shuffleDraw(stateObj) {
   return toChangeState;
 }
 
-function startEncounter(stateObj) {
+async function startEncounter(stateObj) {
   console.log('triggering start encounter');
-  stateObj = pickOpponentMove(stateObj);
+  stateObj = await pickOpponentMove(stateObj);
   stateObj = shuffleDraw(stateObj);
   stateObj = drawAHand(stateObj);
   stateObj = immer.produce(stateObj, (newState) => {
     newState.fightStarted = true;
   })
-  changeState(stateObj);
+  await changeState(stateObj);
   return stateObj
 }
 
@@ -2534,12 +2543,12 @@ async function endTurn(stateObj) {
   await changeState(stateObj);
   await pause(200);
 
-  stateObj = pickOpponentMove(stateObj);
+  stateObj = await pickOpponentMove(stateObj);
   stateObj = immer.produce(stateObj, (draft) => {
     draft.playerMonster.encounterBlock = 0;
     draft.playerMonster.encounterEnergy += draft.playerMonster.turnEnergy;
   })
-  stateObj = drawAHand(stateObj);
+  stateObj = await drawAHand(stateObj);
   await changeState(stateObj);
 
 }

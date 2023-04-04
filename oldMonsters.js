@@ -1,32 +1,78 @@
 let playerMonsters = {
-    devCheat: {
-      name: "Testing Mode",
-      type: "fire",
-      encounterEnergy: 0,
-      opponentMoveIndex: false,
-      cardPool: fireCardPool,
-      maxHP: 50,
-      currentHP: 50,
-      strength: 0,
-      dex: 0,
-      tempStrength: 0,
-      tempDex: 0,
-      fightStrength: 0,
-      fightDex: 0,
-      turnEnergy: 3,
-      avatar: "img/fireMonster.png",
-      startingDeck: [
-        fireCardPool.darkknowledge,
-        fireCardPool.hammerandtongs,
-        fireCardPool.upgrade,
-        fireCardPool.energyconversion,
-        specialCardPool.testkill,
-        fireCardPool.setaflame
-      ],
-    },
-  
+
+  default: {
+    name: "Default",
+    type: "fire",
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    cardPool: fireCardPool,
+    maxHP: 45,
+    currentHP: 45,
+    strength: 0,
+    dex: 0,
+    tempStrength: 0,
+    tempDex: 0,
+    fightStrength: 0,
+    fightDex: 0,
+    turnEnergy: 3,
+    avatar: "img/fireMonster.png",
+    startingDeck: [
+      //1 energy
+    fireCardPool.fireEnergy,
+    fireCardPool.fireEnergy,
+    //5 block
+    fireCardPool.essencedrain,
+    fireCardPool.withdraw,
+    fireCardPool.withdraw,
+    fireCardPool.withdraw,
+    fireCardPool.withdraw,
+    // 5 attack
+    fireCardPool.tackle,
+    fireCardPool.energyburst,
+    fireCardPool.tackle,
+    fireCardPool.tackle,
+    fireCardPool.tackle,
+
+    ],
+  },
+
+  genner: {
+    name: "Cards Per Turn",
+    type: "fire",
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    cardPool: fireCardPool,
+    maxHP: 45,
+    currentHP: 45,
+    strength: 0,
+    dex: 0,
+    tempStrength: 0,
+    tempDex: 0,
+    fightStrength: 0,
+    fightDex: 0,
+    turnEnergy: 3,
+    avatar: "img/adorablefire.png",
+    startingDeck: [
+      //1 energy
+      fireCardPool.fireEnergy,
+      fireCardPool.fireEnergy,
+      //5 block
+      fireCardPool.puffofsmoke,
+      fireCardPool.withdraw,
+      fireCardPool.withdraw,
+      fireCardPool.withdraw,
+      fireCardPool.sunlight,
+      // 5 attack
+      fireCardPool.tackle,
+      fireCardPool.pirouettespin,
+      fireCardPool.precisionstrike,
+      fireCardPool.tackle,
+      fireCardPool.brandingiron,
+    ],
+  },
+
     charles: {
-      name: "Test - scales over time",
+      name: "Hard - scales over time",
       type: "fire",
       encounterEnergy: 0,
       opponentMoveIndex: false,
@@ -60,14 +106,14 @@ let playerMonsters = {
       ],
     },
 
-    genner: {
-      name: "Main",
+    devCheat: {
+      name: "Testing Mode",
       type: "fire",
       encounterEnergy: 0,
       opponentMoveIndex: false,
       cardPool: fireCardPool,
-      maxHP: 45,
-      currentHP: 45,
+      maxHP: 50,
+      currentHP: 50,
       strength: 0,
       dex: 0,
       tempStrength: 0,
@@ -75,61 +121,20 @@ let playerMonsters = {
       fightStrength: 0,
       fightDex: 0,
       turnEnergy: 3,
-      avatar: "img/adorablefire.png",
+      avatar: "img/fireMonster.png",
       startingDeck: [
-        //1 energy
-        fireCardPool.fireEnergy,
-        fireCardPool.fireEnergy,
-        //5 block
-        fireCardPool.puffofsmoke,
-        fireCardPool.withdraw,
-        fireCardPool.withdraw,
-        fireCardPool.withdraw,
-        fireCardPool.withdraw,
-        // 5 attack
-        fireCardPool.tackle,
-        fireCardPool.pirouettespin,
-        fireCardPool.precisionstrike,
-        fireCardPool.tackle,
-        fireCardPool.tackle,
+        fireCardPool.darkknowledge,
+        fireCardPool.bloatedbomb,
+        fireCardPool.hammerandtongs,
+        fireCardPool.flamedome,
+        specialCardPool.testkill,
+        fireCardPool.setaflame
       ],
     },
 
-    funCards: {
-        name: "Energy Manipulation",
-        type: "fire",
-        encounterEnergy: 0,
-        opponentMoveIndex: false,
-        cardPool: fireCardPool,
-        maxHP: 45,
-        currentHP: 45,
-        strength: 0,
-        dex: 0,
-        tempStrength: 0,
-        tempDex: 0,
-        fightStrength: 0,
-        fightDex: 0,
-        turnEnergy: 3,
-        avatar: "img/fireMonster.png",
-        startingDeck: [
-          //1 energy
-        fireCardPool.fireEnergy,
-        fireCardPool.hammerandtongs,
-        //5 block
-        fireCardPool.essencedrain,
-        fireCardPool.withdraw,
-        fireCardPool.withdraw,
-        fireCardPool.withdraw,
-        fireCardPool.withdraw,
-        // 5 attack
-        fireCardPool.tackle,
-        fireCardPool.energyburst,
-        fireCardPool.tackle,
-        fireCardPool.tackle,
-        fireCardPool.tackle,
+    
 
-        ],
-      },
+    
   
   // swirly: {
   //   name: "Swirly",
