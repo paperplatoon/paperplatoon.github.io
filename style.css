@@ -389,7 +389,7 @@
 
 
 .fade-out {
-  animation: fadeOut 2s forwards;
+  animation: fadeOut 0.7s forwards;
 }
 
 .monster-hp {

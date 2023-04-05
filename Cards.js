@@ -469,7 +469,7 @@ let fireCardPool = {
       name: "Siphon",
       text: (stateObj, index, array) => {
         if (array[index].baseHits === 0) {
-          return `Destroy ${(array[index].energyDrain + array[index].upgrades)} 2 energy. Deal ${array[index].baseDamage} for each energy destroyed`
+          return `Destroy ${(array[index].energyDrain + array[index].upgrades)} energy. Deal ${array[index].baseDamage} for each energy destroyed`
         } else {
           return `Destroy ${(array[index].energyDrain + array[index].upgrades)} energy. Deal ${array[index].baseDamage} for each energy destroyed + (${array[index].baseHits}) `
         }  
@@ -482,7 +482,7 @@ let fireCardPool = {
         return array[index].baseCost
       },
       upgrades: 0,
-      cardType: "ability",
+      cardType: "attack",
       elementType: "fire",
       energyDrain: 2,
       baseDamage: 4,
@@ -2016,9 +2016,9 @@ let fireCardPool = {
       name: "Flame Dome",
       text: (state, index, array) => {
         if (array[index].baseHits===1) {
-          return `Gain ${array[index].baseBlock + (array[index].upgrades*4) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*3)} damage to all enemies`;
+          return `Gain ${array[index].baseBlock + (array[index].upgrades*4) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*3) + state.playerMonster.strength} damage to all enemies`;
         } else {
-          return `Gain ${array[index].baseBlock + (array[index].upgrades*4) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*3)} damage to all enemies ${array[index].baseHits} times`;
+          return `Gain ${array[index].baseBlock + (array[index].upgrades*4) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*3) + state.playerMonster.strength} damage to all enemies ${array[index].baseHits} times`;
         }
           
       },

@@ -54,6 +54,7 @@ const Status = {
   DuplicatingCards: "Choose a card. Add a copy of it to your deck",
   DoublingAttack: "Choose a card. +50% base damage",
   DoubleUpgradeEvent: "Choose a card. Upgrade it twice",
+  AttackChoiceEvent: "Choose one",
   LevelUpEvent: "Choose a trait to permanently level up",
   ChooseRareEvent: "Choose a rare card. Add it to your deck",
   PaidRemovalEvent: "Choose a card. Sell it for 50 gold (100 gold for rare cards)",
@@ -158,6 +159,13 @@ const eventsArray = [
     imgSrc: "img/wizardshop.PNG",
     divText: "Unimaginable Power",
     newStatus: Status.DoublingAttack,
+    eventID: 3
+  },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.PNG",
+    divText: "Attack Choice",
+    newStatus: Status.AttackChoiceEvent,
     eventID: 3
   },
   {
@@ -529,7 +537,7 @@ async function opponentDeathAnimation(toDieIndexArray) {
     opponentHPDiv.classList.add("hidden");
     
   } )
-  await pause(2000);
+  await pause(700);
 }
 
 async function energyGainAnimation(stateObj) {
@@ -1011,9 +1019,10 @@ function increaseCardAttack(stateObj, index, array) {
 }
 
 function doubleCardAttack(stateObj, index, array) {
-  let newBaseDamage = Math.floor(newState.playerDeck[index].baseDamage * 1.5)
+  let newBaseDamage = Math.floor(stateObj.playerDeck[index].baseDamage *= 2)
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerDeck[index].baseDamage = newBaseDamage;
+    newState.playerDeck[index].baseCost += 1;
     newState.eventUsed = true;
     newState.status = Status.OverworldMap
     newState.townMapSquares[newState.playerHere] = "completed"
@@ -1849,8 +1858,6 @@ async function renderLevelUp(stateObj) {
   let energyDiv = await renderTownDiv(stateObj, "increaseEnergy", "img/forge.PNG", "+1 energy per turn", true, increaseEnergyEvent, Status.InTown, altText=false);
   
   document.getElementById("level-up-div").append(strengthDiv, DexDiv, energyDiv);
-  
-  
   skipToTownButton(stateObj, "I choose not to level up for some reason even though I probably should (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
   //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
   
@@ -1903,17 +1910,28 @@ function renderIncreaseCardAttack(stateObj) {
   //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div"); 
 };
 
-function renderDoubleCardAttack(stateObj) {
+async function renderAttackChoiceEvent(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app", "level-up-div");
+  let doubleDiv = await renderTownDiv(stateObj, "doubleDamage", "img/forge.PNG", "Double a card's attack; +1 cost", true, changeStatus, Status.DoublingAttack);
+  let increaseAttackDiv = await renderTownDiv(stateObj, "increaseAttack", "img/forge.PNG", "+5 attack for a card", true, changeStatus, Status.IncreasingAttack);
+  
+  document.getElementById("level-up-div").append(doubleDiv, increaseAttackDiv);
+  skipToTownButton(stateObj, "I don't want either of these (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+};
+
+async function renderDoubleCardAttack(stateObj) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app")
   divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
-    if (cardObj.baseDamage && cardObj.baseDamage > 0) {
+    if (cardObj.baseDamage && typeof cardObj.baseDamage === 'number') {
       renderCard(stateObj, stateObj.playerDeck, index, "remove-div", doubleCardAttack, goldCost="doubleattack")
     }
   });
-  skipToTownButton(stateObj, "I choose not to double the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div"); 
+  skipToTownButton(stateObj, "I choose not to increase the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+
 };
 
 function renderIncreaseBaseHit(stateObj) {
@@ -2039,15 +2057,25 @@ function renderCard(stateObj, cardArray, index, divName=false, functionToAdd=fal
         } else if (goldCost === "increaseattack") {
           cardDiv.classList.add("card-change-text");
           let altUpgradeText =  document.createElement("P");
-          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseDamage", 6)
+          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseDamage", 5)
           altUpgradeText.classList.add("alt-card-text");
           cardDiv.append(altUpgradeText);
         } else if (goldCost === "doubleattack") {
           cardDiv.classList.add("card-change-text");
+
+          let cardAltCost = document.createElement("H3");
+          cardAltCost.textContent = showChangedUpgradeCost(stateObj, index, cardArray, cardObj, "baseCost", 1)
+          cardAltCost.classList.add("alt-cost")
+
           let altUpgradeText =  document.createElement("P");
           altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseDamage", cardArray[index].baseDamage)
           altUpgradeText.classList.add("alt-card-text");
-          cardDiv.append(altUpgradeText);
+
+          cardDiv.innerHTML = "";
+          topCardRowDiv.innerHTML = "";
+          topCardRowDiv.append(cardAltCost, cardCost, cardName);
+          cardDiv.append(topCardRowDiv, altUpgradeText, cardText);
+
         } else if (goldCost === "decreasecost") {
           cardDiv.classList.add("card-change-text");
             let cardAltCost = document.createElement("H3");
@@ -2377,6 +2405,9 @@ async function renderScreen(stateObj) {
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.DoublingAttack) {
     renderDoubleCardAttack(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.AttackChoiceEvent) {
+    renderAttackChoiceEvent(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.DoubleUpgradeEvent) {
     renderDoubleUpgradeCard(stateObj);

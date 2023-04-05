@@ -447,7 +447,7 @@ let opponentMonsters = {
         minReq: 6,
         energyChange: "-6",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, (3 * array[index].baseDamage), index), index, -6;
+          stateObj = await dealPlayerDamage(stateObj, (3 * array[index].baseDamage), index, -6);
           stateObj = immer.produce(state, (newState) => {
             if (array[index].currentHP < (array[index].maxHP - (array[index].baseHeal * 2) + 1)) {
               newState.opponentMonster[index].currentHP += array[index].baseHeal * 2;
