@@ -67,15 +67,9 @@ let opponentMonsters = {
           return ` Deal ${(array[index].baseDamage * 4) + array[index].strength} damage`
         },
         minReq: 3,
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            let tempState = dealPlayerDamage(newState, array[index].baseDamage * 4, index);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-
-            newState.opponentMonster[index].encounterEnergy -= 3;
-          })
-          return toChangeState;
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage * 4, index, -3);
+          return stateObj;
         }
       }
     ]
@@ -139,8 +133,8 @@ let opponentMonsters = {
         },
         minReq: 5,
         energyChange: "-5",
-        action: (stateObj, index, array) => {
-          stateObj = dealPlayerDamage(stateObj, (array[index].baseDamage * 2) + 1, index, energyChange=-5);
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage * 2) + 1, index, energyChange=-5);
           return stateObj;
         }
       }
@@ -281,10 +275,96 @@ let opponentMonsters = {
         text: (state, index, array) => {
           return `Deal ${(array[index].baseDamage * 5) + array[index].strength} damage`
         },
-        minReq: 6,
+        minReq: 7,
         energyChange: "-7",
-        action: (stateObj, index, array) => {
-          stateObj = dealPlayerDamage(stateObj, (array[index].baseDamage * 5), index, energyChange=-7);
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage * 5), index, energyChange=-7);
+          return stateObj;
+        }
+      }
+
+    ]
+  },
+
+  deflateboss: {
+    name: "Deflate Boss",
+    type: "Air",
+    Level: 1,
+    XPGain: opponentXPGain*3,
+    maxHP: opponentMaxHP*16,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: opponentMaxHP*16,
+    strength: 0,
+    dex: 0,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    deflate: 10,
+    baseDamage: opponentBaseDamage,
+    baseScale: opponentBaseScale,
+    baseBlock: opponentBaseBlock,
+    baseHeal: 0,
+    avatar: "img/hugeair.png",
+    moves: [
+      {
+        name: "Power: Deflate",
+        cost: "0",
+        text: (state, index, array) => {
+          return `Whenever an attack deals 10 or more damage, remove 1 energy`
+        },
+
+        minReq: 0,
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage*2), index, 2)
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
+          })
+          return stateObj;
+        }
+      },
+      {
+        name: "Evaluate",
+        cost: "0",
+        energyChange: "+2",
+        text: (state, index, array) => {
+          return `Deal ${(array[index].baseDamage+1) + array[index].strength} damage. Gain ${Math.floor(array[index].baseScale/3)} strength`
+        },
+
+        minReq: 0,
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage*2), index, 2)
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
+          })
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Meteor Shower",
+        cost: "6",
+        text: (state, index, array) => {
+          return `Deal ${(Math.floor(array[index].baseDamage/5)) + array[index].strength} damage 5 times.`
+        },
+        minReq: 6,
+        energyChange: "-6",
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage/5), index, energyChange=-6, 5);
           return stateObj;
         }
       }
@@ -349,14 +429,9 @@ let opponentMonsters = {
         },
         minReq: 4,
         energyChange: "+2",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            let tempState = dealPlayerDamage(newState, Math.floor((array[index].baseDamage/2)), index, 5);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy += 2;
-          })
-          return toChangeState;
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, Math.floor((array[index].baseDamage/2)), index, 2, 5);
+          return stateObj;
         }
       },
       {
@@ -371,12 +446,9 @@ let opponentMonsters = {
         },
         minReq: 6,
         energyChange: "-6",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            let tempState = dealPlayerDamage(newState, (3 * array[index].baseDamage), index);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy -= 6;
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, (3 * array[index].baseDamage), index), index, -6;
+          stateObj = immer.produce(state, (newState) => {
             if (array[index].currentHP < (array[index].maxHP - (array[index].baseHeal * 2) + 1)) {
               newState.opponentMonster[index].currentHP += array[index].baseHeal * 2;
             } else {
@@ -384,7 +456,7 @@ let opponentMonsters = {
             };
 
           })
-          return toChangeState;
+          return stateObj;
         }
       }
 
@@ -448,14 +520,9 @@ let opponentMonsters = {
         },
         minReq: 3,
         energyChange: "-3",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            let tempState = dealPlayerDamage(newState, array[index].baseDamage*3, index);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy -= 3;
-          })
-          return toChangeState;
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage*3, index, -3);
+          return stateObj;
         }
       },
     ]
@@ -518,14 +585,9 @@ let opponentMonsters = {
             },
             minReq: 2,
             energyChange: "-2",
-            action: (state, index, array) => {
-              let toChangeState = immer.produce(state, (newState) => {
-                let tempState = dealPlayerDamage(newState, (array[index].baseDamage*3), index);
-                newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-                newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-                newState.opponentMonster[index].encounterEnergy -= 2;
-              })
-              return toChangeState;
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*3), index, -2);
+              return stateObj;
             }
           },
     ]
@@ -560,12 +622,10 @@ let opponentMonsters = {
         },
         minReq: 0,
         energyChange: "+4",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage+3, index, 4);
+          stateObj = immer.produce(stateObj, (newState) => {
             let calculatedDamage = array[index].baseDamage + array[index].strength;
-            let tempState = dealPlayerDamage(newState, array[index].baseDamage, index);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
             newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
               if (monsterObj.encounterBlock == 0) {
                 monsterObj.currentHP -= calculatedDamage;
@@ -576,9 +636,8 @@ let opponentMonsters = {
                 monsterObj.encounterBlock = 0;
               }
             })
-            newState.opponentMonster[index].encounterEnergy += 4;
           })
-          return toChangeState;
+          return stateObj;
         }
       },
       {
@@ -601,14 +660,9 @@ let opponentMonsters = {
         },
         minReq: 4,
         energyChange: "-4",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            let tempState = dealPlayerDamage(newState, state.enemyFightHealTotal, index);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy -= 4;
-          })
-          return toChangeState;
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, state.enemyFightHealTotal, index, -4);
+          return stateObj;
         }
       },
 
@@ -643,15 +697,9 @@ let opponentMonsters = {
         },
         minReq: 0,
         energyChange: "+3",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            let tempState = dealPlayerDamage(newState, (array[index].baseDamage*2), index);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy += 3;
-
-          })
-          return toChangeState;
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*2), index, 3);
+          return stateObj;
         }
       },
       {
@@ -709,7 +757,7 @@ let opponentMonsters = {
         minReq: 0,
         energyChange: "+1",
         action: async (stateObj, index, array) => {
-          stateObj = dealPlayerDamage(newState, Math.floor(array[index].baseDamage/4), index, 1, 4);
+          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage/4), index, 1, 4);
           return stateObj;
         }
       },
@@ -764,15 +812,12 @@ let opponentMonsters = {
         },
         minReq: 0,
         energyChange: "+2",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            let tempState = dealPlayerDamage(newState, array[index].baseDamage, index);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(newState, array[index].baseDamage, index, 2);
+          stateObj = immer.produce(state, (newState) => {
             newState.opponentMonster[index].strength += array[index].baseScale*2;
-            newState.opponentMonster[index].encounterEnergy += 2;
           })
-          return toChangeState;
+          return stateObj;
         }
       },
       {
@@ -814,14 +859,9 @@ let opponentMonsters = {
         },
         minReq: 5,
         energyChange: "-5",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            let tempState = dealPlayerDamage(newState, 0, index, 2);
-            newState.playerMonster.currentHP = tempState.playerMonster.currentHP;
-            newState.playerMonster.encounterBlock = tempState.playerMonster.encounterBlock;
-            newState.opponentMonster[index].encounterEnergy -= 5;
-          })
-          return toChangeState;
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, 0, index, -5, 2);
+          return stateObj;
         }
       }
     ]
@@ -853,10 +893,9 @@ let opponentMonsters = {
         },
         minReq: 0,
         energyChange: "+1",
-        action: (stateObj, index, array) => {
-          stateObj = dealPlayerDamage(stateObj, array[index].baseDamage-2, index);
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage-2, index, 1);
           stateObj = immer.produce(stateObj, (newState) => {
-            newState.opponentMonster[index].encounterEnergy += 1;
             newState.opponentMonster[index].strength += array[index].baseScale;
           })
           return stateObj;
@@ -908,9 +947,8 @@ let opponentMonsters = {
         },
         minReq: 6,
         energyChange: "-6",
-        action: (stateObj, index, array) => {
-          stateObj = dealPlayerDamage(stateObj, (array[index].baseDamage*2), index, energyChange=-6);
-          console.log()
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*2), index, energyChange=-6);
           return stateObj;
         }
       },
@@ -946,7 +984,6 @@ let opponentMonsters = {
         minReq: 0,
         energyChange: "+3",
         action: (stateObj, index, array) => {
-          console.log("playing study openings")
           stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock)  + array[index].dex);
             newState.opponentMonster[index].strength += array[index].baseScale;
@@ -971,7 +1008,6 @@ let opponentMonsters = {
         minReq: 3,
         energyChange: "-3",
         action: async (stateObj, index, array) => {
-          console.log("playing graceful strike")
           stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index, -3);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[index].dex += Math.ceil(array[index].baseScale/2);

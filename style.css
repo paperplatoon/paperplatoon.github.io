@@ -47,12 +47,12 @@
 
 @keyframes energyGain {
   0% { font-size: 3vmin;}
-  50% { font-size: 4.1vmin;}
+  50% { font-size: 4.5vmin;}
   100% { font-size: 3vmin;}
 }
 
 .energy-gain {
-  animation: energyGain 0.2s forwards ;
+  animation: energyGain 0.1s forwards ;
 }
 
 .player-windup {
@@ -60,7 +60,7 @@
 }
 
 .opponent-windup {
-  animation: opponentWindup 0.3s forwards ;
+  animation: 0.2s opponentWindup forwards ;
 }
 
 @keyframes opponentImpact {
@@ -78,11 +78,11 @@
 }
 
 .opponent-impact {
-  animation: opponentImpact 0.15s forwards ;
+  animation: 0.1s opponentImpact 0.1s forwards ;
 }
 
 .player-impact {
-  animation: playerImpact 0.2s forwards ;
+  animation: 0.1s playerImpact 0.1s forwards ;
 }
 
 

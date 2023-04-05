@@ -84,22 +84,28 @@ let easyEncountersMjs = [
   
   let bossEncountersMjs = [
     {
-      opponents: [opponentMonsters.strengthgymguard, opponentMonsters.strengthgymboss, opponentMonsters.strengthgymguard],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    },
+        opponents: [opponentMonsters.deflateboss],
+        goldReward: 125,
+        boss: true,
+        XP: 70
+      },
+    // {
+    //   opponents: [opponentMonsters.strengthgymguard, opponentMonsters.strengthgymboss, opponentMonsters.strengthgymguard],
+    //   goldReward: 125,
+    //   boss: true,
+    //   XP: 70
+    // },
   
-    {
-      opponents: [opponentMonsters.healgymboss, opponentMonsters.healgymguard2, opponentMonsters.healgymguard1],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    },
-    {
-      opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockgymboss, opponentMonsters.blockbossguard2],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    },
+    // {
+    //   opponents: [opponentMonsters.healgymboss, opponentMonsters.healgymguard2, opponentMonsters.healgymguard1],
+    //   goldReward: 125,
+    //   boss: true,
+    //   XP: 70
+    // },
+    // {
+    //   opponents: [opponentMonsters.blockbossguard1, opponentMonsters.blockgymboss, opponentMonsters.blockbossguard2],
+    //   goldReward: 125,
+    //   boss: true,
+    //   XP: 70
+    // },
   ]

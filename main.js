@@ -1,6 +1,9 @@
 //ANIMATIONS
-//energyGift
-//energyDestroy
+//need to change moveList to also render powers first
+//powers need to not be part of the move list to avoid fucking with energy logic
+//change fillMapWithArray so every act isn't just randomly shuffled 
+
+
 //turn like every single function async
 //animation when opponents gain energy
 
@@ -324,10 +327,6 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
     if (stateObj.townMapSquares[indexToMoveTo] === "Fight") {
       console.log("clicked on a fight")
       stateObj = setUpEncounter(stateObj);
-      stateObj = immer.produce(stateObj, (newState) => {
-        console.log('changing state to fight')
-        newState.Status = Status.InEncounter
-      })
     } else if (stateObj.townMapSquares[indexToMoveTo] === "Shop") {
       stateObj = immer.produce(stateObj, (newState) => {
         newState.status = Status.cardShop
@@ -418,21 +417,20 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
   let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster;
   
   document.querySelector("#playerStats .avatar").classList.add("player-windup");
-    await pause(200);
-    document.querySelector("#playerStats .avatar").classList.remove("player-windup");
 
   if (all===false) {
     document.querySelector(".targeted .avatar").classList.add("opponent-impact");
-    await pause(100);
+    await pause(200);
     document.querySelector(".targeted .avatar").classList.remove("opponent-impact");
   } else {
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.add("opponent-impact");
     })
-    await pause(100);
+    await pause(200);
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.remove("opponent-impact");
     })
+    document.querySelector("#playerStats .avatar").classList.remove("player-windup");
   }
 
   let toChangeState = immer.produce(stateObj, (newState) => {
@@ -445,28 +443,41 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
           }
           if (monsterObj.encounterBlock == 0) {
             console.log("You dealt " + calculatedDamage + " to " + monsterObj.name);
+            if (monsterObj.deflate && calculatedDamage >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
+              monsterObj.encounterEnergy -= 1;
+            }
             monsterObj.currentHP -= calculatedDamage;
           } else if (monsterObj.encounterBlock >= calculatedDamage) {
             console.log(monsterObj.name + " blocked for " + calculatedDamage);
             monsterObj.encounterBlock -= calculatedDamage;
           } else {
             console.log(monsterObj.name + " blocked for " + calculatedDamage + " and took " + (calculatedDamage - monsterObj.encounterBlock) + " damage");
+            if (monsterObj.deflate && (calculatedDamage - monsterObj.encounterBlock) >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
+              newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 1;
+            }
             monsterObj.currentHP -= (calculatedDamage - monsterObj.encounterBlock);
             monsterObj.encounterBlock = 0;
           }
         })
       } else {
+        let monsterObj = newState.opponentMonster[targetIndex]
         if (newState.opponentMonster[targetIndex].hunted > 0) {
           calculatedDamage *=2;
         }
         if (newState.opponentMonster[targetIndex].encounterBlock == 0) {
           console.log("You dealt " + calculatedDamage + " to " + newState.opponentMonster[targetIndex].name);
+          if (monsterObj.deflate && calculatedDamage >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
+            monsterObj.encounterEnergy -= 1;
+          }
           newState.opponentMonster[targetIndex].currentHP -= calculatedDamage;
         } else if (newState.opponentMonster[targetIndex].encounterBlock >= calculatedDamage) {
           console.log(newState.opponentMonster[targetIndex].name + " blocked for " + calculatedDamage);
           newState.opponentMonster[targetIndex].encounterBlock -= calculatedDamage;
         } else {
           console.log(newState.opponentMonster[targetIndex].name + " blocked for " + calculatedDamage + " and took " + (calculatedDamage - newState.opponentMonster[targetIndex].encounterBlock) + " damage");
+          if (monsterObj.deflate && (calculatedDamage - monsterObj.encounterBlock) >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
+            newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 1;
+          }
           newState.opponentMonster[targetIndex].currentHP -= (calculatedDamage - newState.opponentMonster[targetIndex].encounterBlock);
           newState.opponentMonster[targetIndex].encounterBlock = 0;
         }
@@ -481,11 +492,10 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
 
 async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energyChange=false, attackNumber = 1) {
   document.querySelectorAll("#opponents .avatar")[monsterIndex].classList.add("opponent-windup");
-  await pause(300);
+  document.querySelectorAll("#playerStats .avatar")[0].classList.add("player-impact");
+  await pause(200);
   document.querySelectorAll("#opponents .avatar")[monsterIndex].classList.remove("opponent-windup");
-  document.querySelectorAll("#playerStats .avatar")[monsterIndex].classList.add("player-impact");
-  await pause(300);
-  document.querySelectorAll("#playerStats .avatar")[monsterIndex].classList.remove("player-impact");
+  document.querySelectorAll("#playerStats .avatar")[0].classList.remove("player-impact");
   
   let toChangeState = immer.produce(stateObj, (newState) => {
     calculatedDamage = ((damageNumber + newState.opponentMonster[monsterIndex].strength) * attackNumber);
@@ -517,6 +527,7 @@ async function opponentDeathAnimation(toDieIndexArray) {
     opponentAvatar.classList.add("fade-out");
     opponentMoveDiv.classList.add("hidden");
     opponentHPDiv.classList.add("hidden");
+    
   } )
   await pause(2000);
 }
@@ -525,7 +536,7 @@ async function energyGainAnimation(stateObj) {
   let index = stateObj.targetedMonster;
   let opponentEnergyBar = document.querySelector('.targeted .monster-energy');
   opponentEnergyBar.classList.add("energy-gain");
-  await pause(200);
+  await pause(100);
   opponentEnergyBar.classList.remove("energy-gain");
 }
 
