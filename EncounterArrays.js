@@ -89,6 +89,12 @@ let easyEncountersMjs = [
       boss: true,
       XP: 70
     },
+    {
+      opponents: [opponentMonsters.deflateboss],
+      goldReward: 125,
+      boss: true,
+      XP: 70
+    },
     // {
     //   opponents: [opponentMonsters.deflateboss],
     //   goldReward: 125,

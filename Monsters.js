@@ -306,23 +306,11 @@ let opponentMonsters = {
     baseBlock: opponentBaseBlock,
     baseHeal: 0,
     avatar: "img/icetorch.png",
+    powers: [{
+      name: "Power: Deflate",
+      text:  `Whenever an attack deals 10 or more damage, remove 1 energy`
+    }],
     moves: [
-      {
-        name: "Power: Deflate",
-        cost: "0",
-        text: (state, index, array) => {
-          return `Whenever an attack deals 10 or more damage, remove 1 energy`
-        },
-
-        minReq: 0,
-        action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage*2), index, 2)
-          stateObj = immer.produce(stateObj, (newState) => {
-            newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
-          })
-          return stateObj;
-        }
-      },
       {
         name: "Evaluate",
         cost: "0",
@@ -392,23 +380,11 @@ let opponentMonsters = {
     baseBlock: opponentBaseBlock,
     baseHeal: 0,
     avatar: "img/icetorch.png",
+    powers: [{
+      name: "Power: Angry",
+      text:  `Whenever this creature receives unblocked attack damage, gain 1 energy`
+    }],
     moves: [
-      {
-        name: "Power: Angry",
-        cost: "0",
-        text: (state, index, array) => {
-          return `Whenever this creature receives unblocked attack damage, gain 1 energy`
-        },
-
-        minReq: 0,
-        action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage*2), index, 2)
-          stateObj = immer.produce(stateObj, (newState) => {
-            newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
-          })
-          return stateObj;
-        }
-      },
       {
         name: "Icicle Spears",
         cost: "0",

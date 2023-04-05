@@ -2304,6 +2304,22 @@ function renderOpponents(stateObj) {
     let opponentMoveListDiv = document.createElement("Div");
     opponentMoveListDiv.classList.add("opponent-move-list");
 
+    if (monsterObj.powers) {
+      monsterObj.powers.forEach(function(powerObj, powerIndex) {
+        let powerDiv = document.createElement("Div");
+        powerDiv.classList.add("power");
+
+        let powerName = document.createElement("H3");
+        powerName.textContent = powerObj.name;
+        let powerText = document.createElement("P");
+        powerText.textContent = powerObj.text
+        powerDiv.append(powerName, powerText);
+        opponentMoveListDiv.appendChild(powerDiv);
+
+
+      })
+    }
+
     monsterObj.moves.forEach(function (moveObj, moveIndex) {
       let moveDiv = document.createElement("Div");
 
