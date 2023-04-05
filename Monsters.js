@@ -305,7 +305,7 @@ let opponentMonsters = {
     baseScale: opponentBaseScale,
     baseBlock: opponentBaseBlock,
     baseHeal: 0,
-    avatar: "img/hugeair.png",
+    avatar: "img/icetorch.png",
     moves: [
       {
         name: "Power: Deflate",
@@ -883,10 +883,10 @@ let opponentMonsters = {
     dex: 0,
     drown: 0,
     hunted: 0,
-    avatar: "img/firebeard.png",
+    avatar: "img/watersprite.png",
     moves: [
       {
-        name: "Coursing Flames",
+        name: "Rising Tide",
         cost: "0",
         text: (state, index, array) => {
           return `Deal ${array[index].baseDamage - 2 + array[index].strength} damage. Gain ${array[index].baseScale} strength`
@@ -905,7 +905,7 @@ let opponentMonsters = {
         name: false,
       },
       {
-        name: "Heat Discharge",
+        name: "Water Jets",
         cost: "2",
         text: (state, index, array) => {
           return `Deal strength damage (${array[index].strength}) twice `
@@ -921,7 +921,7 @@ let opponentMonsters = {
         name: false,
       },  
       {
-        name: "Heat Shield",
+        name: "Sea Wall",
         cost: "4",
         text: (state, index, array) => {
           return `Gain (${1+(array[index].baseBlock*2)}) block `
@@ -940,7 +940,7 @@ let opponentMonsters = {
         name: false,
       }, 
       {
-        name: "River of Flames",
+        name: "Tsunami",
         cost: "6",
         text: (state, index, array) => {
           return `Deal ${(array[index].baseDamage * 2) + array[index].strength} damage.`
@@ -973,7 +973,7 @@ let opponentMonsters = {
     baseDamage: opponentBaseDamage,
     baseScale: opponentBaseScale,
     baseHeal: 0,
-    avatar: "img/earthpsycho.png",
+    avatar: "img/waterhead.png",
     moves: [
       {
         name: "Study Openings",

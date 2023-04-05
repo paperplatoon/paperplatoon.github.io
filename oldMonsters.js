@@ -121,7 +121,7 @@ let playerMonsters = {
       fightStrength: 0,
       fightDex: 0,
       turnEnergy: 3,
-      avatar: "img/fireMonster.png",
+      avatar: "img/playerturtle.png",
       startingDeck: [
         fireCardPool.darkknowledge,
         fireCardPool.bigtackle,
