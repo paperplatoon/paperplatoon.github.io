@@ -449,19 +449,27 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
           if (monsterObj.hunted > 0) {
             calculatedDamage *=2;
           }
+
           if (monsterObj.encounterBlock == 0) {
             console.log("You dealt " + calculatedDamage + " to " + monsterObj.name);
+
             if (monsterObj.deflate && calculatedDamage >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
               monsterObj.encounterEnergy -= 1;
+            } else if (monsterObj.angry) {
+              monsterObj.encounterEnergy += 1;
             }
+
             monsterObj.currentHP -= calculatedDamage;
           } else if (monsterObj.encounterBlock >= calculatedDamage) {
             console.log(monsterObj.name + " blocked for " + calculatedDamage);
             monsterObj.encounterBlock -= calculatedDamage;
           } else {
             console.log(monsterObj.name + " blocked for " + calculatedDamage + " and took " + (calculatedDamage - monsterObj.encounterBlock) + " damage");
+
             if (monsterObj.deflate && (calculatedDamage - monsterObj.encounterBlock) >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
               newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 1;
+            } else if (monsterObj.angry) {
+              monsterObj.encounterEnergy += 1;
             }
             monsterObj.currentHP -= (calculatedDamage - monsterObj.encounterBlock);
             monsterObj.encounterBlock = 0;
@@ -476,6 +484,8 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
           console.log("You dealt " + calculatedDamage + " to " + newState.opponentMonster[targetIndex].name);
           if (monsterObj.deflate && calculatedDamage >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
             monsterObj.encounterEnergy -= 1;
+          } else if (monsterObj.angry) {
+            monsterObj.encounterEnergy += 1;
           }
           newState.opponentMonster[targetIndex].currentHP -= calculatedDamage;
         } else if (newState.opponentMonster[targetIndex].encounterBlock >= calculatedDamage) {
@@ -485,6 +495,8 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
           console.log(newState.opponentMonster[targetIndex].name + " blocked for " + calculatedDamage + " and took " + (calculatedDamage - newState.opponentMonster[targetIndex].encounterBlock) + " damage");
           if (monsterObj.deflate && (calculatedDamage - monsterObj.encounterBlock) >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
             newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 1;
+          } else if (monsterObj.angry) {
+            monsterObj.encounterEnergy += 1;
           }
           newState.opponentMonster[targetIndex].currentHP -= (calculatedDamage - newState.opponentMonster[targetIndex].encounterBlock);
           newState.opponentMonster[targetIndex].encounterBlock = 0;
