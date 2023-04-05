@@ -1,20 +1,24 @@
 let easyEncountersMjs = [
     {
-      opponents: [easyEncounters.e2],
-      goldReward: 15,
-    },
-    {
-      opponents: [easyEncounters.e1],
-      goldReward: 15,
-    },
-    {
-      opponents: [easyEncounters.e3],
-      goldReward: 15,
-    },
-    {
-      opponents: [easyEncounters.e4, easyEncounters.e5],
-      goldReward: 15,
-    },
+        opponents: [opponentMonsters.strengthgym1],
+        goldReward: 15,
+      },
+    // {
+    //   opponents: [easyEncounters.e2],
+    //   goldReward: 15,
+    // },
+    // {
+    //   opponents: [easyEncounters.e1],
+    //   goldReward: 15,
+    // },
+    // {
+    //   opponents: [easyEncounters.e3],
+    //   goldReward: 15,
+    // },
+    // {
+    //   opponents: [easyEncounters.e4, easyEncounters.e5],
+    //   goldReward: 15,
+    // },
   ]
 
   let mediumEncountersMjs = [
