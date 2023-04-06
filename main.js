@@ -552,12 +552,25 @@ async function opponentDeathAnimation(toDieIndexArray) {
   await pause(700);
 }
 
-async function energyGainAnimation(stateObj) {
+async function energyGainAnimation(stateObj, all=false) {
   let index = stateObj.targetedMonster;
-  let opponentEnergyBar = document.querySelector('.targeted .monster-energy');
-  opponentEnergyBar.classList.add("energy-gain");
-  await pause(100);
-  opponentEnergyBar.classList.remove("energy-gain");
+  if (all===true) {
+    stateObj.opponentMonster.forEach(function (monsterObj, monsterIndex) {
+      let opponentEnergyBar = document.querySelectorAll('.monster .monster-energy')[monsterIndex];
+      opponentEnergyBar.classList.add("energy-gain");
+    })
+    await pause(100);
+    stateObj.opponentMonster.forEach(function (monsterObj, monsterIndex) {
+      let opponentEnergyBar = document.querySelectorAll('.monster .monster-energy')[monsterIndex];
+      opponentEnergyBar.classList.remove("energy-gain");
+    })
+    
+  } else {
+    let opponentEnergyBar = document.querySelector('.targeted .monster-energy');
+    opponentEnergyBar.classList.add("energy-gain");
+    await pause(100);
+    opponentEnergyBar.classList.remove("energy-gain");
+  }
 }
 
 
@@ -650,7 +663,7 @@ function addBackstepsToHand(stateObj, numberToAdd=1) {
   return stateObj
 }
 
-async function energyGift(stateObj, energyToGain, energyCost=false) {
+async function energyGift(stateObj, energyToGain, energyCost=false, all=false) {
   stateObj = immer.produce(stateObj, (newState) => {
     if ( (stateObj.opponentMonster[stateObj.targetedMonster].encounterEnergy += energyToGain) > 0 && energyToGain > 0) {
       newState.opponentMonster[newState.targetedMonster].encounterEnergy += energyToGain;
@@ -669,19 +682,41 @@ async function energyGift(stateObj, energyToGain, energyCost=false) {
     let targetIndex = Math.floor(Math.random() * (stateObj.opponentMonster.length))
     stateObj = dealOpponentDamage(stateObj, (stateObj.energyGiftAttack-stateObj.playerMonster.strength), attackNumber=1, all=true);  
   }
-  await energyGainAnimation(stateObj)
+  await energyGainAnimation(stateObj, all)
   return stateObj
 }
 
-function destroyEnergy(stateObj, energyToDestroy, energyCost=false) {
+async function destroyEnergy(stateObj, energyToDestroy, energyCost=false, all=false) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.opponentMonster[newState.targetedMonster].encounterEnergy -= energyToDestroy;
-    newState.fightEnergyDrainCount += 1
-    newState.fightEnergyDrainTotal += energyToDestroy
+    if (all === true) {
+      newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
+        if (monsterObj.encounterEnergy > 0 && monsterObj.encounterEnergy > energyToDestroy)  {
+          monsterObj.encounterEnergy -= energyToDestroy;
+          newState.fightEnergyDrainCount += 1
+          newState.fightEnergyDrainTotal += energyToDestroy
+        } else if (monsterObj.encounterEnergy > 0) {
+          newState.fightEnergyDrainCount += 1
+          newState.fightEnergyDrainTotal += monsterObj.encounterEnergy; 
+          monsterObj.encounterEnergy = 0; 
+        } else {}
+      }) 
+    } else {
+      let monsterObj = newState.opponentMonster[newState.targetedMonster];
+      if (monsterObj.encounterEnergy > 0 && monsterObj.encounterEnergy > energyToDestroy)  {
+        monsterObj.encounterEnergy -= energyToDestroy;
+        newState.fightEnergyDrainCount += 1
+        newState.fightEnergyDrainTotal += energyToDestroy
+      } else if (monsterObj.encounterEnergy > 0) {
+        newState.fightEnergyDrainCount += 1
+        newState.fightEnergyDrainTotal += monsterObj.encounterEnergy; 
+        monsterObj.encounterEnergy = 0; 
+      } else {}
+    }
     if (energyCost) {
       newState.playerMonster.encounterEnergy -= energyCost
     }
   })
+  await energyGainAnimation(stateObj, all)
   return stateObj
 }
 

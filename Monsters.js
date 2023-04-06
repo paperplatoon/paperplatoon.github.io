@@ -233,9 +233,9 @@ let opponentMonsters = {
         },
 
         minReq: 0,
-        action: async (state, index, array) => {
+        action: async (stateObj, index, array) => {
           stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage*2), index, 2)
-          let toChangeState = immer.produce(state, (newState) => {
+          stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/2);
           
             if (newState.opponentMonster.find(monster => monster.name === opponentMonsters.blockbossguard1.name)) {
@@ -248,7 +248,7 @@ let opponentMonsters = {
 
 
 
-          return toChangeState;
+          return stateObj;
         }
       },
       {
@@ -510,7 +510,7 @@ let opponentMonsters = {
         energyChange: "-6",
         action: async (stateObj, index, array) => {
           stateObj = await dealPlayerDamage(stateObj, (3 * array[index].baseDamage), index, -6);
-          stateObj = immer.produce(state, (newState) => {
+          stateObj = immer.produce(stateObj, (newState) => {
             if (array[index].currentHP < (array[index].maxHP - (array[index].baseHeal * 2) + 1)) {
               newState.opponentMonster[index].currentHP += array[index].baseHeal * 2;
             } else {
@@ -876,7 +876,7 @@ let opponentMonsters = {
         energyChange: "+2",
         action: async (stateObj, index, array) => {
           stateObj = await dealPlayerDamage(newState, array[index].baseDamage, index, 2);
-          stateObj = immer.produce(state, (newState) => {
+          stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[index].strength += array[index].baseScale*2;
           })
           return stateObj;
