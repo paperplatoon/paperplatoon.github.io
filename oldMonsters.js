@@ -123,10 +123,10 @@ let playerMonsters = {
       turnEnergy: 3,
       avatar: "img/playerturtle.png",
       startingDeck: [
-        fireCardPool.darkknowledge,
-        fireCardPool.icyfreeze,
-        fireCardPool.upgrade,
         fireCardPool.flamedome,
+        fireCardPool.shutdown,
+        fireCardPool.unwaveringdefense,
+        fireCardPool.reformingshield,
         specialCardPool.testkill,
         fireCardPool.setaflame
       ],

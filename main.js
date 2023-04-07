@@ -89,8 +89,10 @@ let gameStartState = {
   energyGiftBlock: 0,
   energyGiftAttack: 0,
   selfDamageAttack: 0,
+  blockPerTurn: 0,
   cardsPerTurn: 0,
   comboPerTurn: 0,
+  blockKeep: false,
   gainLifePerCard: 0,
   townEventChosen: false,
   townFreeHealUsed: false,
@@ -215,9 +217,16 @@ function fillMapWithArray(stateObj) {
   let easyEncounters = fisherYatesShuffle(easyEncountersMjs);
   let mediumEncounters = fisherYatesShuffle(mediumEncountersMjs)
   let hardEncounters = fisherYatesShuffle(hardEncountersMjs);
-  let bossEncounters = fisherYatesShuffle(bossEncountersMjs)
+  let bossEncounters = fisherYatesShuffle(bossEncountersMjs);
+  let townMonsterEncounters = []
 
-  let townMonsterEncounters = [easyEncounters[0], easyEncounters[1], mediumEncounters[0], mediumEncounters[1], hardEncounters[2], hardEncounters[3]];
+  if (stateObj.playerMonster.name === "Testing Mode") {
+    townMonsterEncounters = [easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3] ]
+  } else {
+    townMonsterEncounters = [easyEncounters[0], easyEncounters[1], mediumEncounters[0], mediumEncounters[1], hardEncounters[2], hardEncounters[3]];
+  }
+
+  
 
     //fill the actual map
     stateObj = immer.produce(stateObj, (newState) => {
@@ -1340,6 +1349,8 @@ function resetAfterFight(stateObj) {
     newState.selfDamageBlock = 0;
     newState.energyGiftBlock = 0;
     newState.energyGiftAttack = 0;
+    newState.blockPerTurn = 0;
+    newState.blockKeep = false;
     newState.cardsPerTurn = 0;
     newState.comboPerTurn = 0;
     newState.fightStarted = false;
@@ -1442,6 +1453,8 @@ function setUpEncounter(stateObj, isBoss=false) {
     newState.fightEnergyDrainCount = 0;
     newState.fightEnergyDrainTotal = 0;
     newState.gainLifePerCard = 0;
+    newState.blockPerTurn = 0;
+    newState.blockKeep = false;
     newState.comboPerTurn = 0;
     
     newState.cardsPerTurn = 0;
@@ -2609,6 +2622,7 @@ async function endTurnIncrement(stateObj) {
     newState.playerMonster.tempDex = 0;
     newState.cardsPerTurn = 0;
     newState.comboPerTurn = 0;
+    newState.playerMonster.encounterBlock += newState.blockPerTurn;
     newState.opponentMonster.forEach(function (monsterObj, index) {
       if (monsterObj.hunted > 0) {
         monsterObj.hunted -=1;
@@ -2650,7 +2664,9 @@ async function endTurn(stateObj) {
 
   stateObj = await pickOpponentMove(stateObj);
   stateObj = immer.produce(stateObj, (draft) => {
-    draft.playerMonster.encounterBlock = 0;
+    if (stateObj.blockKeep === false) {
+      draft.playerMonster.encounterBlock = 0;
+    }
     draft.playerMonster.encounterEnergy += draft.playerMonster.turnEnergy;
   })
   stateObj = await drawAHand(stateObj);
