@@ -763,13 +763,9 @@ let fireCardPool = {
 
     flamingStrike: {
       cardID: 28,
-      name: "Flaming Strike",
+      name: "Flaming Cloak",
       text: (state, index, array) => {
-        if (array[index].baseHits === 1) {
-          return `Deal ${array[index].baseDamage + (array[index].upgrades*3) + state.playerMonster.strength} damage. Attacks deal +${(2*array[index].upgrades)+4} damage this turn`
-        } else {
-          return `Deal ${array[index].baseDamage + (array[index].upgrades*3) + state.playerMonster.strength} damage ${array[index].baseHits} times.. Attacks deal +${(2*array[index].upgrades)+4} damage this turn`
-        }
+          return `Gain ${array[index].baseBlock + (array[index].upgrades*3) + state.playerMonster.dex} block. Attacks deal +${(2*array[index].upgrades)+4} damage this turn`
       },
       minReq: (state, index, array) => {
         return array[index].baseCost;
@@ -779,16 +775,16 @@ let fireCardPool = {
         return array[index].baseCost;
       },
       upgrades: 0,
-      baseDamage: 7,
+      baseBlock: 8,
       baseHits: 1,
-      cardType: "attack",
+      cardType: "ability",
       elementType: "fire",
       action: async (stateObj, index, array) => {
         stateObj = immer.produce(state, (newState) => {
           newState.playerMonster.tempStrength += (2*array[index].upgrades)+4;
           newState.playerMonster.strength += (2*array[index].upgrades)+4;
         })
-        stateObj = await dealOpponentDamage(stateObj, (array[index].baseDamage + (array[index].upgrades*3)), array[index].baseHits, array[index].baseCost)
+        stateObj = await gainBlock(stateObj, (array[index].baseBlock + (array[index].upgrades*3)), array[index].baseCost)
         return stateObj;
       }
     },
