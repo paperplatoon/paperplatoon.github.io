@@ -221,7 +221,7 @@ function fillMapWithArray(stateObj) {
   let townMonsterEncounters = []
 
   if (stateObj.playerMonster.name === "Testing Mode") {
-    townMonsterEncounters = [easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3] ]
+    townMonsterEncounters = [bossEncountersMjs[2], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3] ]
   } else {
     townMonsterEncounters = [easyEncounters[0], easyEncounters[1], mediumEncounters[0], mediumEncounters[1], hardEncounters[2], hardEncounters[3]];
   }
@@ -437,13 +437,13 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
 
   if (all===false) {
     document.querySelector(".targeted .avatar").classList.add("opponent-impact");
-    await pause(200);
+    await pause(50);
     document.querySelector(".targeted .avatar").classList.remove("opponent-impact");
   } else {
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.add("opponent-impact");
     })
-    await pause(200);
+    await pause(50);
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.remove("opponent-impact");
     })
@@ -694,6 +694,36 @@ async function energyGift(stateObj, energyToGain, energyCost=false, all=false) {
   await energyGainAnimation(stateObj, all)
   return stateObj
 }
+
+async function healOpponent(stateObj, HPToGain, index=0, energyChange=false, all=false) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    if (all === true) {
+      newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
+          if (monsterObj.currentHP < (monsterObj.maxHP - (HPToGain + 1))) {
+            monsterObj.currentHP += HPToGain;
+            newState.enemyFightHealTotal += HPToGain;
+          } else {
+            newState.enemyFightHealTotal += monsterObj.maxHP - monsterObj.currentHP
+            monsterObj.currentHP = monsterObj.maxHP;
+          };
+      }) 
+    } else {
+      let monsterObj = newState.opponentMonster[index];
+      if (monsterObj.currentHP < (monsterObj.maxHP - (HPToGain + 1))) {
+        monsterObj.currentHP += HPToGain;
+        newState.enemyFightHealTotal += HPToGain;
+      } else {
+        newState.enemyFightHealTotal += monsterObj.maxHP - monsterObj.currentHP
+        monsterObj.currentHP = monsterObj.maxHP;
+      };
+    }
+    if (energyChange) {
+      newState.opponentMonster[index].encounterEnergy += energyChange
+    }
+  })
+  return stateObj
+}
+
 
 async function destroyEnergy(stateObj, energyToDestroy, energyCost=false, all=false) {
   stateObj = immer.produce(stateObj, (newState) => {
@@ -1454,7 +1484,7 @@ function setUpEncounter(stateObj, isBoss=false) {
     newState.fightEnergyDrainTotal = 0;
     newState.gainLifePerCard = 0;
     newState.blockPerTurn = 0;
-    newState.blockKeep = false;
+    newState.blockKeep = 0;
     newState.comboPerTurn = 0;
     
     newState.cardsPerTurn = 0;

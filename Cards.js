@@ -1433,7 +1433,6 @@ let fireCardPool = {
     },
 
     friendship: {
-      rare: true,
       cardID: 51,
       name: "Protective Aura",
       text: (state, index, array) => {

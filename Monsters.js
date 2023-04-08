@@ -286,153 +286,7 @@ let opponentMonsters = {
     ]
   },
 
-  deflateboss: {
-    name: "Deflate Boss",
-    type: "Air",
-    Level: 1,
-    XPGain: opponentXPGain*3,
-    maxHP: opponentMaxHP*16,
-    encounterEnergy: 0,
-    opponentMoveIndex: false,
-    currentHP: opponentMaxHP*16,
-    strength: 0,
-    dex: 0,
-    drown: 0,
-    hunted: 0,
-    poison: 0,
-    deflate: 10,
-    baseDamage: opponentBaseDamage,
-    baseScale: opponentBaseScale,
-    baseBlock: opponentBaseBlock,
-    baseHeal: 0,
-    avatar: "img/icetorch.png",
-    powers: [{
-      name: "Power: Deflate",
-      text:  `Whenever an attack deals 10 or more damage, remove 1 energy`
-    }],
-    moves: [
-      {
-        name: "Evaluate",
-        cost: "0",
-        energyChange: "+2",
-        text: (state, index, array) => {
-          return `Deal ${(array[index].baseDamage+1) + array[index].strength} damage. Gain ${Math.floor(array[index].baseScale/3)} strength`
-        },
-
-        minReq: 0,
-        action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage*2), index, 2)
-          stateObj = immer.produce(stateObj, (newState) => {
-            newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
-          })
-          return stateObj;
-        }
-      },
-      {
-        name: false,
-      },
-      {
-        name: false,
-      },
-      {
-        name: false,
-      },
-      {
-        name: false,
-      },
-      {
-        name: false,
-      },
-      {
-        name: "Meteor Shower",
-        cost: "6",
-        text: (state, index, array) => {
-          return `Deal ${(Math.floor(array[index].baseDamage/5)) + array[index].strength} damage 5 times.`
-        },
-        minReq: 6,
-        energyChange: "-6",
-        action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage/5), index, energyChange=-6, 5);
-          return stateObj;
-        }
-      }
-
-    ]
-  },
-
-  angryboss: {
-    name: "Angry Boss",
-    type: "Air",
-    Level: 1,
-    XPGain: opponentXPGain*3,
-    maxHP: opponentMaxHP*8,
-    encounterEnergy: 0,
-    opponentMoveIndex: false,
-    currentHP: opponentMaxHP*8,
-    strength: 0,
-    dex: 0,
-    drown: 0,
-    hunted: 0,
-    poison: 0,
-    angry: true,
-    baseDamage: opponentBaseDamage,
-    baseScale: opponentBaseScale,
-    baseBlock: opponentBaseBlock,
-    baseHeal: 0,
-    avatar: "img/icetorch.png",
-    powers: [{
-      name: "Power: Angry",
-      text:  `Whenever this creature receives unblocked attack damage, gain 1 energy`
-    }],
-    moves: [
-      {
-        name: "Icicle Spears",
-        cost: "0",
-        energyChange: "0",
-        text: (state, index, array) => {
-          return `Deal ${(array[index].baseDamage-2) + array[index].strength} damage 3 times`
-        },
-
-        minReq: 0,
-        action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage-2), index, 0, 3)
-          return stateObj;
-        }
-      },
-      {
-        name: false,
-      },
-      {
-        name: false,
-      },
-      {
-        name: false,
-      },
-      {
-        name: false,
-      },
-      {
-        name: false,
-      },
-      {
-        name: false,
-      },
-      {
-        name: "Avalanche",
-        cost: "7",
-        text: (state, index, array) => {
-          return `Deal ${(Math.floor(array[index].baseDamage*7)) + array[index].strength} damage`
-        },
-        minReq: 7,
-        energyChange: "-7",
-        action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage * 7), index, energyChange=-7);
-          return stateObj;
-        }
-      }
-
-    ]
-  },
+  
 
   healgym1: {
     name: "Heal Gym Disciple",
@@ -457,21 +311,14 @@ let opponentMonsters = {
       {
         name: "Replenish",
         cost: "0",
-        text: (state, index, array) => {
+        text: (stateObj, index, array) => {
           return `Restore ${array[index].baseHeal} health`
         },
         minReq: 0,
         energyChange: "+2",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            if (array[index].currentHP < (array[index].maxHP - (array[index].baseHeal + 1))) {
-              newState.opponentMonster[index].currentHP += array[index].baseHeal;
-            } else {
-              newState.opponentMonster[index].currentHP = newState.opponentMonster[index].maxHP;
-            };
-            newState.opponentMonster[index].encounterEnergy += 2;
-          })
-          return toChangeState;
+        action: (stateObj, index, array) => {
+          stateObj = healOpponent(stateObj, array[index].baseHeal, index, 2)
+          return stateObj;
         }
       },
       {
@@ -510,14 +357,7 @@ let opponentMonsters = {
         energyChange: "-6",
         action: async (stateObj, index, array) => {
           stateObj = await dealPlayerDamage(stateObj, (3 * array[index].baseDamage), index, -6);
-          stateObj = immer.produce(stateObj, (newState) => {
-            if (array[index].currentHP < (array[index].maxHP - (array[index].baseHeal * 2) + 1)) {
-              newState.opponentMonster[index].currentHP += array[index].baseHeal * 2;
-            } else {
-              newState.opponentMonster[index].currentHP = newState.opponentMonster[index].maxHP;
-            };
-
-          })
+          stateObj = healOpponent(stateObj, array[index].baseHeal * 2, index)
           return stateObj;
         }
       }
@@ -553,18 +393,9 @@ let opponentMonsters = {
         },
         minReq: 0,
         energyChange: "+1",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            if (array[index].currentHP < (array[index].maxHP - (array[index].baseHeal + 1))) {
-              newState.opponentMonster[index].currentHP += array[index].baseHeal;
-              newState.enemyFightHealTotal += array[index].baseHeal;
-            } else {
-              newState.enemyFightHealTotal += (newState.opponentMonster[index].maxHP - newState.opponentMonster[index].currentHP)
-              newState.opponentMonster[index].currentHP = newState.opponentMonster[index].maxHP;
-            };
-            newState.opponentMonster[index].encounterEnergy += 1;
-          })
-          return toChangeState;
+        action: (stateObj, index, array) => {
+          stateObj = healOpponent(stateObj, array[index].baseHeal, index, 1)
+          return stateObj;
         }
       },
       {
@@ -595,10 +426,10 @@ let opponentMonsters = {
         type: "Air",
         XPGain: opponentXPGain,
         Level: 1,
-        maxHP: opponentMaxHP*6,
+        maxHP: opponentMaxHP*10,
         encounterEnergy: 0,
         opponentMoveIndex: false,
-        currentHP: opponentMaxHP*6,
+        currentHP: opponentMaxHP*10,
         strength: 0,
         dex: 0,
         drown: 0,
@@ -618,22 +449,10 @@ let opponentMonsters = {
             },
             minReq: 0,
             energyChange: "+1",
-            action: (state, index, array) => {
-              let toChangeState = immer.produce(state, (newState) => {
-                if (array[index].currentHP < (array[index].maxHP - (array[index].baseHeal + 1))) {
-                  newState.opponentMonster[index].currentHP += array[index].baseHeal;
-                  newState.enemyFightHealTotal += array[index].baseHeal;
-                } else {
-                  newState.enemyFightHealTotal += (newState.opponentMonster[index].maxHP - newState.opponentMonster[index].currentHP)
-                  newState.opponentMonster[index].currentHP = newState.opponentMonster[index].maxHP;
-                };
-                newState.opponentMonster[index].encounterEnergy += 1;
-              })
-              return toChangeState;
+            action: (stateObj, index, array) => {
+              stateObj = healOpponent(stateObj, array[index].baseHeal, index, 1)
+              return stateObj;
             }
-          },
-          {
-            name: false,
           },
           {
             name: false,
@@ -672,7 +491,7 @@ let opponentMonsters = {
     baseBlock: 0,
     baseDamage: opponentBaseDamage,
     baseScale: 0,
-    baseHeal: 0,
+    baseHeal: opponentBaseHeal,
     avatar: "img/earthpsycho.png",
     moves: [
       {
@@ -680,14 +499,14 @@ let opponentMonsters = {
         cost: "0",
         text: (state, index, array) => {
           //maybe scale health restore for a later fight???
-          return `Deal ${array[index].baseDamage + 3 + array[index].strength} damage to ALL enemies`
+          return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage to ALL creatures. Heal ${(array[index].baseHeal)} health`
         },
         minReq: 0,
         energyChange: "+4",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage+3, index, 4);
+          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage*2, index, 4);
           stateObj = immer.produce(stateObj, (newState) => {
-            let calculatedDamage = array[index].baseDamage + array[index].strength;
+            let calculatedDamage = (array[index].baseDamage*2) + array[index].strength;
             newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
               if (monsterObj.encounterBlock == 0) {
                 monsterObj.currentHP -= calculatedDamage;
@@ -699,11 +518,9 @@ let opponentMonsters = {
               }
             })
           })
+          stateObj = healOpponent(stateObj, array[index].baseHeal, index, 4)
           return stateObj;
         }
-      },
-      {
-        name: false,
       },
       {
         name: false,
@@ -718,7 +535,7 @@ let opponentMonsters = {
         name: "Unleash Growth",
         cost: "4",
         text: (state, index, array) => {
-          return `Deal damage equal to the total amount healed this fight (${state.enemyFightHealTotal})`
+          return `Deal damage equal to the total amount healed this fight (${state.enemyFightHealTotal + array[index].strength})`
         },
         minReq: 4,
         energyChange: "-4",
