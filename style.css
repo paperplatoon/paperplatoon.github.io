@@ -258,12 +258,6 @@
 }
 
 
-
-.healer-div {
-  display: flex;
-  flex-direction: column;
-}
-
 .remove-div button, #level-up-div button {
   width: 80vw;
 }
@@ -843,6 +837,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   color: white;
 }
 
+
 .rare-card {
   background: linear-gradient(45deg, rgb(246, 255, 145),rgb(246, 232, 83), rgb(224, 222, 121),rgb(189, 193, 5), rgb(246, 255, 145));
   border: 3px double yellow;
@@ -1026,6 +1021,51 @@ button:hover {
 	clip-path: polygon(50% 5%, 61% 40%, 98% 40%, 68% 62%, 79% 96%, 50% 75%, 21% 96%, 32% 62%, 2% 40%, 39% 40%);
 	background: #db1010;
 }
+
+.cross {
+  width: 8vmin;
+  height: 8vmin;
+  position: relative;
+}
+
+.cross:before, .cross:after {
+ content: "";
+ position: absolute;
+ background: rgb(7, 220, 0);
+}
+
+.cross:before {
+ left: 50%;
+ width: 30%;
+ margin-left: -15%;
+ height: 100%;
+}
+
+.cross:after {
+  top: 50%;
+  left: 0%;
+  height: 30%;
+  margin-top: -15%;
+  width: 100%;
+}
+
+.minus-sign {
+  width: 8vmin;
+  height: 8vmin;
+  position: relative;
+}
+
+.minus-sign:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  height: 30%;
+  margin-top: -15%;
+  width: 100%;
+  background: rgb(220, 40, 0);
+ }
+
 
 .Shop {
   /*background: linear-gradient( rgba(218, 218, 218, 0.758), rgba(214, 214, 58, 0.85)); */
