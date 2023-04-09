@@ -95,6 +95,12 @@ let easyEncountersMjs = [
       boss: true,
       XP: 70
     },
+    {
+      opponents: [bossMonsters.offbalanceboss],
+      goldReward: 125,
+      boss: true,
+      XP: 70
+    },
 
     {
       opponents: [opponentMonsters.healgymboss, opponentMonsters.healgymguard2],

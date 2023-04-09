@@ -79,10 +79,10 @@ let bossMonsters = {
       type: "Air",
       Level: 1,
       XPGain: opponentXPGain*3,
-      maxHP: opponentMaxHP*8,
+      maxHP: opponentMaxHP*11,
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      currentHP: opponentMaxHP*8,
+      currentHP: opponentMaxHP*11,
       strength: 0,
       dex: 0,
       drown: 0,
@@ -147,4 +147,80 @@ let bossMonsters = {
 
       ]
     },
+
+    offbalanceboss: {
+        name: "Angry Boss",
+        type: "Air",
+        Level: 1,
+        XPGain: opponentXPGain*3,
+        maxHP: opponentMaxHP*12,
+        encounterEnergy: 0,
+        opponentMoveIndex: false,
+        currentHP: opponentMaxHP*12,
+        strength: 0,
+        dex: 0,
+        drown: 0,
+        hunted: 0,
+        poison: 0,
+        offbalance: true,
+        baseDamage: opponentBaseDamage,
+        baseScale: opponentBaseScale,
+        baseBlock: opponentBaseBlock,
+        baseHeal: 0,
+        avatar: "img/icetorch.png",
+        powers: [{
+          name: "Power: Off-balance",
+          text:  `Whenever you fully block an attack from this monster, reflect it`
+        }],
+        moves: [
+          {
+            name: "Lunging Punch",
+            cost: "0",
+            energyChange: "+1",
+            text: (state, index, array) => {
+              return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage`
+            },
+  
+            minReq: 0,
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage*2), index, 1)
+              return stateObj;
+            }
+          },
+          {
+            name: false,
+          },
+          {
+            name: "Lunging Kick",
+            cost: "2",
+            energyChange: "+2",
+            text: (state, index, array) => {
+              return `Deal ${(array[index].baseDamage*3) + array[index].strength} damage`
+            },
+  
+            minReq: 2,
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage*2), index, 2)
+              return stateObj;
+            }
+          },
+          {
+            name: false,
+          },
+          {
+            name: "Spinning Jump Kick",
+            cost: "4",
+            text: (state, index, array) => {
+              return `Deal ${(Math.floor(array[index].baseDamage*4)) + array[index].strength} damage`
+            },
+            minReq: 4,
+            energyChange: "-4",
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage * 4), index, energyChange=-4);
+              return stateObj;
+            }
+          }
+  
+        ]
+      },
 }

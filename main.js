@@ -244,7 +244,7 @@ function fillMapWithArray(stateObj) {
   let townMonsterEncounters = []
 
   if (stateObj.playerMonster.name === "Testing Mode") {
-    townMonsterEncounters = [easyEncountersMjs[0], easyEncountersMjs[0], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3] ]
+    townMonsterEncounters = [bossEncountersMjs[2], easyEncountersMjs[0], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3] ]
   } else {
     townMonsterEncounters = [easyEncounters[0], easyEncounters[1], mediumEncounters[0], mediumEncounters[1], hardEncounters[2], hardEncounters[3]];
   }
@@ -562,8 +562,10 @@ async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energy
   await pause(200);
   document.querySelectorAll("#opponents .avatar")[monsterIndex].classList.remove("opponent-windup");
   document.querySelectorAll("#playerStats .avatar")[0].classList.remove("player-impact");
+
+  let reflectDamage = 0;
   
-  let toChangeState = immer.produce(stateObj, (newState) => {
+  stateObj = immer.produce(stateObj, (newState) => {
     calculatedDamage = ((damageNumber + newState.opponentMonster[monsterIndex].strength) * attackNumber);
     if (calculatedDamage > 0) {
       if (newState.playerMonster.encounterBlock == 0) {
@@ -572,6 +574,9 @@ async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energy
       } else if (newState.playerMonster.encounterBlock >= calculatedDamage) {
         newState.playerMonster.encounterBlock -= calculatedDamage;
         console.log("you blocked " + calculatedDamage + " damage")
+        if (newState.opponentMonster[monsterIndex].offbalance) {
+          reflectDamage = calculatedDamage;
+        }
       } else {
         console.log("you blocked " + newState.playerMonster.encounterBlock + " damage and took " + (calculatedDamage - newState.playerMonster.encounterBlock) + " damage" )
         newState.playerMonster.currentHP -= (calculatedDamage - newState.playerMonster.encounterBlock);
@@ -582,7 +587,11 @@ async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energy
       }
     }
   });
-  return toChangeState;
+  if (reflectDamage > 0) {
+    console.log("reflected")
+    stateObj = await dealOpponentDamage(stateObj, reflectDamage, 1, false, false, monsterIndex)
+  }
+  return stateObj;
 }
 
 async function opponentDeathAnimation(toDieIndexArray) {
@@ -1589,7 +1598,7 @@ function setUpEncounter(stateObj, isBoss=false) {
     newState.fightEnergyDrainTotal = 0;
     newState.gainLifePerCard = 0;
     newState.blockPerTurn = 0;
-    newState.blockKeep = 0;
+    newState.blockKeep = false;
     newState.comboPerTurn = 0;
     
     newState.cardsPerTurn = 0;
