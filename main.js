@@ -1845,7 +1845,7 @@ function topRowDiv(stateObj, divName) {
   let statusText = document.createElement("p");
 
   if (stateObj.status === Status.InTown || stateObj.status === Status.InEncounter) {
-    statusText.textContent = `Gym: ${stateObj.gymCount}   Fight: ${stateObj.gymFightCount}/3`
+    statusText.textContent = "In Combat"
   } else {
     statusText.textContent = stateObj.status;
   }
