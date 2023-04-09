@@ -57,15 +57,17 @@ const Status = {
   DuplicatingCardSevenTimes: "Choose a card. Add 7 copies to your deck",
   DuplicateChoice: "Choose one",
   DoublingAttack: "Choose a card. +50% base damage",
-  DoubleUpgradeEvent: "Choose a card. Upgrade it twice",
+  DoubleUpgradeEvent: "Upgrade a card twice",
   AttackChoiceEvent: "Choose one",
-  LevelUpEvent: "Choose a trait to permanently level up",
+  LevelUpEvent: "Permanently increase one stat",
   ChooseRareEvent: "Choose a rare card. Add it to your deck",
-  PaidRemovalEvent: "Choose a card. Sell it for 50 gold (100 gold for rare cards)",
+  PaidRemovalEvent: "Pawn Shop. Pays 50 gold for a card (100 for a rare)",
   AssassinTrainingEvent: "Remove all attacks from your deck. Add a Fatal Toxin (applies 5 poison)",
   ShowCardPool: "showing card pool",
-  HealersShop: "Restore your health for a price",
+  HealersShop: "Restore  health for a price",
   cardShop: "Buy cards to add to your deck",
+  WealthyPacifist: "Willing to pay for peace",
+  PaidAttackRemoval: "Pays 50 gold to remove an attack (100 for a rare)",
   DeathScreen: "You stupid, stupid asshole! You got your Neo-Neopet killed! Refresh the page to try again",
   VictoryScreen: "You and your little Neo-Neopet have beaten all the content available in this demo! Check back soon!"
 };
@@ -227,6 +229,13 @@ const eventsArray = [
     divText: "Choose One",
     newStatus: Status.HealEndOfFightChoice,
     eventID: 13
+  },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.PNG",
+    divText: "Choose One",
+    newStatus: Status.WealthyPacifist,
+    eventID: 14
   },
 ];
 
@@ -392,7 +401,7 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
         let shuffledEventsArray = fisherYatesShuffle(eventsArray);
         stateObj = immer.produce(stateObj, (newState) => {
           if (stateObj.playerMonster.name === "Testing Mode") {
-            newState.status = eventsArray[13].newStatus
+            newState.status = eventsArray[14].newStatus
           } else {
           newState.status = shuffledEventsArray[1].newStatus;
         }
@@ -997,7 +1006,7 @@ function assassinTraining(stateObj) {
   return stateObj;
 }
 
-function paidRemoval(stateObj, index) {
+async function paidRemoval(stateObj, index) {
   console.log("removed " + stateObj.playerDeck[index].name + " from deck")
   stateObj = immer.produce(stateObj, (newState) => {
     let goldReward = (stateObj.playerDeck[index].rare === true) ? 100 : 50;
@@ -1006,9 +1015,10 @@ function paidRemoval(stateObj, index) {
     newState.status = Status.OverworldMap
     newState.townMapSquares[newState.playerHere] = "completed"
   })
-  changeState(stateObj);
+  await changeState(stateObj);
   return stateObj;
 }
+
 
 function increaseStrengthEvent(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
@@ -1044,12 +1054,24 @@ async function loseMaxHPHeal(stateObj, index) {
   return stateObj;
 }
 
-
-
 async function increaseMaxHP(stateObj, statusToChange, valueToPass) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.eventUsed = true;
     newState.playerMonster.maxHP += valueToPass;
+    newState.status = statusToChange
+    newState.townMapSquares[newState.playerHere] = "completed"
+  })
+  await changeState(stateObj);
+  return stateObj;
+}
+
+async function wealthyPacifistWithdrawEvent(stateObj, statusToChange) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.eventUsed = true;
+    newState.gold += 300;
+    for (i = 0; i < 3; i++) {
+      newState.playerDeck.push(fireCardPool.withdraw)
+    }
     newState.status = statusToChange
     newState.townMapSquares[newState.playerHere] = "completed"
   })
@@ -1924,6 +1946,20 @@ function renderPaidRemoval(stateObj) {
   //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
+
+function renderPaidAttackRemoval(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+  stateObj.playerDeck.forEach(function (cardObj, index) {
+    if (cardObj.cardType === 'attack') {
+      renderCard(stateObj, stateObj.playerDeck, index, "remove-div", paidRemoval, goldCost="paidremoval")
+    }
+  });
+  skipToTownButton(stateObj, "I choose not to remove any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
+};
+
 function renderAssassinTraining(stateObj) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
@@ -2064,6 +2100,19 @@ async function renderLevelUp(stateObj) {
   let DexDiv = await renderTownDiv(stateObj, "increaseDex", "img/forge.PNG", "+2 permanent Dexterity", true, increaseDexEvent, Status.InTown, altText=false);
   
   document.getElementById("level-up-div").append(strengthDiv, DexDiv);
+  skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
+};
+
+async function renderWealthyPacifist(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app", "level-up-div");
+
+  let withdrawDiv = await renderTownDiv(stateObj, "addWithdraws", "img/goldsack.PNG", "Add 3 withdraws to your deck. Gain 300 gold", true, wealthyPacifistWithdrawEvent, Status.OverworldMap, altText=false);
+  let removeDiv = await renderTownDiv(stateObj, "removeAttack", "img/forge.PNG", "Remove an attack. Gain 50 gold", true, changeStatus, Status.PaidAttackRemoval, altText=false);
+  
+  document.getElementById("level-up-div").append(withdrawDiv, removeDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
   //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
@@ -2702,6 +2751,12 @@ async function renderScreen(stateObj) {
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.PaidRemovalEvent) {
     renderPaidRemoval(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.WealthyPacifist) {
+    renderWealthyPacifist(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.PaidAttackRemoval) {
+    renderPaidAttackRemoval(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.AssassinTrainingEvent) {
     renderAssassinTraining(stateObj);

@@ -200,7 +200,7 @@ let bossMonsters = {
   
             minReq: 2,
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage*2), index, 2)
+              stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage*3), index, 2)
               return stateObj;
             }
           },
