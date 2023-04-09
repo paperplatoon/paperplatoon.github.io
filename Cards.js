@@ -139,7 +139,7 @@ let fireCardPool = {
       minReq: 0,
       upgrades: 0,
       cost: "X",
-      baseDamage: 7,
+      baseDamage: 6,
       baseHits: 0,
       cardType: "attack",
       elementType: "fire",
@@ -191,7 +191,7 @@ let fireCardPool = {
       cost:  (state, index, array) => {
         return array[index].baseCost;
       },
-      baseBlock: 12,
+      baseBlock: 11,
       cardType: "ability",
       elementType: "fire",
       action: (stateObj, index, array) => {
@@ -218,7 +218,7 @@ let fireCardPool = {
       cost:  (state, index, array) => {
         return array[index].baseCost;
       },
-      baseBlock: 20,
+      baseBlock: 16,
       cardType: "ability",
       elementType: "fire",
       action: async (stateObj, index, array) => {
@@ -284,7 +284,7 @@ let fireCardPool = {
       cardID: 11,
       name: "Cursed Ritual",
       text: (state, index, array) => { 
-        return `Gift opponent ${array[index].energyGift} energy. Gain ${3 + array[index].upgrades} strength` 
+        return `Gift opponent ${array[index].energyGift} energy. Gain ${2 + array[index].upgrades} strength` 
       },
       minReq: (state, index, array) => {
         return array[index].baseCost;
@@ -300,8 +300,8 @@ let fireCardPool = {
       elementType: "fire",
       action: (stateObj, index, array) => {
         stateObj = immer.produce(stateObj, (newState) => {
-         newState.playerMonster.fightStrength += 3 + array[index].upgrades;
-          newState.playerMonster.strength += 3 + array[index].upgrades;
+         newState.playerMonster.fightStrength += 2 + array[index].upgrades;
+          newState.playerMonster.strength += 2 + array[index].upgrades;
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
         })
         stateObj = energyGift(stateObj, array[index].energyGift)
@@ -348,7 +348,7 @@ let fireCardPool = {
         return array[index].baseCost;
       },
       energyGift: 2,
-      baseBlock: 12,
+      baseBlock: 11,
       cardType: "ability",
       elementType: "fire",
       action: (stateObj, index, array) => {
@@ -361,7 +361,7 @@ let fireCardPool = {
     wallofichor: {
       cardID: 14,
       name: "Wall of Ichor",
-      text: (state, index, array) => { return `Gift opponent ${array[index].energyGift} energy. Gain ${array[index].baseBlock + (array[index].upgrades*7)} block` },
+      text: (state, index, array) => { return `Gift opponent ${array[index].energyGift} energy. Gain ${array[index].baseBlock + (array[index].upgrades*6)} block` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -371,11 +371,11 @@ let fireCardPool = {
         return array[index].baseCost;
       },
       energyGift: 3,
-      baseBlock: 22,
+      baseBlock: 20,
       cardType: "ability",
       elementType: "fire",
       action: (stateObj, index, array) => {
-        stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*7), array[index].baseCost);
+        stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*6), array[index].baseCost);
         stateObj = energyGift(stateObj, array[index].energyGift)
         return stateObj;
       }
@@ -394,7 +394,7 @@ let fireCardPool = {
         return array[index].baseCost;
       },
       energyDestroy: 2,
-      baseBlock: 13,
+      baseBlock: 12,
       cardType: "ability",
       elementType: "fire",
       action: async (stateObj, index, array) => {
@@ -423,7 +423,7 @@ let fireCardPool = {
       cost:  (state, index, array) => {
         return array[index].baseCost;
       },
-      baseDamage: 6,
+      baseDamage: 5,
       baseHits: 1,
       cardType: "attack",
       elementType: "fire",
@@ -521,7 +521,7 @@ let fireCardPool = {
       cardType: "ability",
       elementType: "fire",
       energyDrain: 1,
-      baseBlock: 8,
+      baseBlock: 7,
       upgrades: 0,
       action: async (stateObj, index, array) => {
         stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*3), array[index].baseCost)
@@ -599,7 +599,7 @@ let fireCardPool = {
         return array[index].baseCost;
       },
       upgrades: 0,
-      baseDamage: 21,
+      baseDamage: 18,
       energyGift: 2,
       baseHits: 1,
       cardType: "attack",
@@ -621,8 +621,6 @@ let fireCardPool = {
         } else {
           return `Deal ${totalDamage} damage for each card played this turn`; 
         }
-
-        
       },
       minReq: (state, index, array) => {
         return array[index].baseCost;
@@ -716,7 +714,7 @@ let fireCardPool = {
         return array[index].baseCost;
       },
       upgrades: 0,
-      baseDamage: 26,
+      baseDamage: 25,
       baseHits: 1,
       energyDrain: 1,
       cardType: "attack",
@@ -866,7 +864,7 @@ let fireCardPool = {
       cardType: "ability",
       elementType: "fire",
       upgrades: 0,
-      baseBlock: 11,
+      baseBlock: 10,
       timeValue: upgradeAnimationTiming,
       action: (stateObj, index, array) => {
         stateObj = gainBlock(stateObj, (array[index].baseBlock + (array[index].upgrades*2)), array[index].baseCost )
@@ -2028,7 +2026,7 @@ let fireCardPool = {
 
     annihilation: {
       cardID: 69,
-      name: "annihilation",
+      name: "Annihilation",
       text: (state, index, array) => {
         if (array[index].baseHits===1) {
           return `Gain ${array[index].baseBlock + (array[index].upgrades*5) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*10) + state.playerMonster.strength} damage to all enemies`;
