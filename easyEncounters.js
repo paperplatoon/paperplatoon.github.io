@@ -291,4 +291,71 @@ let easyEncounters = {
       }
     ]
   },
+
+  e6: {
+    name: "Prickles E6",
+    type: "Fire",
+    XPGain: opponentXPGain,
+    Level: 1,
+    maxHP: opponentMaxHP*6,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: opponentMaxHP*6,
+    prickles: 2,
+    strength: 0,
+    dex: 0,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    baseBlock: opponentBaseBlock,
+    baseDamage: opponentBaseDamage,
+    baseScale: opponentBaseScale,
+    baseHeal: 0,
+    avatar: "img/littleturtle2.png",
+    powers: [{
+      name: "Power: Prickles",
+      text:  `Whenever you attack this enemy, take 2 damage`
+    }],
+    moves: [
+      {
+        name: "Turtle Up",
+        cost: "0",
+        text: (state, index, array) => {
+            return `Gain ${array[index].baseBlock - 1 + array[index].dex} block. Gain ${Math.floor(array[index].baseScale/3)} strength`
+        },
+        minReq: 0,
+        energyChange: "+2",
+        action: async (stateObj, index, array) => {
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.opponentMonster[index].encounterBlock += array[index].baseBlock - 1 + array[index].dex;
+            newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
+            newState.opponentMonster[index].encounterEnergy += 2;
+          })
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Shell Smack",
+        cost: "4",
+        text: (state, index, array) => {
+            return `Deal ${Math.floor(array[index].baseDamage-1) + array[index].strength} damage`
+        },
+        minReq: 4,
+        energyChange: "-4",
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage)-1, index, -4);
+          return stateObj;
+        }
+      }
+    ]
+  },
 }

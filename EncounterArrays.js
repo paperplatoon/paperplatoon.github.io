@@ -15,6 +15,10 @@ let easyEncountersMjs = [
       opponents: [easyEncounters.e4, easyEncounters.e5],
       goldReward: 15,
     },
+    {
+      opponents: [easyEncounters.e6],
+      goldReward: 15,
+    },
   ]
 
   let mediumEncountersMjs = [
@@ -37,10 +41,7 @@ let easyEncountersMjs = [
     {
       opponents: [easyEncounters.e4, easyEncounters.e5, easyEncounters.e4],
       goldReward: 25,
-    }
-  ]
-  
-  let hardEncountersMjs = [
+    },
     {
       opponents: [opponentMonsters.strengthgym1, opponentMonsters.strengthgymguard],
       goldReward: 35,
@@ -81,6 +82,7 @@ let easyEncountersMjs = [
       XP: 20
     },
   ]
+  
   
   let bossEncountersMjs = [
     {

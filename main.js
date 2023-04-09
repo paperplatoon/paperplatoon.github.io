@@ -44,7 +44,7 @@ const Status = {
   OverworldMap: "choose where to go next",
   InEncounter: "In Combat",
   WonEncounter: "won encounter",
-  RemovingCards: "cChoose a card. Remove it from your deck",
+  RemovingCards: "Choose a card to remove from your deck",
   Death: "You died",
   InTown: "In Town",
   DecreasingCost: "Choose a card. It costs 1 less",
@@ -115,6 +115,7 @@ let gameStartState = {
   townMapSquares: ["hidden", "here", "hidden", "Fight", "Fight", "Fight", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "hidden", "Town", "hidden"],
   townMonsterArray: [],
   townBossEncounter: false,
+  townBossArray: false,
   //townMapSquares: [...Array(15).keys()],
   playerHere: 1,
   townMapSet: false,
@@ -248,15 +249,14 @@ function fillMapWithArray(stateObj) {
 
   let easyEncounters = fisherYatesShuffle(easyEncountersMjs);
   let mediumEncounters = fisherYatesShuffle(mediumEncountersMjs)
-  let hardEncounters = fisherYatesShuffle(hardEncountersMjs);
-  let bossEncounters = fisherYatesShuffle(bossEncountersMjs);
   let townMonsterEncounters = []
 
   if (stateObj.playerMonster.name === "Testing Mode") {
-    townMonsterEncounters = [bossEncountersMjs[2], easyEncountersMjs[0], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3] ]
+    townMonsterEncounters = [easyEncountersMjs[4], easyEncountersMjs[0], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3] ]
   } else {
-    townMonsterEncounters = [easyEncounters[0], easyEncounters[1], mediumEncounters[0], mediumEncounters[1], hardEncounters[2], hardEncounters[3]];
+    townMonsterEncounters = [easyEncounters[0], easyEncounters[1], mediumEncounters[0], mediumEncounters[1], mediumEncounters[3], mediumEncounters[4]];
   }
+
 
   
 
@@ -277,8 +277,16 @@ function fillMapWithArray(stateObj) {
     newState.playerHere = 1;
     newState.status = Status.OverworldMap
     newState.townMonsterArray = townMonsterEncounters;
+
+    if (newState.townBossArray === false) {
+      let bossEncounters = fisherYatesShuffle(bossEncountersMjs);
+      newState.townBossArray = bossEncounters;
+      newState.townBossEncounter = newState.townBossArray[0]
+    } else {
+      newState.townBossEncounter = newState.townBossArray[newState.gymCount];
+    }
   
-     newState.townBossEncounter = bossEncounters[0];
+     
   })
    changeState(stateObj);
   return stateObj
@@ -496,7 +504,7 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
     document.querySelector("#playerStats .avatar").classList.remove("player-windup");
   }
 
-  let toChangeState = immer.produce(stateObj, (newState) => {
+  stateObj = immer.produce(stateObj, (newState) => {
     let calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
     if (calculatedDamage > 0) {
       if (all===true) {
@@ -562,7 +570,22 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
       newState.playerMonster.encounterEnergy -= energyCost
     }
   });
-  return toChangeState;
+  if (all === true) {
+    console.log("all is true")
+    for (let i = 0; i < stateObj.opponentMonster.length; i++) {
+      console.log("looping for prickles at " + i)
+      if (stateObj.opponentMonster[i].prickles) {
+        console.log("has multiple prickle")
+        stateObj = await dealPlayerDamage(stateObj, stateObj.opponentMonster[i].prickles-stateObj.opponentMonster[0].strength)
+      }
+    }
+  } else {
+    if (stateObj.opponentMonster[targetIndex].prickles) {
+      console.log("has one prickle")
+      stateObj = await dealPlayerDamage(stateObj, stateObj.opponentMonster[targetIndex].prickles-stateObj.opponentMonster[0].strength)
+    }
+  }
+  return stateObj;
 }
 
 async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energyChange=false, attackNumber = 1) {
@@ -699,7 +722,7 @@ function healPlayer(stateObj, amountToHeal, energyCost=false) {
 
 function fisherYatesShuffle(arrayObj) {
   let arrayCopy = [...arrayObj];
-  for (x = arrayCopy.length-1; x > 0; x--) { 
+  for (let x = arrayCopy.length-1; x > 0; x--) { 
     let y = Math.floor(Math.random() * (x)); 
     let temp = arrayCopy[x] 
     arrayCopy[x] = arrayCopy[y] 
@@ -1069,7 +1092,7 @@ async function wealthyPacifistWithdrawEvent(stateObj, statusToChange) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.eventUsed = true;
     newState.gold += 300;
-    for (i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++) {
       newState.playerDeck.push(fireCardPool.withdraw)
     }
     newState.status = statusToChange
