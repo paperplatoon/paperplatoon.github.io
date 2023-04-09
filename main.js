@@ -48,9 +48,11 @@ const Status = {
   Death: "You died",
   InTown: "In Town",
   DecreasingCost: "Choose a card. It costs 1 less",
+  HealEndOfFightChoice: "Gain Max HP or lose but heal after fights",
   IncreasingBlock: "Choose a card. It gets +7 block",
   IncreasingHits: "Choose a card. It hits 1 extra time",
   IncreasingAttack: "Choose an attack. It deals +5 damage",
+  HPHealChoice: "Choose a health ",
   DuplicatingCards: "Choose a card. Add a copy of it to your deck",
   DuplicatingCardSevenTimes: "Choose a card. Add 7 copies to your deck",
   DuplicateChoice: "Choose one",
@@ -85,6 +87,7 @@ let gameStartState = {
   cardsSkipped: 0,
   eventUsed: false,
   extraHeal: 0,
+  healAfterFight: 0,
   fightHealCount: 0,
   fightHealTotal: 0,
   fightEnergyGiftCount: 0,
@@ -210,6 +213,20 @@ const eventsArray = [
     divText: "Duplicate Choice",
     newStatus: Status.DuplicateChoice,
     eventID: 11
+  },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.PNG",
+    divText: "Choose One",
+    newStatus: Status.HPHealChoice,
+    eventID: 12
+  },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.PNG",
+    divText: "Choose One",
+    newStatus: Status.HealEndOfFightChoice,
+    eventID: 13
   },
 ];
 
@@ -375,7 +392,7 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
         let shuffledEventsArray = fisherYatesShuffle(eventsArray);
         stateObj = immer.produce(stateObj, (newState) => {
           if (stateObj.playerMonster.name === "Testing Mode") {
-            newState.status = eventsArray[11].newStatus
+            newState.status = eventsArray[13].newStatus
           } else {
           newState.status = shuffledEventsArray[1].newStatus;
         }
@@ -1005,10 +1022,47 @@ async function increaseDexEvent(stateObj, index) {
   return stateObj;
 }
 
-async function goldChoiceHealer(stateObj) {
+async function loseMaxHPHeal(stateObj, index) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.eventUsed = true;
-    newState.playerMonster.gold += 30;
+    newState.playerMonster.maxHP -= 10;
+    if (newState.playerMonster.currentHP > newState.playerMonster.maxHP) {newState.playerMonster.currentHP = newState.playerMonster.maxHP};
+    newState.healAfterFight += 4;
+    newState.status = Status.OverworldMap
+    newState.townMapSquares[newState.playerHere] = "completed"
+  })
+  await changeState(stateObj);
+  return stateObj;
+}
+
+
+
+async function increaseMaxHP(stateObj, statusToChange, valueToPass) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.eventUsed = true;
+    newState.playerMonster.maxHP += valueToPass;
+    newState.status = statusToChange
+    newState.townMapSquares[newState.playerHere] = "completed"
+  })
+  await changeState(stateObj);
+  return stateObj;
+}
+
+async function increaseExtraHeal(stateObj, statusToChange, valueToPass) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.eventUsed = true;
+    newState.extraHeal += valueToPass;
+    newState.status = statusToChange
+    newState.townMapSquares[newState.playerHere] = "completed"
+  })
+  await changeState(stateObj);
+  return stateObj;
+}
+
+async function increaseGold(stateObj, statusToChange=false, valueToPass) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.eventUsed = true;
+    newState.gold += valueToPass;
     newState.status = Status.OverworldMap
     newState.townMapSquares[newState.playerHere] = "completed"
   })
@@ -1331,7 +1385,7 @@ function renderFightDiv() {
 
 
 
-async function renderTownDiv(stateObj, idNameString, imgSrcString, imgTextString, triggerCondition, functionToAdd, statusToChange=false, altText=false) {
+async function renderTownDiv(stateObj, idNameString, imgSrcString, imgTextString, triggerCondition, functionToAdd, statusToChange=false, altText=false, valueToPass=false,) {
   let newTownDiv = document.createElement("Div");
   newTownDiv.setAttribute("id", idNameString)
   newTownDiv.classList.add("town-div");
@@ -1347,7 +1401,7 @@ async function renderTownDiv(stateObj, idNameString, imgSrcString, imgTextString
   if (triggerCondition===true) {
       newTownDiv.classList.add("clickable-town-div")
       newTownDiv.onclick = function () {
-        functionToAdd(stateObj, statusToChange);
+        functionToAdd(stateObj, statusToChange, valueToPass);
       }
     } else {
       newDivText.textContent = altText;
@@ -1358,7 +1412,7 @@ async function renderTownDiv(stateObj, idNameString, imgSrcString, imgTextString
 }
 
 
-function renderChoiceDiv(stateObj, classesArray, imgSrcString, divTextString, triggerCondition, functionToAdd, statusToChange=false, altText=false) {
+function renderChoiceDiv(stateObj, classesArray, imgSrcString, divTextString, triggerCondition, functionToAdd, statusToChange=false, altText=false, valueToPass=false) {
   let newTownDiv = document.createElement("Div");
   for (i=0; i < classesArray.length; i++) {
     newTownDiv.classList.add(classesArray[i]);
@@ -1377,7 +1431,7 @@ function renderChoiceDiv(stateObj, classesArray, imgSrcString, divTextString, tr
   if (triggerCondition===true) {
       newTownDiv.classList.add("playable")
       newTownDiv.onclick = function () {
-        functionToAdd(stateObj, statusToChange);
+        functionToAdd(stateObj, statusToChange, valueToPass);
       }
     } else {
       newDivText.textContent = altText;
@@ -1399,6 +1453,9 @@ function renderChoiceDiv(stateObj, classesArray, imgSrcString, divTextString, tr
 // ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ======
 
 function resetAfterFight(stateObj) {
+  if (stateObj.healAfterFight > 0) {
+    stateObj = healPlayer(stateObj, stateObj.healAfterFight);
+  }
 
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster.strength -= newState.playerMonster.tempStrength;
@@ -1983,12 +2040,10 @@ async function renderHealer(stateObj) {
   divContainer("app", "level-up-div");
 
   let healDiv = await renderTownDiv(stateObj, "healDiv", "img/potion.svg", "Heal to full", (stateObj.playerMonster.currentHP < stateObj.playerMonster.maxHP), fullHeal, Status.InTown, altText="At full health");
-  let goldDiv = await renderTownDiv(stateObj, "skipDiv", "img/goldsack.PNG", "Gain 30 gold", true, goldChoiceHealer, Status.InTown, altText=false);
+  let goldDiv = await renderTownDiv(stateObj, "skipDiv", "img/goldsack.PNG", "Gain 30 gold", true, increaseGold, Status.OverworldMap, altText=false, 30);
   document.getElementById("level-up-div").classList.add("healer-div");
   document.getElementById("level-up-div").append(healDiv, goldDiv);
   skipToTownButton(stateObj, "I want to come back later", ".remove-div", cardSkip=false, isEventUsedForSkipButton=false);
-  
- 
 };
 
 async function renderLevelUp(stateObj) {
@@ -2002,10 +2057,37 @@ async function renderLevelUp(stateObj) {
   document.getElementById("level-up-div").append(strengthDiv, DexDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
   //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
+};
+
+async function renderMaxHPHeal(stateObj) {
+  console.log("max HP heal triggerd")
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app", "level-up-div");
+
+  let maxHPDiv = await renderTownDiv(stateObj, "increaseMaxHP", "img/healer.PNG", "Gain 15 max HP", true, increaseMaxHP, Status.OverworldMap, altText=false, 15);
+  let extraHealDiv = await renderTownDiv(stateObj, "increaseExtraHeal", "img/wizardshop.PNG", "Whenever you heal, heal 3 extra damage", true, increaseExtraHeal, Status.OverworldMap, altText=false, 3);
   
+  document.getElementById("level-up-div").append(maxHPDiv, extraHealDiv);
+  skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
+};
+
+async function renderHealEndOfFightChoice(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app", "level-up-div");
+
+  let maxHPDiv = await renderTownDiv(stateObj, "increaseMaxHP", "img/healer.PNG", "Gain 15 Max HP", true, increaseMaxHP, Status.OverworldMap, altText=false, 15);
+  let loseHPDiv = await renderTownDiv(stateObj, "increaseExtraHeal", "img/wizardshop.PNG", "Lose 10 Max HP. Heal 4 after each fight", true, loseMaxHPHeal, Status.OverworldMap, altText=false);
+  
+  document.getElementById("level-up-div").append(maxHPDiv, loseHPDiv);
+  skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 async function renderDuplicateChoice(stateObj) {
+  console.log("dupe choice triggfered")
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app", "level-up-div");
@@ -2580,6 +2662,9 @@ async function renderScreen(stateObj) {
   } else if (stateObj.status == Status.DuplicatingCardSevenTimes) {
     renderDuplicateCardSevenTimes(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.HealEndOfFightChoice) {
+    renderHealEndOfFightChoice(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.DoublingAttack) {
     renderDoubleCardAttack(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
@@ -2591,6 +2676,9 @@ async function renderScreen(stateObj) {
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.LevelUpEvent) {
     renderLevelUp(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.HPHealChoice) {
+    renderMaxHPHeal(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.ChooseRareEvent) {
     renderChooseRareCard(stateObj);

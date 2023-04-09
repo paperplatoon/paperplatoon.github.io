@@ -124,7 +124,7 @@ let playerMonsters = {
       avatar: "img/playerturtle.png",
       startingDeck: [
         fireCardPool.flamedome,
-        fireCardPool.shutdown,
+        fireCardPool.simpleheal,
         fireCardPool.unwaveringdefense,
         fireCardPool.reformingshield,
         specialCardPool.testkill,

@@ -246,8 +246,7 @@ let fireCardPool = {
       cardType: "ability",
       elementType: "fire",
       action: (stateObj, index, array) => {
-        let amountToHeal = array[index].baseHeal + (array[index].upgrades * 2) + stateObj.extraHeal;
-        stateObj = healPlayer(stateObj, amountToHeal, 1)
+        stateObj = healPlayer(stateObj, array[index].baseHeal+(array[index].upgrades * 2), 1)
         return stateObj;
       }
     },
