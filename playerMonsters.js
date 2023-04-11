@@ -18,8 +18,8 @@ let playerMonsters = {
     avatar: "img/fireMonster.png",
     startingDeck: [
       //1 energy
-    fireCardPool.fireEnergy,
-    fireCardPool.fireEnergy,
+    fireCardPool.fireenergy,
+    fireCardPool.fireenergy,
     //5 block
     fireCardPool.essencedrain,
     fireCardPool.mentalblock,
@@ -124,9 +124,11 @@ let playerMonsters = {
       avatar: "img/playerturtle.png",
       startingDeck: [
         fireCardPool.flamedome,
+        fireCardPool.darkknowledge,
+        fireCardPool.darkknowledge,
+        fireCardPool.flurryfinisher,
+        fireCardPool.fortify,
         fireCardPool.kindle,
-        fireCardPool.icyfreeze,
-        starterDeck.tackle,
         specialCardPool.testkill,
         fireCardPool.setaflame
       ],

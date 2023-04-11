@@ -351,13 +351,13 @@ let opponentMonsters = {
         name: "Mega Drain",
         cost: "6",
         text: (state, index, array) => {
-          return `Deal ${(3 * array[index].baseDamage) + array[index].strength} damage. Restore ${array[index].baseHeal * 2} health`
+          return `Deal ${(3 * array[index].baseDamage) + array[index].strength} damage. Restore ${array[index].baseHeal} health`
         },
         minReq: 6,
         energyChange: "-6",
         action: async (stateObj, index, array) => {
           stateObj = await dealPlayerDamage(stateObj, (3 * array[index].baseDamage), index, -6);
-          stateObj = healOpponent(stateObj, array[index].baseHeal * 2, index)
+          stateObj = healOpponent(stateObj, array[index].baseHeal, index)
           return stateObj;
         }
       }

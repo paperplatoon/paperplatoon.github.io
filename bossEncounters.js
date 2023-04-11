@@ -29,7 +29,7 @@ let bossMonsters = {
           cost: "0",
           energyChange: "+2",
           text: (state, index, array) => {
-            return `Deal ${(array[index].baseDamage+1) + array[index].strength} damage. Gain ${Math.floor(array[index].baseScale/3)} strength`
+            return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage. Gain ${Math.floor(array[index].baseScale/3)} strength`
           },
 
           minReq: 0,
@@ -60,12 +60,12 @@ let bossMonsters = {
           name: "Meteor Shower",
           cost: "6",
           text: (state, index, array) => {
-            return `Deal ${(Math.floor(array[index].baseDamage/5)) + array[index].strength} damage 5 times.`
+            return `Deal ${(Math.floor(array[index].baseDamage/5)+1) + array[index].strength} damage 5 times.`
           },
           minReq: 6,
           energyChange: "-6",
           action: async (stateObj, index, array) => {
-            stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage/5), index, energyChange=-6, 5);
+            stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage/5)+1, index, energyChange=-6, 5);
             return stateObj;
           }
         }

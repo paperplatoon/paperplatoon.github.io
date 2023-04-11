@@ -387,18 +387,32 @@ let basicCardPool = {
         },
         upgrades: 0,
         baseCost: 1,
+        baseBlock: 4,
         cost:  (state, index, array) => {
-          return array[index].baseCost - Math.floor(array[index].upgrades/2);
+            if (array[index].upgrades < array[index].baseCost) {
+                return array[index].baseCost - array[index].upgrades;
+            } else {
+                return 0
+            }
         },
         cardType: "ability",
         elementType: "fire",
         text: (state, index, array) => {
-          return `Double your mana.`
+            if (array[index].upgrades < array[index].baseCost) {
+                return `Double your mana.`
+            } else {
+                return `Double your mana. Gain ${(array[index].baseBlock * array[index].upgrades) + array[index].dex}`
+            }
         },
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
-            newState.playerMonster.encounterEnergy -= array[index].baseCost-Math.floor(array[index].upgrades/2);
-            newState.playerMonster.encounterEnergy *= 2;
+            if (array[index].upgrades < array[index].baseCost) {
+                newState.playerMonster.encounterEnergy -= array[index].baseCost-array[index].upgrades;
+                newState.playerMonster.encounterEnergy *= 2;
+            } else {
+                newState.playerMonster.encounterEnergy *= 2;
+                newState.playerMonster.encounterBlock += (array[index].baseBlock * array[index].upgrades) + array[index].dex;
+            } 
           })
           return toChangeState;
         }
@@ -890,7 +904,7 @@ let basicCardPool = {
         baseBlock: 11,
         baseDamage: 4,
         baseHits: 1,
-        cardType: "attack",
+        cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
           stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*4), array[index].baseCost)

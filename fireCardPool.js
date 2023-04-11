@@ -495,9 +495,9 @@ let fireCards = {
         let cardDamage = array[index].baseDamage + (array[index].upgrades) + stateObj.playerMonster.strength;
         cardDamage = (stateObj.playerMonster.encounterEnergy === array[index].baseCost) ? cardDamage*2 : cardDamage; 
         if (array[index].baseHits === 1) {
-          return `Deal ${cardDamage} damage. Copies. Finisher: double damage`;
+          return `Deal ${cardDamage} damage. Copies. Finisher: double damage. Retain`;
         } else {
-          return `Combo. Deal ${cardDamage} damage ${array[index].baseHits} times. Finisher: double damage`
+          return `Combo. Deal ${cardDamage} damage ${array[index].baseHits} times. Finisher: double damage. Retain`
         }
     },
     minReq: (state, index, array) => {
@@ -552,7 +552,7 @@ let fireCards = {
       cardID: 21,
       retain: true,
       name: "Fiery Missiles",
-      text: (state, index, array) => { return `Gift ${array[index].energyGift} energy. Deal ${(array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*2))} damage ${(array[index].baseHits)} times` },
+      text: (state, index, array) => { return `Gift ${array[index].energyGift} energy. Deal ${(array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*2))} damage ${(array[index].baseHits)} times. Retain` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -756,9 +756,9 @@ let fireCards = {
       elementType: "fire",
       action: (stateObj, index, array) => {
         let cardBlock = (array[index].baseBlock + (2*array[index].upgrades));
-        cardBlock = (stateObj.playerMonster.encounterBlock >= 5) ? (cardBlock*2)+array[index].dex : cardBlock; 
+        cardBlock += (stateObj.playerMonster.encounterBlock >= 5) ? (cardBlock+stateObj.playerMonster.dex) : 0; 
 
-        stateObj = gainBlock(stateObj, cardBlock, array[index].baseCost )
+        stateObj = gainBlock(stateObj, cardBlock, array[index].baseCost)
         return stateObj;
       }
     },
@@ -767,7 +767,7 @@ let fireCards = {
       cardID: 60,
       retain: true,
       name: "Coat of Arms",
-      text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex + state.playerMonster.strength + (3*array[index].upgrades))} block. Increased by strength` },
+      text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex + state.playerMonster.strength + (3*array[index].upgrades))} block. Increased by strength. Retain` },
       minReq: (stateObj, index, array) => {
         return array[index].baseCost;
       },
@@ -886,12 +886,12 @@ let fireCards = {
           let totalEncounterUpgrades = allCardsArray.reduce(function(acc, obj) {
             return acc + obj["upgrades"];
           }, 0); 
-          return `Gain ${blockTotal} block. Gain 1 extra block for each upgrade you have (${totalEncounterUpgrades+blockTotal} total)`;
+          return `Gain ${blockTotal} block. Gain 1 extra block for each upgrade you have (${totalEncounterUpgrades+blockTotal} total). Retain`;
         } else {
           let totalEncounterUpgrades = state.playerDeck.reduce(function(acc, obj) {
             return acc + obj["upgrades"];
           }, 0); 
-          return `Gain ${blockTotal} block. Gain 1 extra block for each upgrade you have (${totalEncounterUpgrades+blockTotal} total)`;   
+          return `Gain ${blockTotal} block. Gain 1 extra block for each upgrade you have (${totalEncounterUpgrades+blockTotal} total). Retain`;   
         }
       },
       minReq: (state, index, array) => {
@@ -977,33 +977,35 @@ let fireCards = {
       cardID: 53,
       name: "Expert's Forge",
       text: (state, index, array) => {
-          return `Upgrade all cards in your deck for this combat. Remove`   
+        if (array[index].upgrades === 0 ) {
+            return `Upgrade all cards in your deck for this combat. Remove`   
+        } else {
+            return `Upgrade all cards in your deck for this combat ${1+array[index].upgrades} times. Remove`
+        }
+          
         },
       minReq: (state, index, array) => {
-        return array[index].baseCost-array[index].upgrades;
+        return array[index].baseCost+array[index].upgrades;
       },
       upgrades: 0,
       baseCost: 1,
       cost:  (state, index, array) => {
-        return array[index].baseCost-array[index].upgrades;
+        return array[index].baseCost+array[index].upgrades;
       },
       cardType: "ability",
       elementType: "fire",
       exhaust: true,
       action: (stateObj, index, array) => { 
         stateObj = immer.produce(stateObj, (newState) => {
-          newState.playerMonster.encounterEnergy -= array[index].baseCost-array[index].upgrades;
+          newState.playerMonster.encounterEnergy -= array[index].baseCost+array[index].upgrades;
           newState.encounterHand.forEach(function (cardObj) {
-            cardObj["upgrades"] +=1;
-            console.log(cardObj["upgrades"])
+            cardObj["upgrades"] +=1+array[index].upgrades;
           });
           newState.encounterDraw.forEach(function (cardObj) {
-            cardObj["upgrades"] +=1;
-            console.log(cardObj["upgrades"])
+            cardObj["upgrades"] +=1+array[index].upgrades;
           });
           newState.encounterDiscard.forEach(function (cardObj) {
-            cardObj["upgrades"] +=1;
-            console.log(cardObj["upgrades"])
+            cardObj["upgrades"] +=1+array[index].upgrades;
           });
         })
         return stateObj;

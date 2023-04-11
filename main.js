@@ -1697,7 +1697,7 @@ function shuffleDiscardIntoDeck(stateObj) {
 function drawACard(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     const handLength = newState.encounterHand.length;
-    if (handLength > 7 ) {
+    if (handLength > 8 ) {
       console.log("hand is full");
       return newState;
     }
@@ -1720,7 +1720,7 @@ function drawACard(stateObj) {
 function returnCard(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     const handLength = newState.encounterHand.length;
-    if (handLength > 7 ) {
+    if (handLength > 8 ) {
       console.log("hand is full");
       return newState;
     }
@@ -2886,7 +2886,8 @@ async function discardHand(stateObj) {
   indicesToRemove.reverse()
    stateObj = immer.produce(stateObj, (newState) => {
     indicesToRemove.forEach(function(indice, index) {
-      let cardToRemove = newState.encounterHand.splice(indice, 1);
+      let cardToRemove = newState.encounterHand.splice(indice, 1)[0];
+      console.log("removing card at index " + indice + " with name " + cardToRemove.name)
       newState.encounterDiscard.push(cardToRemove);
     })
 
@@ -2896,6 +2897,14 @@ async function discardHand(stateObj) {
   });
   return stateObj;
 }
+
+// async function discardHand(stateObj) {
+//    stateObj = immer.produce(stateObj, (newState) => {
+//     newState.encounterDiscard = newState.encounterDiscard.concat(newState.encounterHand)
+//     newState.encounterHand = []
+//   });
+//   return stateObj;
+// }
 
 
 ////ONE TURN
