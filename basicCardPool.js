@@ -559,11 +559,16 @@ let basicCardPool = {
         name: "Redirect",
         text: (state, index, array) => {
           if (state.status === Status.InEncounter) {
-            return `Deal ${array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength} damage. +${array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength} for each energy destroyed this combat (${state.fightEnergyDrainTotal + array[index].baseHits} total)`;
+            let attackValue = array[index].baseDamage + (array[index].upgrades*3) + state.playerMonster.strength;
+            let energyChange = state.fightEnergyDrainTotal + state.fightEnergyGiftTotal;
+            if (array[index].baseHits === 1) {
+                return `Deal ${attackValue} damage. Deal 1 more for each energy destroyed or gifted (${attackValue+energyChange} total)`;
+            } else {
+                return `Deal ${attackValue} damage. Deal 1 more for each energy destroyed or gifted (${attackValue+energyChange} total) ${array[index].baseHits} times`;
+            }
           } else {
-            return `Deal ${array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength} damage. +${array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength} for each energy destroyed this combat`;
+            return `Deal ${array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength} damage. Deal 1 more for each energy destroyed or gifted`;
           }
-            
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -578,7 +583,8 @@ let basicCardPool = {
         cardType: "attack",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          stateObj = await dealOpponentDamage(stateObj, (array[index].baseDamage + (array[index].upgrades*2)), (state.fightEnergyDrainTotal + array[index].baseHits), array[index].baseCost );
+            let damageTotal = array[index].baseDamage + (array[index].upgrades*3) + stateObj.fightEnergyDrainTotal + stateObj.fightEnergyGiftTotal
+          stateObj = await dealOpponentDamage(stateObj, damageTotal, array[index].baseHits, array[index].baseCost);
           return stateObj;
         }
       },
@@ -858,6 +864,37 @@ let basicCardPool = {
             newState.playerMonster.encounterEnergy -= array[index].baseCost;
             newState.blockPerTurn += array[index].baseBlock + array[index].upgrades;
           })
+          return stateObj;
+        }
+      },
+
+      flamedome: {
+        cardID: 68,
+        name: "Flame Dome",
+        text: (state, index, array) => {
+          if (array[index].baseHits===1) {
+            return `Gain ${array[index].baseBlock + (array[index].upgrades*3) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength} damage to all enemies`;
+          } else {
+            return `Gain ${array[index].baseBlock + (array[index].upgrades*3) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength} damage to all enemies ${array[index].baseHits} times`;
+          }
+            
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseCost: 2,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseBlock: 11,
+        baseDamage: 4,
+        baseHits: 1,
+        cardType: "attack",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {
+          stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*4), array[index].baseCost)
+          stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*3), array[index].baseHits, energyCost=false, all=true)
           return stateObj;
         }
       },

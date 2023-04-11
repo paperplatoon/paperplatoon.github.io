@@ -1,4 +1,3 @@
-
 let bossMonsters = {
   deflateboss: {
       name: "Deflate Boss",
@@ -220,7 +219,6 @@ let bossMonsters = {
               return stateObj;
             }
           }
-  
         ]
       },
 }

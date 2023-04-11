@@ -2881,11 +2881,20 @@ async function playOpponentMove(stateObj) {
 }
 
 async function discardHand(stateObj) {
-  let toChangeState = immer.produce(stateObj, (newState) => {
-    newState.encounterDiscard = newState.encounterDiscard.concat(newState.encounterHand);
-    newState.encounterHand = [];
+  const indicesToRemove = stateObj.encounterHand.map((obj, index) => obj.hasOwnProperty('retain') ? undefined : index)
+                              .filter(index => index !== undefined);
+  indicesToRemove.reverse()
+   stateObj = immer.produce(stateObj, (newState) => {
+    indicesToRemove.forEach(function(indice, index) {
+      let cardToRemove = newState.encounterHand.splice(indice, 1);
+      newState.encounterDiscard.push(cardToRemove);
+    })
+
+    newState.encounterHand.forEach(function(cardObj, index) {
+      cardObj.upgrades +=1
+    })
   });
-  return toChangeState;
+  return stateObj;
 }
 
 
