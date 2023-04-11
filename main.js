@@ -1727,7 +1727,7 @@ function returnCard(stateObj) {
     // if (newState.encounterDiscard.length === 0) {
     //   return newState;
     // }
-    let topCard = newState.encounterDiscard.shift();
+    let topCard = newState.encounterDiscard.pop();
     if (!topCard) {
       return newState;
     }

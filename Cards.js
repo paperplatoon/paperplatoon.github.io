@@ -282,6 +282,34 @@ let fireCardPool = {
       }
     },
 
+    doubleclaws: {
+      cardID: 29,
+      name: "Double Claws",
+      text: (state, index, array) => { 
+            return `Deal ${array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*2)} damage ${array[index].baseHits} times. Return 2 cards`
+        },
+      minReq: (state, index, array) => {
+        return array[index].baseCost;
+      },
+      baseCost: 1,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      upgrades: 0,
+      baseDamage: 2,
+      baseHits: 2,
+      timeValue: upgradeAnimationTiming,
+      cardType: "attack",
+      elementType: "fire",
+      action: async (stateObj, index, array) => {    
+        stateObj = await dealOpponentDamage(stateObj, (array[index].baseDamage + (2*array[index].upgrades)), array[index].baseHits, array[index].baseCost);
+        for (i = 0; i < (1+array[index].upgrades); i++) {
+          stateObj = returnCard(stateObj);
+        }
+        return stateObj;
+      }
+    },
+
     clarity: {
       rare: true,
       cardID: 34,
