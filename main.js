@@ -1717,6 +1717,26 @@ function drawACard(stateObj) {
   return stateObj;
 }
 
+function returnCard(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    const handLength = newState.encounterHand.length;
+    if (handLength > 7 ) {
+      console.log("hand is full");
+      return newState;
+    }
+    // if (newState.encounterDiscard.length === 0) {
+    //   return newState;
+    // }
+    let topCard = newState.encounterDiscard.shift();
+    if (!topCard) {
+      return newState;
+    }
+
+    newState.encounterHand.push(topCard);
+  })
+  return stateObj;
+}
+
 function drawAHand(stateObj) {
   console.log("drawing a hand");
   stateObj = immer.produce(stateObj, (newState) => {
