@@ -230,7 +230,7 @@ let basicCardPool = {
           return array[index].baseCost;
         },
         upgrades: 0,
-        baseDamage: 20,
+        baseDamage: 18,
         energyGift: 2,
         baseHits: 1,
         cardType: "attack",
@@ -638,9 +638,9 @@ let basicCardPool = {
         name: "Meditate",
         text: (state, index, array) => { 
             if (array[index].upgrades ===0) {
-                return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} damage. Return ${1+array[index].upgrades} card`
+                return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} block. Return ${1+array[index].upgrades} card`
             } else {
-                return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} damage. Return ${1+array[index].upgrades} cards`
+                return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} block. Return ${1+array[index].upgrades} cards`
             }
           },
         minReq: (state, index, array) => {
@@ -652,7 +652,7 @@ let basicCardPool = {
         },
         upgrades: 0,
         baseBlock: 5,
-        cardType: "attack",
+        cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {    
           stateObj = await gainBlock(stateObj, (array[index].baseBlock + (2*array[index].upgrades)), array[index].baseCost);
@@ -682,7 +682,7 @@ let basicCardPool = {
         elementType: "fire",
         action: async (stateObj, index, array) => {    
           for (i = 0; i < (1+array[index].upgrades); i++) {
-            stateObj = returnCard(stateObj);
+            stateObj = await returnCard(stateObj);
           }
           return stateObj;
         }

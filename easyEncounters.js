@@ -23,13 +23,13 @@ let easyEncounters = {
             name: "Power Up",
             cost: "0",
             text: (state, index, array) => {
-                return `Gain ${array[index].baseBlock - 2 + array[index].dex} block. Gain ${Math.floor(array[index].baseScale/3)} strength`
+                return `Gain ${array[index].baseBlock + array[index].dex} block. Gain ${Math.floor(array[index].baseScale/3)} strength`
             },
             minReq: 0,
             energyChange: "+2",
             action: (state, index, array) => {
               let toChangeState = immer.produce(state, (newState) => {
-                newState.opponentMonster[index].encounterBlock += array[index].baseBlock - 2 + array[index].dex;
+                newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].dex;
                 newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
                 newState.opponentMonster[index].encounterEnergy += 2;
               })

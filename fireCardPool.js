@@ -527,6 +527,7 @@ let fireCards = {
 
     buildingflame: {
         exhaust: true,
+        rare: true,
         cardID: 57,
         retain: true,
         name: "Stoke Up",
@@ -1258,7 +1259,7 @@ let fireCards = {
       cardID: "strength2",
       name: "Ritual",
       text: (state, index, array) => { 
-        return `Gain ${5 + (2*array[index].upgrades)} strength` 
+        return `Gain ${4 + (2*array[index].upgrades)} strength` 
       },
       minReq: (state, index, array) => {
         return array[index].baseCost;
@@ -1272,9 +1273,9 @@ let fireCards = {
       elementType: "fire",
       action: (stateObj, index, array) => {
         stateObj = immer.produce(stateObj, (newState) => {
-         newState.playerMonster.fightStrength += 5 + (2*array[index].upgrades);
-          newState.playerMonster.strength += 5 + (2*array[index].upgrades);
-          newState.playerMonster.encounterEnergy -= (2*array[index].upgrades);
+         newState.playerMonster.fightStrength += 4 + (array[index].upgrades);
+          newState.playerMonster.strength += 4 + (array[index].upgrades);
+          newState.playerMonster.encounterEnergy -= 2;
         })
         return stateObj;
       }

@@ -22,8 +22,8 @@ let playerMonsters = {
     fireCardPool.fireenergy,
     //5 block
     fireCardPool.essencedrain,
-    fireCardPool.meditate,
-    fireCardPool.recall,
+    starterDeck.withdraw,
+    starterDeck.withdraw,
     starterDeck.withdraw,
     starterDeck.withdraw,
     // 5 attack
@@ -32,7 +32,6 @@ let playerMonsters = {
     starterDeck.tackle,
     starterDeck.tackle,
     starterDeck.tackle,
-
     ],
   },
 
@@ -53,21 +52,21 @@ let playerMonsters = {
     turnEnergy: 3,
     avatar: "img/adorablefire.png",
     startingDeck: [
-      //1 energy
+      //2 energy + 1 recall
       fireCardPool.fireEnergy,
       fireCardPool.fireEnergy,
+      basicCardPool.recall,
       //5 block
-      fireCardPool.puffofsmoke,
+      basicCardPool.puffofsmoke,
       starterDeck.withdraw,
       starterDeck.withdraw,
       starterDeck.withdraw,
-      fireCardPool.sunlight,
-      // 5 attack
+      basicCardPool.withdraw,
+      //4 attack
       starterDeck.tackle,
-      fireCardPool.pirouettespin,
-      fireCardPool.precisionstrike,
       starterDeck.tackle,
-      fireCardPool.brandingiron,
+      basicCardPool.pirouettespin,
+      starterDeck.tackle
     ],
   },
 
@@ -96,7 +95,7 @@ let playerMonsters = {
         starterDeck.tackle,
         starterDeck.tackle,
         fireCardPool.gainstrength,
-        fireCardPool.fierymissiles,
+        fireCardPool.explode,
         //5 block
         starterDeck.withdraw,
         starterDeck.withdraw,
@@ -123,13 +122,18 @@ let playerMonsters = {
       turnEnergy: 3,
       avatar: "img/playerturtle.png",
       startingDeck: [
+        //draw
+        fireCardPool.darkknowledge,
+        basicCardPool.recall,
+        fireCardPool.expertsforge,
+        fireCardPool.expertsforge,
+        //block
         fireCardPool.flamedome,
-        fireCardPool.darkknowledge,
-        fireCardPool.darkknowledge,
-        fireCardPool.flurryfinisher,
         fireCardPool.fortify,
+        //win
         fireCards.buildingflame,
         specialCardPool.testkill,
+        //energy
         fireCardPool.setaflame
       ],
     },

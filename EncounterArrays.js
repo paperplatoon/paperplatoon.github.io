@@ -25,15 +25,6 @@ let mediumEncountersMjs = [
     XP: 20,
   },
   {
-    opponents: [easyEncounters.e4, easyEncounters.e5, easyEncounters.e4],
-    goldReward: 35,
-  },
-  {
-    opponents: [opponentMonsters.healgymguard2, opponentMonsters.healgym1],
-    goldReward: 35,
-    XP: 20
-  },
-  {
     opponents: [opponentMonsters.healgymguard2, opponentMonsters.blockgym1],
     goldReward: 35,
     XP: 20
@@ -48,16 +39,21 @@ let mediumEncountersMjs = [
     goldReward: 35,
     XP: 20
   },
-  {
-    opponents: [opponentMonsters.healgymguard2, opponentMonsters.healgym1],
-    goldReward: 35,
-    XP: 20
-  },
+
   {
     opponents: [opponentMonsters.healgymguard2, opponentMonsters.strengthgym1],
     goldReward: 35,
     XP: 20
   },
+]
+
+let hardEncounterMjs = [
+  {
+    opponents: [opponentMonsters.healgymguard2, opponentMonsters.healgym1],
+    goldReward: 35,
+    XP: 20
+  },
+
 ]
 //full list of all routes
 let routes = [
