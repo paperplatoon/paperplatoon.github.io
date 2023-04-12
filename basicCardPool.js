@@ -23,6 +23,71 @@ let basicCardPool = {
         }
       },
 
+      wellspring: {
+        retain: true,
+        cardID: 10,
+        name: "Wellspring",
+        text: (state, index, array) => { 
+            if (array[index].upgrades ===0) {
+                return `Draw ${1+array[index].upgrades} card`
+            } else {
+                return `Draw ${1+array[index].upgrades} cards`
+            }
+           
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseCost: 1,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        energyGift: 2,
+        cardType: "ability",
+        elementType: "fire",
+        action: (stateObj, index, array) => {
+          stateObj = immer.produce(state, (newState) => {      
+            newState.playerMonster.encounterEnergy -= array[index].baseCost 
+          })
+          for (let i=0; i < 1+array[index].upgrades; i++) {
+            stateObj = drawACard(stateObj);
+          }
+          return stateObj;
+        }
+      },
+
+      dampen: {
+        cardID: 8,
+        name: "Dampen",
+        text: (state, index, array) => {
+            if (array[index].upgrades ===0) {
+                return `All enemies lose ${array[index].eneryDestroy + Math.floor(array[index].upgrades/2)} energy.` 
+            } else {
+                return `All enemies lose ${array[index].eneryDestroy + Math.floor(array[index].upgrades/2)} energy. Gain ${array[index].baseBlock + (array[index].upgrades*2)} block` 
+            }
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseCost: 0,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseBlock: 4,
+        energyDestroy: 1,
+        cardType: "ability",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {
+          stateObj = await destroyEnergy(stateObj, 1 + Math.floor(array[index].upgrades/2), false, true);
+          if (array[index].upgrades > 0) {
+            stateObj = gainBlock(stateObj, array[index].baseBlock + (2*array[index].upgrades), array[index].baseCost);
+        }
+          return stateObj;
+        }
+      },
+
       sanguineshield: {
         cardID: 13,
         name: "Sanguine Shield",
@@ -447,6 +512,7 @@ let basicCardPool = {
       disablingblow: {
         cardID: 48,
         name: "Disabling Blow",
+        retain: true,
         text: (state, index, array) => { 
           if (array[index].baseHits === 1) {
             return `Deal ${array[index].baseDamage + array[index].upgrades + state.playerMonster.strength} damage. Opponent loses ${2 + array[index].upgrades} strength`;
@@ -563,6 +629,61 @@ let basicCardPool = {
         action: (stateObj, index, array) => {
           let block = array[index].baseBlock + (array[index].upgrades*4) + state.fightEnergyGiftTotal + state.fightEnergyDrainTotal;
           stateObj = gainBlock(stateObj, block, array[index].baseCost)
+          return stateObj;
+        }
+      },
+
+      meditate: {
+        cardID: 29,
+        name: "Meditate",
+        text: (state, index, array) => { 
+            if (array[index].upgrades ===0) {
+                return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} damage. Return ${1+array[index].upgrades} card`
+            } else {
+                return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} damage. Return ${1+array[index].upgrades} cards`
+            }
+          },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseCost: 1,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseBlock: 5,
+        cardType: "attack",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {    
+          stateObj = await gainBlock(stateObj, (array[index].baseBlock + (2*array[index].upgrades)), array[index].baseCost);
+          for (i = 0; i < (1+array[index].upgrades); i++) {
+            stateObj = returnCard(stateObj);
+          }
+          return stateObj;
+        }
+      },
+
+      recall: {
+        cardID: 29,
+        name: "Recall",
+        text: (state, index, array) => { 
+            if (array[index].upgrades ===0) {
+                return `Return ${1+array[index].upgrades} card`
+            } else {
+                return `Return ${1+array[index].upgrades} cards`
+            }
+          },
+        minReq: -99,
+        baseCost: 0,
+        cost:  0,
+        upgrades: 0,
+        baseBlock: 5,
+        cardType: "ability",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {    
+          for (i = 0; i < (1+array[index].upgrades); i++) {
+            stateObj = returnCard(stateObj);
+          }
           return stateObj;
         }
       },

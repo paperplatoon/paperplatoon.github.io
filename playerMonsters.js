@@ -22,8 +22,8 @@ let playerMonsters = {
     fireCardPool.fireenergy,
     //5 block
     fireCardPool.essencedrain,
-    fireCardPool.mentalblock,
-    starterDeck.withdraw,
+    fireCardPool.meditate,
+    fireCardPool.recall,
     starterDeck.withdraw,
     starterDeck.withdraw,
     // 5 attack
@@ -128,7 +128,7 @@ let playerMonsters = {
         fireCardPool.darkknowledge,
         fireCardPool.flurryfinisher,
         fireCardPool.fortify,
-        fireCardPool.kindle,
+        fireCards.buildingflame,
         specialCardPool.testkill,
         fireCardPool.setaflame
       ],

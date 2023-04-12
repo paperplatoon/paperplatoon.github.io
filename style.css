@@ -702,6 +702,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 .card p{
   font-size: 1.8vmin;
+  line-height: 1.9vmin;
   padding: 0;
   justify-content: center;
 }

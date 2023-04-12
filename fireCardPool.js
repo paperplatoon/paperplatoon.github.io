@@ -115,7 +115,7 @@ let fireCards = {
     energyconversion: {
       rare: true,
       cardID: 52,
-      name: "Energy Conversion",
+      name: "Conversion",
       text: (state, index, array) => {
         if (array[index].upgrades < 2) {
           return `Gain 1 energy for each card played this turn`;
@@ -247,7 +247,7 @@ let fireCards = {
 
     upgrade: {
       cardID: 29,
-      name: "Upgrade",
+      name: "Hone Claws",
       text: (state, index, array) => { 
         if (array[index].upgrades === 0) {
             return `Deal ${array[index].baseDamage + state.playerMonster.strength + array[index].upgrades} damage ${array[index].baseHits} times. Upgrade your top left card`
@@ -282,7 +282,7 @@ let fireCards = {
 
     doubleclaws: {
       cardID: 29,
-      name: "Double Claws",
+      name: "Backslap",
       text: (state, index, array) => { 
             return `Deal ${array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*2)} damage ${array[index].baseHits} times. Return 2 cards`
         },
@@ -410,7 +410,7 @@ let fireCards = {
       },
       upgrades: 0,
       baseHits: 1,
-      baseDamage: 35,
+      baseDamage: 40,
       cardType: "attack",
       elementType: "fire",
       action: async (stateObj, index, array) => {
@@ -489,15 +489,14 @@ let fireCards = {
       trigger:  (stateObj, index, array) => { 
         return (stateObj.playerMonster.encounterEnergy === array[index].baseCost);
       },
-      name: "Flurry Finisher",
-      retain: true,
+      name: "Flurry",
       text: (stateObj, index, array) => {
         let cardDamage = array[index].baseDamage + (array[index].upgrades) + stateObj.playerMonster.strength;
         cardDamage = (stateObj.playerMonster.encounterEnergy === array[index].baseCost) ? cardDamage*2 : cardDamage; 
         if (array[index].baseHits === 1) {
-          return `Deal ${cardDamage} damage. Copies. Finisher: double damage. Retain`;
+          return `Deal ${cardDamage} damage. Add a copy to your hand. Finisher: double damage.`;
         } else {
-          return `Combo. Deal ${cardDamage} damage ${array[index].baseHits} times. Finisher: double damage. Retain`
+          return `Combo. Deal ${cardDamage} damage ${array[index].baseHits} times. Add a copy to your hand. Finisher: double damage`
         }
     },
     minReq: (state, index, array) => {
@@ -525,6 +524,47 @@ let fireCards = {
         return stateObj;
       }
     },
+
+    buildingflame: {
+        exhaust: true,
+        cardID: 57,
+        retain: true,
+        name: "Stoke Up",
+        text: (stateObj, index, array) => {
+          let cardDamage = array[index].baseDamage + (array[index].upgrades) + stateObj.playerMonster.strength;
+          if (array[index].baseHits === 1) {
+            return `Deal ${cardDamage} damage. Permanently increase by 1. Add a copy to your hand. Retain`;
+          } else {
+            return `Combo. Deal ${cardDamage} damage ${array[index].baseHits} times. Permanently increase by 1. Add a copy to your hand. Retain`
+          }
+      },
+      minReq: (state, index, array) => {
+        return array[index].baseCost + Math.floor(array[index].upgrades/20);
+      },
+        baseCost: 1,
+        cost:  (state, index, array) => {
+          return array[index].baseCost + Math.floor(array[index].upgrades/20);
+        },
+        upgrades: 0,
+        baseDamage: 1,
+        baseHits: 1,
+        cardType: "attack",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {
+          let cardDamage = array[index].baseDamage + (array[index].upgrades)
+          stateObj = await dealOpponentDamage(stateObj, cardDamage, array[index].baseHits, array[index].baseCost + Math.floor(array[index].upgrades/20));
+      
+          let cardClone = {...array[index]};
+          cardClone.baseCost = 1+Math.floor(array[index].upgrades/20);
+          cardClone.upgrades += 1;
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.encounterHand.push(cardClone);
+            newState.playerDeck.find(card => card.name === cardClone.name).upgrades += 1;
+           
+          })
+          return stateObj;
+        }
+      },
 
     fireball: {
       cardID: 20,
@@ -701,7 +741,7 @@ let fireCards = {
 
     rareupgrade: {
       cardID: 30,
-      name: "Rare Upgrade",
+      name: "Bide",
       text: (state, index, array) => { return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} block. Upgrade your top left card ${2+array[index].upgrades} times.`},
       minReq: (state, index, array) => {
         return array[index].baseCost;
@@ -843,7 +883,7 @@ let fireCards = {
       rare: true,
       exhaust: true,
       cardID: 62,
-      name: "Religious Fervor",
+      name: "Divine Favor",
       text: (state, index, array) => { 
         if (array[index].upgrades === 0) {
           return `For the rest of combat, gain ${4+(array[index].upgrades*2)} block when you gift energy. Remove`;
@@ -878,7 +918,7 @@ let fireCards = {
       rare: true,
       retain: true,
       cardID: 46,
-      name: "Forge's Shield",
+      name: "Forged Shield",
       text: (state, index, array) => {
         let blockTotal = (array[index].baseBlock + (array[index].upgrades) + state.playerMonster.dex);
         if (state.status === Status.InEncounter) {
@@ -924,7 +964,7 @@ let fireCards = {
       rare: true,
       exhaust: true,
       cardID: 56,
-      name: "Hammer and Tongs",
+      name: "Hammer & Tongs",
       text: (state, index, array) => {
         if (array[index].upgrades < 2) {
           return `Upgrade a random card in your deck permanently. Remove`;
@@ -1014,7 +1054,7 @@ let fireCards = {
 
     refineenergy: {
       cardID: 33,
-      name: "Refine Energy",
+      name: "Refine",
       text: (state, index, array) => { return `Destroy ${array[index].energyDrain} energy. Upgrade your top left card ${2 + array[index].upgrades} times.`},
       minReq: (state, index, array) => {
         return array[index].baseCost;
@@ -1043,7 +1083,7 @@ let fireCards = {
     //heal - 3
     simpleheal: {
       cardID: 9,
-      name: "Simple Heal",
+      name: "Heal",
       text: (state, index, array) => { 
         return `Restore ${array[index].baseHeal + (array[index].upgrades * 2) + state.extraHeal} HP` 
     },
@@ -1066,7 +1106,7 @@ let fireCards = {
 
     enjoin: {
       cardID: 38,
-      name: "Enjoin",
+      name: "Shared Joy",
       text: (state, index, array) => { return `Restore ${array[index].baseHeal + array[index].upgrades + state.extraHeal} enemy HP. You restore triple the amount gained` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
@@ -1186,7 +1226,7 @@ let fireCards = {
 
     //gain strength - 5
     cursedritual: {
-      name: "Cursed Ritual",
+      name: "Cursed Pact",
       cardID: "strength1",
       text: (state, index, array) => { 
         return `Gift opponent ${array[index].energyGift} energy. Gain ${2 + array[index].upgrades} strength` 
@@ -1266,7 +1306,7 @@ let fireCards = {
     gainstrength: {
       rare: true,
       cardID: "strength4",
-      name: "Gain Strength",
+      name: "Bulk Up",
       text: (state, index, array) => {
         return `+1 permanent strength. Remove`;
       },

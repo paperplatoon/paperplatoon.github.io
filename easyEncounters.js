@@ -345,14 +345,14 @@ let easyEncounters = {
       },
       {
         name: "Shell Smack",
-        cost: "4",
+        cost: "2",
         text: (state, index, array) => {
-            return `Deal ${Math.floor(array[index].baseDamage-1) + array[index].strength} damage`
+            return `Deal ${Math.floor(array[index].baseDamage) + array[index].strength} damage`
         },
-        minReq: 4,
-        energyChange: "-4",
+        minReq: 2,
+        energyChange: "-2",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage)-1, index, -4);
+          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage), index, -2);
           return stateObj;
         }
       }

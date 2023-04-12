@@ -1,13 +1,9 @@
 //ANIMATIONS
-//need to change moveList to also render powers first
-//powers need to not be part of the move list to avoid fucking with energy logic
 //change fillMapWithArray so every act isn't just randomly shuffled 
 
 
 //turn like every single function async
-//animation when opponents gain energy
-
-
+//animation when opponents gain energy as well as gifted/destroyed
 
 
 //import clone from "https://cdn.skypack.dev/clone@2.1.2";
@@ -17,19 +13,8 @@
 //add 
 //figure out a way to do tooltips
 
-//add in a monster flag that, if true, does not set block to 0 between cards
-//add in a card that allows you to keep block between turns
-
 //MANA - css images, add to cards, add costs to moves
 //add css backgrounds to moves and cards based on what their type is?
-
-//9 total
-//Event - 2 per town
-//fight - 4 per town
-//heal shop - 1 per town
-//free heal - 1 per town
-//card shop - 1 per town
-
 
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -246,25 +231,24 @@ function fillMapWithArray(stateObj) {
   let mapFillArray = ["?", "?", "Fight", "Fight", "Fight", "Fight", "path", "path", "path", "Fight", "Shop", "Healer", "Upgrade", "Remove"];
   let shuffledMap = fisherYatesShuffle(mapFillArray);
 
-
-  let easyEncounters = fisherYatesShuffle(easyEncountersMjs);
-  let mediumEncounters = fisherYatesShuffle(mediumEncountersMjs)
   let townMonsterEncounters = []
-
   if (stateObj.playerMonster.name === "Testing Mode") {
-    townMonsterEncounters = [easyEncountersMjs[4], easyEncountersMjs[0], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3], easyEncountersMjs[3] ]
+    for (let i=0; i <6; i++) {
+      let tempArray = routes[stateObj.gymCount][i]
+      townMonsterEncounters[i] = fisherYatesShuffle(tempArray)[0]
+    }
   } else {
-    townMonsterEncounters = [easyEncounters[0], easyEncounters[1], mediumEncounters[0], mediumEncounters[1], mediumEncounters[3], mediumEncounters[4]];
+    for (let i=0; i <6; i++) {
+      let tempArray = routes[stateObj.gymCount][i]
+      townMonsterEncounters[i] = fisherYatesShuffle(tempArray)[0]
+    }
   }
-
-
-  
 
     //fill the actual map
     stateObj = immer.produce(stateObj, (newState) => {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
-      for (i=6; i < 18; i++) {
+      for (let i=6; i < 18; i++) {
           newState.townMapSquares[i] = shuffledMap[i-4];
     }
 
@@ -278,8 +262,8 @@ function fillMapWithArray(stateObj) {
     newState.status = Status.OverworldMap
     newState.townMonsterArray = townMonsterEncounters;
 
-    if (newState.townBossArray === false) {
-      let bossEncounters = fisherYatesShuffle(bossEncountersMjs);
+    if (stateObj.townBossArray === false) {
+      let bossEncounters = fisherYatesShuffle(bosses);
       newState.townBossArray = bossEncounters;
       newState.townBossEncounter = newState.townBossArray[0]
     } else {
@@ -723,7 +707,7 @@ function healPlayer(stateObj, amountToHeal, energyCost=false) {
 function fisherYatesShuffle(arrayObj) {
   let arrayCopy = [...arrayObj];
   for (let x = arrayCopy.length-1; x > 0; x--) { 
-    let y = Math.floor(Math.random() * (x)); 
+    let y = Math.floor(Math.random() * (x+1)); 
     let temp = arrayCopy[x] 
     arrayCopy[x] = arrayCopy[y] 
     arrayCopy[y] = temp 
@@ -1977,7 +1961,7 @@ function renderRemoveCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", removeCard, goldCost="remove");
-  skipToTownButton(stateObj, "I don't want to remove any of these cards from my deck", ".remove-div");
+  skipToTownButton(stateObj, "Not right now", ".remove-div");
 };
 
 function renderPaidRemoval(stateObj) {
@@ -1985,8 +1969,7 @@ function renderPaidRemoval(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", paidRemoval, goldCost="paidremoval");
-  skipToTownButton(stateObj, "I choose not to remove any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
+  skipToTownButton(stateObj, "Not right now", ".remove-div", cardSkip=false, isEventUsedForSkipButton=false);
 };
 
 
@@ -1999,9 +1982,8 @@ function renderPaidAttackRemoval(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, index, "remove-div", paidRemoval, goldCost="paidremoval")
     }
   });
-  skipToTownButton(stateObj, "I choose not to remove any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
-};
+  skipToTownButton(stateObj, "Not right now", ".remove-div", cardSkip=false, isEventUsedForSkipButton=false);
+ };
 
 function renderAssassinTraining(stateObj) {
   document.getElementById("app").innerHTML = ""
@@ -2015,8 +1997,7 @@ function renderAssassinTraining(stateObj) {
   removeAttacksButton.classList.add("heal-button");
   removeAttacksButton.textContent = `Remove all your attacks. Gain a Fatal Toxin`
   document.getElementById("remove-div").append(removeAttacksButton);
-  skipToTownButton(stateObj, "I choose not to trade my attacks for a Fatal Toxin (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
+  skipToTownButton(stateObj, "Not right now", ".remove-div", cardSkip=false, isEventUsedForSkipButton=false);
 };
 
 function renderWinLoseScreen(stateObj) {
@@ -2040,8 +2021,13 @@ function renderDuplicateCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", duplicateCard);
-  skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
+};
+
+function renderRetainCard(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", retainCard);
 };
 
 function renderDuplicateCardSevenTimes(stateObj) {
@@ -2049,8 +2035,6 @@ function renderDuplicateCardSevenTimes(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", duplicateCardSevenTimes);
-  skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 
@@ -2060,9 +2044,8 @@ function renderDoubleUpgradeCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", doubleUpgradeCard, goldCost="doubleupgrade");
-  skipToTownButton(stateObj, "I choose not to upgrade any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
-};
+  skipToTownButton(stateObj, "I don't want to upgrade any of these cards twice (+50 gold, but event disappears)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  };
 
 function renderChooseCardReward(stateObj) {
   let shuffledCardPool = fisherYatesShuffle(Object.values(stateObj.playerMonster.cardPool));
@@ -2119,8 +2102,7 @@ function renderChooseRareCard(stateObj) {
   divContainer("app");
   renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
   skipToTownButton(stateObj, "I choose not to add any of these cards to my deck (+50 gold)", ".remove-div", cardSkip=true,  isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
-};
+ };
 
 async function renderHealer(stateObj) {
   document.getElementById("app").innerHTML = ""
@@ -2144,7 +2126,6 @@ async function renderLevelUp(stateObj) {
   
   document.getElementById("level-up-div").append(strengthDiv, DexDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 async function renderWealthyPacifist(stateObj) {
@@ -2156,8 +2137,6 @@ async function renderWealthyPacifist(stateObj) {
   let removeDiv = await renderTownDiv(stateObj, "removeAttack", "img/forge.PNG", "Remove an attack. Gain 50 gold", true, changeStatus, Status.PaidAttackRemoval, altText=false);
   
   document.getElementById("level-up-div").append(withdrawDiv, removeDiv);
-  skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 async function renderMaxHPHeal(stateObj) {
@@ -2171,8 +2150,7 @@ async function renderMaxHPHeal(stateObj) {
   
   document.getElementById("level-up-div").append(maxHPDiv, extraHealDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
-};
+ };
 
 async function renderHealEndOfFightChoice(stateObj) {
   document.getElementById("app").innerHTML = ""
@@ -2184,7 +2162,6 @@ async function renderHealEndOfFightChoice(stateObj) {
   
   document.getElementById("level-up-div").append(maxHPDiv, loseHPDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 async function renderDuplicateChoice(stateObj) {
@@ -2198,7 +2175,6 @@ async function renderDuplicateChoice(stateObj) {
   
   document.getElementById("level-up-div").append(OneDuplicateDiv, sevenDuplicateDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 function renderUpgradeCard(stateObj) {
@@ -2219,7 +2195,6 @@ function renderDecreaseCardCost(stateObj) {
     }
   });
   skipToTownButton(stateObj, "I choose not to decrease the cost of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 function renderIncreaseCardBlock(stateObj) {
@@ -2232,7 +2207,6 @@ function renderIncreaseCardBlock(stateObj) {
     }
   });
   skipToTownButton(stateObj, "I choose not to increase the block of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 function renderIncreaseCardAttack(stateObj) {
@@ -2245,7 +2219,6 @@ function renderIncreaseCardAttack(stateObj) {
     }
   });
   skipToTownButton(stateObj, "I choose not to increase the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div"); 
 };
 
 async function renderAttackChoiceEvent(stateObj) {
@@ -2269,7 +2242,6 @@ async function renderDoubleCardAttack(stateObj) {
     }
   });
   skipToTownButton(stateObj, "I choose not to increase the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
-
 };
 
 function renderIncreaseBaseHit(stateObj) {
@@ -2282,7 +2254,6 @@ function renderIncreaseBaseHit(stateObj) {
     }
   });
   skipToTownButton(stateObj, "I choose not to make any of these cards hit another time (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
-  //skipToTownButton(stateObj, "I don't want to choose right now; I want to go back to town (event disappears after you beat the boss!)", ".remove-div");
 };
 
 function renderCard(stateObj, cardArray, index, divName=false, functionToAdd=false, goldCost=false) {
