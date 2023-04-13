@@ -122,7 +122,6 @@
   color: silver;
   text-align: center;
   display: flex row;
-  
 }
 
 #town, #town-top-row, .monster-choice-window {
@@ -183,6 +182,47 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  background: linear-gradient(
+    45deg,
+    #87818179 30%,
+    transparent 30%,
+    transparent 50%,
+    #87818179  50%,
+    #87818179  80%,
+    transparent 80%,
+    transparent 100%
+  );
+  background-size: 40px 40px;
+  animation: towndiv 3s linear infinite;
+}
+
+.town-div:hover {
+  background: linear-gradient(
+    45deg,
+    #dcd1d179 30%,
+    transparent 30%,
+    transparent 50%,
+    #dcd1d179 50%,
+    #dcd1d179  80%,
+    transparent 80%,
+    transparent 100%
+  );
+  background-size: 40px 40px;
+  animation: towndiv 2s linear infinite;
+  animation-direction: reverse;
+}
+
+@keyframes towndiv {
+  0% {
+    background-position: 0;
+  }
+  100% {
+    background-position: 40px;
+  }
+}
+
+.binaryChoice {
+  width: 25vw;
 }
 
 #goldText {
@@ -625,8 +665,16 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-evenly;
   align-content: start;
+}
+
+#event-text-div {
+  color: white;
+  justify-content: center;
+  text-align: center;
+  margin: 3vmin 16vw;
+
 }
 
 .card {

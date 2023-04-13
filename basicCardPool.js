@@ -62,9 +62,9 @@ let basicCardPool = {
         name: "Dampen",
         text: (state, index, array) => {
             if (array[index].upgrades ===0) {
-                return `All enemies lose ${array[index].eneryDestroy + Math.floor(array[index].upgrades/2)} energy.` 
+                return `All enemies lose ${array[index].energyDestroy + Math.floor(array[index].upgrades/2)} energy.` 
             } else {
-                return `All enemies lose ${array[index].eneryDestroy + Math.floor(array[index].upgrades/2)} energy. Gain ${array[index].baseBlock + (array[index].upgrades*2)} block` 
+                return `All enemies lose ${array[index].energyDestroy + Math.floor(array[index].upgrades/2)} energy. Gain ${array[index].baseBlock + (array[index].upgrades*2)} block` 
             }
         },
         minReq: (state, index, array) => {
@@ -1243,6 +1243,31 @@ let specialCardPool = {
       elementType: "fire",
       action: (stateObj, index, array) => {
         stateObj = gainBlock(stateObj, array[index].baseBlock+(array[index].upgrades*3), array[index].baseCost);
+        return stateObj;
+      }
+    },
+
+    recycle: {
+      cardID: 005,
+      name: "Recycle",
+      text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex) + (3*array[index].upgrades)} block. Remove all other cards in your hand.` },
+      minReq: -99,
+      upgrades: 0,
+      baseCost: 1,
+      exhaustAll: true,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      baseBlock: 7,
+      cardType: "ability",
+      elementType: "fire",
+      action: (stateObj, index, array) => {
+        stateObj = gainBlock(stateObj, array[index].baseBlock+(array[index].upgrades*3), array[index].baseCost);
+        stateObj = immer.produce(stateObj, (newState) => {
+          cardClone = {...array[index]}
+          newState.encounterDiscard.push(cardClone)
+          newState.encounterHand = [];
+        })
         return stateObj;
       }
     },
