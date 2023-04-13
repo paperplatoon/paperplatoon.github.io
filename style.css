@@ -192,8 +192,8 @@
     transparent 80%,
     transparent 100%
   );
-  background-size: 40px 40px;
-  animation: towndiv 3s linear infinite;
+  background-size: 80px 80px;
+  animation: towndiv 6s linear infinite;
 }
 
 .event-text-div {
@@ -210,7 +210,7 @@
     transparent 80%,
     transparent 100%
   );
-  background-size: 40px 40px;
+  background-size: 80px 80px;
   animation: towndiv 2s linear infinite;
   animation-direction: reverse;
 }
@@ -220,12 +220,69 @@
     background-position: 0;
   }
   100% {
-    background-position: 40px;
+    background-position: 80px;
   }
 }
 
 .binaryChoice {
   width: 25vw;
+}
+
+.binaryChoiceHeal {
+  width: 25vw;
+  background: linear-gradient(
+    45deg,
+    #a6050579 30%,
+    transparent 30%,
+    transparent 50%,
+    #a6050579 50%,
+    #a6050579  80%,
+    transparent 80%,
+    transparent 100%
+  );
+  background-size: 80px 80px;
+}
+.binaryChoiceGold {
+  width: 25vw;
+  background: linear-gradient(
+    45deg,
+    #cac00979 30%,
+    transparent 30%,
+    transparent 50%,
+    #cac00979  50%,
+    #cac00979   80%,
+    transparent 80%,
+    transparent 100%
+  );
+  background-size: 80px 80px;
+}
+.binaryChoiceAttack {
+  width: 25vw;
+  background: linear-gradient(
+    45deg,
+    #fa1b1bad 30%,
+    transparent 30%,
+    transparent 50%,
+    #fa1b1bad 50%,
+    #fa1b1bad 80%,
+    transparent 80%,
+    transparent 100%
+  );
+  background-size: 80px 80px;
+}
+.binaryChoiceDefend {
+  width: 25vw;
+  background: linear-gradient(
+    45deg,
+    #142ad4b5 30%,
+    transparent 30%,
+    transparent 50%,
+    #142ad4b5 50%,
+    #142ad4b5 80%,
+    transparent 80%,
+    transparent 100%
+  );
+  background-size: 80px 80px;
 }
 
 #goldText {
@@ -853,6 +910,12 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   line-height: 3vmin;
   display: inline-block;
   text-align: center;
+}
+
+.poison-text-span {
+  display: block;
+  transform: rotate(-45deg);
+  font-size: 2.5vmin;
 }
 
 .hand-card-cost {

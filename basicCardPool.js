@@ -1298,6 +1298,31 @@ let specialCardPool = {
         return stateObj;
       }
     },
+
+    testingtoxin: {
+      rare: true,
+      cardID: 007,
+      name: "Testing Toxin",
+      text: (state, index, array) => { return `Apply ${array[index].basePoison + (array[index].upgrades*2)} poison to the enemy.`},
+      minReq: (stateObj, index, array) => {
+        return array[index].baseCost;
+      },
+      upgrades: 0,
+      baseCost: 3,
+      cost:  (stateObj, index, array) => {
+        return array[index].baseCost;
+      },
+      basePoison: 5,
+      cardType: "ability",
+      elementType: "special",
+      action: (stateObj, index, array) => {
+        stateObj = immer.produce(stateObj, (newState) => {
+          newState.opponentMonster[newState.targetedMonster].poison += array[index].basePoison+(array[index].upgrades*2);
+          newState.playerMonster.encounterEnergy -= array[index].baseCost;
+        })
+        return stateObj;
+      }
+    },
   
   }
     
