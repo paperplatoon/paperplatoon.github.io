@@ -245,7 +245,7 @@ let fireCards = {
       }
     },
 
-    upgrade: {
+    honeclaws: {
       cardID: 29,
       name: "Hone Claws",
       text: (state, index, array) => { 
@@ -441,9 +441,9 @@ let fireCards = {
       }
     },
 
-    siphon: {
+    overcharge: {
       cardID: 18,
-      name: "Siphon",
+      name: "Overcharge",
       text: (stateObj, index, array) => {
         if (array[index].baseHits === 0) {
           return `Destroy ${(array[index].energyDrain + array[index].upgrades)} energy. Deal ${array[index].baseDamage} for each energy destroyed`
@@ -1065,9 +1065,9 @@ let fireCards = {
       }
     },
 
-    refineenergy: {
+    siphon: {
       cardID: 33,
-      name: "Refine",
+      name: "Siphon",
       text: (state, index, array) => { return `Destroy ${array[index].energyDrain} energy. Upgrade your top left card ${2 + array[index].upgrades} times.`},
       minReq: (state, index, array) => {
         return array[index].baseCost;

@@ -19,7 +19,7 @@ let fireCardPool = {
     brandingiron: {...fireCards.brandingiron},
     hypertrain: {...fireCards.hypertrain},
     //healing - 3 
-    refineenergy: {...fireCards.refineenergy},
+    siphon: {...fireCards.siphon},
     simpleheal: {...fireCards.simpleheal},
     enjoin: {...fireCards.enjoin},
     //draw - 2
@@ -45,7 +45,7 @@ let fireCardPool = {
     retreatingslash: {...basicCardPool.retreatingslash},
     //scale - 5
     kindle: {...fireCards.kindle},
-    upgrade: {...fireCards.upgrade},
+    honeclaws: {...fireCards.honeclaws},
     redirect: {...basicCardPool.redirect},
     clarity: {...fireCards.clarity},
     generosity: {...fireCards.generosity},
@@ -54,7 +54,7 @@ let fireCardPool = {
     explode: {...fireCards.explode},
     fireball: {...fireCards.fireball},
     //energy effects
-    siphon: {...fireCards.siphon},
+    overcharge: {...fireCards.overcharge},
     fierymissiles: {...fireCards.fierymissiles},
     flamewhip: {...fireCards.flamewhip},
     //2+ energy - 7
