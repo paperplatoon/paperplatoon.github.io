@@ -124,16 +124,15 @@ let playerMonsters = {
       startingDeck: [
         //draw
         fireCardPool.darkknowledge,
-        basicCardPool.recall,
         fireCardPool.expertsforge,
-        fireCardPool.expertsforge,
+        fireCardPool.hammerandtongs,
         //block
         fireCardPool.flamedome,
         fireCardPool.fortify,
         //win
-        fireCards.buildingflame,
         specialCardPool.testkill,
         //energy
+        fireCardPool.setaflame,
         fireCardPool.setaflame
       ],
     },

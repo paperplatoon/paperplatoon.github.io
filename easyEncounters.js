@@ -338,12 +338,6 @@ let easyEncounters = {
         name: false,
       },
       {
-        name: false,
-      },
-      {
-        name: false,
-      },
-      {
         name: "Shell Smack",
         cost: "2",
         text: (state, index, array) => {
