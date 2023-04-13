@@ -74,6 +74,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 50,
+  testingMode: false,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,
@@ -115,7 +116,7 @@ let gameStartState = {
   playerLevel: 1
 };
 
-let levelXPRequirements = [0, 30, 70, 120, 180, 250, 330, 420, 520];
+let levelXPRequirements = [0, 10, 30, 60, 100, 150, 210, 280, 360, 450, 550];
 
 const eventsArray = [
   // {
@@ -237,7 +238,7 @@ function fillMapWithArray(stateObj) {
   let shuffledMap = fisherYatesShuffle(mapFillArray);
 
   let townMonsterEncounters = []
-  if (stateObj.playerMonster.name === "Testing Mode") {
+  if (stateObj.testingMode === true) {
     townMonsterEncounters = [routes[0][1][3], routes[0][1][3],routes[0][1][3]]
   } else {
     for (let i=0; i <6; i++) {
@@ -250,7 +251,7 @@ function fillMapWithArray(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
-      if (stateObj.playerMonster.name === "Testing Mode") {
+      if (stateObj.testingMode === true) {
         newState.townMapSquares[4] = "?"
       } else {
       newState.townMapSquares[4] =  "Fight";
@@ -396,7 +397,7 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
       console.log("clicked on an event")
         let shuffledEventsArray = fisherYatesShuffle(eventsArray);
         stateObj = immer.produce(stateObj, (newState) => {
-          if (stateObj.playerMonster.name === "Testing Mode") {
+          if (stateObj.testingMode === true) {
             newState.status = eventsArray[12].newStatus
           } else {
           newState.status = shuffledEventsArray[1].newStatus;

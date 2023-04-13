@@ -763,6 +763,56 @@ let basicCardPool = {
         }
       },
 
+      ascension: {
+        cardID: 100,
+        trigger:  (stateObj, index, array) => { 
+          return (array[index].playCount >= 2);
+        },
+        name: "Ascension",
+        text: (stateObj, index, array) => {
+          let cardBlock = array[index].baseBlock + stateObj.playerMonster.dex + array[index].upgrades;
+          let cardDamage = array[index].baseDamage + stateObj.playerMonster.strength + (array[index].upgrades*10);
+
+          if (array[index].playCount===0 && array[index].baseHits===1) {
+            return `Gain ${cardBlock} block. Play twice more: deal ${cardDamage} damage to all enemies`;
+          } else if (array[index].playCount===0 && array[index].baseHits > 1) {
+            return `Gain ${cardBlock} block. Play twice more: deal ${cardDamage} damage to all enemies ${array[index].baseHits} times`;
+          } else if (array[index].playCount===1 && array[index].baseHits===1) {
+            return `Gain ${cardBlock} block. Play once more: deal ${cardDamage} damage to all enemies`;
+          } else if (array[index].playCount===1 && array[index].baseHits > 1) {
+            return `Gain ${cardBlock} block. Play once more: deal ${cardDamage} damage to all enemies ${array[index].baseHits} times`;
+          } else if (array[index].playCount >=2 && array[index].baseHits===1) {
+            return `Gain ${cardBlock} block. Deal ${cardDamage} damage to all enemies`;
+          } else if (array[index].playCount >=2 && array[index].baseHits > 1) {
+            return `Gain ${cardBlock} block. Deal ${cardDamage} damage to all enemies ${array[index].baseHits} times`;
+          }
+      },
+      minReq: (state, index, array) => {
+        return array[index].baseCost;
+      },
+        baseCost: 1,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseBlock: 1,
+        baseHits: 1,
+        baseDamage: 50,
+        playCount: 0,
+        cardType: "attack",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.encounterHand[index].playCount += 1;
+          })
+          stateObj = gainBlock(stateObj, array[index].baseBlock+array[index].upgrades, array[index].baseCost)
+          if (array[index].playCount >= 2) {
+            stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*10), array[index].baseHits, false, all=true);
+          }
+          return stateObj;
+        }
+      },
+
       dancersgrace: {
         exhaust: true,
         cardID: 61,

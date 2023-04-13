@@ -92,15 +92,12 @@ let easyEncounters = {
             name: "Fiery Slap",
             cost: "0",
             text: (state, index, array) => {
-              return `Deal ${(array[index].baseDamage) + array[index].strength} damage. Gain ${Math.ceil(array[index].baseScale/2)} dexterity`
+              return `Deal ${(array[index].baseDamage+1) + array[index].strength} damage.`
             },
             minReq: 0,
             energyChange: "+2",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index, 2);
-              stateObj = immer.produce(stateObj, (newState) => {
-                newState.opponentMonster[index].dex += Math.ceil(array[index].baseScale/2);
-              })
+              stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage+1, index, 2);
               return stateObj;
             }
           },

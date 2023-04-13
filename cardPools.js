@@ -28,7 +28,8 @@ let fireCardPool = {
     //destroy energy - 2
     refineenergy: {...fireCards.refineenergy},
     dampen: {...basicCardPool.dampen},
-
+    //self-scaling
+    ascension: {...basicCardPool.ascension},
   
   
     //40 attack and block total
