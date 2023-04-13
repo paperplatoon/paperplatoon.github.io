@@ -132,7 +132,7 @@ let playerMonsters = {
         //win
         specialCardPool.testkill,
         //energy
-        fireCardPool.setaflame,
+        fireCardPool.fireenergy,
         fireCardPool.setaflame
       ],
     },

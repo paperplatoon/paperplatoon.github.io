@@ -59,7 +59,7 @@ let hardEncounterMjs = [
 let routes = [
   //route 1; routes[0]
   [
-    //encounter 1 possibilities - routes[0][1]
+    //encounter 1 possibilities - routes[0][0]
     [
       {
         opponents: [easyEncounters.e1],
@@ -82,6 +82,10 @@ let routes = [
       },
       {
         opponents: [easyEncounters.e4, easyEncounters.e5],
+        goldReward: 15,
+      },
+      {
+        opponents: [easyEncounters.e7],
         goldReward: 15,
       }
     ],

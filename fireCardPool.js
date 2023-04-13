@@ -989,7 +989,7 @@ let fireCards = {
             return 0
           }
       },
-      upgrades: 4,
+      upgrades: 2,
       cardType: "ability",
       elementType: "fire",
       action: async (stateObj, index, array) => {

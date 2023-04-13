@@ -352,4 +352,77 @@ let easyEncounters = {
       }
     ]
   },
+
+  e7: {
+    name: "Shakedown E7",
+    type: "Fire",
+    XPGain: opponentXPGain,
+    Level: 1,
+    maxHP: opponentMaxHP*6,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: opponentMaxHP*6,
+    shakedown: 1,
+    strength: 0,
+    dex: 0,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    baseBlock: opponentBaseBlock,
+    baseDamage: opponentBaseDamage,
+    baseScale: opponentBaseScale,
+    baseHeal: 0,
+    avatar: "img/littleturtle2.png",
+    powers: [{
+      name: "Power: Shakedown",
+      text:  `After you deal unblocked attack damage to this enemy, gain 1 gold`
+    }],
+    moves: [
+      {
+        name: "Lunge",
+        cost: "0",
+        text: (state, index, array) => {
+            return `Deal ${array[index].baseDamage + array[index].strength} damage.`
+        },
+        minReq: 0,
+        energyChange: "+1",
+        action: async (stateObj, index, array) => {
+          stateObj = dealPlayerDamage(stateObj, array[index].baseDamage, index, +1)
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Shell Smack",
+        cost: "2",
+        text: (state, index, array) => {
+            return `Deal ${Math.floor(array[index].baseDamage-2) + array[index].strength} damage for each time you've taken unblocked attack damage (${state.fightDamageCount})`
+        },
+        minReq: 2,
+        energyChange: "+2",
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage-2), index, +2, stateObj.fightDamageCount);
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Big Smack",
+        cost: "6",
+        text: (state, index, array) => {
+            return `Deal damage equal to total unblocked attack damage taken (${state.fightDamageTotal})`
+        },
+        minReq: 6,
+        energyChange: "-6",
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, stateObj.fightDamageTotal, index, -6);
+          return stateObj;
+        }
+      },
+    ]
+  },
 }
