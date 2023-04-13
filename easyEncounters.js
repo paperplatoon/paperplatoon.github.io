@@ -4,10 +4,10 @@ let easyEncounters = {
         type: "Fire",
         XPGain: opponentXPGain,
         Level: 1,
-        maxHP: opponentMaxHP*6,
+        maxHP: opponentMaxHP*8,
         encounterEnergy: 0,
         opponentMoveIndex: false,
-        currentHP: opponentMaxHP*6,
+        currentHP: opponentMaxHP*8,
         strength: 0,
         dex: 0,
         drown: 0,
@@ -20,35 +20,48 @@ let easyEncounters = {
         avatar: "img/firebaby.png",
         moves: [
           {
-            name: "Power Up",
+            name: "Fiery Slap",
             cost: "0",
             text: (state, index, array) => {
-                return `Gain ${array[index].baseBlock + array[index].dex} block. Gain ${Math.floor(array[index].baseScale/3)} strength`
+                return `Deal ${array[index].baseDamage + array[index].strength} damage.`
             },
             minReq: 0,
-            energyChange: "+2",
-            action: (state, index, array) => {
-              let toChangeState = immer.produce(state, (newState) => {
-                newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].dex;
-                newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
-                newState.opponentMonster[index].encounterEnergy += 2;
-              })
-              return toChangeState;
+            energyChange: "+1",
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage), index, 1);
+              return stateObj;
             }
           },
           {
             name: false,
           },
           {
-            name: "Whirling Dervish",
+            name: "Inflame",
             cost: "2",
+            text: (state, index, array) => {
+                return `Gain ${array[index].baseBlock + array[index].dex} block. Gain ${Math.floor(array[index].baseScale/3)} strength`
+            },
+            minReq: 2,
+            energyChange: "+1",
+            action: (stateObj, index, array) => {
+              stateObj = immer.produce(stateObj, (newState) => {
+                newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].dex;
+                newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
+                newState.opponentMonster[index].encounterEnergy += 1;
+              })
+              return stateObj;
+            }
+          },
+          {
+            name: "Whirling Dervish",
+            cost: "3",
             text: (state, index, array) => {
                 return `Deal ${Math.floor(array[index].baseDamage/4) + array[index].strength} damage 4 times`
             },
-            minReq: 2,
-            energyChange: "-2",
+            minReq: 3,
+            energyChange: "-3",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage/4), index, -2, 4);
+              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage/4), index, -3, 4);
               return stateObj;
             }
           },
@@ -60,10 +73,10 @@ let easyEncounters = {
         type: "Air",
         XPGain: opponentXPGain,
         Level: 1,
-        maxHP: opponentMaxHP*6,
+        maxHP: opponentMaxHP*9,
         encounterEnergy: 0,
         opponentMoveIndex: false,
-        currentHP: opponentMaxHP*6,
+        currentHP: opponentMaxHP*9,
         strength: 0,
         dex: 0,
         drown: 0,
@@ -76,44 +89,48 @@ let easyEncounters = {
         avatar: "img/earthpsycho.png",
         moves: [
           {
-            name: "Study Openings",
+            name: "Fiery Slap",
             cost: "0",
-            text: (state, index, array) => {
-              return `Gain ${(array[index].baseBlock) + array[index].dex} block. Gain ${array[index].baseScale} strength`
-            },
-            minReq: 0,
-            energyChange: "+2",
-            action: (stateObj, index, array) => {
-              console.log("playing study openings")
-              stateObj = immer.produce(stateObj, (newState) => {
-                newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock)  + array[index].dex);
-                newState.opponentMonster[index].strength += array[index].baseScale;
-                newState.opponentMonster[index].encounterEnergy += 2;
-              })
-              return stateObj;
-            }
-          },
-    
-          {
-            name: false,
-          },
-          {
-            name: "Graceful Strike",
-            cost: "3",
             text: (state, index, array) => {
               return `Deal ${(array[index].baseDamage) + array[index].strength} damage. Gain ${Math.ceil(array[index].baseScale/2)} dexterity`
             },
-            minReq: 2,
-            energyChange: "-2",
+            minReq: 0,
+            energyChange: "+2",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index, -2);
+              stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index, 2);
               stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].dex += Math.ceil(array[index].baseScale/2);
               })
               return stateObj;
             }
-          }
-    
+          },
+          {
+            name: false,
+          },
+          {
+            name: false,
+          },
+          {
+            name: false,
+          },
+          {
+            name: "Study Openings",
+            cost: "4",
+            text: (state, index, array) => {
+              return `Gain ${(array[index].baseBlock) + array[index].dex} block. Gain ${array[index].baseScale} Strength & Dexterity`
+            },
+            minReq: 4,
+            energyChange: "-4",
+            action: (stateObj, index, array) => {
+              stateObj = immer.produce(stateObj, (newState) => {
+                newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock)  + array[index].dex);
+                newState.opponentMonster[index].strength += array[index].baseScale;
+                newState.opponentMonster[index].dex += array[index].baseScale;
+                newState.opponentMonster[index].encounterEnergy -= 4;
+              })
+              return stateObj;
+            }
+          }    
         ]
       },
 
@@ -122,10 +139,10 @@ let easyEncounters = {
         type: "Air",
         XPGain: opponentXPGain,
         Level: 1,
-        maxHP: opponentMaxHP*7,
+        maxHP: opponentMaxHP*8,
         encounterEnergy: 0,
         opponentMoveIndex: false,
-        currentHP: opponentMaxHP*7,
+        currentHP: opponentMaxHP*8,
         strength: 0,
         dex: 0,
         drown: 0,
@@ -185,10 +202,10 @@ let easyEncounters = {
     type: "Fire",
     XPGain: opponentXPGain,
     Level: 1,
-    maxHP: opponentMaxHP*3,
+    maxHP: opponentMaxHP*5,
     encounterEnergy: 0,
     opponentMoveIndex: false,
-    currentHP: opponentMaxHP*3,
+    currentHP: opponentMaxHP*5,
     strength: 0,
     dex: 0,
     drown: 0,
@@ -217,18 +234,24 @@ let easyEncounters = {
         name: false,
       },
       {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
         name: "Turtle Up",
-        cost: "2",
+        cost: "4",
         text: (state, index, array) => {
             return `Gain ${array[index].baseBlock + array[index].dex} block. Gain ${Math.floor(array[index].baseScale + 1)} strength`
         },
-        minReq: 2,
-        energyChange: "-2",
+        minReq: 4,
+        energyChange: "-4",
         action: (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].dex;
             newState.opponentMonster[index].strength += Math.floor(array[index].baseScale + 1);
-            newState.opponentMonster[index].encounterEnergy -= 2;
+            newState.opponentMonster[index].encounterEnergy -= 4;
           })
           return toChangeState;
         }
@@ -241,10 +264,10 @@ let easyEncounters = {
     type: "Fire",
     XPGain: opponentXPGain,
     Level: 1,
-    maxHP: opponentMaxHP*3,
+    maxHP: opponentMaxHP*5,
     encounterEnergy: 0,
     opponentMoveIndex: false,
-    currentHP: opponentMaxHP*3,
+    currentHP: opponentMaxHP*5,
     strength: 0,
     dex: 0,
     drown: 0,
@@ -277,15 +300,21 @@ let easyEncounters = {
         name: false,
       },
       {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
         name: "Shell Smack",
-        cost: "2",
+        cost: "4",
         text: (state, index, array) => {
             return `Deal ${Math.floor(array[index].baseDamage) + array[index].strength} damage`
         },
-        minReq: 2,
-        energyChange: "-2",
+        minReq: 4,
+        energyChange: "-4",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage), index, -2);
+          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage), index, -4);
           return stateObj;
         }
       }
@@ -297,10 +326,10 @@ let easyEncounters = {
     type: "Fire",
     XPGain: opponentXPGain,
     Level: 1,
-    maxHP: opponentMaxHP*6,
+    maxHP: opponentMaxHP*7,
     encounterEnergy: 0,
     opponentMoveIndex: false,
-    currentHP: opponentMaxHP*6,
+    currentHP: opponentMaxHP*7,
     prickles: 2,
     strength: 0,
     dex: 0,
@@ -321,15 +350,15 @@ let easyEncounters = {
         name: "Turtle Up",
         cost: "0",
         text: (state, index, array) => {
-            return `Gain ${array[index].baseBlock - 1 + array[index].dex} block. Gain ${Math.floor(array[index].baseScale/3)} strength`
+            return `Gain ${array[index].baseBlock+1 + array[index].dex} block. Gain ${Math.floor(array[index].baseScale/3)} strength`
         },
         minReq: 0,
-        energyChange: "+2",
+        energyChange: "+1",
         action: async (stateObj, index, array) => {
           stateObj = immer.produce(stateObj, (newState) => {
-            newState.opponentMonster[index].encounterBlock += array[index].baseBlock - 1 + array[index].dex;
+            newState.opponentMonster[index].encounterBlock += array[index].baseBlock + 1 + array[index].dex;
             newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
-            newState.opponentMonster[index].encounterEnergy += 2;
+            newState.opponentMonster[index].encounterEnergy += 1;
           })
           return stateObj;
         }
@@ -338,15 +367,18 @@ let easyEncounters = {
         name: false,
       },
       {
+        name: false,
+      },
+      {
         name: "Shell Smack",
-        cost: "2",
+        cost: "3",
         text: (state, index, array) => {
-            return `Deal ${Math.floor(array[index].baseDamage) + array[index].strength} damage`
+            return `Deal ${Math.floor(array[index].baseDamage+3) + array[index].strength} damage`
         },
-        minReq: 2,
-        energyChange: "-2",
+        minReq: 3,
+        energyChange: "-3",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage), index, -2);
+          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage+3), index, -3);
           return stateObj;
         }
       }
@@ -358,10 +390,10 @@ let easyEncounters = {
     type: "Fire",
     XPGain: opponentXPGain,
     Level: 1,
-    maxHP: opponentMaxHP*6,
+    maxHP: opponentMaxHP*7,
     encounterEnergy: 0,
     opponentMoveIndex: false,
-    currentHP: opponentMaxHP*6,
+    currentHP: opponentMaxHP*7,
     shakedown: 1,
     strength: 0,
     dex: 0,

@@ -967,10 +967,10 @@ async function chooseThisCard(stateObj, index, sampledCardPool) {
     newState.playerDeck.push(sampledCardPool[index]);
   })
 
-  if (stateObj.inEvent === true){
-    stateObj = await changeStatus(stateObj, Status.OverworldMap, countsAsEventSkipForChangeStatus=true)    
+  if (stateObj.status === Status.cardShop){
+    stateObj = await changeState(stateObj)    
   } else {
-    await changeState(stateObj);
+    stateObj = await changeStatus(stateObj, Status.OverworldMap, countsAsEventSkipForChangeStatus=true)
   }
   
   return stateObj;
@@ -2882,10 +2882,10 @@ async function renderTown(stateObj) {
     townDiv.setAttribute("id", "town");
 
   //let townHealDiv = renderTownDiv(stateObj, "TownHealer", "img/healer.PNG", "Visit Healer", (stateObj.gold >= Math.floor(stateObj.healCost/2)), changeStatus, Status.HealersShop, "Not enough gold");
-  let townShopDiv = await renderTownDiv(stateObj, "TownShop", "img/healer.PNG", "Visit Shop", true, changeStatus, Status.cardShop);
-  let townRemoveDiv = await renderTownDiv(stateObj, "TownRemove", "img/tavern2.PNG", `Pay ${stateObj.cardRemoveCost} gold to remove a card`,  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `(${stateObj.cardRemoveCost} gold needed to remove a card)`);
-  let townUpgradeDiv = await renderTownDiv(stateObj, "TownUpgrade", "img/forge.PNG", `Pay ${stateObj.cardUpgradeCost} gold to upgrade a card`, (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `(${stateObj.cardUpgradeCost} needed to upgrade a card)`);
-  let townGymDiv = await renderTownDiv(stateObj, "TownFight", "img/dracula.png", "Fight Gym Boss", true, TownFight)
+  let townShopDiv = await renderTownDiv(stateObj, "TownShop", "Visit Shop", true, changeStatus, Status.cardShop);
+  let townRemoveDiv = await renderTownDiv(stateObj, "TownRemove", `Pay ${stateObj.cardRemoveCost} gold to remove a card`,  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `(${stateObj.cardRemoveCost} gold needed to remove a card)`);
+  let townUpgradeDiv = await renderTownDiv(stateObj, "TownUpgrade", `Pay ${stateObj.cardUpgradeCost} gold to upgrade a card`, (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `(${stateObj.cardUpgradeCost} needed to upgrade a card)`);
+  let townGymDiv = await renderTownDiv(stateObj, "TownFight", "Fight Gym Boss", true, TownFight)
 
   townDiv.append(townShopDiv, townRemoveDiv, townUpgradeDiv, townGymDiv);
   document.getElementById("app").append(townDiv);

@@ -1251,11 +1251,13 @@ let specialCardPool = {
       cardID: 005,
       name: "Recycle",
       text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex) + (3*array[index].upgrades)} block. Remove all other cards in your hand.` },
-      minReq: -99,
       upgrades: 0,
       baseCost: 1,
       exhaustAll: true,
-      cost:  (state, index, array) => {
+      minReq: (stateObj, index, array) => {
+        return array[index].baseCost;
+      },
+      cost: (stateObj, index, array) => {
         return array[index].baseCost;
       },
       baseBlock: 7,

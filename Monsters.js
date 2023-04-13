@@ -5,7 +5,7 @@ let opponentBaseDamage = 5;
 let opponentBaseBlock = 6;
 let opponentBaseHeal = 6;
 let opponentBaseScale = 3;
-let opponentMaxHP = 7;
+let opponentMaxHP = 5;
 let opponentXPGain = 5
 
 let opponentMonsters = {

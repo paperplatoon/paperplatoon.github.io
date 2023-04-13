@@ -3,7 +3,7 @@ let fireCardPool = {
     //energy - 5
     fireenergy: {...fireCards.fireEnergy},
     rarefireenergy: {...fireCards.rareFireEnergy},
-    setaflame: {...fireCards.setaflame},
+    accelerate: {...fireCards.accelerate},
     fireblockenergy: {...fireCards.fireBlockEnergy},
     powerup: {...basicCardPool.powerup},
     //REMOVABLE ABILITIES - 5
@@ -39,7 +39,7 @@ let fireCardPool = {
     //heal
     vampiricstrike: {...fireCards.vampiricstrike},
     //return
-    doubleclaws: {...fireCards.doubleclaws},
+    clawback: {...fireCards.clawback},
     //multi-card
     pirouettespin: {...basicCardPool.pirouettespin},
     retreatingslash: {...basicCardPool.retreatingslash},

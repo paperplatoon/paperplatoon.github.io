@@ -59,10 +59,10 @@ let fireCards = {
       }
     },
 
-    setaflame: {
+    accelerate: {
       rare: true,
       cardID: 4,
-      name: "Set Aflame",
+      name: "Accelerate",
       minReq: -99,
       upgrades: 0,
       cost: 0,
@@ -280,9 +280,9 @@ let fireCards = {
       }
     },
 
-    doubleclaws: {
+    clawback: {
       cardID: 29,
-      name: "Backslap",
+      name: "Claw Back",
       text: (state, index, array) => { 
             return `Deal ${array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*2)} damage ${array[index].baseHits} times. Return 2 cards`
         },
@@ -591,9 +591,8 @@ let fireCards = {
 
     fierymissiles: {
       cardID: 21,
-      retain: true,
       name: "Fiery Missiles",
-      text: (state, index, array) => { return `Gift ${array[index].energyGift} energy. Deal ${(array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*2))} damage ${(array[index].baseHits)} times. Retain` },
+      text: (state, index, array) => { return `Gift ${array[index].energyGift} energy. Deal ${(array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*2))} damage ${(array[index].baseHits)} times` },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -989,7 +988,7 @@ let fireCards = {
             return 0
           }
       },
-      upgrades: 2,
+      upgrades: 0,
       cardType: "ability",
       elementType: "fire",
       action: async (stateObj, index, array) => {
@@ -1042,7 +1041,7 @@ let fireCards = {
         return array[index].baseCost+array[index].upgrades;
       },
       upgrades: 0,
-      baseCost: 1,
+      baseCost: 2,
       cost:  (state, index, array) => {
         return array[index].baseCost+array[index].upgrades;
       },
@@ -1271,8 +1270,9 @@ let fireCards = {
     ritual: {
       cardID: "strength2",
       name: "Ritual",
+      exhaust: true,
       text: (state, index, array) => { 
-        return `Gain ${4 + (array[index].upgrades)} strength` 
+        return `Gain ${4 + (array[index].upgrades)} strength. Remove` 
       },
       minReq: (state, index, array) => {
         return array[index].baseCost;

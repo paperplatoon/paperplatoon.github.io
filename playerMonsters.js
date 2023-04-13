@@ -28,7 +28,7 @@ let playerMonsters = {
     starterDeck.withdraw,
     // 5 attack
     starterDeck.tackle,
-    fireCardPool.energyburst,
+    fireCardPool.fierymissiles,
     starterDeck.tackle,
     starterDeck.tackle,
     starterDeck.tackle,
@@ -131,7 +131,7 @@ let playerMonsters = {
         specialCardPool.testkill,
         fireCardPool.kindle,
         //energy
-        fireCardPool.setaflame
+        fireCardPool.accelerate
       ],
     },
 
