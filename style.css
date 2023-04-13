@@ -196,6 +196,9 @@
   animation: towndiv 3s linear infinite;
 }
 
+.event-text-div {
+  width: 90vw;
+}
 .town-div:hover {
   background: linear-gradient(
     45deg,

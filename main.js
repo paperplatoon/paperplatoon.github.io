@@ -38,8 +38,9 @@ const Status = {
   HealEndOfFightChoice: "Gain Max HP or lose but heal after fights",
   IncreasingBlock: "Choose a card. It gets +7 block",
   IncreasingHits: "Choose a card. It hits 1 extra time",
+  HitsVsAttackChoice: "Choose 1 - hitsvat",
   IncreasingAttack: "Choose an attack. It deals +5 damage",
-  HPHealChoice: "Choose a health ",
+  MaxHPvsHealChoice: "Choose a health ",
   DuplicatingCards: "Choose a card. Add a copy of it to your deck",
   DuplicatingCardFiveTimes: "Choose a card. Add 7 copies to your deck",
   DuplicateChoice: "Choose one",
@@ -54,6 +55,7 @@ const Status = {
   ShowCardPool: "showing card pool",
   HealersShop: "Restore  health for a price",
   cardShop: "Buy cards to add to your deck",
+  PeekBehindTheCurtain: "peeking now",
   WealthyPacifist: "Willing to pay for peace",
   PaidAttackRemoval: "Pays 50 gold to remove an attack (100 for a rare)",
   DeathScreen: "You stupid, stupid asshole! You got your Neo-Neopet killed! Refresh the page to try again",
@@ -177,13 +179,34 @@ const eventsArray = [
     newStatus: Status.DecreasingChoice,
     eventID: 7
   },
-  //change to choice between increasing hits and increasing attack
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
     divText: "Increase Card Hits",
-    newStatus: Status.IncreasingHits,
-    eventID: 7
+    newStatus: Status.HitsVsAttackChoice,
+    eventID: 8
+  },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.PNG",
+    divText: "Choose One",
+    newStatus: Status.MaxHPvsHealChoice,
+    eventID: 9
+  },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.PNG",
+    divText: "Choose One",
+    newStatus: Status.PeekBehindTheCurtain,
+    eventID: 10
+  },
+  //add event text
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.PNG",
+    divText: "Choose One",
+    newStatus: Status.HealEndOfFightChoice,
+    eventID: 10
   },
   //choose btween increasing block and incrasing attack
   {
@@ -191,30 +214,16 @@ const eventsArray = [
     imgSrc: "img/wizardshop.PNG",
     divText: "Increase Card Block",
     newStatus: Status.IncreasingBlock,
-    eventID: 9
+    eventID: 11
   },
   //add event Text for these two
-  {
-    divID: "TownEvent",
-    imgSrc: "img/wizardshop.PNG",
-    divText: "Choose One",
-    newStatus: Status.HPHealChoice,
-    eventID: 12
-  },
-  {
-    divID: "TownEvent",
-    imgSrc: "img/wizardshop.PNG",
-    divText: "Choose One",
-    newStatus: Status.HealEndOfFightChoice,
-    eventID: 13
-  },
   //edit to be one upgrade or upgrade two randomly
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
     divText: "Upgrade Card 2x",
     newStatus: Status.DoubleUpgradeEvent,
-    eventID: 4
+    eventID: 12
   },
   //add the ability to retain, OR upgrade a card twice 
 ];
@@ -385,8 +394,7 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
         let shuffledEventsArray = fisherYatesShuffle(eventsArray);
         stateObj = immer.produce(stateObj, (newState) => {
           if (stateObj.playerMonster.name === "Testing Mode") {
-            console.log("new status is " + eventsArray[8].newStatus)
-            newState.status = eventsArray[8].newStatus
+            newState.status = eventsArray[10].newStatus
           } else {
           newState.status = shuffledEventsArray[1].newStatus;
         }
@@ -1179,16 +1187,7 @@ function doubleCardAttack(stateObj, index, array) {
   return stateObj;
 }
 
-function increaseBaseHits(stateObj, index, array) {
-  stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerDeck[index].baseHits += 1;
-    newState.eventUsed = true;
-    newState.status = Status.OverworldMap
-    newState.townMapSquares[newState.playerHere] = "completed"
-  })
-  changeState(stateObj);
-  return stateObj;
-}
+
 
 
 
@@ -2010,6 +2009,15 @@ function renderChooseRareEvent(stateObj) {
   renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
  };
 
+ function renderPeekBehindDevCurtain(stateObj) {
+  let cardPool = [specialCardPool.fataltoxin, specialCardPool.theocho, specialCardPool.recycle];
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app");
+  eventText("remove-div", newDivName=false, "Peek Behind the Curtain", "Developers try pretty hard to make sure that you're only offered cards in line with your current power level. This event is the exception. You've managed to get your hands on some obscenely powerful shit. ");
+  renderClickableCardList(stateObj, cardPool, "remove-div", chooseThisCard);
+ };
+
  //ASSASSIN TRAINING
 async function renderAssassinTrainingEvent(stateObj) {
   document.getElementById("app").innerHTML = ""
@@ -2301,30 +2309,51 @@ function IncreaseCardCost(stateObj, index, array) {
   return stateObj;
 }
 
-async function renderHealer(stateObj) {
+//Hits vs attack
+async function renderHitsAttackChoice(stateObj) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app", "level-up-div");
-
-  let healDiv = await renderTownDiv(stateObj, "healDiv", "img/potion.svg", "Heal to full", (stateObj.playerMonster.currentHP < stateObj.playerMonster.maxHP), fullHeal, Status.InTown, altText="At full health");
-  let goldDiv = await renderTownDiv(stateObj, "skipDiv", "img/goldsack.PNG", "Gain 30 gold", true, increaseGold, Status.OverworldMap, altText=false, 30);
-  document.getElementById("level-up-div").classList.add("healer-div");
-  document.getElementById("level-up-div").append(healDiv, goldDiv);
-  skipToTownButton(stateObj, "I want to come back later", ".remove-div", cardSkip=false, isEventUsedForSkipButton=false);
+  eventText("level-up-div", newDivName=false, "Offensive Master", "A powerful offensive wizard offers you the choice between two strong options. She can make an offensive spell hit for a second time, but only for lighter spells. Alternatively, she can increase the base damage of one of your offensive spells");
+  let div1 = await renderTownDiv(stateObj, "duplicateOnce", "Choose a card that costs 1 mana or less. It hits an extra time", true, changeStatus, Status.IncreasingHits, altText=false);
+  let div2 = await renderTownDiv(stateObj, "increaseDex", "Choose an attack to deal 5 extra base damage", true, changeStatus, Status.IncreasingAttack, altText=false);
+  
+  document.getElementById("level-up-div").append(div1, div2);
+  skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
 };
 
+function renderIncreaseBaseHit(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app")
+  divContainer("app");
+  stateObj.playerDeck.forEach(function (cardObj, index) {
+    if (cardObj.baseHits && typeof cardObj.baseHits === 'number') {
+      if (typeof cardObj.cost === "function" && cardObj.cost(stateObj, index, stateObj.playerDeck) < 2)
+      renderCard(stateObj, stateObj.playerDeck, index, "remove-div", increaseBaseHits, goldCost="moreHits")
+    }
+  });
+};
 
+function increaseBaseHits(stateObj, index, array) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerDeck[index].baseHits += 1;
+    newState.eventUsed = true;
+    newState.status = Status.OverworldMap
+    newState.townMapSquares[newState.playerHere] = "completed"
+  })
+  changeState(stateObj);
+  return stateObj;
+}
 
-
-
-async function renderMaxHPHeal(stateObj) {
+//Max HP vs extraHeal
+async function renderMaxHPvsExtraHeal(stateObj) {
   console.log("max HP heal triggerd")
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app", "level-up-div");
-
-  let maxHPDiv = await renderTownDiv(stateObj, "increaseMaxHP", "img/healer.PNG", "Gain 15 max HP", true, increaseMaxHP, Status.OverworldMap, altText=false, 15);
-  let extraHealDiv = await renderTownDiv(stateObj, "increaseExtraHeal", "img/wizardshop.PNG", "Whenever you heal, heal 3 extra damage", true, increaseExtraHeal, Status.OverworldMap, altText=false, 3);
+  eventText("level-up-div", newDivName=false, "Forest Sprite", "As you nap beneath an oak tree, a forest dryad cautiously emerges from within the hollow trunk. She gazes fondly at your little monster sleeping nestled in between the routes. She moves to give it a blessing. She tells you that she can either increase your monster's total life essence, or increase its ability to heal itself from all sources");
+  let maxHPDiv = await renderTownDiv(stateObj, "increaseMaxHP", "Gain 15 max HP", true, increaseMaxHP, Status.OverworldMap, altText=false, 15);
+  let extraHealDiv = await renderTownDiv(stateObj, "increaseExtraHeal", "Whenever you heal, heal 3 extra damage", true, increaseExtraHeal, Status.OverworldMap, altText=false, 3);
   
   document.getElementById("level-up-div").append(maxHPDiv, extraHealDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
@@ -2341,6 +2370,21 @@ async function renderHealEndOfFightChoice(stateObj) {
   document.getElementById("level-up-div").append(maxHPDiv, loseHPDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
 };
+
+async function renderHealer(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app", "level-up-div");
+
+  let healDiv = await renderTownDiv(stateObj, "healDiv", "img/potion.svg", "Heal to full", (stateObj.playerMonster.currentHP < stateObj.playerMonster.maxHP), fullHeal, Status.InTown, altText="At full health");
+  let goldDiv = await renderTownDiv(stateObj, "skipDiv", "img/goldsack.PNG", "Gain 30 gold", true, increaseGold, Status.OverworldMap, altText=false, 30);
+  document.getElementById("level-up-div").classList.add("healer-div");
+  document.getElementById("level-up-div").append(healDiv, goldDiv);
+  skipToTownButton(stateObj, "I want to come back later", ".remove-div", cardSkip=false, isEventUsedForSkipButton=false);
+};
+
+
+
 
 
 
@@ -2368,17 +2412,7 @@ function renderIncreaseCardBlock(stateObj) {
 
 
 
-function renderIncreaseBaseHit(stateObj) {
-  document.getElementById("app").innerHTML = ""
-  topRowDiv(stateObj, "app")
-  divContainer("app");
-  stateObj.playerDeck.forEach(function (cardObj, index) {
-    if (cardObj.baseHits && typeof cardObj.baseHits === 'number') {
-      renderCard(stateObj, stateObj.playerDeck, index, "remove-div", increaseBaseHits, goldCost="moreHits")
-    }
-  });
-  skipToTownButton(stateObj, "I choose not to make any of these cards hit another time (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
-};
+
 
 function renderCard(stateObj, cardArray, index, divName=false, functionToAdd=false, goldCost=false) {
   let cardObj = cardArray[index];
@@ -2842,6 +2876,9 @@ async function renderScreen(stateObj) {
   } else if (stateObj.status == Status.IncreasingHits) {
     renderIncreaseBaseHit(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.HitsVsAttackChoice) {
+    renderHitsAttackChoice(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.IncreasingAttack) {
     renderIncreaseCardAttack(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
@@ -2872,8 +2909,8 @@ async function renderScreen(stateObj) {
   } else if (stateObj.status == Status.LevelUpEvent) {
     renderLevelUp(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.HPHealChoice) {
-    renderMaxHPHeal(stateObj);
+  } else if (stateObj.status == Status.MaxHPvsHealChoice) {
+    renderMaxHPvsExtraHeal(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.ChooseRareEvent) {
     renderChooseRareEvent(stateObj);
@@ -2894,6 +2931,9 @@ async function renderScreen(stateObj) {
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.WealthyPacifist) {
     renderWealthyPacifist(stateObj);
+    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+  } else if (stateObj.status == Status.PeekBehindTheCurtain) {
+    renderPeekBehindDevCurtain(stateObj);
     renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   } else if (stateObj.status == Status.PaidAttackRemoval) {
     renderPaidAttackRemoval(stateObj);

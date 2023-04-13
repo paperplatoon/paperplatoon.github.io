@@ -1271,6 +1271,33 @@ let specialCardPool = {
         return stateObj;
       }
     },
+    theocho: {
+      cardID: 006,
+      name: "The Ocho",
+      text: (state, index, array) => { 
+        if (array[index].baseHits === 1) {
+          return `Deal ${array[index].baseDamage + (array[index].upgrades*15) + state.playerMonster.strength} damage`;
+        } else {
+          return `Deal ${array[index].baseDamage + (array[index].upgrades*15) + state.playerMonster.strength} damage ${array[index].baseHits} times.`
+        }
+    },
+    minReq: (state, index, array) => {
+      return array[index].baseCost;
+    },
+      baseCost: 8,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      upgrades: 0,
+      baseDamage: 80,
+      baseHits: 1,
+      cardType: "attack",
+      elementType: "fire",
+      action: async (stateObj, index, array) => {
+        stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*15), array[index].baseHits, array[index].baseCost)
+        return stateObj;
+      }
+    },
   
   }
     
