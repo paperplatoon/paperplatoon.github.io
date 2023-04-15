@@ -27,7 +27,7 @@ let playerMonsters = {
     cards.withdraw,
     cards.withdraw,
     // 5 attack
-    cards.honeclaws,
+    cards.tackle,
     fireCardPool.fierymissiles,
     cards.tackle,
     cards.tackle,
