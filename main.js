@@ -535,6 +535,8 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
               monsterObj.encounterEnergy += 1;
             } else if (monsterObj.shakedown) {
               newState.gold += monsterObj.shakedown;
+            } else if (monsterObj.enrage) {
+              monsterObj.strength += monsterObj.enrage;
             }
             monsterObj.currentHP -= (calculatedDamage - monsterObj.encounterBlock);
             monsterObj.encounterBlock = 0;
@@ -555,6 +557,8 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
             monsterObj.encounterEnergy += 1;
           } else if (monsterObj.shakedown) {
             newState.gold += monsterObj.shakedown;
+          } else if (monsterObj.enrage) {
+            monsterObj.strength += monsterObj.enrage;
           }
           newState.opponentMonster[targetIndex].currentHP -= calculatedDamage;
         } else if (newState.opponentMonster[targetIndex].encounterBlock >= calculatedDamage) {
@@ -570,6 +574,8 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
             monsterObj.encounterEnergy += 1;
           } else if (monsterObj.shakedown) {
             newState.gold += monsterObj.shakedown;
+          } else if (monsterObj.enrage) {
+            monsterObj.strength += monsterObj.enrage;
           }
           newState.opponentMonster[targetIndex].currentHP -= (calculatedDamage - newState.opponentMonster[targetIndex].encounterBlock);
           newState.opponentMonster[targetIndex].encounterBlock = 0;
@@ -3135,9 +3141,11 @@ async function endTurnIncrement(stateObj) {
       if (monsterObj.hunted > 0) {
         monsterObj.hunted -=1;
       };
-
       if (monsterObj.poison > 0) {
         monsterObj.currentHP -= (monsterObj.poison*3)
+      }
+      if (monsterObj.inflame) {
+        monsterObj.strength += monsterObj.inflame;
       }
     })
     newState.turnDouble = false;

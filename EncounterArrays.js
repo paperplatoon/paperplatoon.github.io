@@ -65,16 +65,26 @@ let routes = [
   //--------------------------------------------------------------------------------------------------------------------------------
   [
     //route 1, encounter 1: routes[0][0]
-    [{
+    [
+      {
         opponents: [easyEncounters.e1],
         goldReward: 15,
       },
-      //potential encounter 2: routes[0][0][1]
       {
         opponents: [easyEncounters.e2],
         goldReward: 15,
-      }],
+      },
+      {
+        opponents: [easyEncounters.e8],
+        goldReward: 15,
+      },
+      {
+        opponents: [easyEncounters.e9],
+        goldReward: 15,
+      },
+ ],
     //encounter 2
+          //potential encounter 2: routes[0][0][1]
     [
       {
         opponents: [easyEncounters.e3],
@@ -90,6 +100,14 @@ let routes = [
       },
       {
         opponents: [easyEncounters.e7],
+        goldReward: 15,
+      },
+      {
+        opponents: [easyEncounters.e8],
+        goldReward: 15,
+      },
+      {
+        opponents: [easyEncounters.e9],
         goldReward: 15,
       }
     ],

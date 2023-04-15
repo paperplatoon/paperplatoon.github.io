@@ -340,7 +340,7 @@ let easyEncounters = {
     avatar: "img/littleturtle2.png",
     powers: [{
       name: "Power: Prickles",
-      text:  `Whenever you attack this enemy, take 2 damage`
+      text:  `Take 2 damage when attacking this enemy`
     }],
     moves: [
       {
@@ -404,11 +404,11 @@ let easyEncounters = {
     avatar: "img/littleturtle2.png",
     powers: [{
       name: "Power: Shakedown",
-      text:  `After you deal unblocked attack damage to this enemy, gain 1 gold`
+      text:  `Gain 1 gold each time you deal unblocked attack damage to this enemy`
     }],
     moves: [
       {
-        name: "Lunge",
+        name: "Fiery Slap",
         cost: "0",
         text: (state, index, array) => {
             return `Deal ${array[index].baseDamage + array[index].strength} damage.`
@@ -424,15 +424,15 @@ let easyEncounters = {
         name: false,
       },
       {
-        name: "Shell Smack",
+        name: "Payback",
         cost: "2",
         text: (state, index, array) => {
             return `Deal ${Math.floor(array[index].baseDamage-2) + array[index].strength} damage for each time you've taken unblocked attack damage (${state.fightDamageCount})`
         },
         minReq: 2,
-        energyChange: "+2",
+        energyChange: "+1",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage-2), index, +2, stateObj.fightDamageCount);
+          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage-2), index, 1, stateObj.fightDamageCount);
           return stateObj;
         }
       },
@@ -440,15 +440,158 @@ let easyEncounters = {
         name: false,
       },
       {
-        name: "Big Smack",
-        cost: "6",
+        name: false,
+      },
+      {
+        name: "Unleash",
+        cost: "5",
         text: (state, index, array) => {
             return `Deal damage equal to total unblocked attack damage taken (${state.fightDamageTotal})`
         },
-        minReq: 6,
-        energyChange: "-6",
+        minReq: 5,
+        energyChange: "-5",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, stateObj.fightDamageTotal, index, -6);
+          stateObj = await dealPlayerDamage(stateObj, stateObj.fightDamageTotal, index, -5);
+          return stateObj;
+        }
+      },
+    ]
+  },
+
+  e8: {
+    name: "Enrage E8",
+    type: "Fire",
+    XPGain: opponentXPGain,
+    Level: 1,
+    maxHP: opponentMaxHP*7,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: opponentMaxHP*7,
+    enrage: 2,
+    strength: 0,
+    dex: 0,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    baseBlock: opponentBaseBlock,
+    baseDamage: opponentBaseDamage,
+    baseScale: opponentBaseScale,
+    baseHeal: 0,
+    avatar: "img/littleturtle2.png",
+    powers: [{
+      name: "Power: Enrage",
+      text:  `Gains 2 strength after taking unblocked damage`
+    }],
+    moves: [
+      {
+        name: "Fiery Slap",
+        cost: "0",
+        text: (state, index, array) => {
+            return `Deal ${array[index].baseDamage-2 + array[index].strength} damage.`
+        },
+        minReq: 0,
+        energyChange: "+1",
+        action: async (stateObj, index, array) => {
+          stateObj = dealPlayerDamage(stateObj, array[index].baseDamage-2, index, +1)
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Payback",
+        cost: "2",
+        text: (state, index, array) => {
+            return `Deal ${Math.floor(array[index].baseDamage-4) + array[index].strength} damage for each time you've taken unblocked attack damage (${state.fightDamageCount})`
+        },
+        minReq: 2,
+        energyChange: "+1",
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage-4), index, 1, stateObj.fightDamageCount);
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Unleash",
+        cost: "5",
+        text: (state, index, array) => {
+            return `Deal damage equal to total unblocked attack damage taken (${state.fightDamageTotal})`
+        },
+        minReq: 5,
+        energyChange: "-5",
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, stateObj.fightDamageTotal, index, -5);
+          return stateObj;
+        }
+      },
+    ]
+  },
+
+  e9: {
+    name: "Inflame E9",
+    type: "Fire",
+    XPGain: opponentXPGain,
+    Level: 1,
+    maxHP: opponentMaxHP*7,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: opponentMaxHP*7,
+    inflame: 3,
+    strength: 0,
+    dex: 0,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    baseBlock: opponentBaseBlock,
+    baseDamage: opponentBaseDamage,
+    baseScale: opponentBaseScale,
+    baseHeal: 0,
+    avatar: "img/littleturtle2.png",
+    powers: [{
+      name: "Power: Inflame",
+      text:  `Gains 3 strength each turn`
+    }],
+    moves: [
+      {
+        name: "Wake Up",
+        cost: "0",
+        text: (state, index, array) => {
+            return `Gain ${Math.floor(array[index].baseScale/3)} strength.`
+        },
+        minReq: 0,
+        energyChange: "+3",
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage-2, index, 2)
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
+            newState.opponentMonster[index].encounterEnergy += 3;
+          })
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Fiery Slap",
+        cost: "3",
+        text: (state, index, array) => {
+            return `Deal ${Math.floor(array[index].baseDamage) + array[index].strength} damage`
+        },
+        minReq: 3,
+        energyChange: "0",
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index)
           return stateObj;
         }
       },
