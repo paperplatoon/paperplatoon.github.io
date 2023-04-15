@@ -65,14 +65,26 @@ let routes = [
     ],
     //encounter 3
     [
+      [mediumSoloEncounters.m1],
+      [mediumSoloEncounters.m2],
+      [mediumSoloEncounters.m3],
+      [mediumSoloEncounters.m4],
       [opponentMonsters.blockgym1],
       [opponentMonsters.strengthgym1],
       [opponentMonsters.balancegym1],
       [opponentMonsters.healgym1],
-
     ],
     //encounter 4-6
-    mediumEncountersMjs,
+    [
+      [mediumSoloEncounters.m1],
+      [mediumSoloEncounters.m2],
+      [mediumSoloEncounters.m3],
+      [mediumSoloEncounters.m4],
+      [opponentMonsters.blockgym1],
+      [opponentMonsters.strengthgym1],
+      [opponentMonsters.balancegym1],
+      [opponentMonsters.healgym1],
+    ],
     mediumEncountersMjs,
     mediumEncountersMjs
   ],

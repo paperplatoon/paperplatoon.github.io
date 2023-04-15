@@ -429,8 +429,9 @@
 
 .power {
   font-size: 2vmin;
-  border: 1px dashed blue;
-  background-color: rgb(0, 48, 63);
+  border: 1px solid white;
+  background-color: rgb(39, 104, 255);
+  border-radius: 0.6vw;
 }
 
 .fake-move-div {

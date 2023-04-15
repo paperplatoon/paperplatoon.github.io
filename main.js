@@ -696,16 +696,20 @@ async function upgradeAnimation(stateObj, cardIndex, cardArray, upgradeTimes, di
 
 
   textElement.classList.add("fade-out");
-  costElement.classList.add("fade-out");
+  if (costElement) {
+    costElement.classList.add("fade-out");
+  }
   await pause(500)
 
   textElement.textContent = newText;
   textElement.classList.remove("fade-out");
   textElement.classList.add("fade-in");
 
-  costElement.textContent = newCost;
-  costElement.classList.remove("fade-out");
-  costElement.classList.add("fade-in");
+  if (costElement) {
+    costElement.textContent = newCost;
+    costElement.classList.remove("fade-out");
+    costElement.classList.add("fade-in");
+  }
 
   await pause(upgradeAnimationTiming)
   if (stateObj.status !== Status.InEncounter) {

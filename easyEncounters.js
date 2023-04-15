@@ -390,7 +390,7 @@ let easySoloEncounters = {
         name: "Payback",
         cost: "2",
         text: (state, index, array) => {
-            return `Deal ${Math.floor(array[index].baseDamage-2)} damage for each time you've taken unblocked attack damage (${state.fightDamageCount}). Unaffected by strength`
+            return `Deal ${Math.floor(array[index].baseDamage-2)} damage for each time taking unblocked damage (${state.fightDamageCount}). Unaffected by strength`
         },
         minReq: 2,
         energyChange: "+1",
@@ -403,13 +403,10 @@ let easySoloEncounters = {
         name: false,
       },
       {
-        name: false,
-      },
-      {
         name: "Unleash",
         cost: "5",
         text: (state, index, array) => {
-            return `Deal damage equal to total unblocked attack damage taken (${state.fightDamageTotal}). Unaffected by strength`
+            return `Deal damage equal to total HP lost (${state.fightDamageTotal}). Unaffected by strength`
         },
         minReq: 5,
         energyChange: "-5",
