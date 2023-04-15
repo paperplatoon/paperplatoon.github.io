@@ -271,6 +271,65 @@ let mediumSoloEncounters = {
           }
         ]
     },
+
+    m5: {
+      name: "Strength m5",
+      type: "Fire",
+      XPGain: opponentXPGain*2,
+      Level: 1,
+      maxHP: opponentMaxHP*7,
+      encounterEnergy: 0,
+      opponentMoveIndex: false,
+      currentHP: opponentMaxHP*7,
+      strength: 0,
+      dex: 0,
+      drown: 0,
+      hunted: 0,
+      poison: 0,
+      baseBlock: opponentBaseBlock,
+      baseDamage: opponentBaseDamage,
+      baseScale: opponentBaseScale,
+      baseHeal: 0,
+      avatar: "img/firesheep.png",
+      moves: [
+        {
+          name: "Power Strike",
+          cost: "0",
+          text: (state, index, array) => {
+            return `Deal ${array[index].baseDamage*2 + array[index].strength} damage`
+          },
+          minReq: 0,
+          energyChange: "+3",
+          action: async (stateObj, index, array) => {
+            stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*2), index, 3);
+            return stateObj;
+          }
+        },
+        {
+          name: false,
+        },
+        {
+          name: false,
+        },
+        {
+          name: "Enrage",
+          cost: "3",
+          text: (state, index, array) => {
+            return `Gain ${(array[index].baseBlock*2) + array[index].dex} block. Gain ${array[index].baseScale} strength`
+          },
+          minReq: 3,
+          energyChange: "-3",
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock*2) + array[index].dex);
+              newState.opponentMonster[index].encounterEnergy -= 3;
+              newState.opponentMonster[index].strength += array[index].baseScale;
+            })
+            return toChangeState;
+          }
+        }
+      ]
+    },
 }
 
 
@@ -295,8 +354,8 @@ let mediumSoloEncounters = {
 
 
 let mediumMultiEncounters = {
-    wind1: {
-        name: "Multi-enemy 1",
+    mm1: {
+        name: "Wind MM1",
         type: "Air",
         Level: 1,
         XPGain: opponentXPGain,
@@ -355,8 +414,8 @@ let mediumMultiEncounters = {
         ]
       },
 
-      wind2: {
-        name: "Wind2",
+      mm2: {
+        name: "Wind MM2",
         type: "Air",
         Level: 1,
         XPGain: opponentXPGain,
@@ -418,6 +477,62 @@ let mediumMultiEncounters = {
               return stateObj;
             }
           }
+        ]
+      },
+
+      mm3: {
+        name: "Strength MM3",
+        type: "Fire",
+        XPGain: opponentXPGain,
+        Level: 1,
+        maxHP: opponentMaxHP*6,
+        encounterEnergy: 0,
+        opponentMoveIndex: false,
+        currentHP: opponentMaxHP*6,
+        strength: 0,
+        dex: 0,
+        drown: 0,
+        hunted: 0,
+        poison: 0,
+        baseBlock: opponentBaseBlock,
+        baseDamage: opponentBaseDamage,
+        baseScale: opponentBaseScale,
+        baseHeal: 0,
+        avatar: "img/firebaby.png",
+        moves: [
+          {
+            name: "Whirling Dervish",
+            cost: "0",
+            text: (state, index, array) => {
+                return `Deal ${Math.floor(array[index].baseDamage/4) + array[index].strength} damage 4 times`
+            },
+            minReq: 0,
+            energyChange: "+1",
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage/4), index, 1, 4);
+              return stateObj;
+            }
+          },
+          {
+            name: false,
+          },
+          {
+            name: "Power Up",
+            cost: "2",
+            text: (state, index, array) => {
+                return `Gain ${array[index].baseBlock - 2 + array[index].dex} block. Gain ${Math.floor(array[index].baseScale/3)} strength`
+            },
+            minReq: 2,
+            energyChange: "-1",
+            action: (state, index, array) => {
+              let toChangeState = immer.produce(state, (newState) => {
+                newState.opponentMonster[index].encounterBlock += array[index].baseBlock - 2 + array[index].dex;
+                newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
+                newState.opponentMonster[index].encounterEnergy -= 1;
+              })
+              return toChangeState;
+            }
+          },
         ]
       },
 

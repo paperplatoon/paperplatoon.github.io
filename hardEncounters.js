@@ -141,4 +141,87 @@ let hardEncounters = {
           },
         ]
       },
+
+      h3: {
+        name: "Strength H3",
+        type: "Fire",
+        XPGain: opponentXPGain*3,
+        Level: 1,
+        maxHP: opponentMaxHP*20,
+        encounterEnergy: 0,
+        opponentMoveIndex: false,
+        currentHP: opponentMaxHP*20,
+        strength: 0,
+        dex: 0,
+        drown: 0,
+        hunted: 0,
+        poison: 0,
+        baseBlock: opponentBaseBlock,
+        baseDamage: opponentBaseDamage,
+        baseScale: opponentBaseScale,
+        baseHeal: 0,
+        avatar: "img/firebeard.png",
+        moves: [
+          {
+            name: "Roll Up",
+            cost: "0",
+            text: (state, index, array) => {
+              return `Deal ${array[index].baseDamage + array[index].strength} damage. Gain ${array[index].baseScale*2} strength`
+            },
+            minReq: 0,
+            energyChange: "+2",
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(newState, array[index].baseDamage, index, 2);
+              stateObj = immer.produce(stateObj, (newState) => {
+                newState.opponentMonster[index].strength += array[index].baseScale*2;
+              })
+              return stateObj;
+            }
+          },
+          {
+            name: false,
+          },
+          {
+            name: false,
+          },
+          {
+            name: false,
+          },
+          {
+            name: "Muscle Shield",
+            cost: "3",
+            text: (state, index, array) => {
+              return `Gain ${array[index].baseBlock + array[index].strength + array[index].dex} block. Improved by strength`
+            },
+            minReq: 3,
+            energyChange: "+2",
+            action: (state, index, array) => {
+              let toChangeState = immer.produce(state, (newState) => {
+                newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].strength + array[index].dex;
+                newState.opponentMonster[index].encounterEnergy += 2;
+              })
+              return toChangeState;
+            }
+          },
+          {
+            name: false,
+          },
+          {
+            name: false,
+          },
+          {
+            name: "Body Blows",
+            cost: "5",
+            text: (state, index, array) => {
+              return `Deal strength value (${array[index].strength}) two times`
+            },
+            minReq: 5,
+            energyChange: "-5",
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, 0, index, -5, 2);
+              return stateObj;
+            }
+          }
+        ]
+      },
 }

@@ -74,7 +74,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 50,
-  testingMode: false,
+  testingMode: true,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,
@@ -239,7 +239,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [routes[0][1][3], routes[0][1][3],routes[0][1][3]]
+    townMonsterEncounters = [routes[0][0][1], routes[0][1][3],routes[0][1][3]]
   } else {
     for (let i=0; i <6; i++) {
       //set tempArray to the potential encounters for each route.
@@ -254,7 +254,7 @@ function fillMapWithArray(stateObj) {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
       if (stateObj.testingMode === true) {
-        newState.townMapSquares[4] = "?"
+        newState.townMapSquares[4] = "Fight"
       } else {
       newState.townMapSquares[4] =  "Fight";
       }
@@ -2783,9 +2783,11 @@ function renderOpponents(stateObj) {
     }
 
     if (monsterObj.hunted > 0) {
-      let huntedDiv = document.createElement("img");
-      huntedDiv.src = 'img/crosshair.PNG';
+      let huntedDiv = document.createElement("Div");
       huntedDiv.classList.add('hunted');
+      huntedText = document.createElement("P")
+      huntedText.textContent = monsterObj.hunted;
+      huntedDiv.append(huntedText);
       monsterStatsDiv.append(huntedDiv)
     }
 

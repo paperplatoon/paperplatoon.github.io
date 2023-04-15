@@ -54,9 +54,10 @@ let routes = [
       [easySoloEncounters.e9],
     ],
     //encounter 2
-          //potential encounter 2: routes[0][0][1]
+          
     [
       [easySoloEncounters.e3],
+      //potential encounter 2: routes[0][1][1]
       [easySoloEncounters.e6],
       [easyMultiEncounters.e4, easyMultiEncounters.e5],
       [easySoloEncounters.e7],

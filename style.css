@@ -900,10 +900,53 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   margin: 2vmax;
 }
 
-.hunted {
+/*.hunted {
   background-image: url(img/crosshair.PNG);
   height: 1.6vmin;
   width: 1.6vmin;
+} */
+
+.hunted {
+	width: 5vmin;
+	height: 5vmin;
+	background: red;
+  color: white;
+	position: relative;
+  border-radius: 50%;
+  line-height: 5vmin;
+  font-size: 10vmin;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.hunted p {
+  z-index: 10;
+  font-size: 2.5vmin;
+  color: white;
+  position: absolute;
+}
+
+.hunted:before {
+	content: "";
+	position: absolute;
+	top: .5vmin;
+	left: .5vmin;
+	border-radius: 50%;
+	width: 4vmin;
+	height: 4vmin;
+  background: white;
+}
+
+.hunted:after {
+	content: "";
+	position: absolute;
+	top: 1vmin;
+	left: 1vmin;
+  border-radius: 50%;
+	width: 3vmin;
+	height: 3vmin;
+  background: red;
 }
 
 .poison {
