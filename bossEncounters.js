@@ -21,7 +21,7 @@ let bossMonsters = {
       avatar: "img/icetorch.png",
       powers: [{
         name: "Power: Deflate",
-        text:  `Whenever an attack deals 10 or more damage, remove 1 energy`
+        text:  `Loses 1 energy after taking 10 unblocked damage`
       }],
       moves: [
         {

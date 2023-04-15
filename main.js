@@ -242,7 +242,9 @@ function fillMapWithArray(stateObj) {
     townMonsterEncounters = [routes[0][1][3], routes[0][1][3],routes[0][1][3]]
   } else {
     for (let i=0; i <6; i++) {
+      //set tempArray to the potential encounters for each route.
       let tempArray = routes[stateObj.gymCount][i]
+      //pick one encounter from each route
       townMonsterEncounters[i] = fisherYatesShuffle(tempArray)[0]
     }
   }
@@ -1392,7 +1394,6 @@ function resetAfterFight(stateObj) {
     if (newState.playerHere === 19 && newState.gymCount === 2) {
       newState.status = Status.VictoryScreen;
     } else if (newState.fightingBoss === true) {
-      newState.gold += newState.townBossEncounter.goldReward
       //newState.playerXP += newState.townBossEncounter.XP
       newState.gymFightCount = 0;
       newState.gymCount += 1;
@@ -1412,7 +1413,6 @@ function resetAfterFight(stateObj) {
       
       newState.status = Status.ChooseEncounterCardReward;
     } else {
-      newState.gold += newState.townMonsterArray[newState.gymFightCount].goldReward
       //newState.playerXP += newState.townMonsterArray[newState.gymFightCount].XP
       newState.gymFightCount += 1;
       newState.status = Status.ChooseEncounterCardReward;
@@ -1441,6 +1441,7 @@ async function handleDeaths(stateObj) {
         for (let i = 0; i < indexesToDelete.length; i++) {
           console.log("deleting opponent at index " + i);
           newState.playerXP += newState.opponentMonster[indexesToDelete[i]].XPGain
+          newState.gold += newState.opponentMonster[indexesToDelete[i]].goldOnDefeat
           newState.opponentMonster.splice(indexesToDelete[i], 1)
         }
         newState.targetedMonster = 0;
@@ -1468,10 +1469,10 @@ function setUpEncounter(stateObj, isBoss=false) {
 
   stateObj = immer.produce(stateObj, (newState) => {
     if (isBoss) {
-      newState.opponentMonster = newState.townBossEncounter.opponents;
+      newState.opponentMonster = newState.townBossEncounter;
       newState.fightingBoss = true;
     } else {
-      newState.opponentMonster = newState.townMonsterArray[newState.gymFightCount].opponents;
+      newState.opponentMonster = newState.townMonsterArray[newState.gymFightCount];
     }
     newState.encounterHand = [];
     newState.encounterDiscard = [];

@@ -1,50 +1,32 @@
 let mediumEncountersMjs = [
-  {
-    opponents: [opponentMonsters.blockgym1],
-    goldReward: 25,
-  },
-  {
-    opponents: [opponentMonsters.strengthgym1],
-    goldReward: 25,
-  },
-  {
-    opponents: [opponentMonsters.balancegym1],
-    goldReward: 25,
-  },
-  {
-    opponents: [opponentMonsters.healgym1],
-    goldReward: 25,
-  },
-  {
-    opponents: [easyEncounters.e4, easyEncounters.e5, easyEncounters.e4],
-    goldReward: 25,
-  },
-  {
-    opponents: [opponentMonsters.strengthgym1, opponentMonsters.strengthgymguard],
-    goldReward: 35,
-    XP: 20,
-  },
-  {
-    opponents: [opponentMonsters.healgymguard2, opponentMonsters.blockgym1],
-    goldReward: 35,
-    XP: 20
-  },
-  {
-    opponents: [opponentMonsters.strengthgymguard, opponentMonsters.blockgym1],
-    goldReward: 35,
-    XP: 20
-  },
-  {
-    opponents: [opponentMonsters.strengthgymguard, opponentMonsters.healgym1],
-    goldReward: 35,
-    XP: 20
-  },
+  [opponentMonsters.blockgym1],
+  [opponentMonsters.strengthgym1],
+  [opponentMonsters.balancegym1],
+  [opponentMonsters.healgym1],
+  [easyMultiEncounters.e4, easyMultiEncounters.e5, easyMultiEncounters.e4],
+  [opponentMonsters.strengthgym1, opponentMonsters.strengthgymguard],
 
-  {
-    opponents: [opponentMonsters.healgymguard2, opponentMonsters.strengthgym1],
-    goldReward: 35,
-    XP: 20
-  },
+  // {
+  //   opponents: [opponentMonsters.healgymguard2, opponentMonsters.blockgym1],
+  //   goldReward: 35,
+  //   XP: 20
+  // },
+  // {
+  //   opponents: [opponentMonsters.strengthgymguard, opponentMonsters.blockgym1],
+  //   goldReward: 35,
+  //   XP: 20
+  // },
+  // {
+  //   opponents: [opponentMonsters.strengthgymguard, opponentMonsters.healgym1],
+  //   goldReward: 35,
+  //   XP: 20
+  // },
+
+  // {
+  //   opponents: [opponentMonsters.healgymguard2, opponentMonsters.strengthgym1],
+  //   goldReward: 35,
+  //   XP: 20
+  // },
 ]
 
 let hardEncounterMjs = [
@@ -66,69 +48,28 @@ let routes = [
   [
     //route 1, encounter 1: routes[0][0]
     [
-      {
-        opponents: [easyEncounters.e1],
-        goldReward: 15,
-      },
-      {
-        opponents: [easyEncounters.e2],
-        goldReward: 15,
-      },
-      {
-        opponents: [easyEncounters.e8],
-        goldReward: 15,
-      },
-      {
-        opponents: [easyEncounters.e9],
-        goldReward: 15,
-      },
- ],
+      [easySoloEncounters.e1],
+      [easySoloEncounters.e2],
+      [easySoloEncounters.e8],
+      [easySoloEncounters.e9],
+    ],
     //encounter 2
           //potential encounter 2: routes[0][0][1]
     [
-      {
-        opponents: [easyEncounters.e3],
-        goldReward: 15,
-      },
-      {
-        opponents: [easyEncounters.e6],
-        goldReward: 15,
-      },
-      {
-        opponents: [easyEncounters.e4, easyEncounters.e5],
-        goldReward: 15,
-      },
-      {
-        opponents: [easyEncounters.e7],
-        goldReward: 15,
-      },
-      {
-        opponents: [easyEncounters.e8],
-        goldReward: 15,
-      },
-      {
-        opponents: [easyEncounters.e9],
-        goldReward: 15,
-      }
+      [easySoloEncounters.e3],
+      [easySoloEncounters.e6],
+      [easyMultiEncounters.e4, easyMultiEncounters.e5],
+      [easySoloEncounters.e7],
+      [easySoloEncounters.e8],
+      [easySoloEncounters.e9],
     ],
     //encounter 3
     [
-      {
-        opponents: [opponentMonsters.blockgym1],
-        goldReward: 15,
-      },
-      {
-        opponents: [opponentMonsters.strengthgym1],
-        goldReward: 15,
-      },
-      {
-        opponents: [opponentMonsters.balancegym1],
-        goldReward: 15,
-      },
-      {
-        opponents: [opponentMonsters.healgym1],
-        goldReward: 15,
-      }
+      [opponentMonsters.blockgym1],
+      [opponentMonsters.strengthgym1],
+      [opponentMonsters.balancegym1],
+      [opponentMonsters.healgym1],
+
     ],
     //encounter 4-6
     mediumEncountersMjs,
@@ -227,23 +168,23 @@ let bosses = [
 
 let easyEncountersMjs = [
     {
-      opponents: [easyEncounters.e2],
+      opponents: [easySoloEncounters.e2],
       goldReward: 15,
     },
     {
-      opponents: [easyEncounters.e1],
+      opponents: [easySoloEncounters.e1],
       goldReward: 15,
     },
     {
-      opponents: [easyEncounters.e3],
+      opponents: [easySoloEncounters.e3],
       goldReward: 15,
     },
     {
-      opponents: [easyEncounters.e4, easyEncounters.e5],
+      opponents: [easyMultiEncounters.e4, easyMultiEncounters.e5],
       goldReward: 15,
     },
     {
-      opponents: [easyEncounters.e6],
+      opponents: [easySoloEncounters.e6],
       goldReward: 15,
     },
   ]
