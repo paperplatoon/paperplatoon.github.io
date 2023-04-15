@@ -136,7 +136,8 @@ let playerMonsters = {
         cards.withdraw,
         cards.withdraw,
         cards.withdraw,
-        cards.withdraw,   
+        cards.withdraw,
+
       ],
     },
 
@@ -158,10 +159,9 @@ let playerMonsters = {
       avatar: "img/playerturtle.png",
       startingDeck: [
         //draw
-        fireCardPool.recall,
         fireCardPool.accelerate,
+        cards.darkknowledge,
         //block
-        fireCardPool.essencedrain,
         fireCardPool.fortify,
         //win
         specialCardPool.testkill,

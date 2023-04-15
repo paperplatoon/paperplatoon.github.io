@@ -119,13 +119,13 @@ let gameStartState = {
 let levelXPRequirements = [0, 10, 30, 60, 100, 150, 210, 280, 360, 450, 550];
 
 const eventsArray = [
-  {
-    divID: "TownEvent",
-    imgSrc: "img/wizardshop.png",
-    divText: "ShowCardPool",
-    newStatus: Status.ShowCardPool,
-    eventID: 100
-  },
+  // {
+  //   divID: "TownEvent",
+  //   imgSrc: "img/wizardshop.png",
+  //   divText: "ShowCardPool",
+  //   newStatus: Status.ShowCardPool,
+  //   eventID: 100
+  // },
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
@@ -234,7 +234,7 @@ const eventsArray = [
 //takes a stateObject and fills its map with events
 function fillMapWithArray(stateObj) {
   console.log("fill Mpa with Array is being called")
-  let mapFillArray = ["?", "?", "Fight", "Fight", "Fight", "Fight", "path", "path", "path", "Fight", "Shop", "Healer", "Upgrade", "Remove"];
+  let mapFillArray = ["?1", "?2", "Fight", "Fight", "Fight", "Fight", "path", "path", "path", "Fight", "Shop", "Healer", "Upgrade", "Remove"];
   let shuffledMap = fisherYatesShuffle(mapFillArray);
 
   let townMonsterEncounters = []
@@ -331,7 +331,7 @@ function createMapSquareDiv(stateObj, indexOfSquare, classesToAdd) {
     mapSquareDiv.textContent = classesToAdd[0];
   }
 
-  if (classesToAdd.includes("?")) {
+  if (classesToAdd.includes("?1") || classesToAdd.includes("?2")) {
     mapSquareDiv.textContent = "?"
     mapSquareDiv.classList.add("Event")
   } else if (classesToAdd.includes("Town")) {
@@ -393,14 +393,18 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
         newState.status = Status.InTown;
         newState.InTown = true;
       })
-    } else if (stateObj.townMapSquares[indexToMoveTo] === "?") {
+    } else if (stateObj.townMapSquares[indexToMoveTo] === "?1" || stateObj.townMapSquares[indexToMoveTo] === "?2") {
       console.log("clicked on an event")
         let shuffledEventsArray = fisherYatesShuffle(eventsArray);
         stateObj = immer.produce(stateObj, (newState) => {
           if (stateObj.testingMode === true) {
             newState.status = eventsArray[0].newStatus
           } else {
-          newState.status = shuffledEventsArray[1].newStatus;
+            if (stateObj.townMapSquares[indexToMoveTo] === "?1") {
+              newState.status = shuffledEventsArray[1].newStatus;
+            } else {
+              newState.status = shuffledEventsArray[2].newStatus;
+            }
         }
         newState.inEvent = true;
       });
