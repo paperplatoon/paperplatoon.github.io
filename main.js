@@ -119,13 +119,13 @@ let gameStartState = {
 let levelXPRequirements = [0, 10, 30, 60, 100, 150, 210, 280, 360, 450, 550];
 
 const eventsArray = [
-  // {
-  //   divID: "TownEvent",
-  //   imgSrc: "img/wizardshop.png",
-  //   divText: "ShowCardPool",
-  //   newStatus: Status.ShowCardPool,
-  //   eventID: 100
-  // },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.png",
+    divText: "ShowCardPool",
+    newStatus: Status.ShowCardPool,
+    eventID: 100
+  },
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
@@ -398,7 +398,7 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
         let shuffledEventsArray = fisherYatesShuffle(eventsArray);
         stateObj = immer.produce(stateObj, (newState) => {
           if (stateObj.testingMode === true) {
-            newState.status = eventsArray[12].newStatus
+            newState.status = eventsArray[0].newStatus
           } else {
           newState.status = shuffledEventsArray[1].newStatus;
         }
@@ -439,13 +439,13 @@ let potentialMonsterChoices = playerMonsterArray;
 
 async function changeState(newStateObj) {
   let stateObj = {...newStateObj}
-  if (newStateObj.status === Status.InEncounter) {
+  if (stateObj.status === Status.InEncounter) {
     stateObj = await handleDeaths(stateObj);
   }
 
   //if (stateObj.status !== Status.InEncounter && newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
-  if (newStateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
-    console.log("triggering level up")
+  if (stateObj.playerXP >= levelXPRequirements[stateObj.playerLevel]) {
+    console.log("Your monster leveled up to Level " + stateObj.playerLevel+1)
     stateObj = await monsterLevelUp(stateObj);
   }
   state = {...stateObj}
@@ -481,13 +481,13 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
 
   if (all===false) {
     document.querySelector(".targeted .avatar").classList.add("opponent-impact");
-    await pause(50);
+    await pause(125);
     document.querySelector(".targeted .avatar").classList.remove("opponent-impact");
   } else {
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.add("opponent-impact");
     })
-    await pause(50);
+    await pause(125);
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.remove("opponent-impact");
     })
@@ -971,6 +971,7 @@ async function chooseThisCard(stateObj, index, sampledCardPool) {
   if (stateObj.status === Status.cardShop){
     stateObj = await changeState(stateObj)    
   } else {
+    stateObj = await changeState(stateObj)
     stateObj = await changeStatus(stateObj, Status.OverworldMap, countsAsEventSkipForChangeStatus=true)
   }
   

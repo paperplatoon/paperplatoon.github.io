@@ -1,108 +1,108 @@
 let fireCardPool = {
 //ENERGY - 10
     //energy - 5
-    fireenergy: {...fireCards.fireEnergy},
-    rarefireenergy: {...fireCards.rareFireEnergy},
-    accelerate: {...fireCards.accelerate},
-    fireblockenergy: {...fireCards.fireBlockEnergy},
-    powerup: {...basicCardPool.powerup},
+    fireenergy: {...cards.fireenergy},
+    rarefireenergy: {...cards.rareFireEnergy},
+    accelerate: {...cards.accelerate},
+    fireblockenergy: {...cards.fireBlockEnergy},
+    powerup: {...cards.powerup},
     //REMOVABLE ABILITIES - 5
-    feast: {...fireCards.feast},
-    hammerandtongs: {...fireCards.hammerandtongs},
-    expertsforge: {...fireCards.expertsforge},
-    sunlight: {...fireCards.sunlight},
-    gainstrength: {...fireCards.gainstrength},
-//MISC ABILITIES - 11
+    feast: {...cards.feast},
+    hammerandtongs: {...cards.hammerandtongs},
+    expertsforge: {...cards.expertsforge},
+    sunlight: {...cards.sunlight},
+    gainstrength: {...cards.gainstrength},
+//MISC ABILITIES - 12
     //strength scaling - 4
-    cursedritual: {...fireCards.cursedritual},
-    ritual: {...fireCards.ritual},
-    brandingiron: {...fireCards.brandingiron},
-    hypertrain: {...fireCards.hypertrain},
+    cursedritual: {...cards.cursedritual},
+    ritual: {...cards.ritual},
+    brandingiron: {...cards.brandingiron},
+    hypertrain: {...cards.hypertrain},
     //healing - 3 
-    siphon: {...fireCards.siphon},
-    simpleheal: {...fireCards.simpleheal},
-    enjoin: {...fireCards.enjoin},
+    siphon: {...cards.siphon},
+    simpleheal: {...cards.simpleheal},
+    enjoin: {...cards.enjoin},
     //draw - 2
-    darkknowledge: {...fireCards.darkknowledge},
-    recall: {...basicCardPool.recall},
+    darkknowledge: {...cards.darkknowledge},
+    recall: {...cards.recall},
     //destroy energy - 2
-    refineenergy: {...fireCards.refineenergy},
-    dampen: {...basicCardPool.dampen},
+    dampen: {...cards.dampen},
     //self-scaling
-    ascension: {...basicCardPool.ascension},
+    ascension: {...cards.ascension},
   
   
     //40 attack and block total
 //ATTACKS - 23
     //1 energy - 16
     //5
-    followupslap: {...basicCardPool.followupslap},
+    followupslap: {...cards.followupslap},
     //heal
-    vampiricstrike: {...fireCards.vampiricstrike},
+    vampiricstrike: {...cards.vampiricstrike},
     //return
-    clawback: {...fireCards.clawback},
+    clawback: {...cards.clawback},
     //multi-card
-    pirouettespin: {...basicCardPool.pirouettespin},
-    retreatingslash: {...basicCardPool.retreatingslash},
+    pirouettespin: {...cards.pirouettespin},
+    retreatingslash: {...cards.retreatingslash},
     //scale - 5
-    kindle: {...fireCards.kindle},
-    honeclaws: {...fireCards.honeclaws},
-    redirect: {...basicCardPool.redirect},
-    clarity: {...fireCards.clarity},
-    generosity: {...fireCards.generosity},
-    //strength-scalers
-    flurryfinisher: {...fireCards.flurryfinisher},
-    explode: {...fireCards.explode},
-    fireball: {...fireCards.fireball},
-    //energy effects
-    overcharge: {...fireCards.overcharge},
-    fierymissiles: {...fireCards.fierymissiles},
-    flamewhip: {...fireCards.flamewhip},
+    kindle: {...cards.kindle},
+    honeclaws: {...cards.honeclaws},
+    redirect: {...cards.redirect},
+    clarity: {...cards.clarity},
+    generosity: {...cards.generosity},
+    //strength-scalers -3 
+    flurryfinisher: {...cards.flurryfinisher},
+    explode: {...cards.explode},
+    fireball: {...cards.fireball},
+    //energy effects - 3
+    overcharge: {...cards.overcharge},
+    fierymissiles: {...cards.fierymissiles},
+    flamewhip: {...cards.flamewhip},
     //2+ energy - 7
-    disablingblow: {...basicCardPool.disablingblow},
+    disablingblow: {...cards.disablingblow},
     //gift energy
-    energyburst: {...basicCardPool.energyburst},
+    energyburst: {...cards.energyburst},
     //multi-hit
-    sparkbarrage: {...fireCards.sparkbarrage},
+    sparkbarrage: {...cards.sparkbarrage},
     //3+ energy
     //multi-enemy
-    bloatedbomb: {...fireCards.bloatedbomb},
-    bowlthrough: {...basicCardPool.bowlthrough},
-    annihilation: {...basicCardPool.annihilation},
+    bloatedbomb: {...cards.bloatedbomb},
+    bowlthrough: {...cards.bowlthrough},
+    annihilation: {...cards.annihilation},
     //destroy energy
-    hugetackle: {...basicCardPool.hugetackle},
+    hugetackle: {...cards.hugetackle},
   
   
 //BLOCK - 20
     //REMOVABLE EFFECTS - 3
-    reformingshield: {...basicCardPool.reformingshield},
-    unwaveringdefense: {...basicCardPool.unwaveringdefense},
-    religiousfervor: {...fireCards.religiousfervor},
+    reformingshield: {...cards.reformingshield},
+    unwaveringdefense: {...cards.unwaveringdefense},
+    religiousfervor: {...cards.religiousfervor},
   
     //1 energy - 11
-    //energy effects
-    sanguineshield: {...basicCardPool.sanguineshield},
-    essencedrain: {...basicCardPool.essencedrain},
-    flamingstrike: {...fireCards.flamingStrike},
-    rareupgrade: {...fireCards.rareupgrade},
-    fortify: {...fireCards.fortify},
-    coatofarms: {...fireCards.coatofarms},
-    invigorate: {...fireCards.invigorate},
-    forgeshield: {...fireCards.forgeshield},
-    meditate: {...basicCardPool.meditate},
+    //energy effects - 9 
+    sanguineshield: {...cards.sanguineshield},
+    essencedrain: {...cards.essencedrain},
+    flamingstrike: {...cards.flamingStrike},
+    rareupgrade: {...cards.rareupgrade},
+    fortify: {...cards.fortify},
+    //
+    coatofarms: {...cards.coatofarms},
+    invigorate: {...cards.invigorate},
+    forgeshield: {...cards.forgeshield},
+    meditate: {...cards.meditate},
   
   
-    //multi cards
-    puffofsmoke: {...basicCardPool.puffofsmoke},
-    skipaway: {...basicCardPool.skipaway},
+    //multi cards - 2
+    puffofsmoke: {...cards.puffofsmoke},
+    skipaway: {...cards.skipaway},
   
     //2+ energy - 6
-    mentalblock: {...basicCardPool.mentalblock},
-    infuse: {...fireCards.infuse},
-    flamedome: {...basicCardPool.flamedome},
+    mentalblock: {...cards.mentalblock},
+    infuse: {...cards.infuse},
+    flamedome: {...cards.flamedome},
     //energy effects
-    shatteringshield: {...basicCardPool.shatteringshield},
-    icyfreeze: {...basicCardPool.icyfreeze,},
-    wallofichor: { ...basicCardPool.wallofichor},
+    shatteringshield: {...cards.shatteringshield},
+    icyfreeze: {...cards.icyfreeze,},
+    wallofichor: { ...cards.wallofichor},
   }
   

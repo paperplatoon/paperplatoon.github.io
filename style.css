@@ -78,11 +78,11 @@
 }
 
 .opponent-impact {
-  animation: opponentImpact 0.1s forwards ;
+  animation: opponentImpact 0.2s forwards ;
 }
 
 .player-impact {
-  animation: playerImpact 0.1s forwards ;
+  animation: playerImpact 0.2s forwards ;
 }
 
 

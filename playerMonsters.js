@@ -22,21 +22,21 @@ let playerMonsters = {
     fireCardPool.fireenergy,
     //5 block
     fireCardPool.essencedrain,
-    starterDeck.withdraw,
-    starterDeck.withdraw,
-    starterDeck.withdraw,
-    starterDeck.withdraw,
+    cards.withdraw,
+    cards.withdraw,
+    cards.withdraw,
+    cards.withdraw,
     // 5 attack
-    starterDeck.tackle,
+    cards.honeclaws,
     fireCardPool.fierymissiles,
-    starterDeck.tackle,
-    starterDeck.tackle,
-    starterDeck.tackle,
+    cards.tackle,
+    cards.tackle,
+    cards.tackle,
     ],
   },
 
   genner: {
-    name: "Cards Per Turn",
+    name: "Self-damage + heal",
     type: "fire",
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -53,20 +53,20 @@ let playerMonsters = {
     avatar: "img/adorablefire.png",
     startingDeck: [
       //2 energy + 1 recall
-      fireCardPool.fireEnergy,
-      fireCardPool.fireEnergy,
-      basicCardPool.recall,
+      fireCardPool.fireenergy,
+      fireCardPool.fireenergy,
       //5 block
-      basicCardPool.puffofsmoke,
-      starterDeck.withdraw,
-      starterDeck.withdraw,
-      starterDeck.withdraw,
-      basicCardPool.withdraw,
+      cards.puffofsmoke,
+      cards.sunlight,
+      cards.withdraw,
+      cards.withdraw,
+      cards.withdraw,
       //4 attack
-      starterDeck.tackle,
-      starterDeck.tackle,
-      basicCardPool.pirouettespin,
-      starterDeck.tackle
+      cards.tackle,
+      cards.tackle,
+      cards.tackle,
+      cards.tackle,
+      cards.brandingiron
     ],
   },
 
@@ -88,20 +88,55 @@ let playerMonsters = {
       avatar: "img/flamingbaby.png",
       startingDeck: [
         //2 energy
-        fireCardPool.fireEnergy,
-        fireCardPool.fireEnergy,
+        fireCardPool.fireenergy,
+        fireCardPool.fireenergy,
         //5 attack
-        starterDeck.tackle,
-        starterDeck.tackle,
-        starterDeck.tackle,
+        cards.tackle,
+        cards.tackle,
+        cards.tackle,
         fireCardPool.gainstrength,
         fireCardPool.explode,
         //5 block
-        starterDeck.withdraw,
-        starterDeck.withdraw,
-        starterDeck.withdraw,
-        starterDeck.withdraw,
-        starterDeck.withdraw,   
+        cards.withdraw,
+        cards.withdraw,
+        cards.withdraw,
+        cards.withdraw,
+        cards.withdraw,   
+      ],
+    },
+
+    recall: {
+      name: "Recall Cards",
+      type: "fire",
+      encounterEnergy: 0,
+      opponentMoveIndex: false,
+      cardPool: fireCardPool,
+      maxHP: 50,
+      currentHP: 50,
+      strength: 0,
+      dex: 0,
+      tempStrength: 0,
+      tempDex: 0,
+      fightStrength: 0,
+      fightDex: 0,
+      turnEnergy: 3,
+      avatar: "img/flamingbaby.png",
+      startingDeck: [
+        //2 energy
+        fireCardPool.fireenergy,
+        fireCardPool.fireenergy,
+        //5 attack
+        cards.recall,
+        cards.ascension,
+        cards.meditate,
+        cards.tackle,
+        cards.tackle,
+        //5 block
+        cards.withdraw,
+        cards.withdraw,
+        cards.withdraw,
+        cards.withdraw,
+        cards.withdraw,   
       ],
     },
 
@@ -123,7 +158,7 @@ let playerMonsters = {
       avatar: "img/playerturtle.png",
       startingDeck: [
         //draw
-        fireCardPool.darkknowledge,
+        fireCardPool.recall,
         fireCardPool.accelerate,
         //block
         fireCardPool.essencedrain,
@@ -132,7 +167,6 @@ let playerMonsters = {
         specialCardPool.testkill,
         fireCardPool.recall,
         fireCardPool.ascension,
-        
       ],
     },
 
