@@ -74,7 +74,7 @@ let routes = [
       [mediumSoloEncounters.m4],
       [mediumSoloEncounters.m5],
       [mediumSoloEncounters.m6],
-      [mediumSoloEncounters.mm1, mediumMultiEncounters.mm2],
+      [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
       [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
       [mediumMultiEncounters.mm1, mediumMultiEncounters.mm3],
     ],
