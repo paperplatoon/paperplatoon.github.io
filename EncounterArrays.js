@@ -53,8 +53,6 @@ let routes = [
       [easySoloEncounters.e6],
       [easyMultiEncounters.e4, easyMultiEncounters.e5],
       [easySoloEncounters.e7],
-      [easySoloEncounters.e8],
-      [easySoloEncounters.e9],
     ],
     //encounter 3
     [
@@ -63,7 +61,10 @@ let routes = [
       [mediumSoloEncounters.m3],
       [mediumSoloEncounters.m4],
       [mediumSoloEncounters.m5],
-      [mediumSoloEncounters.m6]
+      [mediumSoloEncounters.m6],
+      [mediumSoloEncounters.mm1, mediumSoloEncounters.mm2],
+      [mediumSoloEncounters.mm1, mediumSoloEncounters.mm3],
+      [mediumSoloEncounters.mm2, mediumSoloEncounters.mm3],
     ],
     //encounter 4-6
     [
@@ -72,7 +73,10 @@ let routes = [
       [mediumSoloEncounters.m3],
       [mediumSoloEncounters.m4],
       [mediumSoloEncounters.m5],
-      [mediumSoloEncounters.m6]
+      [mediumSoloEncounters.m6],
+      [mediumSoloEncounters.mm1, mediumSoloEncounters.mm2],
+      [mediumSoloEncounters.mm1, mediumSoloEncounters.mm3],
+      [mediumSoloEncounters.mm2, mediumSoloEncounters.mm3],
     ],
     //encounter 5
     [

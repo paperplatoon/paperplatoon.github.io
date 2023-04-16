@@ -126,9 +126,9 @@ let playerMonsters = {
         fireCardPool.fireenergy,
         fireCardPool.fireenergy,
         //5 attack
-        cards.recall,
-        cards.ascension,
-        cards.meditate,
+        fireCardPool.recall,
+        fireCardPool.ascension,
+        fireCardPool.meditate,
         cards.tackle,
         cards.tackle,
         //5 block
