@@ -29,14 +29,6 @@ let mediumEncountersMjs = [
   // },
 ]
 
-let hardEncounterMjs = [
-  {
-    opponents: [opponentMonsters.healgymguard2, opponentMonsters.healgym1],
-    goldReward: 35,
-    XP: 20
-  },
-
-]
 
 //--------------------------------------------------------------------------------------------------------------------------------
 //full list of all routes
@@ -70,10 +62,8 @@ let routes = [
       [mediumSoloEncounters.m2],
       [mediumSoloEncounters.m3],
       [mediumSoloEncounters.m4],
-      [opponentMonsters.blockgym1],
-      [opponentMonsters.strengthgym1],
-      [opponentMonsters.balancegym1],
-      [opponentMonsters.healgym1],
+      [mediumSoloEncounters.m5],
+      [mediumSoloEncounters.m6]
     ],
     //encounter 4-6
     [
@@ -81,14 +71,22 @@ let routes = [
       [mediumSoloEncounters.m2],
       [mediumSoloEncounters.m3],
       [mediumSoloEncounters.m4],
-      [opponentMonsters.blockgym1],
-      [opponentMonsters.strengthgym1],
-      [opponentMonsters.balancegym1],
-      [opponentMonsters.healgym1],
+      [mediumSoloEncounters.m5],
+      [mediumSoloEncounters.m6]
     ],
-    mediumEncountersMjs,
-    mediumEncountersMjs
-  ],
+    //encounter 5
+    [
+    [hardSoloEncounters.h1],
+    [hardSoloEncounters.h2],
+    [hardSoloEncounters.h3]
+    ],
+    //encounter 6
+    [
+      [hardSoloEncounters.h1],
+      [hardSoloEncounters.h2],
+      [hardSoloEncounters.h3]
+    ],
+],
   //--------------------------------------------------------------------------------------------------------------------------------
   //route 2; routes[0]
   //--------------------------------------------------------------------------------------------------------------------------------
@@ -152,30 +150,10 @@ let routes = [
 ]
 
 let bosses = [
-    {
-      opponents: [bossMonsters.angryboss],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    },
-    {
-      opponents: [bossMonsters.deflateboss],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    },
-    {
-      opponents: [bossMonsters.offbalanceboss],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    },
-    {
-      opponents: [opponentMonsters.healgymboss, opponentMonsters.healgymguard2],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    },
+    [bossMonsters.angryboss],
+    [bossMonsters.deflateboss],
+    [bossMonsters.offbalanceboss],
+    [opponentMonsters.healgymboss, opponentMonsters.healgymguard2],
 ]
 
 

@@ -330,6 +330,167 @@ let mediumSoloEncounters = {
         }
       ]
     },
+
+    m6: {
+      name: "Sindur M6",
+      type: "fire",
+      XPGain: opponentXPGain*2,
+      Level: 1,
+      maxHP: 40,
+      encounterEnergy: 0,
+      opponentMoveIndex: false,
+      currentHP: 40,
+      strength: 0,
+      baseScale: opponentBaseScale,
+      baseBlock: opponentBaseBlock,
+      baseDamage: opponentBaseDamage,
+      dex: 0,
+      drown: 0,
+      hunted: 0,
+      avatar: "img/watersprite.png",
+      moves: [
+        {
+          name: "Rising Tide",
+          cost: "0",
+          text: (state, index, array) => {
+            return `Deal ${array[index].baseDamage - 2 + array[index].strength} damage. Gain ${array[index].baseScale} strength`
+          },
+          minReq: 0,
+          energyChange: "+1",
+          action: async (stateObj, index, array) => {
+            stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage-2, index, 1);
+            stateObj = immer.produce(stateObj, (newState) => {
+              newState.opponentMonster[index].strength += array[index].baseScale;
+            })
+            return stateObj;
+          }
+        },
+        {
+          name: false,
+        },
+        {
+          name: "Water Jets",
+          cost: "2",
+          text: (state, index, array) => {
+            return `Deal strength damage (${array[index].strength}) twice `
+          },
+          minReq: 2,
+          energyChange: "+1",
+          action: (stateObj, monsterIndex, array) => {
+            stateObj = dealPlayerDamage(stateObj, 0, monsterIndex, energyChange=1, attackNumber=2,);
+            return stateObj;
+          }
+        },
+        {
+          name: "Sea Wall",
+          cost: "3",
+          text: (state, index, array) => {
+            return `Gain (${1+(array[index].baseBlock*2)}) block `
+          },
+          minReq: 3,
+          energyChange: "+1",
+          action: (state, index, array) => {
+            let toChangeState = immer.produce(state, (newState) => {
+              newState.opponentMonster[index].encounterBlock += 1+(array[index].baseBlock*2);
+              newState.opponentMonster[index].encounterEnergy += 1;
+            })
+            return toChangeState;
+          }
+        },
+        {
+          name: "Tsunami",
+          cost: "4",
+          text: (state, index, array) => {
+            return `Deal ${(array[index].baseDamage * 2) + array[index].strength} damage.`
+          },
+          minReq: 4,
+          energyChange: "-4",
+          action: async (stateObj, index, array) => {
+            stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*2), index, energyChange=-4);
+            return stateObj;
+          }
+        },
+      ]
+    },
+
+    m7: {
+      name: "Balance M7",
+      type: "Air",
+      XPGain: opponentXPGain,
+      Level: 1,
+      maxHP: opponentMaxHP*9,
+      encounterEnergy: 0,
+      opponentMoveIndex: false,
+      currentHP: opponentMaxHP*9,
+      strength: 0,
+      dex: 0,
+      drown: 0,
+      hunted: 0,
+      poison: 0,
+      baseBlock: opponentBaseBlock,
+      baseDamage: opponentBaseDamage,
+      baseScale: opponentBaseScale,
+      baseHeal: 0,
+      avatar: "img/earthpsycho.png",
+      moves: [
+        {
+          name: "Fiery Slap",
+          cost: "0",
+          text: (state, index, array) => {
+            return `Deal ${(array[index].baseDamage+2) + array[index].strength} damage. Gain ${Math.ceil(array[index].baseScale/2)} dexterity`
+          },
+          minReq: 0,
+          energyChange: "+1",
+          action: async (stateObj, index, array) => {
+            stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage+2, index, 2);
+            stateObj = immer.produce(stateObj, (newState) => {
+              newState.opponentMonster[index].dex += Math.ceil(array[index].baseScale/2);
+            })
+            return stateObj;
+          }
+        },
+        {
+          name: false,
+        },
+        {
+          name: "Channel",
+          cost: "2",
+          text: (state, index, array) => {
+            return `Gain ${(array[index].baseBlock) + array[index].dex} block. Gain ${array[index].baseScale} Strength & Dexterity`
+          },
+          minReq: 2,
+          energyChange: "+2",
+          action: (stateObj, index, array) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+              newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock)  + array[index].dex);
+              newState.opponentMonster[index].strength += array[index].baseScale;
+              newState.opponentMonster[index].dex += array[index].baseScale;
+              newState.opponentMonster[index].encounterEnergy -= 4;
+            })
+            return stateObj;
+          }
+        }  ,
+        {
+          name: false,
+        },
+        {
+          name: "Burning Lance",
+          cost: "4",
+          text: (state, index, array) => {
+            return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage. You lose 1 dexterity`
+          },
+          minReq: 4,
+          energyChange: "-4",
+          action: async (stateObj, index, array) => {
+            stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage*2, index, -4);
+            stateObj = immer.produce(stateObj, (newState) => {
+              newState.playerMonster.dex -= 1;
+            })
+            return stateObj;
+          }
+        }    
+      ]
+    },
 }
 
 
@@ -535,5 +696,7 @@ let mediumMultiEncounters = {
           },
         ]
       },
+
+      
 
 }

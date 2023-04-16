@@ -1,4 +1,4 @@
-let hardEncounters = {
+let hardSoloEncounters = {
     h1: {
         name: "Block Gym Boss",
         type: "Air",
