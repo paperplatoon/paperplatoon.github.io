@@ -74,7 +74,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 50,
-  testingMode: true,
+  testingMode: false,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,
@@ -254,7 +254,7 @@ function fillMapWithArray(stateObj) {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
       if (stateObj.testingMode === true) {
-        newState.townMapSquares[4] = "Fight"
+        newState.townMapSquares[4] = "TestingTown"
       } else {
       newState.townMapSquares[4] =  "Fight";
       }
@@ -414,6 +414,11 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
       console.log("clicked on an healer")
       stateObj = immer.produce(stateObj, (newState) => {
         newState.status = Status.HealersShop;
+      })
+    } else if (stateObj.townMapSquares[indexToMoveTo] === "TestingTown") {
+      console.log("clicked on an healer")
+      stateObj = immer.produce(stateObj, (newState) => {
+        newState.status = Status.InTown;
       })
     } else if (stateObj.townMapSquares[indexToMoveTo] === "Remove") {
       console.log("clicked on remove")
@@ -2475,6 +2480,7 @@ function renderUpgradeCard(stateObj) {
 
 
 
+
 function renderCard(stateObj, cardArray, index, divName=false, functionToAdd=false, goldCost=false) {
   let cardObj = cardArray[index];
   let cardDiv = document.createElement("Div");
@@ -2535,12 +2541,6 @@ function renderCard(stateObj, cardArray, index, divName=false, functionToAdd=fal
           altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "upgrades", 1)
           altUpgradeText.classList.add("alt-card-text");
           cardDiv.append(altUpgradeText);
-          if (stateObj.InTown === true) {
-            let costText = document.createElement("P");
-            costText.textContent = "(" + stateObj.cardUpgradeCost+ " gold to upgrade)";
-            costText.classList.add("invisible-cost")
-            cardDiv.append(costText);
-          }
 
           if (typeof cardObj.cost === 'function') {
             let cardAltCost = document.createElement("H3");
@@ -2550,12 +2550,14 @@ function renderCard(stateObj, cardArray, index, divName=false, functionToAdd=fal
             topCardRowDiv.innerHTML = "";
             topCardRowDiv.append(cardAltCost, cardCost, cardName);
             cardDiv.append(topCardRowDiv, altUpgradeText, cardText);
-          }  else {}
+          }
+          if (stateObj.InTown === true) {
+            let costText = document.createElement("P");
+            costText.textContent = "(" + stateObj.cardUpgradeCost+ " gold to upgrade)";
+            costText.classList.add("invisible-cost")
+            cardDiv.append(costText);
+          }
 
-          // let costText = document.createElement("P");
-          // costText.textContent = "(" + stateObj.cardUpgradeCost + " gold to upgrade)";
-          // costText.classList.add("invisible-cost")
-          // cardDiv.append(costText);
         } else if (goldCost === "moreHits") {
           cardDiv.classList.add("card-change-text");
           let altHitsText =  document.createElement("P");
@@ -2902,8 +2904,8 @@ async function renderTown(stateObj) {
 
   //let townHealDiv = renderTownDiv(stateObj, "TownHealer", "img/healer.PNG", "Visit Healer", (stateObj.gold >= Math.floor(stateObj.healCost/2)), changeStatus, Status.HealersShop, "Not enough gold");
   let townShopDiv = await renderTownDiv(stateObj, "TownShop", "Visit Shop", true, changeStatus, Status.cardShop);
-  let townRemoveDiv = await renderTownDiv(stateObj, "TownRemove", `Pay ${stateObj.cardRemoveCost} gold to remove a card`,  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `(${stateObj.cardRemoveCost} gold needed to remove a card)`);
-  let townUpgradeDiv = await renderTownDiv(stateObj, "TownUpgrade", `Pay ${stateObj.cardUpgradeCost} gold to upgrade a card`, (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `(${stateObj.cardUpgradeCost} needed to upgrade a card)`);
+  let townRemoveDiv = await renderTownDiv(stateObj, "TownRemove", `${stateObj.cardRemoveCost} gold`,  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `${stateObj.cardRemoveCost} gold needed`);
+  let townUpgradeDiv = await renderTownDiv(stateObj, "TownUpgrade", `${stateObj.cardUpgradeCost} gold`, (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `${stateObj.cardUpgradeCost} gold needed`);
   let townGymDiv = await renderTownDiv(stateObj, "TownFight", "Fight Gym Boss", true, TownFight)
 
   townDiv.append(townShopDiv, townRemoveDiv, townUpgradeDiv, townGymDiv);

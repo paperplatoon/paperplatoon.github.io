@@ -296,8 +296,7 @@
 }
 
 .fight-text {
-  position: absolute;
-  top: 0vh;
+  display: block;
   color: white;
   font-size: 4vmin;
   background-color: black;
@@ -927,6 +926,10 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   position: absolute;
 }
 
+.town-div h3 {
+  z-index: 5;
+}
+
 .hunted:before {
 	content: "";
 	position: absolute;
@@ -1192,20 +1195,92 @@ button:hover {
   position: relative;
 }
 
-.cross:before, .cross:after {
+.TownUpgrade {
+  width: 15vw;
+  height: 30vh;
+  position: relative;
+  background: linear-gradient(
+    45deg,
+    #dfffd9c8 30%,
+    transparent 30%,
+    transparent 50%,
+    #dfffd9c8 50%,
+    #dfffd9c8 80%,
+    transparent 80%,
+    transparent 100%
+  );
+  background-size: 80px 80px;
+  animation: towndiv 6s linear infinite;
+}
+
+.TownRemove {
+  width: 15vw;
+  height: 30vh;
+  position: relative;
+  background: linear-gradient(
+    45deg,
+    #ffc7c7c8 30%,
+    transparent 30%,
+    transparent 50%,
+    #ffc7c7c8 50%,
+    #ffc7c7c8 80%,
+    transparent 80%,
+    transparent 100%
+  );
+  background-size: 80px 80px;
+  animation: towndiv 6s linear infinite;
+}
+
+.TownFight {
+  width: 15vw;
+  height: 30vh;
+  position: relative;
+  background: linear-gradient(
+    45deg,
+    #6661ffc8 30%,
+    transparent 30%,
+    transparent 50%,
+    #6661ffc8 50%,
+    #6661ffc8 80%,
+    transparent 80%,
+    transparent 100%
+  );
+  background-size: 80px 80px;
+  animation: towndiv 6s linear infinite;
+}
+
+.TownShop {
+  width: 15vw;
+  height: 30vh;
+  position: relative;
+  background: linear-gradient(
+    45deg,
+    #fffba7c8 30%,
+    transparent 30%,
+    transparent 50%,
+    #fffba7c8 50%,
+    #fffba7c8 80%,
+    transparent 80%,
+    transparent 100%
+  );
+  background-size: 80px 80px;
+  animation: towndiv 6s linear infinite;
+}
+
+.cross:before, .cross:after, .TownUpgrade:before, .TownUpgrade:after {
  content: "";
  position: absolute;
  background: rgb(7, 220, 0);
 }
 
-.cross:before {
+.cross:before, .TownUpgrade:before {
  left: 50%;
  width: 30%;
  margin-left: -15%;
  height: 100%;
 }
 
-.cross:after {
+.cross:after, .TownUpgrade::after {
   top: 50%;
   left: 0%;
   height: 30%;
@@ -1219,7 +1294,7 @@ button:hover {
   position: relative;
 }
 
-.minus-sign:before {
+.minus-sign:before, .TownRemove::before {
   content: "";
   position: absolute;
   top: 50%;
