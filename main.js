@@ -66,6 +66,7 @@ const Status = {
 let healStartCost = 50;
 let cardRemoveStartCost = 50;
 let cardUpgradeStartCost = 50
+let levelXPRequirements = [0, 10, 30, 60, 100, 150, 210, 280, 360, 450, 550];
 
 let gameStartState = {
   playerMonster: false,
@@ -115,8 +116,6 @@ let gameStartState = {
   playerXP: 0,
   playerLevel: 1
 };
-
-let levelXPRequirements = [0, 10, 30, 60, 100, 150, 210, 280, 360, 450, 550];
 
 const eventsArray = [
   // {
@@ -241,12 +240,15 @@ function fillMapWithArray(stateObj) {
   if (stateObj.testingMode === true) {
     townMonsterEncounters = [routes[0][3][1], routes[0][3][1],routes[0][3][1]]
   } else {
-    for (let i=0; i <6; i++) {
-      //set tempArray to the potential encounters for each route.
-      let tempArray = routes[stateObj.gymCount][i]
-      //pick one encounter from each route
-      townMonsterEncounters[i] = fisherYatesShuffle(tempArray)[0]
-    }
+    let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
+    let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
+    let hardShuffledEncounters = fisherYatesShuffle(hardEncounters);
+    townMonsterEncounters[0] = easyShuffledEncounters[0];
+    townMonsterEncounters[1] = easyShuffledEncounters[1];
+    townMonsterEncounters[2] = mediumShuffledEncounters[0];
+    townMonsterEncounters[3] = mediumShuffledEncounters[1];
+    townMonsterEncounters[4] = mediumShuffledEncounters[2];
+    townMonsterEncounters[5] = hardShuffledEncounters[0];
   }
 
     //fill the actual map
@@ -530,11 +532,12 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
             console.log(monsterObj.name + " blocked for " + calculatedDamage);
             monsterObj.encounterBlock -= calculatedDamage;
           } else {
-            console.log(monsterObj.name + " blocked for " + calculatedDamage + " and took " + (calculatedDamage - monsterObj.encounterBlock) + " damage");
+            let takenDamage = calculatedDamage - monsterObj.encounterBlock;
+            console.log(monsterObj.name + " blocked for " + calculatedDamage + " and took " + (takenDamage) + " damage");
             newState.fightDamageCount += 1;
-            newState.fightDamageTotal += (calculatedDamage - monsterObj.encounterBlock)
+            newState.fightDamageTotal += takenDamage
 
-            if (monsterObj.deflate && (calculatedDamage - monsterObj.encounterBlock) >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
+            if (monsterObj.deflate && takenDamage >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
               newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 1;
             } else if (monsterObj.angry) {
               monsterObj.encounterEnergy += 1;
@@ -543,17 +546,17 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
             } else if (monsterObj.enrage) {
               monsterObj.strength += monsterObj.enrage;
             }
-            monsterObj.currentHP -= (calculatedDamage - monsterObj.encounterBlock);
+            monsterObj.currentHP -= takenDamage;
             monsterObj.encounterBlock = 0;
           }
         })
       } else {
         let monsterObj = newState.opponentMonster[targetIndex]
-        if (newState.opponentMonster[targetIndex].hunted > 0) {
+        if (monsterObj.hunted > 0) {
           calculatedDamage *=2;
         }
-        if (newState.opponentMonster[targetIndex].encounterBlock == 0) {
-          console.log("You dealt " + calculatedDamage + " to " + newState.opponentMonster[targetIndex].name);
+        if (monsterObj.encounterBlock == 0) {
+          console.log("You dealt " + calculatedDamage + " to " + monsterObj.name);
           newState.fightDamageCount += 1;
           newState.fightDamageTotal += calculatedDamage;
           if (monsterObj.deflate && calculatedDamage >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
@@ -565,15 +568,16 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
           } else if (monsterObj.enrage) {
             monsterObj.strength += monsterObj.enrage;
           }
-          newState.opponentMonster[targetIndex].currentHP -= calculatedDamage;
-        } else if (newState.opponentMonster[targetIndex].encounterBlock >= calculatedDamage) {
-          console.log(newState.opponentMonster[targetIndex].name + " blocked for " + calculatedDamage);
-          newState.opponentMonster[targetIndex].encounterBlock -= calculatedDamage;
+          monsterObj.currentHP -= calculatedDamage;
+        } else if (monsterObj.encounterBlock >= calculatedDamage) {
+          console.log(monsterObj.name + " blocked for " + calculatedDamage);
+          monsterObj.encounterBlock -= calculatedDamage;
         } else {
-          console.log(newState.opponentMonster[targetIndex].name + " blocked for " + calculatedDamage + " and took " + (calculatedDamage - newState.opponentMonster[targetIndex].encounterBlock) + " damage");
+          let takenDamage = calculatedDamage - monsterObj.encounterBlock
+          console.log(monsterObj.name + " blocked for " + calculatedDamage + " and took " + takenDamage + " damage");
           newState.fightDamageCount += 1;
-          newState.fightDamageTotal += (calculatedDamage - monsterObj.encounterBlock)
-          if (monsterObj.deflate && (calculatedDamage - monsterObj.encounterBlock) >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
+          newState.fightDamageTotal += takenDamage
+          if (monsterObj.deflate && takenDamage >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
             newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 1;
           } else if (monsterObj.angry) {
             monsterObj.encounterEnergy += 1;
@@ -582,8 +586,8 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
           } else if (monsterObj.enrage) {
             monsterObj.strength += monsterObj.enrage;
           }
-          newState.opponentMonster[targetIndex].currentHP -= (calculatedDamage - newState.opponentMonster[targetIndex].encounterBlock);
-          newState.opponentMonster[targetIndex].encounterBlock = 0;
+          monsterObj.currentHP -= takenDamage;
+          monsterObj.encounterBlock = 0;
         }
       }
     }
@@ -1633,17 +1637,12 @@ async function monsterLevelUp(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     if (stateObj.status === Status.InEncounter) {
       let cardName = stateObj.playerDeck[targetIndex].name
-      if (stateObj.encounterHand.find(card => card.name === cardName)) {
-        let handIndex = newState.encounterHand.findIndex(card => card.name === cardName)
-        newState.encounterHand[handIndex].upgrades += cardUpgrades;
-      } else if (stateObj.encounterDiscard.find(card => card.name === cardName)) {
-        let discardIndex = newState.encounterDiscard.findIndex(card => card.name === cardName)
-        newState.encounterDiscard[discardIndex].upgrades += cardUpgrades;
-      } else if (stateObj.encounterDraw.find(card => card.name === cardName)) {
-        let drawIndex = newState.encounterDraw.findIndex(card => card.name === cardName)
-        newState.encounterDraw[drawIndex].upgrades += cardUpgrades;
-      } else {}
-  }
+      const allCardsArray = newState.encounterHand.concat(newState.encounterDraw, newState.encounterDiscard)
+
+      if (allCardsArray.find(card => card.name === cardName)) {
+        allCardsArray.find(card => card.name === cardName).upgrades += cardUpgrades
+      }
+    }
   })
   
 
@@ -1665,34 +1664,34 @@ async function monsterLevelUp(stateObj) {
 
 function PlayACardImmer(stateObj, cardIndexInHand) {
   stateObj = immer.produce(stateObj, (newState) => {
+    let playedCard = stateObj.encounterHand[cardIndexInHand]
     newState.cardsPerTurn += 1;
-    if (stateObj.encounterHand[cardIndexInHand]) {
-      if (stateObj.encounterHand[cardIndexInHand].exhaust === true) {
-        console.log("you exhausted " + stateObj.encounterHand[cardIndexInHand].name);
+    if (playedCard) {
+      if (playedCard.exhaust === true) {
+        console.log("you exhausted " + playedCard.name);
         newState.encounterHand.splice(cardIndexInHand, 1);
       } else {
-        newState.encounterDiscard.push(stateObj.encounterHand[cardIndexInHand]);
+        newState.encounterDiscard.push(playedCard);
         newState.encounterHand.splice(cardIndexInHand, 1);
       }
     } 
     //trigger if life gain
     if (newState.gainLifePerCard > 0) {
       //trigger if player is not at full health
-      if (newState.playerMonster.currentHP < newState.playerMonster.maxHP) {
+      let missingHealth = newState.playerMonster.maxHP-newState.playerMonster.currentHP;
+      if (missingHealth > 0) {
         //if the lifegain is less than total HP loss, do heal to full, otherwise, heal per card
-        if (newState.playerMonster.maxHP-newState.playerMonster.currentHP > 0 && newState.playerMonster.maxHP-newState.playerMonster.currentHP < newState.gainLifePerCard) {
-          newState.fightHealTotal += newState.playerMonster.maxHP-newState.playerMonster.currentHP;
+        if (missingHealth < newState.gainLifePerCard) {
+          newState.fightHealTotal += missingHealth;
           newState.playerMonster.currentHP = newState.playerMonster.maxHP;
           newState.fightHealCount +=1;
-        } else if (newState.playerMonster.maxHP-newState.playerMonster.currentHP >= newState.gainLifePerCard) {
+        } else if (missingHealth >= newState.gainLifePerCard) {
           newState.fightHealTotal += newState.gainLifePerCard;
           newState.playerMonster.currentHP += newState.gainLifePerCard;
           newState.fightHealCount +=1;
         }
       }
-
     }
-
   })
   return stateObj;
 }

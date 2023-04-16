@@ -404,14 +404,14 @@ let easySoloEncounters = {
       },
       {
         name: "Unleash",
-        cost: "5",
+        cost: "4",
         text: (state, index, array) => {
             return `Deal damage equal to total HP lost (${state.fightDamageTotal}). Unaffected by strength`
         },
-        minReq: 5,
-        energyChange: "-5",
+        minReq: 4,
+        energyChange: "-4",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, stateObj.fightDamageTotal-array[index].strength, index, -5);
+          stateObj = await dealPlayerDamage(stateObj, stateObj.fightDamageTotal-array[index].strength, index, -4);
           return stateObj;
         }
       },

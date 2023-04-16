@@ -1,5 +1,4 @@
 let mediumSoloEncounters = {
-
       m1: {
         name: "Heal Gym Disciple",
         type: "Air",
@@ -335,6 +334,7 @@ let mediumSoloEncounters = {
       name: "Sindur M6",
       type: "fire",
       XPGain: opponentXPGain*2,
+      goldOnDefeat: Math.floor(opponentGold*3),
       Level: 1,
       maxHP: 40,
       encounterEnergy: 0,
@@ -417,6 +417,7 @@ let mediumSoloEncounters = {
       name: "Balance M7",
       type: "Air",
       XPGain: opponentXPGain,
+      goldOnDefeat: Math.floor(opponentGold*3),
       Level: 1,
       maxHP: opponentMaxHP*9,
       encounterEnergy: 0,
@@ -645,6 +646,7 @@ let mediumMultiEncounters = {
         name: "Strength MM3",
         type: "Fire",
         XPGain: opponentXPGain,
+        goldOnDefeat: Math.floor(opponentGold*2),
         Level: 1,
         maxHP: opponentMaxHP*6,
         encounterEnergy: 0,
@@ -696,7 +698,4 @@ let mediumMultiEncounters = {
           },
         ]
       },
-
-      
-
 }
