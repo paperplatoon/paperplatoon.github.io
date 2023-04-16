@@ -62,9 +62,9 @@ let routes = [
       [mediumSoloEncounters.m4],
       [mediumSoloEncounters.m5],
       [mediumSoloEncounters.m6],
-      [mediumSoloEncounters.mm1, mediumSoloEncounters.mm2],
-      [mediumSoloEncounters.mm1, mediumSoloEncounters.mm3],
-      [mediumSoloEncounters.mm2, mediumSoloEncounters.mm3],
+      [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
+      [mediumMultiEncounters.mm1, mediumMultiEncounters.mm3],
+      [mediumMultiEncounters.mm2, mediumMultiEncounters.mm3],
     ],
     //encounter 4-6
     [
@@ -74,9 +74,9 @@ let routes = [
       [mediumSoloEncounters.m4],
       [mediumSoloEncounters.m5],
       [mediumSoloEncounters.m6],
-      [mediumSoloEncounters.mm1, mediumSoloEncounters.mm2],
-      [mediumSoloEncounters.mm1, mediumSoloEncounters.mm3],
-      [mediumSoloEncounters.mm2, mediumSoloEncounters.mm3],
+      [mediumSoloEncounters.mm1, mediumMultiEncounters.mm2],
+      [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
+      [mediumMultiEncounters.mm1, mediumMultiEncounters.mm3],
     ],
     //encounter 5
     [
