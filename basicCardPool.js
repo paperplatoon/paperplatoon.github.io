@@ -31,9 +31,9 @@ let cards = {
         name: "Wellspring",
         text: (state, index, array) => { 
             if (array[index].upgrades ===0) {
-                return `Draw ${1+array[index].upgrades} card`
+                return `Draw ${1+array[index].upgrades} card. Draw 1 more card for each turn retained`
             } else {
-                return `Draw ${1+array[index].upgrades} cards`
+                return `Draw ${1+array[index].upgrades} cards. Draw 1 more card for each turn retained`
             }
            
         },
@@ -514,7 +514,6 @@ let cards = {
       disablingblow: {
         cardID: 48,
         name: "Disabling Blow",
-        retain: true,
         text: (state, index, array) => { 
           if (array[index].baseHits === 1) {
             return `Deal ${array[index].baseDamage + array[index].upgrades + state.playerMonster.strength} damage. Opponent loses ${2 + array[index].upgrades} strength`;
@@ -1091,7 +1090,7 @@ let cards = {
         rare: true,
         name: "Unwavering Defense",
         text: (state, index, array) => { 
-          return `Gain ${array[index].baseBlock + state.playerMonster.dex + (5*array[index].upgrades)} block. Your block does not disappear at end of turn.` 
+          return `Gain ${array[index].baseBlock + state.playerMonster.dex + (4*array[index].upgrades)} block. Your block does not disappear at end of turn.` 
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -1101,7 +1100,7 @@ let cards = {
         cost:  (state, index, array) => {
           return array[index].baseCost;
         },
-        baseBlock: 10,
+        baseBlock: 8,
         cardType: "ability",
         elementType: "fire",
         action: (stateObj, index, array) => {
@@ -2516,7 +2515,7 @@ let specialCardPool = {
       cost:  (stateObj, index, array) => {
         return array[index].baseCost;
       },
-      basePoison: 5,
+      basePoison: 10,
       cardType: "ability",
       elementType: "special",
       action: (stateObj, index, array) => {
@@ -2662,7 +2661,7 @@ let specialCardPool = {
       rare: true,
       cardID: 007,
       name: "Testing Toxin",
-      text: (state, index, array) => { return `Apply ${array[index].basePoison + (array[index].upgrades*2)} poison to the enemy.`},
+      text: (state, index, array) => { return `Apply ${array[index].basePoison + (array[index].upgrades*3)} poison to the enemy.`},
       minReq: (stateObj, index, array) => {
         return array[index].baseCost;
       },
@@ -2671,12 +2670,12 @@ let specialCardPool = {
       cost:  (stateObj, index, array) => {
         return array[index].baseCost;
       },
-      basePoison: 5,
+      basePoison: 15,
       cardType: "ability",
       elementType: "special",
       action: (stateObj, index, array) => {
         stateObj = immer.produce(stateObj, (newState) => {
-          newState.opponentMonster[newState.targetedMonster].poison += array[index].basePoison+(array[index].upgrades*2);
+          newState.opponentMonster[newState.targetedMonster].poison += array[index].basePoison+(array[index].upgrades*3);
           newState.playerMonster.encounterEnergy -= array[index].baseCost;
         })
         return stateObj;

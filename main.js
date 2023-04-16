@@ -239,7 +239,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [routes[0][0][1], routes[0][1][3],routes[0][1][3]]
+    townMonsterEncounters = [routes[0][3][1], routes[0][3][1],routes[0][3][1]]
   } else {
     for (let i=0; i <6; i++) {
       //set tempArray to the potential encounters for each route.
@@ -254,7 +254,7 @@ function fillMapWithArray(stateObj) {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
       if (stateObj.testingMode === true) {
-        newState.townMapSquares[4] = "TestingTown"
+        newState.townMapSquares[4] = "Fight"
       } else {
       newState.townMapSquares[4] =  "Fight";
       }
@@ -1621,12 +1621,30 @@ function upgradeCard(stateObj) {
 
 async function monsterLevelUp(stateObj) {
   let targetIndex = Math.floor(Math.random() * (stateObj.playerDeck.length));
+  let cardUpgrades = 1;
 
   if (stateObj.playerXP >= levelXPRequirements[stateObj.playerLevel+1]) {
     await upgradeAnimation(stateObj, targetIndex, stateObj.playerDeck, 2, divIDName="app", levelUp=true);
+    cardUpgrades = 2;
   } else {
     await upgradeAnimation(stateObj, targetIndex, stateObj.playerDeck, 1, divIDName="app", levelUp=true);
   }
+
+  stateObj = immer.produce(stateObj, (newState) => {
+    if (stateObj.status === Status.InEncounter) {
+      let cardName = stateObj.playerDeck[targetIndex].name
+      if (stateObj.encounterHand.find(card => card.name === cardName)) {
+        let handIndex = newState.encounterHand.findIndex(card => card.name === cardName)
+        newState.encounterHand[handIndex].upgrades += cardUpgrades;
+      } else if (stateObj.encounterDiscard.find(card => card.name === cardName)) {
+        let discardIndex = newState.encounterDiscard.findIndex(card => card.name === cardName)
+        newState.encounterDiscard[discardIndex].upgrades += cardUpgrades;
+      } else if (stateObj.encounterDraw.find(card => card.name === cardName)) {
+        let drawIndex = newState.encounterDraw.findIndex(card => card.name === cardName)
+        newState.encounterDraw[drawIndex].upgrades += cardUpgrades;
+      } else {}
+  }
+  })
   
 
 
@@ -3104,7 +3122,7 @@ async function endTurnIncrement(stateObj) {
         monsterObj.hunted -=1;
       };
       if (monsterObj.poison > 0) {
-        monsterObj.currentHP -= (monsterObj.poison*3)
+        monsterObj.currentHP -= (monsterObj.poison)
       }
       if (monsterObj.inflame) {
         monsterObj.strength += monsterObj.inflame;

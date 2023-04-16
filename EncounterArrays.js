@@ -46,7 +46,6 @@ let routes = [
       [easySoloEncounters.e9],
     ],
     //encounter 2
-          
     [
       [easySoloEncounters.e3],
       //potential encounter 2: routes[0][1][1]
@@ -69,6 +68,7 @@ let routes = [
     //encounter 4-6
     [
       [mediumSoloEncounters.m1],
+      [easyMultiEncounters.e4, easyMultiEncounters.e5, easyMultiEncounters.e4],
       [mediumSoloEncounters.m2],
       [mediumSoloEncounters.m3],
       [mediumSoloEncounters.m4],
@@ -76,7 +76,8 @@ let routes = [
       [mediumSoloEncounters.m6],
       [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
       [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
-      [mediumMultiEncounters.mm1, mediumMultiEncounters.mm3],
+      [mediumMultiEncounters.mm1, mediumMultiEncounters.mm3]
+      
     ],
     //encounter 5
     [
@@ -94,62 +95,108 @@ let routes = [
   //--------------------------------------------------------------------------------------------------------------------------------
   //route 2; routes[0]
   //--------------------------------------------------------------------------------------------------------------------------------
-  [ 
-    //potential encounter 1
-    [{
-      opponents: [opponentMonsters.balanceroute2],
-      goldReward: 20,
-      XP: 70
-    }],
-    //potential encounter 2
-    [{
-      opponents: [bossMonsters.deflateboss],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    }],
-    //potential encounter 1
-    [{
-      opponents: [bossMonsters.angryboss],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    }],
-    //potential encounter 2
-    [{
-      opponents: [bossMonsters.deflateboss],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    }],
-    //potential encounter 1
-    [{
-      opponents: [bossMonsters.angryboss],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    }],
-    //potential encounter 2
-    [{
-      opponents: [bossMonsters.deflateboss],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    }],
-    //potential encounter 1
-    [{
-      opponents: [bossMonsters.angryboss],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    }],
-    //potential encounter 2
-    [{
-      opponents: [bossMonsters.deflateboss],
-      goldReward: 125,
-      boss: true,
-      XP: 70
-    }],
+  [
+    [easySoloEncounters.e1],
+    [easySoloEncounters.e2],
+    [easySoloEncounters.e8],
+    [easySoloEncounters.e9],
+  ],
+  //encounter 2
+        
+  [
+    [easySoloEncounters.e3],
+    //potential encounter 2: routes[0][1][1]
+    [easySoloEncounters.e6],
+    [easyMultiEncounters.e4, easyMultiEncounters.e5],
+    [easySoloEncounters.e7],
+  ],
+  //encounter 3
+  [
+    [mediumSoloEncounters.m1],
+    [mediumSoloEncounters.m2],
+    [mediumSoloEncounters.m3],
+    [mediumSoloEncounters.m4],
+    [mediumSoloEncounters.m5],
+    [mediumSoloEncounters.m6],
+    [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
+    [mediumMultiEncounters.mm1, mediumMultiEncounters.mm3],
+    [mediumMultiEncounters.mm2, mediumMultiEncounters.mm3],
+  ],
+  //encounter 4-6
+  [
+    [mediumSoloEncounters.m1],
+    [mediumSoloEncounters.m2],
+    [mediumSoloEncounters.m3],
+    [mediumSoloEncounters.m4],
+    [mediumSoloEncounters.m5],
+    [mediumSoloEncounters.m6],
+    [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
+    [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
+    [mediumMultiEncounters.mm1, mediumMultiEncounters.mm3],
+  ],
+  //encounter 5
+  [
+  [hardSoloEncounters.h1],
+  [hardSoloEncounters.h2],
+  [hardSoloEncounters.h3]
+  ],
+  //encounter 6
+  [
+    [hardSoloEncounters.h1],
+    [hardSoloEncounters.h2],
+    [hardSoloEncounters.h3]
+  ],
+
+  [
+    [easySoloEncounters.e1],
+    [easySoloEncounters.e2],
+    [easySoloEncounters.e8],
+    [easySoloEncounters.e9],
+  ],
+  //encounter 2
+        
+  [
+    [easySoloEncounters.e3],
+    //potential encounter 2: routes[0][1][1]
+    [easySoloEncounters.e6],
+    [easyMultiEncounters.e4, easyMultiEncounters.e5],
+    [easySoloEncounters.e7],
+  ],
+  //encounter 3
+  [
+    [mediumSoloEncounters.m1],
+    [mediumSoloEncounters.m2],
+    [mediumSoloEncounters.m3],
+    [mediumSoloEncounters.m4],
+    [mediumSoloEncounters.m5],
+    [mediumSoloEncounters.m6],
+    [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
+    [mediumMultiEncounters.mm1, mediumMultiEncounters.mm3],
+    [mediumMultiEncounters.mm2, mediumMultiEncounters.mm3],
+  ],
+  //encounter 4-6
+  [
+    [mediumSoloEncounters.m1],
+    [mediumSoloEncounters.m2],
+    [mediumSoloEncounters.m3],
+    [mediumSoloEncounters.m4],
+    [mediumSoloEncounters.m5],
+    [mediumSoloEncounters.m6],
+    [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
+    [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
+    [mediumMultiEncounters.mm1, mediumMultiEncounters.mm3],
+  ],
+  //encounter 5
+  [
+  [hardSoloEncounters.h1],
+  [hardSoloEncounters.h2],
+  [hardSoloEncounters.h3]
+  ],
+  //encounter 6
+  [
+    [hardSoloEncounters.h1],
+    [hardSoloEncounters.h2],
+    [hardSoloEncounters.h3]
   ]
 ]
 

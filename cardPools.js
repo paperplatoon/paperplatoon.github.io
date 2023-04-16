@@ -25,6 +25,7 @@ let fireCardPool = {
     //draw - 2
     darkknowledge: {...cards.darkknowledge},
     recall: {...cards.recall},
+    wellspring: {...cards.recall},
     //destroy energy - 2
     dampen: {...cards.dampen},
     //self-scaling
@@ -33,9 +34,10 @@ let fireCardPool = {
   
     //40 attack and block total
 //ATTACKS - 23
-    //1 energy - 16
+    //1 energy - 17
     //5
     followupslap: {...cards.followupslap},
+    buildingflame: {...cards.buildingflame},
     //heal
     vampiricstrike: {...cards.vampiricstrike},
     //return

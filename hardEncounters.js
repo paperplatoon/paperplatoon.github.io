@@ -150,10 +150,10 @@ let hardSoloEncounters = {
         XPGain: opponentXPGain*3,
         goldOnDefeat: Math.floor(opponentGold*7),
         Level: 1,
-        maxHP: opponentMaxHP*20,
+        maxHP: opponentMaxHP*14,
         encounterEnergy: 0,
         opponentMoveIndex: false,
-        currentHP: opponentMaxHP*20,
+        currentHP: opponentMaxHP*14,
         strength: 0,
         dex: 0,
         drown: 0,
@@ -174,7 +174,7 @@ let hardSoloEncounters = {
             minReq: 0,
             energyChange: "+2",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(newState, array[index].baseDamage, index, 2);
+              stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index, 2);
               stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].strength += array[index].baseScale*2;
               })
