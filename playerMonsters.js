@@ -166,7 +166,7 @@ let playerMonsters = {
         //win
         specialCardPool.testkill,
         fireCardPool.recall,
-        fireCardPool.ascension,
+        fireCardPool.unwaveringdefense
       ],
     },
 

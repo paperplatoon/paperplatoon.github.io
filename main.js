@@ -22,46 +22,46 @@
 // - - - - - -  - - - - -Creating the State - - - - - -  - - - - -
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
 const Status = {
-  ChoosingMonster: "Choose a monster",
-  UpgradingCards: "Choose a card. Upgrade it.",
-  ChooseEncounterCardReward: "Choose a card. Add it to your deck",
-  OverworldMap: "choose where to go next",
-  InEncounter: "In Combat",
-  WonEncounter: "won encounter",
-  RemovingCards: "Choose a card to remove from your deck",
-  Death: "You died",
-  InTown: "In Town",
-  DecreasingChoice: "Choose one -decrease ",
-  DecreasingCost: "Choose a card. It costs 1 less",
-  IncreasingCost: "Choose a card. It costs 1 more. Gain 125 gold",
-  HealEndOfFightChoice: "Gain Max HP or lose but heal after fights",
-  IncreaseBlockChoice: "choose to improve a block or an attack",
-  IncreasingBlock: "Choose a card. It gets +7 block",
-  IncreasingHits: "Choose a card. It hits 1 extra time",
-  HitsVsAttackChoice: "Choose 1 - hitsvat",
-  IncreasingAttack: "Choose an attack. It deals +5 damage",
-  MaxHPvsHealChoice: "Choose a health ",
-  DuplicatingCards: "Choose a card. Add a copy of it to your deck",
-  DuplicatingCardFiveTimes: "Choose a card. Add 7 copies to your deck",
-  DuplicateChoice: "Choose one",
-  DoublingAttack: "Choose a card. +50% base damage",
-  DoubleUpgradeEvent: "Upgrade a card twice",
-  AttackChoiceEvent: "Choose one option",
-  LevelUpEvent: "Permanently increase one stat",
-  ChooseRareEvent: "Choose a rare card. Add it to your deck",
-  PaidRemovalEvent: "Pawn Shop. Pays 50 gold for a card (100 for a rare)",
-  PaidRemovalCardList: "Choose Card To Remove",
-  AssassinTrainingEvent: "Remove all attacks from your deck. Add a Fatal Toxin (applies 5 poison)",
-  ShowCardPool: "showing card pool",
-  HealersShop: "Restore  health for a price",
-  cardShop: "Buy cards to add to your deck",
-  PeekBehindTheCurtain: "peeking now",
-  WealthyPacifist: "Willing to pay for peace",
-  PaidAttackRemoval: "Pays 50 gold to remove an attack (100 for a rare)",
-  DeathScreen: "You stupid, stupid asshole! You got your Neo-Neopet killed! Refresh the page to try again",
-  VictoryScreen: "You and your little Neo-Neopet have beaten all the content available in this demo! Check back soon!"
+  ChoosingMonster: renderChooseMonster,
+  UpgradingCards: renderUpgradeCard,
+  ChooseEncounterCardReward: renderChooseEncounterCardReward,
+  OverworldMap: renderMapScreen,
+  InEncounter: renderDivs,
+  RemovingCards: renderRemoveCard,
+  InTown: renderTown,
+  DecreasingChoice: renderDecreaseChoice,
+  DecreasingCost: renderDecreaseCardCost,
+  IncreasingCost: renderIncreaseCardCost,
+  HealEndOfFightChoice: renderHealEndOfFightChoice,
+  IncreaseBlockChoice: renderIncreaseBlockChoice,
+  IncreasingBlock: renderIncreaseCardBlock,
+  IncreasingHits: renderIncreaseBaseHit,
+  HitsVsAttackChoice: renderHitsAttackChoice,
+  IncreasingAttack: renderIncreaseCardAttack,
+  MaxHPvsHealChoice: renderMaxHPvsExtraHeal,
+  DuplicatingCards: renderDuplicateCard,
+  DuplicatingCardFiveTimes: renderDuplicateCardFiveTimes,
+  DuplicateChoice: renderDuplicateChoice,
+  DoublingAttack: renderDoubleCardAttack,
+  DoubleUpgradeEvent: renderDoubleUpgradeCard,
+  AttackChoiceEvent: renderAttackChoiceEvent,
+  LevelUpEvent: renderLevelUp,
+  ChooseRareEvent: renderChooseRareEvent,
+  PaidRemovalEvent: renderPaidRemovalEvent,
+  PaidRemovalCardList: renderPaidRemovalCardList,
+  AssassinTrainingEvent: renderAssassinTrainingEvent,
+  ShowCardPool: renderCardPool,
+  HealersShop: renderHealer,
+  cardShop: renderShop,
+  PeekBehindTheCurtain: renderPeekBehindDevCurtain,
+  WealthyPacifist: renderWealthyPacifist,
+  PaidAttackRemoval: renderPaidAttackRemoval,
+  DeathScreen: renderWinLoseScreen,
+  VictoryScreen: renderWinLoseScreen
 };
+
 
 let healStartCost = 50;
 let cardRemoveStartCost = 50;
@@ -274,8 +274,6 @@ function fillMapWithArray(stateObj) {
     } else {
       newState.townBossEncounter = newState.townBossArray[newState.gymCount];
     }
-  
-     
   })
    changeState(stateObj);
   return stateObj
@@ -1186,6 +1184,9 @@ async function renderPlayerMonster(stateObj) {
     let playerBlock = document.createElement("H3");
     playerBlock.textContent = stateObj.playerMonster.encounterBlock;
     playerBlock.classList.add("monster-block");
+    if (stateObj.blockKeep === true) {
+      playerBlock.classList.add("monster-block-unwavering");
+    }
     topRowDiv.appendChild(playerBlock);
   }
 
@@ -1854,6 +1855,7 @@ function renderRemoveCard(stateObj) {
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", removeCard, goldCost="remove");
   skipToTownButton(stateObj, "Not right now", ".remove-div");
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 
@@ -1879,6 +1881,7 @@ function renderCardPool(stateObj, cardPool) {
   divContainer("app");
   renderClickableCardList(stateObj, Object.values(fireCardPool), "remove-div");
   skipToTownButton(stateObj, "I don't want to remove any of these cards from my deck", ".remove-div");
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 
@@ -1888,6 +1891,7 @@ function renderRetainCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", retainCard);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 
@@ -1900,6 +1904,7 @@ function renderDoubleUpgradeCard(stateObj) {
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", doubleUpgradeCard, goldCost="doubleupgrade");
   skipToTownButton(stateObj, "I don't want to upgrade any of these cards twice (+50 gold, but event disappears)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
   };
 
 function renderChooseEncounterCardReward(stateObj) {
@@ -1933,6 +1938,7 @@ function renderChooseRareEvent(stateObj) {
   divContainer("app");
   eventText("remove-div", newDivName=false, "Treasure Salvage", "Your monster starts digging furiously at the ground. It unearths a rare spell tome. As you watch, the tome's text shifts before your eyes between three different options. You realize that you can't look away - the slow rhythyms of the shifting text is casting a powerful mesmer charm on you. You can only break the charm by picking one of the three options to add to your deck. Which will you choose?");
   renderClickableCardList(stateObj, sampledCardPool, "remove-div", chooseThisCard);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
  };
 
  function renderPeekBehindDevCurtain(stateObj) {
@@ -1942,6 +1948,7 @@ function renderChooseRareEvent(stateObj) {
   divContainer("app");
   eventText("remove-div", newDivName=false, "Peek Behind the Curtain", "Developers try pretty hard to make sure that you're only offered cards in line with your current power level. This event is the exception. You've managed to get your hands on some obscenely powerful shit. ");
   renderClickableCardList(stateObj, cardPool, "remove-div", chooseThisCard);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
  };
 
  //ASSASSIN TRAINING
@@ -1955,6 +1962,7 @@ async function renderAssassinTrainingEvent(stateObj) {
   let DexDiv = await renderTownDiv(stateObj, "binaryChoice", "Gain 1 permanent Dexterity", true, increaseDexEvent, Status.OverworldMap, altText=false, 1);
   document.getElementById("remove-div").append(removeAttacksDiv, DexDiv);
   skipToTownButton(stateObj, "Not right now", ".remove-div", cardSkip=false, isEventUsedForSkipButton=false);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 function assassinTraining(stateObj) {
@@ -2002,6 +2010,7 @@ async function renderPaidRemovalEvent(stateObj) {
   let recycleDiv = await renderTownDiv(stateObj, "binaryChoice", "Gain 1 Recycler spell that exhausts all other cards in hand", true, addRecycler, Status.OverworldMap, altText=false);
   document.getElementById("remove-div").append(paidRemovalDiv, recycleDiv);
   skipToTownButton(stateObj, "Not right now", ".remove-div", cardSkip=false, isEventUsedForSkipButton=false);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 function renderPaidRemovalCardList(stateObj) {
@@ -2009,6 +2018,7 @@ function renderPaidRemovalCardList(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", paidRemoval, goldCost="paidremoval");
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 async function addRecycler(stateObj) {
@@ -2034,6 +2044,7 @@ async function renderLevelUp(stateObj) {
   
   document.getElementById("level-up-div").append(strengthDiv, DexDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 function increaseStrengthEvent(stateObj) {
@@ -2058,6 +2069,7 @@ async function renderAttackChoiceEvent(stateObj) {
   let increaseAttackDiv = await renderTownDiv(stateObj, "increaseAttack", "Increase a card's attack by 5", true, changeStatus, Status.IncreasingAttack);
   
   document.getElementById("level-up-div").append(doubleDiv, increaseAttackDiv);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
  };
 
 function renderIncreaseCardAttack(stateObj) {
@@ -2070,6 +2082,7 @@ function renderIncreaseCardAttack(stateObj) {
     }
   });
   skipToTownButton(stateObj, "I choose not to increase the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 async function renderDoubleCardAttack(stateObj) {
@@ -2082,6 +2095,7 @@ async function renderDoubleCardAttack(stateObj) {
     }
   });
   skipToTownButton(stateObj, "I choose not to increase the attack of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 //Wealthy Pacifist
@@ -2095,6 +2109,7 @@ async function renderWealthyPacifist(stateObj) {
   let removeDiv = await renderTownDiv(stateObj, "removeAttack", "Remove an attack. Gain 50 gold", true, changeStatus, Status.PaidAttackRemoval, altText=false);
   
   document.getElementById("level-up-div").append(withdrawDiv, removeDiv);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv");
 };
 
 async function wealthyPacifistWithdrawEvent(stateObj, statusToChange) {
@@ -2121,6 +2136,7 @@ function renderPaidAttackRemoval(stateObj) {
     }
   });
   skipToTownButton(stateObj, "Not right now", ".remove-div", cardSkip=false, isEventUsedForSkipButton=false);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
  };
 
 //Duplicate Choice
@@ -2136,6 +2152,7 @@ async function renderDuplicateChoice(stateObj) {
   
   document.getElementById("level-up-div").append(OneDuplicateDiv, sevenDuplicateDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 function renderDuplicateCard(stateObj) {
@@ -2143,6 +2160,7 @@ function renderDuplicateCard(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", duplicateCard);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 function renderDuplicateCardFiveTimes(stateObj) {
@@ -2150,6 +2168,7 @@ function renderDuplicateCardFiveTimes(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", duplicateCardFiveTimes);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 async function duplicateCard(stateObj, index, array) {
@@ -2193,6 +2212,7 @@ async function renderDecreaseChoice(stateObj) {
   
   document.getElementById("level-up-div").append(decreaseDiv, increaseDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 function renderDecreaseCardCost(stateObj) {
@@ -2206,6 +2226,7 @@ function renderDecreaseCardCost(stateObj) {
       }
     }
   }); 
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 function decreaseCardCost(stateObj, index, array) {
@@ -2228,6 +2249,7 @@ function renderIncreaseCardCost(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, index, "remove-div", IncreaseCardCost, goldCost="doubleattack")
     }
   }); 
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 function IncreaseCardCost(stateObj, index, array) {
@@ -2254,6 +2276,7 @@ async function renderHitsAttackChoice(stateObj) {
   
   document.getElementById("level-up-div").append(div1, div2);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 function renderIncreaseBaseHit(stateObj) {
@@ -2266,6 +2289,7 @@ function renderIncreaseBaseHit(stateObj) {
       renderCard(stateObj, stateObj.playerDeck, index, "remove-div", increaseBaseHits, goldCost="moreHits")
     }
   });
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 function increaseBaseHits(stateObj, index, array) {
@@ -2292,6 +2316,7 @@ async function renderMaxHPvsExtraHeal(stateObj) {
   
   document.getElementById("level-up-div").append(maxHPDiv, extraHealDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
  };
 
 async function increaseMaxHP(stateObj, statusToChange, valueToPass) {
@@ -2329,6 +2354,7 @@ async function renderHealEndOfFightChoice(stateObj) {
   
   document.getElementById("level-up-div").append(maxHPDiv, loseHPDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 async function loseMaxHPHeal(stateObj, index) {
@@ -2356,6 +2382,7 @@ async function renderHealer(stateObj) {
   document.getElementById("level-up-div").classList.add("healer-div");
   document.getElementById("level-up-div").append(healDiv, goldDiv);
   skipToTownButton(stateObj, "I want to come back later", ".remove-div", cardSkip=false, isEventUsedForSkipButton=false);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 function fullHeal(stateObj) {
@@ -2407,6 +2434,7 @@ function renderShop(stateObj) {
 
   document.getElementById("shop-div").append(fullHealDiv);
   skipToTownButton(stateObj, "I don't want to buy anything right now", "#shop-div");
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 function cheapHeal(stateObj) {
@@ -2437,6 +2465,7 @@ async function renderIncreaseBlockChoice(stateObj) {
   
   document.getElementById("level-up-div").append(div1, div2);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 
@@ -2450,6 +2479,7 @@ function renderIncreaseCardBlock(stateObj) {
     }
   });
   skipToTownButton(stateObj, "I choose not to increase the block of any of these cards (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true); 
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 function increaseCardBlock(stateObj, index, array) {
@@ -2472,6 +2502,7 @@ function renderUpgradeCard(stateObj) {
   divContainer("app");
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", encounterUpgradeCard, goldCost="upgrade");
   skipToTownButton(stateObj, "I don't want to upgrade any of these cards", ".remove-div");
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
 
@@ -2912,116 +2943,36 @@ async function renderTown(stateObj) {
 
   townDiv.append(townShopDiv, townRemoveDiv, townUpgradeDiv, townGymDiv);
   document.getElementById("app").append(townDiv);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 }
 
+
+
+
+async function renderTown(stateObj) {
+  console.log('renderin town')
+
+
+    document.getElementById("app").innerHTML = ""
+    topRowDiv(stateObj, "app");
+    let townDiv = document.createElement("Div");
+    townDiv.classList.add("flex-container")
+    townDiv.setAttribute("id", "town");
+
+  //let townHealDiv = renderTownDiv(stateObj, "TownHealer", "img/healer.PNG", "Visit Healer", (stateObj.gold >= Math.floor(stateObj.healCost/2)), changeStatus, Status.HealersShop, "Not enough gold");
+  let townShopDiv = await renderTownDiv(stateObj, "TownShop", "Visit Shop", true, changeStatus, Status.cardShop);
+  let townRemoveDiv = await renderTownDiv(stateObj, "TownRemove", `${stateObj.cardRemoveCost} gold`,  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `${stateObj.cardRemoveCost} gold needed`);
+  let townUpgradeDiv = await renderTownDiv(stateObj, "TownUpgrade", `${stateObj.cardUpgradeCost} gold`, (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `${stateObj.cardUpgradeCost} gold needed`);
+  let townGymDiv = await renderTownDiv(stateObj, "TownFight", "Fight Gym Boss", true, TownFight)
+
+  townDiv.append(townShopDiv, townRemoveDiv, townUpgradeDiv, townGymDiv);
+  document.getElementById("app").append(townDiv);
+}
 
 async function renderScreen(stateObj) {
-  if (stateObj.status === Status.ChoosingMonster) {
-    renderChooseMonster(stateObj);
-  } else if (stateObj.status == Status.OverworldMap) {
-    renderMapScreen(stateObj);
-  } else if (stateObj.status == Status.ChooseEncounterCardReward) {
-    renderChooseEncounterCardReward(stateObj);
-  } else if (stateObj.status == Status.RemovingCards) {
-    renderRemoveCard(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.UpgradingCards) {
-    renderUpgradeCard(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.InTown) {
-    renderTown(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.DecreasingCost) {
-    renderDecreaseCardCost(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.IncreasingCost) {
-    renderIncreaseCardCost(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.DecreasingChoice) {
-    renderDecreaseChoice(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.IncreaseBlockChoice) {
-    renderIncreaseBlockChoice(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.IncreasingBlock) {
-    renderIncreaseCardBlock(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.IncreasingHits) {
-    renderIncreaseBaseHit(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.HitsVsAttackChoice) {
-    renderHitsAttackChoice(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.IncreasingAttack) {
-    renderIncreaseCardAttack(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.HealersShop) {
-    renderHealer(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.DuplicateChoice) {
-    renderDuplicateChoice(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.DuplicatingCards) {
-    renderDuplicateCard(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.DuplicatingCardFiveTimes) {
-    renderDuplicateCardFiveTimes(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.HealEndOfFightChoice) {
-    renderHealEndOfFightChoice(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.DoublingAttack) {
-    renderDoubleCardAttack(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.AttackChoiceEvent) {
-    renderAttackChoiceEvent(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.DoubleUpgradeEvent) {
-    renderDoubleUpgradeCard(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.LevelUpEvent) {
-    renderLevelUp(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.MaxHPvsHealChoice) {
-    renderMaxHPvsExtraHeal(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.ChooseRareEvent) {
-    renderChooseRareEvent(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.ShowCardPool) {
-    renderCardPool(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.DeathScreen || stateObj.status == Status.VictoryScreen) {
-    renderWinLoseScreen(stateObj);
-  } else if (stateObj.status == Status.cardShop) {
-    renderShop(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.PaidRemovalEvent) {
-    renderPaidRemovalEvent(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.PaidRemovalCardList) {
-    renderPaidRemovalCardList(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.WealthyPacifist) {
-    renderWealthyPacifist(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.PeekBehindTheCurtain) {
-    renderPeekBehindDevCurtain(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.PaidAttackRemoval) {
-    renderPaidAttackRemoval(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status == Status.AssassinTrainingEvent) {
-    renderAssassinTrainingEvent(stateObj);
-    renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
-  } else if (stateObj.status === Status.InEncounter) {
-    renderDivs(stateObj);
-    //renderOpponents(stateObj)
-  } else {
-    
+  let newState = {...stateObj}
+  newState.status(stateObj)
   }
-
-}
 
 
 
