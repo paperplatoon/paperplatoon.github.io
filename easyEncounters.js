@@ -15,7 +15,7 @@ let easySoloEncounters = {
         hunted: 0,
         poison: 0,
         baseBlock: opponentBaseBlock,
-        baseDamage: opponentBaseDamage,
+        baseDamage: opponentBaseDamage+1,
         baseScale: opponentBaseScale,
         baseHeal: 0,
         avatar: "img/firebaby.png",
@@ -188,12 +188,12 @@ let easySoloEncounters = {
             name: "Seed Eruption",
             cost: "2",
             text: (state, index, array) => {
-              return `Deal ${(array[index].baseDamage*2) + 2 + array[index].strength} damage`
+              return `Deal ${(array[index].baseDamage*3) + array[index].strength} damage`
             },
             minReq: 2,
             energyChange: "-2",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*2)+2, index, -2);
+              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*3), index, -2);
               return stateObj;
             }
           },
@@ -297,12 +297,12 @@ let easySoloEncounters = {
         name: "Fiery Slap",
         cost: "0",
         text: (state, index, array) => {
-            return `Deal ${array[index].baseDamage + array[index].strength} damage.`
+            return `Deal ${array[index].baseDamage+1 + array[index].strength} damage.`
         },
         minReq: 0,
         energyChange: "+1",
         action: async (stateObj, index, array) => {
-          stateObj = dealPlayerDamage(stateObj, array[index].baseDamage, index, +1)
+          stateObj = dealPlayerDamage(stateObj, array[index].baseDamage+1, index, +1)
           return stateObj;
         }
       },
@@ -374,12 +374,12 @@ let easySoloEncounters = {
         name: "Fiery Slap",
         cost: "0",
         text: (state, index, array) => {
-            return `Deal ${array[index].baseDamage-2 + array[index].strength} damage.`
+            return `Deal ${array[index].baseDamage + array[index].strength} damage.`
         },
         minReq: 0,
         energyChange: "+1",
         action: async (stateObj, index, array) => {
-          stateObj = dealPlayerDamage(stateObj, array[index].baseDamage-2, index, +1)
+          stateObj = dealPlayerDamage(stateObj, array[index].baseDamage, index, +1)
           return stateObj;
         }
       },
@@ -453,7 +453,6 @@ let easySoloEncounters = {
         minReq: 0,
         energyChange: "+3",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage-2, index, 2)
           stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
             newState.opponentMonster[index].encounterEnergy += 3;
