@@ -1686,7 +1686,7 @@ let cards = {
           retain: true,
           name: "Stoke Up",
           text: (stateObj, index, array) => {
-            let cardDamage = array[index].baseDamage + (array[index].upgrades) + stateObj.playerMonster.strength;
+            let cardDamage = array[index].baseDamage + (array[index].upgrades*2) + stateObj.playerMonster.strength;
             if (array[index].baseHits === 1) {
               return `Deal ${cardDamage} damage. Permanently increase by 1. Add a copy to your hand. Retain`;
             } else {
@@ -1696,25 +1696,24 @@ let cards = {
         minReq: (state, index, array) => {
           return array[index].baseCost + Math.floor(array[index].upgrades/20);
         },
-          baseCost: 1,
+          baseCost: 2,
           cost:  (state, index, array) => {
             return array[index].baseCost + Math.floor(array[index].upgrades/20);
           },
           upgrades: 0,
-          baseDamage: 1,
+          baseDamage: 5,
           baseHits: 1,
           cardType: "attack",
           elementType: "fire",
           action: async (stateObj, index, array) => {
-            let cardDamage = array[index].baseDamage + (array[index].upgrades)
-            stateObj = await dealOpponentDamage(stateObj, cardDamage, array[index].baseHits, array[index].baseCost + Math.floor(array[index].upgrades/20));
+            let cardDamage = array[index].baseDamage + (array[index].upgrades*2)
+            stateObj = await dealOpponentDamage(stateObj, cardDamage, array[index].baseHits, array[index].baseCost);
         
             let cardClone = {...array[index]};
-            cardClone.baseCost = 1+Math.floor(array[index].upgrades/20);
-            cardClone.upgrades += 1;
+            cardClone.baseDamage += 1;
             stateObj = immer.produce(stateObj, (newState) => {
               newState.encounterHand.push(cardClone);
-              newState.playerDeck.find(card => card.name === cardClone.name).upgrades += 1;
+              newState.playerDeck.find(card => card.name === cardClone.name).baseDamage += 1;
              
             })
             return stateObj;
@@ -2492,12 +2491,55 @@ let cards = {
           return toChangeState;
         }
       },
+
+      chargedblast: {
+        rare: true,
+        cardID: 70,
+        retain: true,
+        name: "Stoke Up",
+        text: (stateObj, index, array) => {
+          let cardDamage = array[index].baseDamage + (array[index].upgrades*10) + stateObj.playerMonster.strength;
+          if (array[index].baseHits === 1) {
+            return `Deal ${cardDamage} damage. Retain: gain 10 damage a turn.`;
+          } else {
+            return `Combo. Deal ${cardDamage} damage ${array[index].baseHits} times. Retain: gain 10 damage a turn.`
+          }
+      },
+      minReq: (state, index, array) => {
+        return array[index].baseCost;
+      },
+        baseCost: 1,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseDamage: 0,
+        baseHits: 1,
+        cardType: "attack",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {
+          let cardDamage = array[index].baseDamage + (array[index].upgrades*10)
+          stateObj = await dealOpponentDamage(stateObj, cardDamage, array[index].baseHits, array[index].baseCost);
+          return stateObj;
+        }
+      },
 }
 
 
 
-
-
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
