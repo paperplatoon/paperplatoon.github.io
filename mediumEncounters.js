@@ -379,8 +379,8 @@ let mediumSoloEncounters = {
           },
           minReq: 2,
           energyChange: "+1",
-          action: (stateObj, monsterIndex, array) => {
-            stateObj = dealPlayerDamage(stateObj, 0, monsterIndex, energyChange=1, attackNumber=2,);
+          action: async (stateObj, monsterIndex, array) => {
+            stateObj = await dealPlayerDamage(stateObj, 0, monsterIndex, 1, attackNumber=2);
             return stateObj;
           }
         },
@@ -541,22 +541,6 @@ let mediumMultiEncounters = {
         avatar: "img/airmask.png",
         moves: [
           {
-            name: "Gust",
-            cost: "2",
-            energyChange: "-2",
-            text: (state, index, array) => {
-              return ` Deal ${(array[index].baseDamage * 2) + 3 + array[index].strength} damage`
-            },
-            minReq: 2,
-            action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage * 2) + 3, index, -2);
-              return stateObj;
-            }
-          },
-          {
-            name: false,
-          },
-          {
             name: "Wind Shield",
             cost: "0",
             text: (state, index, array) => {
@@ -575,7 +559,23 @@ let mediumMultiEncounters = {
               })
               return toChangeState;
             }
-          } 
+          },
+          {
+            name: false,
+          },
+          {
+            name: "Gust",
+            cost: "2",
+            energyChange: "-2",
+            text: (state, index, array) => {
+              return ` Deal ${(array[index].baseDamage * 2) + 3 + array[index].strength} damage`
+            },
+            minReq: 2,
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage * 2) + 3, index, -2);
+              return stateObj;
+            }
+          }
         ]
       },
 
