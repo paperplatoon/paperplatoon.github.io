@@ -75,7 +75,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 50,
-  testingMode: true,
+  testingMode: false,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,

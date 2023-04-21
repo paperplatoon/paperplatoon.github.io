@@ -2816,6 +2816,8 @@ let cards = {
         baseDamage: 6,
         baseBlock: 4,
         baseHits: 1,
+        cardType: "attack",
+        elementType: "water",
         action: async (stateObj, index, array) => {
           let blockGain = array[index].baseBlock + (array[index].upgrades*2);
           let damageToDo =  array[index].baseDamage + (array[index].upgrades*2);
@@ -2847,6 +2849,8 @@ let cards = {
         baseDamage: 10,
         baseBlock: 12,
         baseHits: 1,
+        cardType: "attack",
+        elementType: "water",
         //takes the state object, declares a toChangeState which takes immer.produce
         //and returns a new state reflecting the changes
         action: async (stateObj, index, array) => {
