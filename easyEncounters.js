@@ -261,7 +261,7 @@ let easySoloEncounters = {
         minReq: 3,
         energyChange: "0",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index)
+          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage-array[index].inflame, index)
           return stateObj;
         }
       },
@@ -305,7 +305,7 @@ let easySoloEncounters = {
         minReq: 0,
         energyChange: "0",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index)
+          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage-array[index].inflame, index)
           return stateObj;
         }
       },
