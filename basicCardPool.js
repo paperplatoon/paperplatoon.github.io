@@ -28,7 +28,7 @@ let cards = {
       cloakingfog: {
         name: "Cloaking Fog",
         text: (state, index, array) => {
-          return `Spend 2 energy. Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*6)} block`
+          return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*6)} block`
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -42,7 +42,7 @@ let cards = {
         cardType: "ability",
         elementType: "water",
         action: async (stateObj, index, array) => {
-          stateObj = await gainBlock(stateObj, array[index].baseBlock+ (array[index].upgrades*6, array[index].baseCost))
+          stateObj = await gainBlock(stateObj, array[index].baseBlock+ (array[index].upgrades*6), array[index].baseCost)
           return stateObj;
         }
       },
