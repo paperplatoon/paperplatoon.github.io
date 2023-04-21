@@ -238,7 +238,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [ [easySoloEncounters.e6], [easySoloEncounters.e7]  ]
+    townMonsterEncounters = [ [easySoloEncounters.e6, easySoloEncounters.e6,], [easySoloEncounters.e7]  ]
   } else {
     let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
     let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
@@ -492,7 +492,10 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
   
   document.querySelector("#playerStats .avatar").classList.add("player-windup");
   let fireballString = ((damageNumber*attackNumber) > 20) ? "hugefireball" : "fireball" 
-  let classString = (stateObj.opponentMonster.length > 1 && stateObj.targetedMonster ===0) ? "fireball-move-2" : "fireball-move"
+  let classString = "fireball-move"; 
+  if (stateObj.opponentMonster.length > 1) {
+    classString = (stateObj.targetedMonster === 0) ? "fireball-move-2" : "fireball-move-3"
+  }
   document.getElementById(fireballString).classList.add(classString);
   
 
@@ -806,7 +809,7 @@ async function energyGift(stateObj, energyToGain, energyCost=false, all=false) {
   })
   if (stateObj.energyGiftAttack > 0) {
     let targetIndex = Math.floor(Math.random() * (stateObj.opponentMonster.length))
-    stateObj = dealOpponentDamage(stateObj, (stateObj.energyGiftAttack-stateObj.playerMonster.strength), attackNumber=1, all=true);  
+    stateObj = await dealOpponentDamage(stateObj, (stateObj.energyGiftAttack-stateObj.playerMonster.strength), attackNumber=1, all=true);  
   }
   await energyGainAnimation(stateObj, all)
   return stateObj
@@ -905,24 +908,24 @@ function applyPoison(stateObj, poisonToApply, energyCost=false, poisonNumber=1, 
 }
 
 
-function dealSelfDamage(stateObj, damageToDo) {
-  stateObj = immer.produce(stateObj, (newState) => {
-      newState.playerMonster.currentHP -= damageToDo
-      newState.fightSelfDamageCount += 1;
-      newState.fightSelfDamageTotal += damageToDo;
+// async function dealSelfDamage(stateObj, damageToDo) {
+//   stateObj = immer.produce(stateObj, (newState) => {
+//       newState.playerMonster.currentHP -= damageToDo
+//       newState.fightSelfDamageCount += 1;
+//       newState.fightSelfDamageTotal += damageToDo;
 
-      if (newState.selfDamageBlock > 0) {
-        newState.playerMonster.encounterBlock += newState.selfDamageBlock;
-      }
-      if (newState.selfDamageAttack > 0) {
-        let targetIndex = Math.floor(Math.random() * (newState.opponentMonster.length))
-        let tempState = dealOpponentDamage(newState, (newState.selfDamageAttack-stateObj.playerMonster.strength), attackNumber=1, all=false, specifiedIndex=targetIndex);
-        newState.opponentMonster[targetIndex].currentHP = tempState.opponentMonster[targetIndex].currentHP;
-        newState.opponentMonster[targetIndex].encounterBlock = tempState.opponentMonster[targetIndex].encounterBlock;
-      }
-    });
-  return stateObj; 
-};
+//       if (newState.selfDamageBlock > 0) {
+//         newState.playerMonster.encounterBlock += newState.selfDamageBlock;
+//       }
+//       if (newState.selfDamageAttack > 0) {
+//         let targetIndex = Math.floor(Math.random() * (newState.opponentMonster.length))
+//         let tempState = await dealOpponentDamage(newState, (newState.selfDamageAttack-stateObj.playerMonster.strength), attackNumber=1, all=false, specifiedIndex=targetIndex);
+//         newState.opponentMonster[targetIndex].currentHP = tempState.opponentMonster[targetIndex].currentHP;
+//         newState.opponentMonster[targetIndex].encounterBlock = tempState.opponentMonster[targetIndex].encounterBlock;
+//       }
+//     });
+//   return stateObj; 
+// };
 
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
