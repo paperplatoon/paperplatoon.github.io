@@ -258,7 +258,7 @@ let mediumSoloEncounters = {
             name: "Payback",
             cost: "2",
             text: (state, index, array) => {
-                return `Deal ${Math.floor(array[index].baseDamage-3) - array[index].strength} damage for each time you've taken unblocked attack damage (${state.fightDamageCount})`
+                return `Deal ${Math.floor(array[index].baseDamage-3) + array[index].strength} damage for each time you've taken unblocked attack damage (${state.fightDamageCount})`
             },
             minReq: 2,
             energyChange: "+1",
