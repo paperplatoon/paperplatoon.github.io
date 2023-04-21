@@ -75,7 +75,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 50,
-  testingMode: false,
+  testingMode: true,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,
@@ -238,7 +238,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [easyEncounters[4],easyEncounters[4] ]
+    townMonsterEncounters = [ [easySoloEncounters.e6], [easySoloEncounters.e7]  ]
   } else {
     let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
     let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
@@ -489,20 +489,29 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
   let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster;
   
   document.querySelector("#playerStats .avatar").classList.add("player-windup");
+  let bigFireball = ((damageNumber*attackNumber) > 20); 
+  if (bigFireball) {
+    document.getElementById("hugefireball").classList.add("fireball-move");
+  } else {document.querySelector("#fireball").classList.add("fireball-move");}
+  
 
   if (all===false) {
     document.querySelector(".targeted .avatar").classList.add("opponent-impact");
-    await pause(125);
+    await pause(450);
     document.querySelector(".targeted .avatar").classList.remove("opponent-impact");
+    if (bigFireball) {document.querySelector("#hugefireball").classList.remove("fireball-move");
+  } else {document.querySelector("#fireball").classList.remove("fireball-move");}
   } else {
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.add("opponent-impact");
     })
-    await pause(125);
+    await pause(450);
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.remove("opponent-impact");
     })
     document.querySelector("#playerStats .avatar").classList.remove("player-windup");
+    if (bigFireball) {document.querySelector("#hugefireball").classList.remove("fireball-move");
+  } else {document.querySelector("#fireball").classList.remove("fireball-move");}
   }
 
   stateObj = immer.produce(stateObj, (newState) => {
@@ -1200,6 +1209,15 @@ async function renderPlayerMonster(stateObj) {
   avatar.classList.add("avatar");
   avatar.src = stateObj.playerMonster.avatar;
   topRowDiv.appendChild(avatar);
+
+  let fireballDiv = document.createElement("Div");
+  fireballDiv.setAttribute("id", "fireball");
+
+  let hugeFireballDiv = document.createElement("Div");
+  hugeFireballDiv.setAttribute("id", "hugefireball");
+  topRowDiv.append(fireballDiv, hugeFireballDiv);
+
+  
 
   let playerHP = document.createElement("H3");
   playerHP.textContent = stateObj.playerMonster.currentHP + "/" + stateObj.playerMonster.maxHP;

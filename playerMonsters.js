@@ -141,35 +141,34 @@ let playerMonsters = {
       ]
     },
 
-    // devCheat: {
-    //   name: "Testing Mode",
-    //   type: "water",
-    //   encounterEnergy: 0,
-    //   opponentMoveIndex: false,
-    //   cardPool: waterCardPool,
-    //   maxHP: 50,
-    //   currentHP: 50,
-    //   strength: 0,
-    //   dex: 0,
-    //   tempStrength: 0,
-    //   tempDex: 0,
-    //   fightStrength: 0,
-    //   fightDex: 0,
-    //   turnEnergy: 3,
-    //   avatar: "img/playerturtle.png",
-    //   startingDeck: [
-    //     //draw
-    //     fireCardPool.accelerate,
-    //     cards.darkknowledge,
-    //     //block
-    //     cards.huntprey,
-    //     //win
-    //     cards.huntprey,
-    //     waterCardPool.pinprick,
-    //     fireCardPool.recall,
-    //     fireCardPool.honeclaws
-    //   ],
-    // },
+    devCheat: {
+      name: "Testing Mode",
+      type: "water",
+      encounterEnergy: 0,
+      opponentMoveIndex: false,
+      cardPool: waterCardPool,
+      maxHP: 50,
+      currentHP: 50,
+      strength: 0,
+      dex: 0,
+      tempStrength: 0,
+      tempDex: 0,
+      fightStrength: 0,
+      fightDex: 0,
+      turnEnergy: 3,
+      avatar: "img/playerturtle.png",
+      startingDeck: [
+        //draw
+        fireCardPool.accelerate,
+        fireCardPool.accelerate,
+        //block
+        cards.huntprey,
+        //win
+        fireCardPool.bloatedbomb,
+        fireCardPool.recall,
+        fireCardPool.honeclaws
+      ],
+    },
 
     
 
