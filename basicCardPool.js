@@ -661,9 +661,9 @@ let cards = {
         name: "Meditate",
         text: (state, index, array) => { 
             if (array[index].upgrades ===0) {
-                return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} block. Return ${1+array[index].upgrades} card`
+                return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} block. Return the last card played to your hand`
             } else {
-                return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} block. Return ${1+array[index].upgrades} cards`
+                return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} block. Return the last ${1+array[index].upgrades} cards played to your hand`
             }
           },
         minReq: (state, index, array) => {
@@ -691,9 +691,9 @@ let cards = {
         name: "Recall",
         text: (state, index, array) => { 
             if (array[index].upgrades ===0) {
-                return `Return ${1+array[index].upgrades} card`
+                return `Return the last card played to your hand`
             } else {
-                return `Return ${1+array[index].upgrades} cards`
+                return `Return the last ${1+array[index].upgrades} cards played to your hand`
             }
           },
         minReq: -99,
@@ -1478,7 +1478,7 @@ let cards = {
         cardID: 29,
         name: "Claw Back",
         text: (state, index, array) => { 
-              return `Deal ${array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*2)} damage ${array[index].baseHits} times. Return 2 cards`
+              return `Deal ${array[index].baseDamage + state.playerMonster.strength + (array[index].upgrades*2)} damage ${array[index].baseHits} times. Return the last 2 cards played to your hand`
           },
         minReq: (state, index, array) => {
           return array[index].baseCost;
