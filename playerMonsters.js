@@ -159,14 +159,14 @@ let playerMonsters = {
       avatar: "img/playerturtle.png",
       startingDeck: [
         //draw
-        fireCardPool.accelerate,
-        fireCardPool.accelerate,
+        fireCardPool.rarefireenergy,
+        fireCardPool.darkknowledge,
         //block
-        cards.huntprey,
+        specialCardPool.testkill,
         //win
-        fireCardPool.bloatedbomb,
         fireCardPool.recall,
-        fireCardPool.honeclaws
+        fireCardPool.honeclaws,
+        fireCardPool.hammerandtongs
       ],
     },
 

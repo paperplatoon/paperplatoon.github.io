@@ -487,6 +487,7 @@ let mediumSoloEncounters = {
             stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage*2, index, -4);
             stateObj = immer.produce(stateObj, (newState) => {
               newState.playerMonster.dex -= 1;
+              newState.playerMonster.fightDex -= 1;
             })
             return stateObj;
           }

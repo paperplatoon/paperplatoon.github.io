@@ -863,7 +863,17 @@ let cards = {
           stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.tempDex += 1+array[index].upgrades;
             newState.playerMonster.dex += 1+array[index].upgrades;
+            
+            if (array[index].upgrades > 0) {
+              cardClone = {...array[index]};
+              newState.encounterDiscard.push(cardClone);
+            } 
           })
+          if (array[index].upgrades === 0) {
+            document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+            await pause(500);
+            document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
+          }
           return stateObj;
         }
       },
@@ -1043,7 +1053,10 @@ let cards = {
             if (array[index].upgrades > 0) {
               stateObj = await dealOpponentDamage(stateObj, 4*array[index].upgrades)
             }
-          }        
+          }
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");        
           return stateObj;
         }
       },
@@ -1067,11 +1080,14 @@ let cards = {
         },
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
           stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.encounterEnergy -= array[index].baseCost;
             newState.blockPerTurn += array[index].baseBlock + array[index].upgrades;
           })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
           return stateObj;
         }
       },
@@ -1152,11 +1168,14 @@ let cards = {
         baseBlock: 10,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
           stateObj = gainBlock(stateObj, array[index].baseBlock + (5*array[index].upgrades), array[index].baseCost);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[newState.targetedMonster].strength -= 5
           })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
           return stateObj;
         }
       },
@@ -1344,11 +1363,15 @@ let cards = {
         upgrades: 0,
         cardType: "ability",
         elementType: "fire",
-        action: (state, index, array) => {
+        action: async (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             newState.playerMonster.maxHP += (state.cardsPerTurn * (array[index].upgrades +1));
             newState.playerMonster.currentHP += (state.cardsPerTurn * (array[index].upgrades +1));
           })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
+
           return toChangeState;
         }
       },
@@ -2181,6 +2204,9 @@ let cards = {
               console.log('could not find card');
             }
           });
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
             return stateObj;
           }
       },
@@ -2208,7 +2234,7 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         exhaust: true,
-        action: (stateObj, index, array) => { 
+        action: async (stateObj, index, array) => { 
           stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.encounterEnergy -= array[index].baseCost+array[index].upgrades;
             newState.encounterHand.forEach(function (cardObj) {
@@ -2221,6 +2247,9 @@ let cards = {
               cardObj["upgrades"] +=1+array[index].upgrades;
             });
           })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
           return stateObj;
         }
       },
@@ -2356,13 +2385,16 @@ let cards = {
         exhaust: true,
         cardType: "ability",
         elementType: "fire",
-        action: (state, index, array) => {
+        action: async (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             if (array[index].baseCost > array[index].upgrades) {
               newState.playerMonster.encounterEnergy -= (array[index].baseCost-array[index].upgrades)
             }
             newState.gainLifePerCard += Math.floor(array[index].upgrades/3)+1;
           })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
           return toChangeState;
         }
       },
@@ -2444,12 +2476,15 @@ let cards = {
         },
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
           stateObj = immer.produce(stateObj, (newState) => {
            newState.playerMonster.fightStrength += 4 + array[index].upgrades;
             newState.playerMonster.strength += 4 + array[index].upgrades;
             newState.playerMonster.encounterEnergy -= 2;
           })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
           return stateObj;
         }
       },
@@ -2497,11 +2532,14 @@ let cards = {
         exhaust: true,
         //takes the state object, declares a toChangeState which takes immer.produce
         //and returns a new state reflecting the changes
-        action: (state, index, array) => {
+        action: async (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             newState.playerMonster.strength += 1;
             newState.playerMonster.encounterEnergy -=  array[index].baseCost-(array[index].upgrades);
           })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
           return toChangeState;
         }
       },
@@ -3016,8 +3054,11 @@ let specialCardPool = {
       exhaust: true,
       cardType: "ability",
       elementType: "fire",
-      action: (stateObj, index, array) => {
+      action: async (stateObj, index, array) => {
         stateObj = gainBlock(stateObj, array[index].baseBlock+(array[index].upgrades*3), array[index].baseCost);
+        document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+        await pause(500);
+        document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
         return stateObj;
       }
     },
@@ -3038,13 +3079,25 @@ let specialCardPool = {
       baseBlock: 7,
       cardType: "ability",
       elementType: "fire",
-      action: (stateObj, index, array) => {
-        stateObj = gainBlock(stateObj, array[index].baseBlock+(array[index].upgrades*3), array[index].baseCost);
+      action: async(stateObj, index, array) => {
+        stateObj = await gainBlock(stateObj, array[index].baseBlock+(array[index].upgrades*3), array[index].baseCost);
         stateObj = immer.produce(stateObj, (newState) => {
           cardClone = {...array[index]}
           newState.encounterDiscard.push(cardClone)
           newState.encounterHand = [];
         })
+
+        let cards = document.querySelectorAll("#handContainer2 .card")
+        console.log(cards)
+        cards.forEach((element) => {
+          if (element !== cards[index])
+          element.classList.add("remove");
+        })
+          await pause(500);
+          cards.forEach((element) => {
+            if (element !== cards[index])
+            element.classList.remove("remove");
+          })
         return stateObj;
       }
     },

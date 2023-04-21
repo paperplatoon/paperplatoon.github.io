@@ -445,8 +445,10 @@ playerMonsterArray = Object.values(playerMonsters);
 opponentMonsterArray = Object.values(opponentMonsters);
 fireCardArray = Object.values(fireCardPool);
 waterCardArray = Object.values(waterCardPool);
+let includeDevMonsters = [...playerMonsterArray];
 
 let potentialMonsterChoices = playerMonsterArray;
+let potentialMonsterChoicesNoDev = playerMonsterArray.slice(0, 4);
 
 async function changeState(newStateObj) {
   let stateObj = {...newStateObj}
@@ -490,7 +492,7 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
   
   document.querySelector("#playerStats .avatar").classList.add("player-windup");
   let fireballString = ((damageNumber*attackNumber) > 20) ? "hugefireball" : "fireball" 
-  let classString = (stateObj.opponentMonster.length > 1) ? "fireball-move-2" : "fireball-move"
+  let classString = (stateObj.opponentMonster.length > 1 && stateObj.targetedMonster ===0) ? "fireball-move-2" : "fireball-move"
   document.getElementById(fireballString).classList.add(classString);
   
 
@@ -934,8 +936,15 @@ function renderChooseMonster(stateObj) {
   let monsterChoiceDiv = document.createElement("Div");
   monsterChoiceDiv.classList.add("monster-choice-window");
   document.getElementById("app").appendChild(monsterChoiceDiv);
+  let devModeDiv = document.createElement("Div");
+  devModeDiv.classList.add("dev-mode-div")
+  devModeDiv.addEventListener("click", function () {
+    chooseThisMonster(stateObj, 4);
+  });
 
-  potentialMonsterChoices.forEach(function (monsterObj, index) {
+  monsterChoiceDiv.append(devModeDiv);
+
+  potentialMonsterChoicesNoDev.forEach(function (monsterObj, index) {
     let monsterDiv = document.createElement("Div");
     monsterDiv.id = index;
     monsterDiv.classList.add("monster-to-choose");

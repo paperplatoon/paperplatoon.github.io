@@ -577,12 +577,16 @@
 }
 
 .fade-in {
-  animation: fadeIn 1s;
+  animation: fadeIn 0.7s;
 }
 
 
 .fade-out {
   animation: fadeOut 0.7s forwards;
+}
+
+.remove {
+  animation: fadeOut 1s forwards;
 }
 
 .monster-hp {
@@ -1182,6 +1186,14 @@ button:hover {
 
 .hidden {
   visibility: hidden;
+}
+
+.dev-mode-div {
+  position: absolute;
+  height: 20vh;
+  width: 20vw;
+  top: 0;
+  left: 0;
 }
 
 .arrow-1 {
