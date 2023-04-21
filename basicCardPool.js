@@ -647,7 +647,7 @@ let cards = {
         },
         upgrades: 0,
         baseBlock: 13,
-        cardType: "attack",
+        cardType: "ability",
         elementType: "fire",
         action: (stateObj, index, array) => {
           let block = array[index].baseBlock + (array[index].upgrades*4) + state.fightEnergyGiftTotal + state.fightEnergyDrainTotal;

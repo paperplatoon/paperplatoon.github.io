@@ -878,6 +878,24 @@ function gainBlock(stateObj, blockToGain, energyCost=false, blockNumber=1) {
   return stateObj
 }
 
+function applyPoison(stateObj, poisonToApply, energyCost=false, poisonNumber=1, all=false) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    if (all===true) {
+      newState.opponentMonster.forEach(function(monsterObj, index) {
+        monsterObj.poison += poisonToApply * poisonNumber;
+      })
+    } else {
+      let monsterObj = newState.opponentMonster[newState.targetedMonster];
+      monsterObj.poison += poisonToApply * poisonNumber;
+    }
+
+    if (energyCost) {
+      newState.playerMonster.encounterEnergy -= energyCost
+    }
+  })
+  return stateObj
+}
+
 
 function dealSelfDamage(stateObj, damageToDo) {
   stateObj = immer.produce(stateObj, (newState) => {
@@ -2890,7 +2908,12 @@ function renderOpponents(stateObj) {
         let powerName = document.createElement("H3");
         powerName.textContent = powerObj.name;
         let powerText = document.createElement("P");
-        powerText.textContent = powerObj.text
+        if (typeof powerObj.text === "function") {
+          powerText.textContent = powerObj.text(stateObj, index, stateObj.opponentMonster)
+        } else {
+          powerText.textContent = powerObj.text;
+
+        }
         powerDiv.append(powerName, powerText);
         opponentMoveListDiv.appendChild(powerDiv);
 

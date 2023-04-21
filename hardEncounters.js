@@ -303,4 +303,79 @@ let hardSoloEncounters = {
           }
         ]
       },
+
+      h5: {
+        name: "Deflate",
+        type: "Air",
+        XPGain: opponentXPGain*2,
+        goldOnDefeat: Math.floor(opponentGold*3),
+        Level: 1,
+        maxHP: opponentMaxHP*11,
+        encounterEnergy: 0,
+        opponentMoveIndex: false,
+        currentHP: opponentMaxHP*11,
+        strength: 0,
+        dex: 0,
+        drown: 0,
+        hunted: 0,
+        poison: 0,
+        deflate: 5,
+        baseBlock: opponentBaseBlock,
+        baseDamage: opponentBaseDamage,
+        baseScale: opponentBaseScale,
+        baseHeal: 0,
+        avatar: "img/dracula.png",
+        powers: [{
+            name: "Power: Deflate",
+            text:  `Loses 1 energy after taking 5 unblocked damage`
+          }],
+        moves: [
+          {
+            name: "Spiked Shield",
+            cost: "0",
+            text: (state, index, array) => {
+              return `Gain ${(array[index].baseBlock*2) + array[index].dex} block. Deal ${(array[index].baseDamage) + array[index].strength}`
+            },
+            minReq: 0,
+            energyChange: "+5",
+            action: async (stateObj, index, array) => {
+              stateObj = immer.produce(state, (newState) => {
+                newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock*2)  + array[index].dex);
+                newState.opponentMonster[index].encounterEnergy += 5;
+              })
+              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage), index)
+
+              return stateObj;
+            }
+          },
+          {
+            name: false,
+          },
+          {
+            name: false,
+          },
+          {
+            name: false,
+          },
+          {
+            name: false,
+          },
+          {
+            name: "Explosion",
+            cost: "5",
+            text: (state, index, array) => {
+              return `Deal ${(array[index].baseDamage*4) + 2 + array[index].strength} damage.`
+            },
+            minReq: 5,
+            energyChange: "-5",
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*4) + 2, index, -4);
+              stateObj = immer.produce(stateObj, (newState) => {
+                newState.opponentMonster[index].dex += array[index].baseScale;
+              })
+              return stateObj;
+            }
+          }
+        ]
+      },
 }

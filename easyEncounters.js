@@ -225,7 +225,9 @@ let easySoloEncounters = {
     avatar: "img/littleturtle2.png",
     powers: [{
       name: "Power: Inflame",
-      text:  `Gains 3 strength each turn`
+      text: (state, index, array) => {
+        return `Gain ${Math.floor(array[index].baseScale)} strength per turn`
+    }
     }],
     moves: [
       {
@@ -257,6 +259,50 @@ let easySoloEncounters = {
             return `Deal ${Math.floor(array[index].baseDamage) + array[index].strength} damage`
         },
         minReq: 3,
+        energyChange: "0",
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index)
+          return stateObj;
+        }
+      },
+    ]
+  },
+
+  e7: {
+    name: "Inflame E9",
+    type: "Fire",
+    XPGain: opponentXPGain,
+    goldOnDefeat: Math.floor(opponentGold*2),
+    Level: 1,
+    maxHP: opponentMaxHP*8,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: opponentMaxHP*8,
+    inflame: opponentBaseScale*2,
+    strength: 0,
+    dex: 0,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    baseBlock: opponentBaseBlock,
+    baseDamage: 0,
+    baseScale: opponentBaseScale,
+    baseHeal: 0,
+    avatar: "img/littleturtle2.png",
+    powers: [{
+      name: "Power: Inflame",
+      text: (state, index, array) => {
+        return `Gain ${Math.floor(array[index].inflame)} strength per turn`
+    }
+    }],
+    moves: [
+      {
+        name: "Fiery Slap",
+        cost: "0",
+        text: (state, index, array) => {
+            return `Deal ${Math.floor(array[index].baseDamage) + array[index].strength} damage`
+        },
+        minReq: 0,
         energyChange: "0",
         action: async (stateObj, index, array) => {
           stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index)

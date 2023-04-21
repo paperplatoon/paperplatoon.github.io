@@ -169,16 +169,13 @@ let mediumSoloEncounters = {
             name: "Spiked Shield",
             cost: "0",
             text: (state, index, array) => {
-              return `Gain ${(array[index].baseBlock*2) + array[index].dex} block. Deal ${(array[index].baseDamage-2) + array[index].strength}`
+              return `Deal ${array[index].baseDamage+1 + array[index].strength} damage`
             },
             minReq: 0,
             energyChange: "+5",
-            action: (state, index, array) => {
-              let toChangeState = immer.produce(state, (newState) => {
-                newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock*2)  + array[index].dex);
-                newState.opponentMonster[index].encounterEnergy += 5;
-              })
-              return toChangeState;
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage+1, index, 5)
+              return stateObj;
             }
           },
           {
@@ -197,7 +194,7 @@ let mediumSoloEncounters = {
             name: "Explosion",
             cost: "5",
             text: (state, index, array) => {
-              return `Deal ${(array[index].baseDamage*4) + 2 + array[index].strength} damage.`
+              return `Deal ${(array[index].baseDamage*3) + 3 + array[index].strength} damage.`
             },
             minReq: 5,
             energyChange: "-5",
@@ -350,6 +347,7 @@ let mediumSoloEncounters = {
       dex: 0,
       drown: 0,
       hunted: 0,
+      poison: 0,
       avatar: "img/watersprite.png",
       moves: [
         {
@@ -623,15 +621,22 @@ let mediumSoloEncounters = {
           name: false,
         },
         {
-          name: "Unleash Fury",
+          name: "Golden Claw",
           cost: "5",
           text: (state, index, array) => {
-              return `Deal damage equal to HP lost (${state.fightDamageTotal + array[index].strength}).`
+              return `Deal ${array[index].baseDamage + array[index].strength} damage 3 times. Steal 20 gold`
           },
           minReq: 5,
           energyChange: "-5",
           action: async (stateObj, index, array) => {
-            stateObj = await dealPlayerDamage(stateObj, stateObj.fightDamageTotal, index, -5);
+            stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index, -5, 3);
+            stateObj = immer.produce(staetObj, (newState) => {
+              if (stateObj.gold > 20) {
+                newState.gold -= 20
+              } else {
+                newState.gold = 0
+              }
+            })
             return stateObj;
           }
         },

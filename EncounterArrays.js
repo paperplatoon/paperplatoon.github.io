@@ -34,7 +34,8 @@ let easyEncounters = [
   [easySoloEncounters.e2],
   [easySoloEncounters.e3],
   [easyMultiEncounters.e4, easyMultiEncounters.e5],
-  [easySoloEncounters.e6]
+  [easySoloEncounters.e6],
+  [easySoloEncounters.e7]
 ]
 
 let mediumEncounters = [
@@ -58,8 +59,11 @@ let hardEncounters = [
   [hardSoloEncounters.h1],
   [hardSoloEncounters.h2],
   [hardSoloEncounters.h3],
-  [easySoloEncounters.e9, easySoloEncounters.e2]
-  [easySoloEncounters.e6, easySoloEncounters.e8]
+  [hardSoloEncounters.h4],
+  [hardSoloEncounters.h5],
+  [easySoloEncounters.e6, easySoloEncounters.e2]
+  [easySoloEncounters.e6, easySoloEncounters.e7],
+  [easySoloEncounters.e2, easySoloEncounters.e7]
 ]
 
 
