@@ -61,9 +61,9 @@ let hardEncounters = [
   [hardSoloEncounters.h3],
   [hardSoloEncounters.h4],
   [hardSoloEncounters.h5],
-  [easySoloEncounters.e6, easySoloEncounters.e2]
+  [easySoloEncounters.e6, easySoloEncounters.e2],
   [easySoloEncounters.e6, easySoloEncounters.e7],
-  [easySoloEncounters.e2, easySoloEncounters.e7]
+  [easySoloEncounters.e2, easySoloEncounters.e7],
 ]
 
 
