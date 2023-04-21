@@ -222,7 +222,7 @@ let easySoloEncounters = {
     baseDamage: opponentBaseDamage,
     baseScale: opponentBaseScale,
     baseHeal: 0,
-    avatar: "img/littleturtle2.png",
+    avatar: "img/cat3.png",
     powers: [{
       name: "Power: Inflame",
       text: (state, index, array) => {
@@ -288,7 +288,7 @@ let easySoloEncounters = {
     baseDamage: 0,
     baseScale: opponentBaseScale,
     baseHeal: 0,
-    avatar: "img/littleturtle2.png",
+    avatar: "img/hornsfire.png",
     powers: [{
       name: "Power: Inflame",
       text: (state, index, array) => {

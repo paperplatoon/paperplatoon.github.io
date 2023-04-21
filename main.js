@@ -489,18 +489,16 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
   let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster;
   
   document.querySelector("#playerStats .avatar").classList.add("player-windup");
-  let bigFireball = ((damageNumber*attackNumber) > 20); 
-  if (bigFireball) {
-    document.getElementById("hugefireball").classList.add("fireball-move");
-  } else {document.querySelector("#fireball").classList.add("fireball-move");}
+  let fireballString = ((damageNumber*attackNumber) > 20) ? "hugefireball" : "fireball" 
+  let classString = (stateObj.opponentMonster.length > 1) ? "fireball-move-2" : "fireball-move"
+  document.getElementById(fireballString).classList.add(classString);
   
 
   if (all===false) {
     document.querySelector(".targeted .avatar").classList.add("opponent-impact");
     await pause(450);
     document.querySelector(".targeted .avatar").classList.remove("opponent-impact");
-    if (bigFireball) {document.querySelector("#hugefireball").classList.remove("fireball-move");
-  } else {document.querySelector("#fireball").classList.remove("fireball-move");}
+    document.getElementById(fireballString).classList.remove(classString);
   } else {
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.add("opponent-impact");
@@ -510,8 +508,7 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
       document.querySelectorAll("#opponents .avatar")[index].classList.remove("opponent-impact");
     })
     document.querySelector("#playerStats .avatar").classList.remove("player-windup");
-    if (bigFireball) {document.querySelector("#hugefireball").classList.remove("fireball-move");
-  } else {document.querySelector("#fireball").classList.remove("fireball-move");}
+    document.getElementById(fireballString).classList.remove(classString);
   }
 
   stateObj = immer.produce(stateObj, (newState) => {

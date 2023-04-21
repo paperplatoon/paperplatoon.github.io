@@ -18,7 +18,7 @@ let mediumSoloEncounters = {
         baseBlock: 0,
         baseDamage: opponentBaseDamage,
         baseScale: 0,
-        avatar: "img/waterdevil.png",
+        avatar: "img/cuteearthbad.png",
         moves: [
           {
             name: "Replenish",
@@ -95,7 +95,7 @@ let mediumSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/dracula.png",
+        avatar: "img/airmask.png",
         moves: [
           {
             name: "Balloon Shield",
@@ -229,7 +229,7 @@ let mediumSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/littleturtle2.png",
+        avatar: "img/evilfirebaby.png",
         powers: [{
           name: "Power: Enrage",
           text:  `Gains 2 strength after taking unblocked damage`
@@ -433,7 +433,7 @@ let mediumSoloEncounters = {
       baseDamage: opponentBaseDamage,
       baseScale: opponentBaseScale,
       baseHeal: 0,
-      avatar: "img/earthpsycho.png",
+      avatar: "img/firedeviant.png",
       moves: [
         {
           name: "Fiery Slap",
@@ -514,7 +514,7 @@ let mediumSoloEncounters = {
       baseDamage: opponentBaseDamage,
       baseScale: opponentBaseScale,
       baseHeal: 0,
-      avatar: "img/littleturtle2.png",
+      avatar: "img/turtle3.png",
       powers: [{
         name: "Power: Prickles",
         text:  `Take 2 damage when attacking this enemy`
@@ -663,7 +663,7 @@ let mediumSoloEncounters = {
       baseDamage: opponentBaseDamage,
       baseScale: opponentBaseScale,
       baseHeal: 0,
-      avatar: "img/littleturtle2.png",
+      avatar: "img/cat1.png",
       powers: [{
         name: "Power: Enrage",
         text:  `Gains 2 strength after taking unblocked damage`
@@ -759,7 +759,7 @@ let mediumMultiEncounters = {
         baseBlock: opponentBaseBlock,
         baseScale: 0,
         baseHeal: 0,
-        avatar: "img/airmask.png",
+        avatar: "img/bird1.png",
         moves: [
           {
             name: "Wind Shield",
@@ -819,7 +819,7 @@ let mediumMultiEncounters = {
         baseBlock: opponentBaseBlock,
         baseScale: 0,
         baseHeal: 0,
-        avatar: "img/airmask.png",
+        avatar: "img/icetorch.png",
         moves: [
           {
             name: "Wind Shield",

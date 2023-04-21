@@ -90,7 +90,7 @@ let hardSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/littleturtle2.png",
+        avatar: "img/flamingbaby.png",
         powers: [{
           name: "Power: Enrage",
           text:  `Gains 3 strength after taking unblocked damage`
@@ -245,7 +245,7 @@ let hardSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/firebeard.png",
+        avatar: "img/creepyalien.png",
         powers: [{
           name: "Power: Off-balance",
           text:  `Whenever you fully block an attack from this monster, reflect it`
@@ -324,7 +324,7 @@ let hardSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/dracula.png",
+        avatar: "img/poke1.png",
         powers: [{
             name: "Power: Deflate",
             text:  `Loses 1 energy after taking 5 unblocked damage`

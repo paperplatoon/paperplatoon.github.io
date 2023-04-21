@@ -147,6 +147,13 @@
   /*animation: name duration timing-function delay iteration-count direction fill-mode;*/
 }
 
+.fireball-move-2 {
+  animation: slide2 0.4s ease-in;
+  /* animation-duration: 0.4s;
+  animation-name: slide;  */
+  /*animation: name duration timing-function delay iteration-count direction fill-mode;*/
+}
+
 @keyframes slide {
   0% {
     transform: translateX(-50vw);
@@ -162,6 +169,25 @@
   }
   100% {
     transform: translateX(45vw);
+    visibility: visible;
+  }
+}
+
+@keyframes slide2 {
+  0% {
+    transform: translateX(-50vw);
+    visibility: hidden;
+  }
+  49% {
+    transform: translateX(0vw);
+    visibility: hidden;
+  }
+  50% {
+    transform: translateX(0vw);
+    visibility: visible;
+  }
+  100% {
+    transform: translateX(25vw);
     visibility: visible;
   }
 }

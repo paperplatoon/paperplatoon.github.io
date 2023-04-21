@@ -20,7 +20,7 @@ let bossMonsters = {
       baseScale: opponentBaseScale,
       baseBlock: opponentBaseBlock,
       baseHeal: 0,
-      avatar: "img/icetorch.png",
+      avatar: "img/bluealien.png",
       powers: [{
         name: "Power: Deflate",
         text:  `Loses 1 energy after taking 10 unblocked damage at once`
