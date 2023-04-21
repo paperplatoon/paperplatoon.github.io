@@ -2859,7 +2859,7 @@ let cards = {
         action: async (stateObj, index, array) => {
           let blockGain = array[index].baseBlock + (array[index].upgrades*2);
           let damageToDo =  array[index].baseDamage + (array[index].upgrades*2);
-          stateObj = gainBlock(stateObj, blockGain, array[index.baseCost]);
+          stateObj = gainBlock(stateObj, blockGain, array[index].baseCost);
           stateObj = await dealOpponentDamage(stateObj, damageToDo);
           return stateObj;
         }
