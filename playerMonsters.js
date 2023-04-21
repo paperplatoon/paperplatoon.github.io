@@ -34,6 +34,41 @@ let playerMonsters = {
     ],
   },
 
+  swirly: {
+    name: "Normal",
+    type: "Water",
+    cardPool: waterCardPool,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    maxHP: 50,
+    currentHP: 50,
+    strength: 0,
+    dex: 0,
+    tempStrength: 0,
+    tempDex: 0,
+    fightStrength: 0,
+    fightDex: 0,
+    turnEnergy: 3,
+    avatar: "img/watertongue.png",
+    startingDeck: [
+      //2 energy
+      waterCardPool.waterenergy,
+      waterCardPool.waterenergy,
+      waterCardPool.cautiousblow,
+      //11 attacks
+      cards.withdraw,
+      cards.withdraw,
+      cards.withdraw,
+      cards.withdraw,
+      waterCardPool.cloakingfog,
+
+      cards.tackle,
+      cards.tackle,
+      cards.tackle,
+      waterCardPool.bodyslam,  
+    ]
+  },
+
     charles: {
       name: "Hard",
       type: "fire",
@@ -70,7 +105,7 @@ let playerMonsters = {
     },
 
     recall: {
-      name: "Easy",
+      name: "Hard",
       type: "water",
       encounterEnergy: 0,
       opponentMoveIndex: false,
@@ -106,40 +141,7 @@ let playerMonsters = {
       ],
     },
 
-    swirly: {
-      name: "Hard & Complicated",
-      type: "Water",
-      cardPool: waterCardPool,
-      encounterEnergy: 0,
-      opponentMoveIndex: false,
-      maxHP: 50,
-      currentHP: 50,
-      strength: 0,
-      dex: 0,
-      tempStrength: 0,
-      tempDex: 0,
-      fightStrength: 0,
-      fightDex: 0,
-      turnEnergy: 3,
-      avatar: "img/watertongue.png",
-      startingDeck: [
-        //2 energy
-        waterCardPool.waterenergy,
-        waterCardPool.waterenergy,
-        waterCardPool.cautiousblow,
-        //11 attacks
-        cards.withdraw,
-        cards.withdraw,
-        cards.withdraw,
-        cards.withdraw,
-        waterCardPool.cloakingfog,
-
-        cards.tackle,
-        cards.tackle,
-        cards.tackle,
-        waterCardPool.bodyslam,  
-      ]
-    },
+    
 
     devCheat: {
       name: "Testing Mode",
