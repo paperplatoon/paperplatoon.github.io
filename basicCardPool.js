@@ -2176,11 +2176,13 @@ let cards = {
           if (array[index].upgrades > array[index].baseCost) {
             cardUpgrades += array[index].upgrades - array[index].baseCost
           }
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
 
   
-          upgradeAnimation(stateObj, randomIndex, stateObj.playerDeck, cardUpgrades, divIDName="handContainer2")       
+          await upgradeAnimation(stateObj, randomIndex, stateObj.playerDeck, cardUpgrades, divIDName="handContainer2")       
           
-          await pause(array[index].timeValue)
+          //await pause(array[index].timeValue)
           stateObj = immer.produce(stateObj, (newState) => {
             console.log('upgrading ' + newState.playerDeck[randomIndex].name)
             let cardUpgrades = 1;
@@ -2204,10 +2206,8 @@ let cards = {
               console.log('could not find card');
             }
           });
-          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
-          await pause(500);
-          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
-            return stateObj;
+          
+          return stateObj;
           }
       },
   

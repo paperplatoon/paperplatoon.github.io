@@ -52,15 +52,15 @@
 }
 
 .energy-gain {
-  animation: energyGain 0.1s forwards ;
+  animation: energyGain 0.15s forwards ;
 }
 
 .player-windup {
-  animation: playerWindup 0.4s forwards ;
+  animation: playerWindup 0.35s forwards ;
 }
 
 .opponent-windup {
-  animation: opponentWindup 0.2s forwards ;
+  animation: opponentWindup 0.3s forwards ;
 }
 
 @keyframes opponentImpact {
@@ -78,7 +78,7 @@
 }
 
 .opponent-impact {
-  animation: opponentImpact 0.45s forwards ;
+  animation: opponentImpact 0.35s forwards ;
 }
 
 .player-impact {
@@ -141,21 +141,21 @@
 }
 
 .fireball-move {
-  animation: slide 0.4s ease-in;
+  animation: slide 0.3s ease-in;
   /* animation-duration: 0.4s;
   animation-name: slide;  */
   /*animation: name duration timing-function delay iteration-count direction fill-mode;*/
 }
 
 .fireball-move-2 {
-  animation: slide2 0.36s ease-in;
+  animation: slide2 0.33s ease-in;
   /* animation-duration: 0.4s;
   animation-name: slide;  */
   /*animation: name duration timing-function delay iteration-count direction fill-mode;*/
 }
 
 .fireball-move-3 {
-  animation: slide3 0.36s ease-in;
+  animation: slide3 0.33s ease-in;
   /* animation-duration: 0.4s;
   animation-name: slide;  */
   /*animation: name duration timing-function delay iteration-count direction fill-mode;*/
