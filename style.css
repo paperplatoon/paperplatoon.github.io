@@ -114,6 +114,21 @@
   opacity: 0.9;
 }
 
+.fire-choose {
+  background-color: rgb(105, 60, 60);
+}
+
+.fire-choose:hover {
+  background-color: rgb(102, 20, 20);
+}
+.water-choose {
+  background-color: rgb(58, 58, 113);
+}
+
+.water-choose:hover {
+  background-color: rgb(23, 23, 109);
+}
+
 .monster-to-choose img {
   opacity: 1;
 }
@@ -506,10 +521,9 @@
   flex-grow: 0.1;
   font-size: 1.5vw;
   flex-shrink: 2;
-  line-height: 4vmax;
-  height: 6vmax;
-  max-width: 6vmax;
-  min-width: 0;
+  line-height: 6vmin;
+  height: 10vmin;
+  width: 10vmin;
 }
 
 .monster-hp-town {
@@ -535,9 +549,9 @@
     width: 20%;
     min-width: 0;
     text-align: center;
-    font-size: 2vw;
-    width: 3vmax;
-    height: 3vmax;
+    font-size: 2.7vmin;
+    width: 3.9vmin;
+    height: 3.9vmin;
     flex-shrink: 1;
     border: 1px dashed white;
   }

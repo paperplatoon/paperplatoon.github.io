@@ -238,7 +238,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [routes[0][3][1], routes[0][3][1],routes[0][3][1]]
+    townMonsterEncounters = [easyEncounters[4],easyEncounters[4] ]
   } else {
     let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
     let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
@@ -915,6 +915,11 @@ function renderChooseMonster(stateObj) {
     let monsterDiv = document.createElement("Div");
     monsterDiv.id = index;
     monsterDiv.classList.add("monster-to-choose");
+    if (monsterObj.type === "fire") {
+      monsterDiv.classList.add("fire-choose");
+    } else {
+      monsterDiv.classList.add("water-choose");
+    }
     let monsterName = document.createElement("H3");
 
     monsterName.textContent = monsterObj.name;

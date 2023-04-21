@@ -1,5 +1,7 @@
 let fireCardPool = {
-//ENERGY - 10
+
+// -------------------------------------------------------------  22
+    // ------------------------------------------  10
     //energy - 5
     fireenergy: {...cards.fireenergy},
     rarefireenergy: {...cards.rareFireEnergy},
@@ -12,7 +14,8 @@ let fireCardPool = {
     expertsforge: {...cards.expertsforge},
     sunlight: {...cards.sunlight},
     gainstrength: {...cards.gainstrength},
-//MISC ABILITIES - 12
+//MISC ABILITIES
+// ------------------------------------------  12
     //strength scaling - 4
     cursedritual: {...cards.cursedritual},
     ritual: {...cards.ritual},
@@ -22,7 +25,7 @@ let fireCardPool = {
     siphon: {...cards.siphon},
     simpleheal: {...cards.simpleheal},
     enjoin: {...cards.enjoin},
-    //draw - 2
+    //draw - 3
     darkknowledge: {...cards.darkknowledge},
     recall: {...cards.recall},
     wellspring: {...cards.recall},
@@ -32,10 +35,11 @@ let fireCardPool = {
     ascension: {...cards.ascension},
   
   
-    //40 attack and block total
-//ATTACKS - 23
-    //1 energy - 17
-    //5
+//ATTACKS
+// -------------------------------------------------------------  25
+    //1
+    // ------------------------------------------  17
+    //-6
     followupslap: {...cards.followupslap},
     buildingflame: {...cards.buildingflame},
     //heal
@@ -59,8 +63,11 @@ let fireCardPool = {
     overcharge: {...cards.overcharge},
     fierymissiles: {...cards.fierymissiles},
     flamewhip: {...cards.flamewhip},
-    //2+ energy - 7
+
+    // ------------------------------------------  8
+    //2+ energy 
     disablingblow: {...cards.disablingblow},
+    chargedblast: {...cards.chargedblast},
     //gift energy
     energyburst: {...cards.energyburst},
     //multi-hit
@@ -74,37 +81,146 @@ let fireCardPool = {
     hugetackle: {...cards.hugetackle},
   
   
-//BLOCK - 20
-    //REMOVABLE EFFECTS - 3
+//BLOCK - 21
+// -------------------------------------------------------------  21
+    //1
+    // ------------------------------------------  14
     reformingshield: {...cards.reformingshield},
     unwaveringdefense: {...cards.unwaveringdefense},
     religiousfervor: {...cards.religiousfervor},
-  
-    //1 energy - 11
-    //energy effects - 9 
+
+    flamingstrike: {...cards.flamingStrike},
+    fortify: {...cards.fortify},
+    //energy effects 
     sanguineshield: {...cards.sanguineshield},
     essencedrain: {...cards.essencedrain},
-    flamingstrike: {...cards.flamingStrike},
+    //upgrade
+    forgeshield: {...cards.forgeshield},
     rareupgrade: {...cards.rareupgrade},
-    fortify: {...cards.fortify},
-    //
+    //scale
     coatofarms: {...cards.coatofarms},
     invigorate: {...cards.invigorate},
-    forgeshield: {...cards.forgeshield},
+    //draw
     meditate: {...cards.meditate},
-  
-  
     //multi cards - 2
     puffofsmoke: {...cards.puffofsmoke},
     skipaway: {...cards.skipaway},
   
-    //2+ energy - 6
+    //2+ energy
+    // ------------------------------------------  7
     mentalblock: {...cards.mentalblock},
     infuse: {...cards.infuse},
     flamedome: {...cards.flamedome},
+    friendship: {...cards.friendship},
     //energy effects
     shatteringshield: {...cards.shatteringshield},
     icyfreeze: {...cards.icyfreeze,},
     wallofichor: { ...cards.wallofichor},
+  }
+
+
+
+  let waterCardPool = {
+// -------------------------------------------------------------  19
+    // ------------------------------------------  10
+    //energy - 3
+    waterenergy: {...cards.waterenergy},
+    rarefireenergy: {...cards.rareFireEnergy},
+    fireblockenergy: {...cards.fireBlockEnergy},
+    //REMOVABLE ABILITIES - 3
+    hammerandtongs: {...cards.hammerandtongs},
+    expertsforge: {...cards.expertsforge},
+    sunlight: {...cards.sunlight},
+    
+    //draw and recall - 4
+    darkknowledge: {...cards.darkknowledge},
+    recall: {...cards.recall},
+    wellspring: {...cards.recall},
+    //destroy
+    dampen: {...cards.dampen},
+    
+    // ------------------------------------------  9
+    //poison - 7
+    pinprick: {...cards.pinprick},
+    pocketneedle: {...cards.pocketneedle},
+    poisondrain: {...cards.poisondrain},
+    basicpoison: {...cards.basicpoison},
+    poisonedblade: {...cards.poisonedblade},
+    venomshield: {...cards.venomshield},
+    //also blockKeep
+    chokingsmog: {...cards.chokingsmog},
+
+    //other
+    huntprey: {...cards.huntprey},
+    unwaveringdefense: {...cards.unwaveringdefense},
+
+  // ----------------------------------------------------------------  20
+    //attacks
+    //1
+    // ------------------------------------------  10
+    bodyslam: {...cards.bodyslam},
+    cautiousblow: {...cards.cautiousblow},
+    followupslap: {...cards.followupslap},
+    overcharge: {...cards.overcharge},
+    //multi-card
+    pirouettespin: {...cards.pirouettespin},
+    retreatingslash: {...cards.retreatingslash},
+    clawback: {...cards.clawback},
+    //self-scaling
+    ascension: {...cards.ascension},
+    redirect: {...cards.redirect},
+    clarity: {...cards.clarity},
+    
+    //2 +
+    // ------------------------------------------  10
+    guardedstrike: {...cards.guardedstrike},
+    energyburst: {...cards.energyburst},
+    bowlthrough: {...cards.bowlthrough},
+    disablingblow: {...cards.disablingblow},
+    //retain and scale
+    chargedblast: {...cards.chargedblast},
+    buildingflame: {...cards.buildingflame},
+
+    //3+
+    bloatedbomb: {...cards.bloatedbomb},
+    pickoff: {...cards.pickoff},
+    precisionstrike: {...cards.precisionstrike},
+    annihilation: {...cards.annihilation},
+
+
+  // ----------------------------------------------------------------  21
+
+    //block
+    //1 
+    // ------------------------------------------  9
+    essencedrain: {...cards.essencedrain},
+    flamingstrike: {...cards.flamingStrike},
+    rareupgrade: {...cards.rareupgrade},
+    fortify: {...cards.fortify},
+    forgeshield: {...cards.forgeshield},
+    meditate: {...cards.meditate},
+    dancersgrace: {...cards.dancersgrace},
+    //multi-hit
+    puffofsmoke: {...cards.puffofsmoke},
+    skipaway: {...cards.skipaway},
+
+    //2
+    // ------------------------------------------  12
+    cloakingfog: {...cards.cloakingfog},
+    mentalblock: {...cards.mentalblock},
+    infuse: {...cards.infuse},
+    flamedome: {...cards.flamedome},
+
+    //scale
+    peacefulmind: {...cards.peacefulmind},
+    throwsand: {...cards.throwsand},
+    friendship: {...cards.friendship},
+    invigorate: {...cards.invigorate},
+
+    //energy effects
+    shatteringshield: {...cards.shatteringshield},
+    icyfreeze: {...cards.icyfreeze,},
+    wallofichor: { ...cards.wallofichor},
+    sabotage: {...cards.sabotage},
   }
   

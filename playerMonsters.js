@@ -1,7 +1,6 @@
 let playerMonsters = {
-
   default: {
-    name: "Default",
+    name: "Normal",
     type: "fire",
     encounterEnergy: 0,
     opponentMoveIndex: false,
@@ -35,43 +34,8 @@ let playerMonsters = {
     ],
   },
 
-  genner: {
-    name: "Self-damage + heal",
-    type: "fire",
-    encounterEnergy: 0,
-    opponentMoveIndex: false,
-    cardPool: fireCardPool,
-    maxHP: 45,
-    currentHP: 45,
-    strength: 0,
-    dex: 0,
-    tempStrength: 0,
-    tempDex: 0,
-    fightStrength: 0,
-    fightDex: 0,
-    turnEnergy: 3,
-    avatar: "img/adorablefire.png",
-    startingDeck: [
-      //2 energy + 1 recall
-      fireCardPool.fireenergy,
-      fireCardPool.fireenergy,
-      //5 block
-      cards.puffofsmoke,
-      cards.sunlight,
-      cards.withdraw,
-      cards.withdraw,
-      cards.withdraw,
-      //4 attack
-      cards.tackle,
-      cards.tackle,
-      cards.tackle,
-      cards.tackle,
-      cards.brandingiron
-    ],
-  },
-
     charles: {
-      name: "Hard - scales over time",
+      name: "Hard",
       type: "fire",
       encounterEnergy: 0,
       opponentMoveIndex: false,
@@ -106,11 +70,11 @@ let playerMonsters = {
     },
 
     recall: {
-      name: "Recall Cards",
-      type: "fire",
+      name: "Easy",
+      type: "water",
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      cardPool: fireCardPool,
+      cardPool: waterCardPool,
       maxHP: 50,
       currentHP: 50,
       strength: 0,
@@ -120,15 +84,15 @@ let playerMonsters = {
       fightStrength: 0,
       fightDex: 0,
       turnEnergy: 3,
-      avatar: "img/flamingbaby.png",
+      avatar: "img/adorablefire.png",
       startingDeck: [
         //2 energy
-        fireCardPool.fireenergy,
-        fireCardPool.fireenergy,
+        waterCardPool.waterenergy,
+        waterCardPool.waterenergy,
         //5 attack
-        fireCardPool.recall,
-        fireCardPool.ascension,
-        fireCardPool.meditate,
+        waterCardPool.recall,
+        waterCardPool.ascension,
+        waterCardPool.meditate,
         cards.tackle,
         cards.tackle,
         //5 block
@@ -137,16 +101,17 @@ let playerMonsters = {
         cards.withdraw,
         cards.withdraw,
         cards.withdraw,
-
+        cards.withdraw,
+        cards.withdraw,
       ],
     },
 
-    devCheat: {
-      name: "Testing Mode",
-      type: "fire",
+    swirly: {
+      name: "Hard & Complicated",
+      type: "Water",
+      cardPool: waterCardPool,
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      cardPool: fireCardPool,
       maxHP: 50,
       currentHP: 50,
       strength: 0,
@@ -156,57 +121,61 @@ let playerMonsters = {
       fightStrength: 0,
       fightDex: 0,
       turnEnergy: 3,
-      avatar: "img/playerturtle.png",
+      avatar: "img/watertongue.png",
       startingDeck: [
-        //draw
-        fireCardPool.accelerate,
-        cards.darkknowledge,
-        //block
-        fireCardPool.fortify,
-        //win
-        specialCardPool.testkill,
-        fireCardPool.recall,
-        fireCardPool.unwaveringdefense
-      ],
+        //2 energy
+        waterCardPool.waterenergy,
+        waterCardPool.waterenergy,
+        waterCardPool.cautiousblow,
+        //11 attacks
+        cards.withdraw,
+        cards.withdraw,
+        cards.withdraw,
+        cards.withdraw,
+        waterCardPool.cloakingfog,
+
+        cards.tackle,
+        cards.tackle,
+        cards.tackle,
+        waterCardPool.bodyslam,  
+      ]
     },
+
+    // devCheat: {
+    //   name: "Testing Mode",
+    //   type: "water",
+    //   encounterEnergy: 0,
+    //   opponentMoveIndex: false,
+    //   cardPool: waterCardPool,
+    //   maxHP: 50,
+    //   currentHP: 50,
+    //   strength: 0,
+    //   dex: 0,
+    //   tempStrength: 0,
+    //   tempDex: 0,
+    //   fightStrength: 0,
+    //   fightDex: 0,
+    //   turnEnergy: 3,
+    //   avatar: "img/playerturtle.png",
+    //   startingDeck: [
+    //     //draw
+    //     fireCardPool.accelerate,
+    //     cards.darkknowledge,
+    //     //block
+    //     cards.huntprey,
+    //     //win
+    //     cards.huntprey,
+    //     waterCardPool.pinprick,
+    //     fireCardPool.recall,
+    //     fireCardPool.honeclaws
+    //   ],
+    // },
 
     
 
     
   
-  // swirly: {
-  //   name: "Swirly",
-  //   type: "Water",
-  //   cardPool: waterCardPool,
-  //   encounterEnergy: 0,
-  //   opponentMoveIndex: false,
-  //   maxHP: 100,
-  //   currentHP: 100,
-  //   strength: 0,
-  //   dex: 0,
-  //   tempStrength: 0,
-  //   tempDex: 0,
-  //   fightStrength: 0,
-  //   fightDex: 0,
-  //   turnEnergy: 3,
-  //   avatar: "img/watertongue.png",
-  //   startingDeck: [
-  //     //1 energy
-  //     waterCardPool.waterEnergy,
-  //     //11 attacks
-  //     waterCardPool.withdraw,
-  //     waterCardPool.withdraw,
-  //     waterCardPool.withdraw,
-  //     waterCardPool.withdraw,
-  //     waterCardPool.tackle,
-  //     waterCardPool.tackle,
-  //     waterCardPool.tackle,
-  //     waterCardPool.bodySlam,
-  //     waterCardPool.gainDex,
-  //     waterCardPool.cloakingFog,
-  //     waterCardPool.huntPrey
-  //   ]
-  // },
+
 
   // poisonTest: {
   //   name: "Venom",

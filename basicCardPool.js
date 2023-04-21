@@ -25,6 +25,28 @@ let cards = {
         }
       },
 
+      cloakingfog: {
+        name: "Cloaking Fog",
+        text: (state, index, array) => {
+          return `Spend 2 energy. Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*6)} block`
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseCost: 2,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseBlock: 15,
+        cardType: "ability",
+        elementType: "water",
+        action: async (stateObj, index, array) => {
+          stateObj = await gainBlock(stateObj, array[index].baseBlock+ (array[index].upgrades*6, array[index].baseCost))
+          return stateObj;
+        }
+      },
+
       wellspring: {
         retain: true,
         cardID: 10,
@@ -358,7 +380,7 @@ let cards = {
               stateObj = await destroyEnergy(stateObj, energyDrain); 
               stateObj = gainBlock(stateObj, array[index].baseBlock, array[index].baseCost, array[index].energyDrain);
           } else {
-            stateObj = gainBlock(stateObj, (0-array[index].dex), array[index].baseCost);
+            stateObj = gainBlock(stateObj, (0-stateObj.playerMonster.dex), array[index].baseCost);
           }
           return stateObj;
         }
@@ -468,7 +490,7 @@ let cards = {
             if (array[index].upgrades < array[index].baseCost) {
                 return `Double your mana.`
             } else {
-                return `Double your mana. Gain ${(array[index].baseBlock * array[index].upgrades) + array[index].dex}`
+                return `Double your mana. Gain ${(array[index].baseBlock * array[index].upgrades) + state.playerMonster.dex}`
             }
         },
         action: (state, index, array) => {
@@ -478,7 +500,7 @@ let cards = {
                 newState.playerMonster.encounterEnergy *= 2;
             } else {
                 newState.playerMonster.encounterEnergy *= 2;
-                newState.playerMonster.encounterBlock += (array[index].baseBlock * array[index].upgrades) + array[index].dex;
+                newState.playerMonster.encounterBlock += (array[index].baseBlock * array[index].upgrades) + state.playerMonster.dex;
             } 
           })
           return toChangeState;
@@ -490,9 +512,9 @@ let cards = {
         name: "Mental Block",
         text: (stateObj, index, array) => { 
           if (array[index].upgrades === 0) {
-            return `Gain block equal to your deck size (${stateObj.playerDeck.length + array[index].baseBlock + state.playerMonster.dex})`;
+            return `Gain block equal to your deck size (${stateObj.playerDeck.length + array[index].baseBlock + stateObj.playerMonster.dex})`;
           } else {
-            return `Gain block equal to deck size + ${array[index].upgrades*4} (${stateObj.playerDeck.length + state.playerMonster.dex + array[index].baseBlock + (array[index].upgrades*4)})`;
+            return `Gain block equal to deck size + ${array[index].upgrades*4} (${stateObj.playerDeck.length + stateObj.playerMonster.dex + array[index].baseBlock + (array[index].upgrades*4)})`;
           }
            },
         minReq: (state, index, array) => {
@@ -1117,7 +1139,7 @@ let cards = {
         exhaust: true,
         name: "Shut Down",
         text: (stateObj, index, array) => { 
-            return `Gain ${array[index].baseBlock + state.playerMonster.dex + (5*array[index].upgrades)} block. Enemy loses 5 strength. Remove`;
+            return `Gain ${array[index].baseBlock + stateObj.playerMonster.dex + (5*array[index].upgrades)} block. Enemy loses 5 strength. Remove`;
            },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -1164,6 +1186,24 @@ let cards = {
           let toChangeState = immer.produce(state, (newState) => {
             newState.playerMonster.encounterEnergy += (1 + array[index].upgrades);
     
+          })
+          return toChangeState;
+        }
+      },
+
+      waterenergy: {
+        name: "",
+        text: (state, index, array) => {
+          return `Gain ${(1 + array[index].upgrades)} energy`
+        },
+        minReq: -99,
+        cost: "energy",
+        upgrades: 0,
+        cardType: "waterEnergy",
+        elementType: "water",
+        action: (state, index, array) => {
+          let toChangeState = immer.produce(state, (newState) => {
+            newState.playerMonster.encounterEnergy += (1 + array[index].upgrades);
           })
           return toChangeState;
         }
@@ -2508,7 +2548,7 @@ let cards = {
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
-        baseCost: 1,
+        baseCost: 2,
         cost:  (state, index, array) => {
           return array[index].baseCost;
         },
@@ -2521,6 +2561,339 @@ let cards = {
           let cardDamage = array[index].baseDamage + (array[index].upgrades*10)
           stateObj = await dealOpponentDamage(stateObj, cardDamage, array[index].baseHits, array[index].baseCost);
           return stateObj;
+        }
+      },
+
+
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------
+// poison 
+      pinprick: {
+        name: "Pinprick",
+        text: (state, index, array) => {
+          return `Opponent gains +${2 + (array[index].upgrades)} poison.`
+        },
+        minReq: -99,
+        cost: 0,
+        upgrades: 0,
+        cardType: "ability",
+        elementType: "water",
+        action: (state, index, array) => {
+          let toChangeState = immer.produce(state, (newState) => {
+            newState.opponentMonster[newState.targetedMonster].poison += 1 + array[index].upgrades;
+          })
+          return toChangeState;
+        }
+      },
+
+      basicpoison: {
+        name: "Poison",
+        text: (state, index, array) => {
+          return `Opponent gains +${4 + (array[index].upgrades)} poison.`
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseCost: 1,
+          cost:  (state, index, array) => {
+            return array[index].baseCost;
+          },
+        upgrades: 0,
+        cardType: "ability",
+        elementType: "water",
+        action: (state, index, array) => {
+          let toChangeState = immer.produce(state, (newState) => {
+            newState.opponentMonster[newState.targetedMonster].poison += 4 + array[index].upgrades;
+            newState.playerMonster.encounterEnergy -= array[index].baseCost;
+          })
+          return toChangeState;
+        }
+      },
+
+      venomshield: {
+        name: "Venom Shield",
+        text: (state, index, array) => {
+          return `Gain ${array[index].baseBlock + (array[index].upgrades*2) + state.playerMonster.dex} block. All opponents gain +${2 + (array[index].upgrades)} poison.`
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseCost: 1,
+          cost:  (state, index, array) => {
+            return array[index].baseCost;
+        },
+        upgrades: 0,
+        cardType: "ability",
+        elementType: "water",
+        baseBlock: 8,
+        action: (stateObj, index, array) => {
+          stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*2), array[index].baseCost)
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.opponentMonster.forEach(function(monsterObj, index) {
+              monsterObj.poison += 2 + array[index].upgrades;
+            })
+          })
+          return stateObj;
+        }
+      },
+  
+      pocketneedle: {
+        name: "Pocket Needle",
+        text: (state, index, array) => {
+          return `Opponent gains +${1 + (array[index].upgrades)} poison. Draw 1 card.`
+        },
+        minReq: -99,
+        baseCost: 0,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        cardType: "ability",
+        elementType: "water",
+        upgrades: 0,
+        action: (stateObj, index, array) => {
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.opponentMonster[newState.targetedMonster].poison += 1 + array[index].upgrades;
+            newState.playerMonster.encounterEnergy -= array[index].baseCost;
+          })
+          stateObj = drawACard(stateObj);
+          return stateObj;
+        }
+      },
+  
+      poisondrain: {
+        name: "Poison Drain",
+        text: (state, index, array) => { return `Apply +${3 + array[index].upgrades} poison. Remove 2 opponent energy` },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseCost: 1,
+        cardType: "ability",
+        elementType: "water",
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        action: async (stateObj, index, array) => {
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.opponentMonster[newState.targetedMonster].poison += 3 + array[index].upgrades
+          })
+          stateObj = await destroyEnergy(stateObj, 2, 1)
+          return stateObj;
+        }
+      },
+  
+      poisonedblade: {
+        name: "Poisoned Blade",
+        text: (state, index, array) => { 
+          if (array[index].baseHits === 1) {
+            return `Deal ${array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength} damage. Apply ${3+array[index].upgrades} poison`;
+          } else {
+            return `Deal ${array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength} damage ${array[index].baseHits} times. Apply ${3+array[index].upgrades} poison`;
+          }
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseCost: 1,
+        baseDamage: 6,
+        baseHits: 1,
+        cardType: "attack",
+        elementType: "water",
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        action: async (stateObj, index, array) => {
+          stateObj = immer.produce(state, (newState) => {
+            newState.opponentMonster[newState.targetedMonster].poison += (3+array[index].upgrades);
+          })
+          stateObj = await dealOpponentDamage(stateObj, (array[index].baseDamage + (array[index].upgrades*2)), array[index].baseHits, array[index].baseCost);
+          return stateObj;
+        }
+      },
+  
+      chokingsmog: {
+        name: "Choking Smog",
+        text: (state, index, array) => { return `Apply +${5+(array[index].upgrades*3)} poison. Your block doesn't decrease between turns` },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseCost: 2,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        action: (state, index, array) => {
+          let toChangeState = immer.produce(state, (newState) => {
+            newState.playerMonster.encounterEnergy -= array[index].baseCost;
+            newState.opponentMonster[newState.targetedMonster].poison += (3+(array[index].upgrades*2));
+            newState.blockKeep = true;
+          })
+          return toChangeState;
+        }
+      },
+
+
+
+
+
+      bodyslam: {
+        name: "Body Slam",
+        text: (stateObj, index, array) => {
+          let blockGain = array[index].baseBlock + stateObj.playerMonster.dex + (array[index].upgrades*2);
+          let damageToDo = stateObj.playerMonster.encounterBlock + blockGain + stateObj.playerMonster.strength + array[index].baseDamage;
+            if (array[index].baseHits === 1) {
+              return `Gain ${blockGain} block. Deal damage equal to your block (${damageToDo})`        
+            } else {
+              return `Gain ${blockGain} block. Deal damage equal to your block (${damageToDo}) ${array[index].baseHits} times`
+            }
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        cost: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseCost: 1,
+        baseDamage: 0,
+        baseBlock: 3,
+        baseHits: 1,
+        upgrades: 0,
+        cardType: "attack",
+        elementType: "water",
+        action: async (stateObj, index, array) => {
+          let blockGain = array[index].baseBlock + (array[index].upgrades*2);
+          let damageToDo = stateObj.playerMonster.encounterBlock + blockGain + array[index].baseDamage;
+          stateObj = gainBlock(stateObj, blockGain, array[index].baseCost);
+          stateObj = await dealOpponentDamage(stateObj, damageToDo);
+          return stateObj;
+        }
+      },
+
+
+
+      sabotage: {
+        name: "Sabotage",
+        text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex + (4*array[index].upgrades))} block. Remove ${2+array[index].upgrades} opponent energy` },
+        minReq: 2,
+        upgrades: 0,
+        baseCost: 2,
+        baseBlock: 18,
+        energyDestroy: 2,
+        cardType: "ability",
+        elementType: "water",
+        cost: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        action: async (stateObj, index, array) => {
+          stateObj = gainBlock(stateObj, array[index].baseBlock + (4*array[index].upgrades), array[index].baseCost)
+          stateObj = await destroyEnergy(stateObj, array[index].energyDestroy + array[index].upgrades)
+          return stateObj;
+        }
+      },
+
+      cautiousblow: {
+        name: "Cautious Blow",
+        text: (state, index, array) => {
+          let blockGain = array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2);
+          let damageToDo =  state.playerMonster.strength + array[index].baseDamage + (array[index].upgrades*2);
+            if (array[index].baseHits === 1) {
+              return `Gain ${blockGain} block. Deal ${damageToDo} damage`        
+            } else {
+              return `Gain ${blockGain} block. Deal ${damageToDo} damage ${array[index].baseHits} times`
+            }
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        cost: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseCost: 1,
+        baseDamage: 6,
+        baseBlock: 4,
+        baseHits: 1,
+        action: async (stateObj, index, array) => {
+          let blockGain = array[index].baseBlock + (array[index].upgrades*2);
+          let damageToDo =  array[index].baseDamage + (array[index].upgrades*2);
+          stateObj = gainBlock(stateObj, blockGain, array[index.baseCost]);
+          stateObj = await dealOpponentDamage(stateObj, damageToDo);
+          return stateObj;
+        }
+      },
+  
+      guardedstrike: {
+        name: "Guarded Strike",
+        text: (state, index, array) => {
+          let blockGain = array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*3);
+          let damageToDo =  state.playerMonster.strength + array[index].baseDamage + (array[index].upgrades*3);
+            if (array[index].baseHits === 1) {
+              return `Gain ${blockGain} block. Deal ${damageToDo} damage`        
+            } else {
+              return `Gain ${blockGain} block. Deal ${damageToDo} damage ${array[index].baseHits} times`
+            }
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        cost: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseCost: 2,
+        baseDamage: 10,
+        baseBlock: 12,
+        baseHits: 1,
+        //takes the state object, declares a toChangeState which takes immer.produce
+        //and returns a new state reflecting the changes
+        action: async (stateObj, index, array) => {
+          let blockGain = array[index].baseBlock + (array[index].upgrades*3);
+          let damageToDo =  array[index].baseDamage + (array[index].upgrades*3);
+          stateObj = gainBlock(stateObj, blockGain, array[index.baseCost]);
+          stateObj = await dealOpponentDamage(stateObj, damageToDo);
+          return stateObj;
+        }
+      },
+
+      huntprey: {
+        name: "Hunt Prey",
+        text: (state, index, array) => {
+          return `Deal double damage to the targeted enemy for ${1 + Math.floor(array[index].upgrades/2)} turn.`;
+        },
+        minReq: (state, index, array) => {
+          if (array[index].upgrades > 0) {
+            cost = (array[index].upgrades % 2 ===0) ? array[index].baseCost : 0
+            return cost
+          } else {
+            return array[index].baseCost
+          }
+        },
+        baseCost: 1,
+        Type: "ability",
+        elementType: "water",
+        cost:  (state, index, array) => {
+          if (array[index].upgrades > 0) {
+            let cost = (array[index].upgrades % 2 ===0) ? array[index].baseCost : 0
+            return cost
+          } else {
+            return array[index].baseCost
+          }
+        },
+        upgrades: 0,
+        //takes the state object, declares a toChangeState which takes immer.produce
+        //and returns a new state reflecting the changes
+        action: (state, index, array) => {
+          let toChangeState = immer.produce(state, (newState) => {
+            newState.opponentMonster[newState.targetedMonster].hunted += 1 + Math.floor(array[index].upgrades/2);
+            if (array[index].upgrades > 0) {
+              let cost = (array[index].upgrades % 2 ===0) ? array[index].baseCost : 0
+              newState.playerMonster.encounterEnergy -= cost;
+            };
+          })
+          return toChangeState;
         }
       },
 }

@@ -34,10 +34,7 @@ let easyEncounters = [
   [easySoloEncounters.e2],
   [easySoloEncounters.e3],
   [easyMultiEncounters.e4, easyMultiEncounters.e5],
-  [easySoloEncounters.e6],
-  [easySoloEncounters.e7],
-  [easySoloEncounters.e8],
-  [easySoloEncounters.e9],
+  [easySoloEncounters.e6]
 ]
 
 let mediumEncounters = [
@@ -47,6 +44,10 @@ let mediumEncounters = [
   [mediumSoloEncounters.m4],
   [mediumSoloEncounters.m5],
   [mediumSoloEncounters.m6],
+  [mediumSoloEncounters.m7],
+  [mediumSoloEncounters.m8],
+  [mediumSoloEncounters.m9],
+  [mediumSoloEncounters.m10],
   [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
   [mediumMultiEncounters.mm1, mediumMultiEncounters.mm3],
   [mediumMultiEncounters.mm2, mediumMultiEncounters.mm3],
