@@ -842,7 +842,7 @@ let cards = {
         name: "Dancer's Grace",
         text: (state, index, array) => { 
           if (array[index].upgrades === 0) {
-            return `Gain 1 Dexterity. Gain ${array[index].baseBlock} block. Remove`;
+            return `Gain 1 Dexterity. Gain ${array[index].baseBlock} block. Remove from your deck for the rest of combat`;
           } else {
             return `Gain ${1+array[index].upgrades} Dexterity. Gain ${array[index].baseBlock + array[index].upgrades} block.`;
           }
@@ -1021,9 +1021,9 @@ let cards = {
         name: "Rewind Time",
         text: (state, index, array) => { 
           if (array[index].upgrades === 0) {
-            return `Destroy all of your opponent's energy. Remove.` 
+            return `Destroy all of your opponent's energy. Remove from your deck for the rest of combat` 
           } else {
-            return `Destroy all of your opponent's energy. Deal ${4*array[index].upgrades} damage. Remove.` 
+            return `Destroy all of your opponent's energy. Deal ${4*array[index].upgrades} damage. Remove from your deck for the rest of combat` 
           }
         },
         minReq: (state, index, array) => {
@@ -1054,7 +1054,7 @@ let cards = {
         cardID: 72,
         name: "Reforming Shield",
         text: (state, index, array) => { 
-          return `Gain ${array[index].baseBlock + array[index].upgrades} block at the end of each turn. Remove`;
+          return `Gain ${array[index].baseBlock + array[index].upgrades} block at the end of each turn. Remove from your deck for the rest of combat`;
         },
         minReq: (stateObj, index, array) => {
           return array[index].baseCost;
@@ -1139,7 +1139,7 @@ let cards = {
         exhaust: true,
         name: "Shut Down",
         text: (stateObj, index, array) => { 
-            return `Gain ${array[index].baseBlock + stateObj.playerMonster.dex + (5*array[index].upgrades)} block. Enemy loses 5 strength. Remove`;
+            return `Gain ${array[index].baseBlock + stateObj.playerMonster.dex + (5*array[index].upgrades)} block. Enemy loses 5 strength. Remove from your deck for the rest of combat`;
            },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -1334,9 +1334,9 @@ let cards = {
         name: "Feast",
         text: (state, index, array) => { 
           if (array[index].upgrades === 0) {
-            return `Permanently gain HP equal to cards played this turn (${state.cardsPerTurn}). Remove`;
+            return `Permanently gain HP equal to cards played this turn (${state.cardsPerTurn}). Remove from your deck for the rest of combat`;
           } else {
-            return `Permanently gain ${array[index].upgrades+1} HP for each card played this turn (${state.cardsPerTurn}). Remove`;
+            return `Permanently gain ${array[index].upgrades+1} HP for each card played this turn (${state.cardsPerTurn}). Remove from your deck for the rest of combat`;
           }
         },
         minReq: -99,
@@ -2041,9 +2041,9 @@ let cards = {
         name: "Divine Favor",
         text: (state, index, array) => { 
           if (array[index].upgrades === 0) {
-            return `For the rest of combat, gain ${4+(array[index].upgrades*2)} block when you gift energy. Remove`;
+            return `Gain ${4+(array[index].upgrades*2)} block when you gift energy. Remove from your deck for the rest of combat`;
           } else {
-            return `For the rest of combat, gain ${4+(array[index].upgrades*2)} block when you gift energy`;
+            return `Gain ${4+(array[index].upgrades*2)} block when you gift energy`;
           }
         },
         minReq: (stateObj, index, array) => {
@@ -2122,9 +2122,9 @@ let cards = {
         name: "Hammer & Tongs",
         text: (state, index, array) => {
           if (array[index].upgrades < array[index].baseCost) {
-            return `Upgrade a random card in your deck permanently. Remove`;
+            return `Upgrade a random card in your deck permanently. Remove from your deck for the rest of combat`;
           } else {
-            return `Upgrade a random card in your deck permanently ${array[index].upgrades - array[index].baseCost + 1} times. Remove`;
+            return `Upgrade a random card in your deck permanently ${array[index].upgrades - array[index].baseCost + 1} times. Remove from your deck for rest of combat`;
           }
             ;
         },
@@ -2191,9 +2191,9 @@ let cards = {
         name: "Expert's Forge",
         text: (state, index, array) => {
           if (array[index].upgrades === 0 ) {
-              return `Upgrade all cards in your deck for this combat. Remove`   
+              return `Upgrade all cards in your deck. Remove from your deck for the rest of combat`   
           } else {
-              return `Upgrade all cards in your deck for this combat ${1+array[index].upgrades} times. Remove`
+              return `Upgrade all cards in your deck ${1+array[index].upgrades} times. Remove from your deck for the rest of combat`
           }
             
           },
@@ -2335,7 +2335,7 @@ let cards = {
         rare: true,
         cardID: 43,
         name: "Sunlight",
-        text: (state, index, array) => { return `Restore ${Math.floor(array[index].upgrades/3) + 1} health per card played for rest of combat. Remove` },
+        text: (state, index, array) => { return `Restore ${Math.floor(array[index].upgrades/3) + 1} health per card played. Remove from your deck for the rest of combat` },
         minReq: (state, index, array) => {
           if (array[index].baseCost > array[index].upgrades) {
             return array[index].baseCost-array[index].upgrades;
@@ -2432,7 +2432,7 @@ let cards = {
         name: "Ritual",
         exhaust: true,
         text: (state, index, array) => { 
-          return `Gain ${4 + (array[index].upgrades)} strength. Remove` 
+          return `Gain ${4 + (array[index].upgrades)} strength. Remove from your deck for the rest of combat` 
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -2482,7 +2482,7 @@ let cards = {
         cardID: "strength4",
         name: "Bulk Up",
         text: (state, index, array) => {
-          return `+1 permanent strength. Remove`;
+          return `+1 permanent strength. Remove from your deck for the rest of combat`;
         },
         minReq: (state, index, array) => {
           return (array[index].baseCost - (array[index].upgrades))
@@ -2664,7 +2664,7 @@ let cards = {
   
       poisondrain: {
         name: "Poison Drain",
-        text: (state, index, array) => { return `Apply +${3 + array[index].upgrades} poison. Remove 2 opponent energy` },
+        text: (state, index, array) => { return `Apply +${3 + array[index].upgrades} poison. Destroy 2 opponent energy` },
         minReq: (state, index, array) => {
           return array[index].baseCost;
         },
@@ -2776,7 +2776,7 @@ let cards = {
 
       sabotage: {
         name: "Sabotage",
-        text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex + (4*array[index].upgrades))} block. Remove ${2+array[index].upgrades} opponent energy` },
+        text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex + (4*array[index].upgrades))} block. Destroy ${2+array[index].upgrades} opponent energy` },
         minReq: 2,
         upgrades: 0,
         baseCost: 2,
@@ -3005,7 +3005,7 @@ let specialCardPool = {
     backstep: {
       cardID: 004,
       name: "Backstep",
-      text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex) + (2*array[index].upgrades)} block. Remove` },
+      text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex) + (2*array[index].upgrades)} block. Remove from your deck for the rest of combat` },
       minReq: -99,
       upgrades: 0,
       baseCost: 0,
@@ -3025,7 +3025,7 @@ let specialCardPool = {
     recycle: {
       cardID: 005,
       name: "Recycle",
-      text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex) + (3*array[index].upgrades)} block. Remove all other cards in your hand.` },
+      text: (state, index, array) => { return `Gain ${(array[index].baseBlock + state.playerMonster.dex) + (3*array[index].upgrades)} block. Remove all other cards in your hand for the rest of combat` },
       upgrades: 0,
       baseCost: 1,
       exhaustAll: true,
