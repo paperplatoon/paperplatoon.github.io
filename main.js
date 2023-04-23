@@ -98,6 +98,8 @@ let gameStartState = {
   cardsPerTurn: 0,
   comboPerTurn: 0,
   blockKeep: false,
+  gainStrengthEnergyChange: 0,
+  backstepDamage: false,
   gainLifePerCard: 0,
   townEventChosen: false,
   townFreeHealUsed: false,
@@ -806,6 +808,10 @@ async function energyGift(stateObj, energyToGain, energyCost=false, all=false) {
     if (newState.energyGiftBlock > 0) {
       newState.playerMonster.encounterBlock += newState.energyGiftBlock;
     }
+    if (newState.gainStrengthEnergyChange > 0) {
+      newState.playerMonster.strength += newState.gainStrengthEnergyChange;
+      newState.playerMonster.fightStrength += newState.gainStrengthEnergyChange;
+    }
   })
   if (stateObj.energyGiftAttack > 0) {
     let targetIndex = Math.floor(Math.random() * (stateObj.opponentMonster.length))
@@ -874,6 +880,10 @@ async function destroyEnergy(stateObj, energyToDestroy, energyCost=false, all=fa
     if (energyCost) {
       newState.playerMonster.encounterEnergy -= energyCost
     }
+    if (newState.gainStrengthEnergyChange > 0) {
+      newState.playerMonster.strength += newState.gainStrengthEnergyChange;
+      newState.playerMonster.fightStrength += newState.gainStrengthEnergyChange;
+    }
   })
   await energyGainAnimation(stateObj, all)
   return stateObj
@@ -885,6 +895,11 @@ function gainBlock(stateObj, blockToGain, energyCost=false, blockNumber=1) {
     if (energyCost) {
       newState.playerMonster.encounterEnergy -= energyCost
     }
+    newState.opponentMonster.forEach((monsterObj) => {
+      if (monsterObj.strengthOnBlock && monsterObj.strengthOnBlock > 0) {
+        monsterObj.strength += monsterObj.strengthOnBlock
+      }
+    })
   })
   return stateObj
 }
@@ -894,7 +909,7 @@ async function applyPoison(stateObj, poisonToApply, energyCost=false, poisonNumb
     if (all===true) {
       await applyGreenFilter(document.querySelectorAll("#opponents .monster-top-row"), 750)
       stateObj = immer.produce(stateObj, (newState) => {
-        newState.opponentMonster.forEach(function(monsterObj, index) {
+        newState.opponentMonster.forEach(function(monsterObj) {
           monsterObj.poison += poisonToApply * poisonNumber;
         })
       })
@@ -914,11 +929,11 @@ async function applyPoison(stateObj, poisonToApply, energyCost=false, poisonNumb
 }
 
 async function applyGreenFilter(elementArray, duration) {
-    elementArray.forEach((element, index) => {
+    elementArray.forEach((element) => {
       element.classList.add('green-filter');
     })
     await pause(duration)
-    elementArray.forEach((element, index) => {
+    elementArray.forEach((element) => {
       element.classList.remove('green-filter');
     })
 }
@@ -1468,6 +1483,8 @@ function resetAfterFight(stateObj) {
     newState.energyGiftAttack = 0;
     newState.blockPerTurn = 0;
     newState.blockKeep = false;
+    newState.backstepDamage = false;
+    newState.gainStrengthEnergyChange = 0;
     newState.cardsPerTurn = 0;
     newState.comboPerTurn = 0;
     newState.fightStarted = false;
@@ -1576,6 +1593,8 @@ function setUpEncounter(stateObj, isBoss=false) {
     newState.gainLifePerCard = 0;
     newState.blockPerTurn = 0;
     newState.blockKeep = false;
+    newState.backstepDamage = false;
+    newState.gainStrengthEnergyChange = 0;
     newState.comboPerTurn = 0;
     
     newState.cardsPerTurn = 0;

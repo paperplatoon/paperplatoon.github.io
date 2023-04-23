@@ -4,7 +4,7 @@ let hardSoloEncounters = {
         type: "Air",
         Level: 1,
         XPGain: opponentXPGain*3,
-      goldOnDefeat: Math.floor(opponentGold*7),
+      goldOnDefeat: Math.floor(opponentGold*5),
         maxHP: opponentMaxHP*12,
         encounterEnergy: 0,
         opponentMoveIndex: false,
@@ -72,8 +72,8 @@ let hardSoloEncounters = {
     h2: {
         name: "Enrage h8",
         type: "Fire",
-        XPGain: opponentXPGain,
-      goldOnDefeat: Math.floor(opponentGold*7),
+        XPGain: opponentXPGain*3,
+      goldOnDefeat: Math.floor(opponentGold*5),
         goldOnDefeat: 10,
         Level: 1,
         maxHP: opponentMaxHP*12,
@@ -148,7 +148,7 @@ let hardSoloEncounters = {
         name: "Strength H3",
         type: "Fire",
         XPGain: opponentXPGain*3,
-        goldOnDefeat: Math.floor(opponentGold*7),
+        goldOnDefeat: Math.floor(opponentGold*5),
         Level: 1,
         maxHP: opponentMaxHP*14,
         encounterEnergy: 0,
@@ -230,7 +230,7 @@ let hardSoloEncounters = {
         type: "Fire",
         offbalance: true,
         XPGain: opponentXPGain*3,
-        goldOnDefeat: Math.floor(opponentGold*7),
+        goldOnDefeat: Math.floor(opponentGold*5),
         Level: 1,
         maxHP: opponentMaxHP*12,
         encounterEnergy: 0,
@@ -307,8 +307,8 @@ let hardSoloEncounters = {
       h5: {
         name: "Deflate",
         type: "Air",
-        XPGain: opponentXPGain*2,
-        goldOnDefeat: Math.floor(opponentGold*3),
+        XPGain: opponentXPGain*3,
+        goldOnDefeat: Math.floor(opponentGold*5),
         Level: 1,
         maxHP: opponentMaxHP*11,
         encounterEnergy: 0,
@@ -372,6 +372,68 @@ let hardSoloEncounters = {
               stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*4) + 2, index, -4);
               stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].dex += array[index].baseScale;
+              })
+              return stateObj;
+            }
+          }
+        ]
+      },
+
+      h6: {
+        name: "Strength on Block",
+        type: "Air",
+        XPGain: opponentXPGain*3,
+        goldOnDefeat: Math.floor(opponentGold*5),
+        Level: 1,
+        maxHP: opponentMaxHP*10,
+        encounterEnergy: 0,
+        opponentMoveIndex: false,
+        currentHP: opponentMaxHP*10,
+        strength: 0,
+        dex: 0,
+        drown: 0,
+        hunted: 0,
+        poison: 0,
+        strengthOnBlock: 1,
+        baseBlock: opponentBaseBlock,
+        baseDamage: opponentBaseDamage,
+        baseScale: opponentBaseScale,
+        baseHeal: 0,
+        avatar: "img/poke1.png",
+        powers: [{
+            name: "Power: Embodied",
+            text:  `Gains 1 strength whenever your monster gains block`
+          }],
+        moves: [
+          {
+            name: "Fire Punch",
+            cost: "0",
+            text: (state, index, array) => {
+              return `Deal ${array[index].baseDamage + 3 + array[index].strength} damage. `
+            },
+            minReq: 0,
+            energyChange: "+2",
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage+3, index, 2);
+              return stateObj;
+            }
+          },
+          {
+            name: false,
+          },
+          {
+            name: "Flame Cloak",
+            cost: "4",
+            text: (state, index, array) => {
+              return `Gain ${(array[index].baseBlock) + array[index].dex} block. Gain ${array[index].baseScale + 2} dexterity.`
+            },
+            minReq: 4,
+            energyChange: "-4",
+            action: async (stateObj, index, array) => {
+              stateObj = immer.produce(stateObj, (newState) => {
+                newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].dex; 
+                newState.opponentMonster[index].dex += 5;
+                newState.opponentMonster[index].encounterEnergy -= 4
               })
               return stateObj;
             }

@@ -215,10 +215,10 @@ let mediumSoloEncounters = {
         XPGain: opponentXPGain*2,
         goldOnDefeat: Math.floor(opponentGold*3),
         Level: 1,
-        maxHP: opponentMaxHP*10,
+        maxHP: opponentMaxHP*9,
         encounterEnergy: 0,
         opponentMoveIndex: false,
-        currentHP: opponentMaxHP*10,
+        currentHP: opponentMaxHP*9,
         enrage: 2,
         strength: 0,
         dex: 0,
@@ -261,9 +261,9 @@ let mediumSoloEncounters = {
                 return `Deal ${Math.floor(array[index].baseDamage-3) + array[index].strength} damage for each time you've taken unblocked attack damage (${state.fightDamageCount})`
             },
             minReq: 2,
-            energyChange: "+1",
+            energyChange: "-2",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage-3), index, 1, stateObj.fightDamageCount);
+              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage-3), index, -2, stateObj.fightDamageCount);
               return stateObj;
             }
           }

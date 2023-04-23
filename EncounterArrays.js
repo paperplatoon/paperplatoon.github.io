@@ -61,6 +61,7 @@ let hardEncounters = [
   [hardSoloEncounters.h3],
   [hardSoloEncounters.h4],
   [hardSoloEncounters.h5],
+  [hardSoloEncounters.h6],
   [easySoloEncounters.e6, easySoloEncounters.e2],
   [easySoloEncounters.e6, easySoloEncounters.e7],
   [easySoloEncounters.e2, easySoloEncounters.e7],
@@ -71,5 +72,6 @@ let bosses = [
     [bossMonsters.angryboss],
     [bossMonsters.deflateboss],
     [bossMonsters.offbalanceboss],
+    [bossMonsters.strengthblockboss],
     [opponentMonsters.healgymboss, opponentMonsters.healgymguard2],
 ]

@@ -14,6 +14,7 @@ let fireCardPool = {
     expertsforge: {...cards.expertsforge},
     sunlight: {...cards.sunlight},
     gainstrength: {...cards.gainstrength},
+    expand: {...cards.expand},
 //MISC ABILITIES
 // ------------------------------------------  12
     //strength scaling - 4
@@ -131,6 +132,8 @@ let fireCardPool = {
     hammerandtongs: {...cards.hammerandtongs},
     expertsforge: {...cards.expertsforge},
     sunlight: {...cards.sunlight},
+    whirlwind: {...cards.whirlwind},
+    expand: {...cards.expand},
     
     //draw and recall - 4
     darkknowledge: {...cards.darkknowledge},

@@ -54,14 +54,14 @@ let playerMonsters = {
       //2 energy
       waterCardPool.waterenergy,
       waterCardPool.waterenergy,
-      waterCardPool.cautiousblow,
       //11 attacks
       cards.withdraw,
       cards.withdraw,
       cards.withdraw,
       cards.withdraw,
-      waterCardPool.cloakingfog,
+      waterCardPool.sabotage,
 
+      cards.tackle,
       cards.tackle,
       cards.tackle,
       cards.tackle,
@@ -166,8 +166,8 @@ let playerMonsters = {
         //block
         specialCardPool.testkill,
         //win
-        cards.poisonedblade,
-        fireCardPool.honeclaws,
+        cards.cloakingfog,
+        cards.whirlwind,
         fireCardPool.hammerandtongs
       ],
     },

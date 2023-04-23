@@ -227,4 +227,84 @@ let bossMonsters = {
           }
         ]
       },
+
+      strengthblockboss: {
+        name: "Strength on Block Boss",
+        type: "Air",
+        XPGain: opponentXPGain*3,
+        goldOnDefeat: Math.floor(opponentGold*5),
+        Level: 1,
+        maxHP: opponentMaxHP*16,
+        encounterEnergy: 0,
+        opponentMoveIndex: false,
+        currentHP: opponentMaxHP*16,
+        strength: 0,
+        dex: 0,
+        drown: 0,
+        hunted: 0,
+        poison: 0,
+        strengthOnBlock: 1,
+        baseBlock: opponentBaseBlock,
+        baseDamage: opponentBaseDamage,
+        baseScale: opponentBaseScale,
+        baseHeal: 0,
+        avatar: "img/poke1.png",
+        powers: [{
+            name: "Power: Embodied",
+            text:  `Gains 1 strength whenever your monster gains block`
+          }],
+        moves: [
+          {
+            name: "Whirling Dervish",
+            cost: "0",
+            text: (state, index, array) => {
+                return `Deal ${Math.floor(array[index].baseDamage/4) + array[index].strength} damage 4 times`
+            },
+            minReq: -99,
+            energyChange: "+2",
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage/4), index, 2, 4);
+              return stateObj;
+            }
+          },
+          {
+            name: false,
+          },
+          {
+            name: false,
+          },
+          {
+            name: false,
+          },
+          {
+            name: "Wind Up",
+            cost: "4",
+            text: (state, index, array) => {
+              return `Gain ${Math.floor(array[index].baseScale/3)} strength. `
+            },
+            minReq: 4,
+            energyChange: "+1",
+            action: async (stateObj, index, array) => {
+              stateObj = immer.produce(stateObj, (newState) => {
+                newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
+                newState.opponentMonster[index].encounterEnergy += 1;
+              })
+              return stateObj;
+            }
+          },
+          {
+            name: "Explosion",
+            cost: "5",
+            text: (state, index, array) => {
+              return `Deal ${Math.floor(array[index].baseDamage*6) + array[index].strength} damage` 
+            },
+            minReq: 5,
+            energyChange: "-5",
+            action: async (stateObj, index, array) => {
+              stateObj = dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage*6), index, -5)
+              return stateObj;
+            }
+          }
+        ]
+      },
 }
