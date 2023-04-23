@@ -2607,29 +2607,33 @@ let cards = {
 
 //------------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------------
-// poison 
+// Poison Cards 
       pinprick: {
         name: "Pinprick",
         text: (state, index, array) => {
-          return `Opponent gains +${2 + (array[index].upgrades)} poison.`
+          return `Apply ${array[index].basePoison + (array[index].upgrades)} poison.`
         },
-        minReq: -99,
-        cost: 0,
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseCost: 0,
+          cost:  (state, index, array) => {
+            return array[index].baseCost;
+          },
         upgrades: 0,
+        basePoison: 2,
         cardType: "ability",
         elementType: "water",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            newState.opponentMonster[newState.targetedMonster].poison += 1 + array[index].upgrades;
-          })
-          return toChangeState;
+        action: async(stateObj, index, array) => {
+          stateObj = await applyPoison(stateObj, array[index].basePoison + array[index].upgrades, array[index].baseCost)
+          return stateObj;
         }
       },
 
       basicpoison: {
         name: "Poison",
         text: (state, index, array) => {
-          return `Opponent gains +${4 + (array[index].upgrades)} poison.`
+          return `Apply ${array[index].basePoison + (array[index].upgrades)} poison.`
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -2639,21 +2643,19 @@ let cards = {
             return array[index].baseCost;
           },
         upgrades: 0,
+        basePoison: 4,
         cardType: "ability",
         elementType: "water",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            newState.opponentMonster[newState.targetedMonster].poison += 4 + array[index].upgrades;
-            newState.playerMonster.encounterEnergy -= array[index].baseCost;
-          })
-          return toChangeState;
+        action: async(stateObj, index, array) => {
+          stateObj = await applyPoison(stateObj, array[index].basePoison + array[index].upgrades, array[index].baseCost)
+          return stateObj;
         }
       },
 
       venomshield: {
         name: "Venom Shield",
         text: (state, index, array) => {
-          return `Gain ${array[index].baseBlock + (array[index].upgrades*2) + state.playerMonster.dex} block. All opponents gain +${2 + (array[index].upgrades)} poison.`
+          return `Gain ${array[index].baseBlock + (array[index].upgrades*2) + state.playerMonster.dex} block. Apply ${array[index].basePoison + (array[index].upgrades)} poison to all enemies`
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -2663,16 +2665,13 @@ let cards = {
             return array[index].baseCost;
         },
         upgrades: 0,
+        basePoison: 2,
         cardType: "ability",
         elementType: "water",
         baseBlock: 8,
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
           stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*2), array[index].baseCost)
-          stateObj = immer.produce(stateObj, (newState) => {
-            newState.opponentMonster.forEach(function(monsterObj, index) {
-              monsterObj.poison += 2 + array[index].upgrades;
-            })
-          })
+          stateObj = await applyPoison(stateObj, array[index].basePoison + array[index].upgrades, array[index].baseCost, 1, true)
           return stateObj;
         }
       },
@@ -2680,7 +2679,7 @@ let cards = {
       pocketneedle: {
         name: "Pocket Needle",
         text: (state, index, array) => {
-          return `Opponent gains +${1 + (array[index].upgrades)} poison. Draw 1 card.`
+          return `Apply ${array[index].basePoison + (array[index].upgrades)} poison. Draw 1 card.`
         },
         minReq: -99,
         baseCost: 0,
@@ -2690,11 +2689,9 @@ let cards = {
         cardType: "ability",
         elementType: "water",
         upgrades: 0,
-        action: (stateObj, index, array) => {
-          stateObj = immer.produce(stateObj, (newState) => {
-            newState.opponentMonster[newState.targetedMonster].poison += 1 + array[index].upgrades;
-            newState.playerMonster.encounterEnergy -= array[index].baseCost;
-          })
+        basePoison: 1,
+        action: async (stateObj, index, array) => {
+          stateObj = await applyPoison(stateObj, array[index].basePoison + array[index].upgrades, array[index].baseCost)
           stateObj = drawACard(stateObj);
           return stateObj;
         }
@@ -2702,22 +2699,22 @@ let cards = {
   
       poisondrain: {
         name: "Poison Drain",
-        text: (state, index, array) => { return `Apply +${3 + array[index].upgrades} poison. Destroy 2 opponent energy` },
+        text: (state, index, array) => { return `Apply ${array[index].basePoison + array[index].upgrades} poison. Destroy ${array[index].destroyEnergy} opponent energy` },
         minReq: (state, index, array) => {
           return array[index].baseCost;
         },
         upgrades: 0,
         baseCost: 1,
+        basePoison: 3,
+        destroyEnergy: 2,
         cardType: "ability",
         elementType: "water",
         cost:  (state, index, array) => {
           return array[index].baseCost;
         },
         action: async (stateObj, index, array) => {
-          stateObj = immer.produce(stateObj, (newState) => {
-            newState.opponentMonster[newState.targetedMonster].poison += 3 + array[index].upgrades
-          })
-          stateObj = await destroyEnergy(stateObj, 2, 1)
+          stateObj = await applyPoison(stateObj, array[index].basePoison + array[index].upgrades)
+          stateObj = await destroyEnergy(stateObj, array[index].destroyEnergy, 1)
           return stateObj;
         }
       },
@@ -2744,10 +2741,8 @@ let cards = {
           return array[index].baseCost;
         },
         action: async (stateObj, index, array) => {
-          stateObj = immer.produce(state, (newState) => {
-            newState.opponentMonster[newState.targetedMonster].poison += (3+array[index].upgrades);
-          })
           stateObj = await dealOpponentDamage(stateObj, (array[index].baseDamage + (array[index].upgrades*2)), array[index].baseHits, array[index].baseCost);
+          stateObj = await applyPoison(stateObj, 3+array[index].upgrades)
           return stateObj;
         }
       },
@@ -2763,13 +2758,12 @@ let cards = {
         cost:  (state, index, array) => {
           return array[index].baseCost;
         },
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            newState.playerMonster.encounterEnergy -= array[index].baseCost;
-            newState.opponentMonster[newState.targetedMonster].poison += (3+(array[index].upgrades*2));
+        action: async(stateObj, index, array) => {
+          stateObj = await applyPoison(stateObj, 3+array[index].upgrades, array[index].baseCost)
+          stateObj = immer.produce(stateObj, (newState) => {
             newState.blockKeep = true;
           })
-          return toChangeState;
+          return stateObj;
         }
       },
 
@@ -2975,11 +2969,8 @@ let specialCardPool = {
       basePoison: 10,
       cardType: "ability",
       elementType: "special",
-      action: (stateObj, index, array) => {
-        stateObj = immer.produce(stateObj, (newState) => {
-          newState.opponentMonster[newState.targetedMonster].poison += array[index].basePoison+(array[index].upgrades*2);
-          newState.playerMonster.encounterEnergy -= array[index].baseCost;
-        })
+      action: async(stateObj, index, array) => {
+        stateObj = await applyPoison(stateObj, array[index].basePoison + (array[index].upgrades*2), array[index].baseCost)
         return stateObj;
       }
     },
@@ -3145,11 +3136,8 @@ let specialCardPool = {
       basePoison: 15,
       cardType: "ability",
       elementType: "special",
-      action: (stateObj, index, array) => {
-        stateObj = immer.produce(stateObj, (newState) => {
-          newState.opponentMonster[newState.targetedMonster].poison += array[index].basePoison+(array[index].upgrades*3);
-          newState.playerMonster.encounterEnergy -= array[index].baseCost;
-        })
+      action: async(stateObj, index, array) => {
+        stateObj = await applyPoison(stateObj, array[index].basePoison + (array[index].upgrades*3), array[index].baseCost)
         return stateObj;
       }
     },

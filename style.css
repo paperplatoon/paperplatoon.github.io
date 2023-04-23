@@ -161,6 +161,19 @@
   /*animation: name duration timing-function delay iteration-count direction fill-mode;*/
 }
 
+.green-filter {
+  filter: grayscale(100%) hue-rotate(120deg);
+  transition: filter 0.75s ease-out;
+}
+
+
+
+
+.avatar {
+  z-index: 1;
+}
+
+
 @keyframes slide {
   0% {
     transform: translateX(-20vw);
@@ -727,8 +740,8 @@
 }
 
 .avatar {
-  width: 10vmax;
-  height: 10vmax;
+  width: 25vmin;
+  height: 25vmin;
   flex-shrink: 1;
 
 }

@@ -166,7 +166,7 @@ let playerMonsters = {
         //block
         specialCardPool.testkill,
         //win
-        //fireCardPool.hammerandtongs,
+        cards.poisonedblade,
         fireCardPool.honeclaws,
         fireCardPool.hammerandtongs
       ],

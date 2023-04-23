@@ -889,23 +889,41 @@ function gainBlock(stateObj, blockToGain, energyCost=false, blockNumber=1) {
   return stateObj
 }
 
-function applyPoison(stateObj, poisonToApply, energyCost=false, poisonNumber=1, all=false) {
-  stateObj = immer.produce(stateObj, (newState) => {
+async function applyPoison(stateObj, poisonToApply, energyCost=false, poisonNumber=1, all=false) {
+  
     if (all===true) {
-      newState.opponentMonster.forEach(function(monsterObj, index) {
-        monsterObj.poison += poisonToApply * poisonNumber;
+      await applyGreenFilter(document.querySelectorAll("#opponents .monster-top-row"), 750)
+      stateObj = immer.produce(stateObj, (newState) => {
+        newState.opponentMonster.forEach(function(monsterObj, index) {
+          monsterObj.poison += poisonToApply * poisonNumber;
+        })
       })
     } else {
-      let monsterObj = newState.opponentMonster[newState.targetedMonster];
-      monsterObj.poison += poisonToApply * poisonNumber;
-    }
-
+      await applyGreenFilter([document.querySelectorAll("#opponents .monster-top-row")[stateObj.targetedMonster]], 750)
+      stateObj = immer.produce(stateObj, (newState) => {
+        let monsterObj = newState.opponentMonster[newState.targetedMonster];
+        monsterObj.poison += poisonToApply * poisonNumber;
+      })
     if (energyCost) {
-      newState.playerMonster.encounterEnergy -= energyCost
+      stateObj = immer.produce(stateObj, (newState) => {
+        newState.playerMonster.encounterEnergy -= energyCost
+      })
     }
-  })
+  }
   return stateObj
 }
+
+async function applyGreenFilter(elementArray, duration) {
+    elementArray.forEach((element, index) => {
+      element.classList.add('green-filter');
+    })
+    await pause(duration)
+    elementArray.forEach((element, index) => {
+      element.classList.remove('green-filter');
+    })
+}
+
+
 
 
 // async function dealSelfDamage(stateObj, damageToDo) {
