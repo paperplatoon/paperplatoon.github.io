@@ -29,9 +29,10 @@ let fireCardPool = {
     //draw - 3
     darkknowledge: {...cards.darkknowledge},
     recall: {...cards.recall},
-    wellspring: {...cards.recall},
+    wellspring: {...cards.wellspring},
     //destroy energy - 2
     dampen: {...cards.dampen},
+    ignite: {...cards.ignite},
     //self-scaling
     ascension: {...cards.ascension},
   
@@ -57,7 +58,7 @@ let fireCardPool = {
     clarity: {...cards.clarity},
     generosity: {...cards.generosity},
     //strength-scalers -3 
-    flurryfinisher: {...cards.flurryfinisher},
+    finisher: {...cards.flurryfinisher},
     explode: {...cards.explode},
     fireball: {...cards.fireball},
     //energy effects - 3
@@ -90,7 +91,7 @@ let fireCardPool = {
     unwaveringdefense: {...cards.unwaveringdefense},
     religiousfervor: {...cards.religiousfervor},
 
-    flamingstrike: {...cards.flamingStrike},
+    flamingcloak: {...cards.flamingcloak},
     fortify: {...cards.fortify},
     //energy effects 
     sanguineshield: {...cards.sanguineshield},
@@ -138,7 +139,7 @@ let fireCardPool = {
     //draw and recall - 4
     darkknowledge: {...cards.darkknowledge},
     recall: {...cards.recall},
-    wellspring: {...cards.recall},
+    wellspring: {...cards.wellspring},
     //destroy
     dampen: {...cards.dampen},
     
@@ -197,7 +198,7 @@ let fireCardPool = {
     //1 
     // ------------------------------------------  9
     essencedrain: {...cards.essencedrain},
-    flamingstrike: {...cards.flamingStrike},
+    flamingcloak: {...cards.flamingcloak},
     rareupgrade: {...cards.rareupgrade},
     fortify: {...cards.fortify},
     forgeshield: {...cards.forgeshield},
