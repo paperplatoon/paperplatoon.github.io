@@ -80,7 +80,7 @@ let fireCardPool = {
     bowlthrough: {...cards.bowlthrough},
     annihilation: {...cards.annihilation},
     //destroy energy
-    hugetackle: {...cards.hugetackle},
+    decimate: {...cards.decimate},
   
   
 //BLOCK - 21
