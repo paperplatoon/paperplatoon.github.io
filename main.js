@@ -120,13 +120,13 @@ let gameStartState = {
 };
 
 const eventsArray = [
-  // {
-  //   divID: "TownEvent",
-  //   imgSrc: "img/wizardshop.png",
-  //   divText: "ShowCardPool",
-  //   newStatus: Status.ShowCardPool,
-  //   eventID: 100
-  // },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.png",
+    divText: "ShowCardPool",
+    newStatus: Status.ShowCardPool,
+    eventID: 100
+  },
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
@@ -258,7 +258,7 @@ function fillMapWithArray(stateObj) {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
       if (stateObj.testingMode === true) {
-        newState.townMapSquares[4] = "Fight"
+        newState.townMapSquares[4] = "?"
       } else {
       newState.townMapSquares[4] =  "Fight";
       }
@@ -611,27 +611,29 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
   if (all === true) {
     console.log("all is true")
     for (let i = 0; i < stateObj.opponentMonster.length; i++) {
-      console.log("looping for prickles at " + i)
       if (stateObj.opponentMonster[i].prickles) {
-        console.log("has multiple prickle")
-        stateObj = await dealPlayerDamage(stateObj, stateObj.opponentMonster[i].prickles-stateObj.opponentMonster[0].strength)
+        stateObj = await dealPlayerDamage(stateObj, stateObj.opponentMonster[i].prickles-stateObj.opponentMonster[0].strength, 0, false, false)
       }
     }
   } else {
     if (stateObj.opponentMonster[targetIndex].prickles) {
       console.log("has one prickle")
-      stateObj = await dealPlayerDamage(stateObj, stateObj.opponentMonster[targetIndex].prickles-stateObj.opponentMonster[0].strength)
+      stateObj = await dealPlayerDamage(stateObj, stateObj.opponentMonster[targetIndex].prickles-stateObj.opponentMonster[0].strength, 0, false, false)
     }
   }
   return stateObj;
 }
 
-async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energyChange=false, attackNumber = 1) {
-  document.querySelectorAll("#opponents .avatar")[monsterIndex].classList.add("opponent-windup");
-  document.querySelectorAll("#playerStats .avatar")[0].classList.add("player-impact");
-  await pause(200);
-  document.querySelectorAll("#opponents .avatar")[monsterIndex].classList.remove("opponent-windup");
-  document.querySelectorAll("#playerStats .avatar")[0].classList.remove("player-impact");
+async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energyChange=false, attackNumber = 1, animation=true) {
+
+  if (animation === true) {
+    document.querySelectorAll("#opponents .avatar")[monsterIndex].classList.add("opponent-windup");
+    document.querySelectorAll("#playerStats .avatar")[0].classList.add("player-impact");
+    await pause(200);
+    document.querySelectorAll("#opponents .avatar")[monsterIndex].classList.remove("opponent-windup");
+    document.querySelectorAll("#playerStats .avatar")[0].classList.remove("player-impact");
+  }
+  
 
   let reflectDamage = 0;
   
