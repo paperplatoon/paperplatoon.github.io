@@ -240,7 +240,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [ [easySoloEncounters.e2, easySoloEncounters.e6,], [easySoloEncounters.e7]  ]
+    townMonsterEncounters = [ [mediumSoloEncounters.m8, easySoloEncounters.e6,], [easySoloEncounters.e7]  ]
   } else {
     let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
     let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
@@ -639,13 +639,13 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
     console.log("all is true")
     for (let i = 0; i < stateObj.opponentMonster.length; i++) {
       if (stateObj.opponentMonster[i].prickles) {
-        stateObj = await dealPlayerDamage(stateObj, stateObj.opponentMonster[i].prickles-stateObj.opponentMonster[0].strength, 0, false, false)
+        stateObj = await dealPlayerDamage(stateObj, stateObj.opponentMonster[i].prickles-stateObj.opponentMonster[0].strength, 0, false, 1, false)
       }
     }
   } else {
     if (stateObj.opponentMonster[targetIndex].prickles) {
       console.log("has one prickle")
-      stateObj = await dealPlayerDamage(stateObj, stateObj.opponentMonster[targetIndex].prickles-stateObj.opponentMonster[0].strength, 0, false, false)
+      stateObj = await dealPlayerDamage(stateObj, stateObj.opponentMonster[targetIndex].prickles-stateObj.opponentMonster[0].strength, 0, false, 1, false)
     }
   }
   return stateObj;
@@ -3283,7 +3283,7 @@ async function startEncounter(stateObj) {
 }
 
 async function endTurnIncrement(stateObj) {
-  stateObj = immer.produce(stateObj, (newState) => {
+  stateObj = immer.produce(stateObj, async (newState) => {
     newState.playerMonster.strength -= newState.playerMonster.tempStrength;
     newState.playerMonster.dex -= newState.playerMonster.tempDex;
     newState.playerMonster.tempStrength = 0;
@@ -3291,12 +3291,13 @@ async function endTurnIncrement(stateObj) {
     newState.cardsPerTurn = 0;
     newState.comboPerTurn = 0;
     newState.playerMonster.encounterBlock += newState.blockPerTurn;
-    newState.opponentMonster.forEach(function (monsterObj, index) {
+    newState.opponentMonster.forEach(async (monsterObj, monsterIndex) => {
       if (monsterObj.hunted > 0) {
         monsterObj.hunted -=1;
       };
       if (monsterObj.poison > 0) {
         monsterObj.currentHP -= (monsterObj.poison)
+        //await applyGreenFilter([document.querySelectorAll("#opponents .monster-top-row")[monsterIndex]], 750)
       }
       if (monsterObj.inflame) {
         monsterObj.strength += monsterObj.inflame;

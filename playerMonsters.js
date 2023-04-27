@@ -167,7 +167,7 @@ let playerMonsters = {
         specialCardPool.testkill,
         //win
         cards.fierymissiles,
-        cards.flamewhip,
+        cards.basicpoison,
         fireCardPool.hammerandtongs
       ],
     },

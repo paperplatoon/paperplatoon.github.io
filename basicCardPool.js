@@ -1576,9 +1576,9 @@ let cards = {
         elementType: "fire",
         action: async (stateObj, index, array) => {    
           stateObj = await dealOpponentDamage(stateObj, (array[index].baseDamage + (2*array[index].upgrades)), array[index].baseHits, array[index].baseCost);
-          for (i = 0; i < (1+array[index].upgrades); i++) {
-            stateObj = returnCard(stateObj);
-          }
+          stateObj = returnCard(stateObj);
+          stateObj = returnCard(stateObj);
+
           return stateObj;
         }
       },
@@ -2297,7 +2297,7 @@ let cards = {
           return array[index].baseCost+array[index].upgrades;
         },
         upgrades: 0,
-        baseCost: 2,
+        baseCost: 4,
         cost:  (state, index, array) => {
           return array[index].baseCost+array[index].upgrades;
         },
