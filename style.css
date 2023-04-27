@@ -231,17 +231,12 @@
   }
 }
 
-
-.fire-choose:hover {
-  background-color: rgb(102, 20, 20);
-}
 .water-choose {
   background-color: rgb(58, 58, 113);
 }
 
-.water-choose:hover {
-  background-color: rgb(23, 23, 109);
-}
+
+
 
 .monster-to-choose img {
   opacity: 1;
@@ -328,21 +323,7 @@
 .event-text-div {
   width: 90vw;
 }
-.town-div:hover {
-  background: linear-gradient(
-    45deg,
-    #dcd1d179 30%,
-    transparent 30%,
-    transparent 50%,
-    #dcd1d179 50%,
-    #dcd1d179  80%,
-    transparent 80%,
-    transparent 100%
-  );
-  background-size: 80px 80px;
-  animation: towndiv 2s linear infinite;
-  animation-direction: reverse;
-}
+
 
 @keyframes towndiv {
   0% {
@@ -460,10 +441,7 @@
   background-color: crimson;
 }
 
-.clickable-town-div:hover {
-  cursor: pointer;
-  box-shadow: 0 0 35px rgba(33,33,33); 
-}
+
 
 .heal-div {
   margin: 2vmax;
@@ -479,11 +457,7 @@
   position: relative;
 }
 
-.heal-div.playable:hover {
-  box-shadow: 0 0 80px rgb(239, 0, 0);
-  cursor: pointer;
-  color: green;
-}
+
 
 
 .remove-div button, #level-up-div button {
@@ -604,17 +578,7 @@
 
 
 
-.clickable-monster:hover {
-  cursor: pointer;
-  box-shadow: 0 0 30px rgb(154, 15, 15);
-}
 
-.monster-to-choose:hover {
-  cursor: pointer;
-  box-shadow: 0 0 20px rgb(254, 254, 254); 
-  color: white;
-  animation: fadeIn 0.5s forwards;
-}
 
 .fade-in {
   animation: fadeIn 0.7s;
@@ -705,12 +669,12 @@
   border: 2px dashed rgb(93, 0, 0);
 }
 
-.monster-button:hover {
+/* .monster-button: hoooover {
   color: #fff;
   background-color: rgb(93, 0, 0);
   box-shadow: 0 0 10px rgba(33,33,33); 
   transition: .7s;
-}
+} */
 
 .monster-drown {
   color: blue;
@@ -806,12 +770,7 @@
   z-index: 10;
 }
 
-#drawPile:hover #drawDiv,
-#discardPile:hover #discardDiv,
-#playerDeckPile:hover #deckDiv {
-  animation: fadeIn 1s;
-  display: block;
-}
+
 
 .card-reward:hover .invisible-cost, .card-reward:hover .paid-invisible-cost {
   animation: fadeIn 0.3s;
@@ -1302,7 +1261,7 @@ button:hover {
   height: 60vh;
 }
 
-@media only screen and (min-width: 1500px) {
+@media (hover: hover) {
   .clickable-square:hover {
     cursor: pointer;
     color: rgb(255, 225, 0);
@@ -1322,14 +1281,66 @@ button:hover {
   .clickable-square:hover .pentagram::before {
     background: rgb(255, 225, 0);
    }
+
+   .fire-choose:hover {
+    background-color: rgb(102, 20, 20);
+  }
+  
+  .water-choose:hover {
+    background-color: rgb(23, 23, 109);
+  }
+
+  #shop-div .playable:hover {
+    box-shadow: 0 0 35px rgb(221, 249, 8); 
+  }
+  .town-div:hover {
+    background: linear-gradient(
+      45deg,
+      #dcd1d179 30%,
+      transparent 30%,
+      transparent 50%,
+      #dcd1d179 50%,
+      #dcd1d179  80%,
+      transparent 80%,
+      transparent 100%
+    );
+    background-size: 80px 80px;
+    animation: towndiv 2s linear infinite;
+    animation-direction: reverse;
+  }
+  .clickable-town-div:hover {
+    cursor: pointer;
+    box-shadow: 0 0 35px rgba(33,33,33); 
+  }
+  .heal-div.playable:hover {
+    box-shadow: 0 0 80px rgb(239, 0, 0);
+    cursor: pointer;
+    color: green;
+  }
+  .clickable-monster:hover {
+    cursor: pointer;
+    box-shadow: 0 0 30px rgb(154, 15, 15);
+  }
+  
+  .monster-to-choose:hover {
+    cursor: pointer;
+    box-shadow: 0 0 20px rgb(254, 254, 254); 
+    color: white;
+    animation: fadeIn 0.5s forwards;
+  }
+  #drawPile:hover #drawDiv,
+#discardPile:hover #discardDiv,
+#playerDeckPile:hover #deckDiv {
+  animation: fadeIn 1s;
+  display: block;
+}
 }
 
-@media only screen and (max-width: 1500px) {
+@media (hover: none) {
   .clickable-square:active {
     cursor: pointer;
     color: rgb(255, 225, 0);
     background-color: rgba(255, 255, 255, 0.837);
-    animation: fadeIn 0.5s forwards;
     /*background: linear-gradient(215deg, rgba(255, 236, 219, 0.716), rgba(229, 181, 151, 0.7));*/
   }
 
@@ -1344,6 +1355,30 @@ button:hover {
   .clickable-square:active .pentagram::before {
     background: rgb(255, 225, 0);
    }
+
+   .fire-choose:active {
+    background-color: rgb(102, 20, 20);
+  }
+  
+  .water-choose:active {
+    background-color: rgb(23, 23, 109);
+  }
+  .clickable-monster:active {
+    cursor: pointer;
+    box-shadow: 0 0 30px rgb(154, 15, 15);
+  }
+  
+  .monster-to-choose:active {
+    cursor: pointer;
+    box-shadow: 0 0 20px rgb(254, 254, 254); 
+    color: white;
+  }
+  #drawPile:active #drawDiv,
+#discardPile:active #discardDiv,
+#playerDeckPile:active #deckDiv {
+  animation: fadeIn 1s;
+  display: block;
+}
 }
 
 
@@ -1504,9 +1539,8 @@ button:hover {
   background: linear-gradient(90deg, rgba(255, 236, 219, 0.89), rgba(56, 56, 56, 0.85));
 }
 
-#shop-div .playable:hover {
-  box-shadow: 0 0 35px rgb(221, 249, 8); 
-}
+
+
 
 .completed, .path {
   background: linear-gradient(215deg, rgba(255, 236, 219, 0.916), rgba(229, 181, 151, 0.9));
