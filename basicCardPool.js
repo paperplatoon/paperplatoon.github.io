@@ -1190,7 +1190,7 @@ let cards = {
           return array[index].baseCost;
         },
         upgrades: 0,
-        baseCost: 1,
+        baseCost: 2,
         cost:  (state, index, array) => {
           return array[index].baseCost;
         },
@@ -1917,7 +1917,7 @@ let cards = {
         },
         upgrades: 0,
         baseDamage: 8,
-        baseHeal: 2,
+        baseHeal: 1,
         baseHits: 1,
         cardType: "attack",
         elementType: "fire",

@@ -49,7 +49,6 @@ let easySoloEncounters = {
               stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].encounterBlock += array[index].baseBlock + 3 + array[index].dex;
                 newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
-                //newState.opponentMonster[index].encounterEnergy += 1;
               })
               return stateObj;
             }
@@ -125,13 +124,14 @@ let easySoloEncounters = {
             minReq: 4,
             energyChange: "-4",
             action: async (stateObj, index, array) => {
+              stateObj = await opponentLoseEnergy(stateObj, 4, index);
               stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock)  + array[index].dex);
                 newState.opponentMonster[index].strength += array[index].baseScale;
                 newState.opponentMonster[index].dex += array[index].baseScale;
-                newState.opponentMonster[index].encounterEnergy -= 4;
+                //newState.opponentMonster[index].encounterEnergy -= 4;
               })
-              //stateObj = await opponentLoseEnergy(stateObj, 4, index);
+              
               return stateObj;
             }
           }    
@@ -167,8 +167,9 @@ let easySoloEncounters = {
             },
             minReq: 0,
             energyChange: "+1",
-            action: (state, index, array) => {
-              let toChangeState = immer.produce(state, (newState) => {
+            action: async (stateObj, index, array) => {
+              stateObj = await opponentGainEnergy(stateObj, 1, index)
+              stateObj = immer.produce(stateObj, (newState) => {
                 if (array[index].currentHP < (array[index].maxHP - (array[index].baseHeal + 1))) {
                   newState.opponentMonster[index].currentHP += array[index].baseHeal;
                   newState.enemyFightHealTotal += array[index].baseHeal;
@@ -177,9 +178,8 @@ let easySoloEncounters = {
                   newState.opponentMonster[index].currentHP = newState.opponentMonster[index].maxHP;
                 };
                 newState.opponentMonster[index].strength += 1;
-                newState.opponentMonster[index].encounterEnergy += 1;
               })
-              return toChangeState;
+              return stateObj;
             }
           },
           {
@@ -404,13 +404,13 @@ let easyMultiEncounters = {
         },
         minReq: 4,
         energyChange: "-4",
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
+        action: async (stateObj, index, array) => {
+          stateObj = await opponentLoseEnergy(stateObj, 4, index)
+          stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].dex;
             newState.opponentMonster[index].strength += Math.floor(array[index].baseScale + 1);
-            newState.opponentMonster[index].encounterEnergy -= 4;
           })
-          return toChangeState;
+          return stateObj;
         }
       },
     ]
@@ -446,10 +446,10 @@ let easyMultiEncounters = {
         minReq: 0,
         energyChange: "+2",
         action: async (stateObj, index, array) => {
+          stateObj = await opponentGainEnergy(stateObj, 2, index)
           stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].dex;
             newState.opponentMonster[index].strength += Math.floor(array[index].baseScale + 1);
-            newState.opponentMonster[index].encounterEnergy += 2;
           })
           return stateObj;
         }

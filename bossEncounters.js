@@ -5,10 +5,10 @@ let bossMonsters = {
       Level: 1,
       XPGain: opponentXPGain*3,
       goldOnDefeat: Math.floor(opponentGold*10),
-      maxHP: opponentMaxHP*20,
+      maxHP: opponentMaxHP*25,
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      currentHP: opponentMaxHP*20,
+      currentHP: opponentMaxHP*25,
       strength: 0,
       dex: 0,
       drown: 0,
@@ -31,7 +31,7 @@ let bossMonsters = {
           cost: "0",
           energyChange: "+2",
           text: (state, index, array) => {
-            return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage. Gain ${Math.floor(array[index].baseScale/3)} strength`
+            return `Deal ${(array[index].baseDamage*2) + 2 + array[index].strength} damage. Gain ${Math.floor(array[index].baseScale/3)} strength`
           },
 
           minReq: 0,

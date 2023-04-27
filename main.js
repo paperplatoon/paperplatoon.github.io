@@ -75,7 +75,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 50,
-  testingMode: true,
+  testingMode: false,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,
@@ -240,7 +240,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [ [ easySoloEncounters.e1], [easySoloEncounters.e7, mediumSoloEncounters.m8]  ]
+    townMonsterEncounters = [ [ easySoloEncounters.e2], [easySoloEncounters.e7, mediumSoloEncounters.m8]  ]
   } else {
     let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
     let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
@@ -827,8 +827,8 @@ async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, play
     }  
 }
 
-async function opponentLoseEnergy(stateObj, energyToLose, targetIndex=0) {
-  await energyLoseAnimation(stateObj, energyToLose, targetIndex)
+async function opponentLoseEnergy(stateObj, energyToLose, targetIndex=0, playerTriggered=false) {
+  await energyLoseAnimation(stateObj, energyToLose, targetIndex, playerTriggered)
   if (energyToLose > 0) {
     stateObj = immer.produce(stateObj, (newState) => {
       if ((stateObj.opponentMonster[targetIndex].encounterEnergy -= energyToLose) >= 0) {
@@ -932,7 +932,7 @@ async function healOpponent(stateObj, HPToGain, index=0, energyChange=false, all
 
 
 async function destroyEnergy(stateObj, energyToDestroy, energyCost=false, all=false) {
-  await energyLoseAnimation(stateObj, energyToDestroy)
+  await energyLoseAnimation(stateObj, energyToDestroy, stateObj.targetedMonster, playerTriggered=true)
   stateObj = immer.produce(stateObj, (newState) => {
     if (all === true) {
       newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {

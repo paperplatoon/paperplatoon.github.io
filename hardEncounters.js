@@ -422,6 +422,12 @@ let hardSoloEncounters = {
             name: false,
           },
           {
+            name: false,
+          },
+          {
+            name: false,
+          },
+          {
             name: "Flame Cloak",
             cost: "4",
             text: (state, index, array) => {
