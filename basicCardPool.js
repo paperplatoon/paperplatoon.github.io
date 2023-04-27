@@ -1955,7 +1955,7 @@ let cards = {
         elementType: "fire",
         action: async (stateObj, index, array) => {
           stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*2), array[index].baseHits, array[index].baseCost, all=true)
-          stateObj = await energyGift(stateObj, array[index].energyGift)
+          stateObj = await energyGift(stateObj, array[index].energyGift, 0, all=true)
           return stateObj;
         }
       },

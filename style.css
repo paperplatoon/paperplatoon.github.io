@@ -527,6 +527,8 @@
   border-radius: 0.6vw;
   margin-top: 1vmin;
   margin-bottom: 1vmin;
+  background-position: 0% 0%;
+  transition: background-color 1s linear;
 }
 
 .power {
@@ -542,6 +544,7 @@
   border-radius: 0.6vw;
   height: 3vh;
   margin: 1.5vmin;
+  transition: background-color 1s ease-in;
 }
 
 .map-div {
@@ -557,9 +560,12 @@
 }
 
 .energy-filled {
-  background: rgba(255, 52, 52, 0.916);
+  background-color: rgba(255, 52, 52, 0.916);
   border: 1px solid white;
+  background-position: 0% 100%;
 }
+
+
 
 #opponents .not-chosen {
   background: rgba(255, 52, 52, 0.773);
