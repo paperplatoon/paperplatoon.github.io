@@ -168,7 +168,7 @@ let playerMonsters = {
         //win
         cards.fierymissiles,
         cards.basicpoison,
-        fireCardPool.hammerandtongs
+        fireCardPool.essencedrain
       ],
     },
 

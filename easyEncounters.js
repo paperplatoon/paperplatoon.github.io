@@ -44,11 +44,12 @@ let easySoloEncounters = {
             },
             minReq: 2,
             energyChange: "+1",
-            action: (stateObj, index, array) => {
+            action: async (stateObj, index, array) => {
+              stateObj = await opponentGainEnergy(stateObj, 1, index)
               stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].encounterBlock += array[index].baseBlock + 3 + array[index].dex;
                 newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
-                newState.opponentMonster[index].encounterEnergy += 1;
+                //newState.opponentMonster[index].encounterEnergy += 1;
               })
               return stateObj;
             }

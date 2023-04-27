@@ -1652,11 +1652,10 @@ let cards = {
           }
 
           textString += `. +${3+ array[index].upgrades} extra for every time you gifted energy`;
-
+          
           if (state.status === Status.InEncounter) {
             textString += ` (${(state.fightEnergyGiftCount*3) + totalDamage} total)`
           }
-          
           return textString
     },
         minReq: (state, index, array) => {
@@ -2852,14 +2851,19 @@ let cards = {
       bodyslam: {
         name: "Body Slam",
         text: (stateObj, index, array) => {
-          let blockGain = array[index].baseBlock + stateObj.playerMonster.dex + (array[index].upgrades*2);
-          let damageToDo = stateObj.playerMonster.encounterBlock + blockGain + stateObj.playerMonster.strength + array[index].baseDamage;
+          let damageToDo = stateObj.playerMonster.encounterBlock + stateObj.playerMonster.strength + array[index].baseDamage;
+            let textString = "";
             if (array[index].baseHits === 1) {
-              return `Gain ${blockGain} block. Deal damage equal to your block (${damageToDo})`        
+              textString += `Deal damage equal to your block`        
             } else {
-              return `Gain ${blockGain} block. Deal damage equal to your block (${damageToDo}) ${array[index].baseHits} times`
+              textString += `Deal damage equal to your block ${array[index].baseHits} times`
             }
-        },
+
+            if (state.status === Status.InEncounter) {
+              textString += `(${totalDamage*array[index].baseHits} total)`
+            }
+          return textString
+    },
         minReq: (state, index, array) => {
           return array[index].baseCost;
         },
@@ -2868,16 +2872,13 @@ let cards = {
         },
         baseCost: 1,
         baseDamage: 0,
-        baseBlock: 2,
         baseHits: 1,
         upgrades: 0,
         cardType: "attack",
         elementType: "water",
         action: async (stateObj, index, array) => {
-          let blockGain = array[index].baseBlock + (array[index].upgrades*2);
-          let damageToDo = stateObj.playerMonster.encounterBlock + blockGain + array[index].baseDamage;
-          stateObj = gainBlock(stateObj, blockGain, array[index].baseCost);
-          stateObj = await dealOpponentDamage(stateObj, damageToDo);
+          let damageToDo = stateObj.playerMonster.encounterBlock + array[index].baseDamage;
+          stateObj = await dealOpponentDamage(stateObj, damageToDo, array[index].baseHits, array[index].baseCost);
           return stateObj;
         }
       },

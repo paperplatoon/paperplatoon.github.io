@@ -528,7 +528,7 @@
   margin-top: 1vmin;
   margin-bottom: 1vmin;
   background-position: 0% 0%;
-  transition: background-color 0.3s ;
+  transition: background-color 0.5s;
 }
 
 .power {
@@ -566,7 +566,6 @@
 
 
 #opponents .not-chosen {
-  background: rgba(255, 52, 52, 0.773);
   color: rgba(176, 176, 176, 0.702);
   font-size: 1.8vmin;
   border: 1px solid white;
