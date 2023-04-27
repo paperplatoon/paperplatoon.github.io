@@ -811,7 +811,7 @@ function addBackstepsToHand(stateObj, numberToAdd=1) {
   return stateObj
 }
 
-async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0) {
+async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, playerTriggered=false) {
   let monsterObj = stateObj.opponentMonster[targetIndex]
   let monsterDivs = document.querySelectorAll("#opponents .monster")
     let startingEnergy = monsterObj.encounterEnergy;
@@ -819,6 +819,9 @@ async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0) {
       if ( ((startingEnergy - i) > 0) && ((startingEnergy - i) < monsterObj.moves.length)) {
         console.log("removing energy at index " + (startingEnergy-1))
         monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy-i].classList.remove("energy-filled")
+        if (playerTriggered === false) {
+          monsterDivs[targetIndex].querySelector(".chosen .energy-cost").classList.add("largerHeight");
+        }
         await pause(500)
       }
     }  
@@ -838,8 +841,8 @@ async function opponentLoseEnergy(stateObj, energyToLose, targetIndex=0) {
   return stateObj
 }
 
-async function opponentGainEnergy(stateObj, energyToGain, targetIndex=0) {
-  await energyGainAnimation(stateObj, energyToGain, targetIndex)
+async function opponentGainEnergy(stateObj, energyToGain, targetIndex=0, playerTriggered=false) {
+  await energyGainAnimation(stateObj, energyToGain, targetIndex, playerTriggered)
 
   stateObj = immer.produce(stateObj, (newState) => {
     if ( (stateObj.opponentMonster[targetIndex].encounterEnergy += energyToGain) > 0 && energyToGain > 0) {
@@ -849,7 +852,7 @@ async function opponentGainEnergy(stateObj, energyToGain, targetIndex=0) {
   return stateObj
 }
 
-async function energyGainAnimation(stateObj, energyToGain=1, targetIndex=0) {
+async function energyGainAnimation(stateObj, energyToGain=1, targetIndex=0, playerTriggered=false) {
   console.log("recieved energy to gain is " + energyToGain + "for monster at index " + targetIndex)
   let monsterObj = stateObj.opponentMonster[targetIndex]
   let monsterDivs = document.querySelectorAll("#opponents .monster")
@@ -857,6 +860,9 @@ async function energyGainAnimation(stateObj, energyToGain=1, targetIndex=0) {
     for (let i=1; i < energyToGain+1; i++) {
       if (monsterObj.moves.length > (startingEnergy+i)) {
         monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy+i].classList.add("energy-filled")
+        if (playerTriggered === false) {
+          monsterDivs[targetIndex].querySelector(".chosen .energy-cost").classList.add("largerHeight");
+        }
         await pause(500)
       }
     }  
@@ -864,7 +870,7 @@ async function energyGainAnimation(stateObj, energyToGain=1, targetIndex=0) {
 
 async function energyGift(stateObj, energyToGain, energyCost=false, all=false) {
   console.log("triggering energyGift; energy to gain is " + energyToGain)
-  stateObj = await opponentGainEnergy(stateObj, energyToGain, stateObj.targetedMonster)
+  stateObj = await opponentGainEnergy(stateObj, energyToGain, stateObj.targetedMonster, playerTriggered=true)
   
 
   stateObj = immer.produce(stateObj, (newState) => {

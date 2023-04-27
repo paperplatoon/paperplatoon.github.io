@@ -930,7 +930,8 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 .monster-energy {
   font-size: 4vmin;
-  background-color: rgb(101, 14, 145);
+  background-color: rgba(255, 52, 52, 0.916);
+  border: 1px solid white;
   color: white;
   border-radius: 10px;
   padding: 0.3vh 0.4vw;
@@ -949,16 +950,23 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 }
 
 .energy-cost, .hand-card-cost {
-  width: 2.5vmin;
-  height: 2.5vmin;
+  width: 3.5vmin;
+  height: 3.5vmin;
   text-align: center;
   border-radius: 50%;
-  font-size: 0.9em;
-  background-color: rgb(101, 14, 145);
+  font-size: 2.5vmin;
+  background-color: rgba(255, 219, 219, 0.916);
   font-weight: bold;
-  color: white;
+  line-height: 3vmin;
+  color: rgb(0, 0, 0);
   float: right;
-  max-height: 3vw;
+  transition: background-color 0.5s;
+ }
+
+ .largerHeight {
+  font-size: 3vmin;
+  background-color: rgba(64, 0, 0, 0.916);
+  color: white;
  }
 
  .alt-cost {
@@ -1086,6 +1094,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   margin-right: 3%;
   line-height: 1.8vmin;
   background-color: rgb(8, 61, 0);
+  color: white;
  }
 
  .fire-energy {
