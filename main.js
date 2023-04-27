@@ -120,13 +120,13 @@ let gameStartState = {
 };
 
 const eventsArray = [
-  {
-    divID: "TownEvent",
-    imgSrc: "img/wizardshop.png",
-    divText: "ShowCardPool",
-    newStatus: Status.ShowCardPool,
-    eventID: 100
-  },
+  // {
+  //   divID: "TownEvent",
+  //   imgSrc: "img/wizardshop.png",
+  //   divText: "ShowCardPool",
+  //   newStatus: Status.ShowCardPool,
+  //   eventID: 100
+  // },
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
@@ -491,9 +491,10 @@ renderScreen(state);
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, energyCost=false, all=false, specifiedIndex=false) {
   let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster;
+  let calculatedDamage = (damageNumber + stateObj.playerMonster.strength) * attackNumber;
   
   document.querySelector("#playerStats .avatar").classList.add("player-windup");
-  let fireballString = ((damageNumber*attackNumber) > 20) ? "hugefireball" : "fireball" 
+  let fireballString = (calculatedDamage > 20) ? "hugefireball" : "fireball" 
   let classString = "fireball-move"; 
   if (stateObj.opponentMonster.length > 1) {
     classString = (stateObj.targetedMonster === 0) ? "fireball-move-2" : "fireball-move-3"
@@ -519,10 +520,9 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
   }
 
   stateObj = immer.produce(stateObj, (newState) => {
-    let calculatedDamage = ((damageNumber + newState.playerMonster.strength) * attackNumber);
     if (calculatedDamage > 0) {
       if (all===true) {
-        newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
+        newState.opponentMonster.forEach(function (monsterObj) {
           if (monsterObj.hunted > 0) {
             calculatedDamage *=2;
           }
@@ -1195,7 +1195,7 @@ function encounterUpgradeCard(stateObj, index) {
 
 function increaseCardAttack(stateObj, index, array) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerDeck[index].baseDamage += 5;
+    newState.playerDeck[index].baseDamage += 3;
     newState.eventUsed = true;
     newState.status = Status.OverworldMap
     newState.townMapSquares[newState.playerHere] = "completed"
@@ -2145,8 +2145,8 @@ async function renderLevelUp(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app", "level-up-div");
   eventText("level-up-div", newDivName=false, "Dreams of Power", "You and your monster spend the night under a tree. You awake to see your monster playing with a powerful forest spirit. As you approach, your monster runs back to you happily, and the forest spirit melts back into the trees. You notice that your monster seems somehow stronger than the night before...");
-  let strengthDiv = await renderTownDiv(stateObj, "increaseStrength", "Gain 2 permanent Strength", true, increaseStrengthEvent, Status.InTown, altText=false);
-  let DexDiv = await renderTownDiv(stateObj, "increaseDex", "Gain 2 permanent Dexterity", true, increaseDexEvent, Status.InTown, altText=false, 2);
+  let strengthDiv = await renderTownDiv(stateObj, "increaseStrength", "Gain 1 permanent Strength", true, increaseStrengthEvent, Status.InTown, altText=false);
+  let DexDiv = await renderTownDiv(stateObj, "increaseDex", "Gain 1 permanent Dexterity", true, increaseDexEvent, Status.InTown, altText=false, 1);
   
   document.getElementById("level-up-div").append(strengthDiv, DexDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
@@ -2155,7 +2155,7 @@ async function renderLevelUp(stateObj) {
 
 function increaseStrengthEvent(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerMonster.strength += 2;
+    newState.playerMonster.strength += 1;
     newState.status = Status.OverworldMap
     newState.townMapSquares[newState.playerHere] = "completed"
   })
@@ -2172,7 +2172,7 @@ async function renderAttackChoiceEvent(stateObj) {
   divContainer("app", "level-up-div");
   eventText("level-up-div", newDivName=false, "Supercharge", "You and your monster come across a leyline of magic in the woods. You know you can use this to mildly increase the attack power of a spell. You can also overcharge a spell with magical energy, doubling its attack but making it cost 1 more energy. Which do you choose?");
   let doubleDiv = await renderTownDiv(stateObj, "doubleDamage", "Double a card's attack. It costs 1 more energy", true, changeStatus, Status.DoublingAttack);
-  let increaseAttackDiv = await renderTownDiv(stateObj, "increaseAttack", "Increase a card's attack by 5", true, changeStatus, Status.IncreasingAttack);
+  let increaseAttackDiv = await renderTownDiv(stateObj, "increaseAttack", "Increase a card's attack by 3", true, changeStatus, Status.IncreasingAttack);
   
   document.getElementById("level-up-div").append(doubleDiv, increaseAttackDiv);
   renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
@@ -2254,7 +2254,7 @@ async function renderDuplicateChoice(stateObj) {
   divContainer("app", "level-up-div");
   eventText("level-up-div", newDivName=false, "Refracting Prism", "Your monster is playing in a nearby stream. It comes back with a piece of quartz that reflects the light strangely. You realize it's a Prismatic Amplifier. You can use this to either copy a spell in your deck, or exchange some of your life force to copy it five times.");
   let OneDuplicateDiv = await renderTownDiv(stateObj, "duplicateOnce", "Add a copy of any card to your deck", true, changeStatus, Status.DuplicatingCards, altText=false);
-  let sevenDuplicateDiv = await renderTownDiv(stateObj, "increaseDex", "Add 5 copies of any card to your deck. Lose 10 max HP", true, changeStatus, Status.DuplicatingCardFiveTimes, altText=false);
+  let sevenDuplicateDiv = await renderTownDiv(stateObj, "increaseDex", "Add 5 copies of any card to your deck. Lose 15 max HP", true, changeStatus, Status.DuplicatingCardFiveTimes, altText=false);
   
   document.getElementById("level-up-div").append(OneDuplicateDiv, sevenDuplicateDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
@@ -2297,7 +2297,7 @@ async function duplicateCardFiveTimes(stateObj, index, array) {
       newState.playerDeck.push(cardObj);
     }
     newState.status = Status.OverworldMap
-    newState.playerMonster.maxHP -= 10;
+    newState.playerMonster.maxHP -= 15;
     if (newState.playerMonster.currentHP > newState.playerMonster.maxHP) {newState.playerMonster.currentHP = newState.playerMonster.maxHP};
     newState.townMapSquares[newState.playerHere] = "completed"
   })
@@ -2313,7 +2313,7 @@ async function renderDecreaseChoice(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app", "level-up-div");
   eventText("level-up-div", newDivName=false, "Energy Master", "A fellow traveler on the road flags you down. 'You look powerful!' he says. 'I'll help you on your journey - I can decrease the cost of any spell to be 1 energy less. Or, if you wish to demonstrate your power, I'll increase the cost of one of your cards by one, and pay you handsomely.'");
-  let decreaseDiv = await renderTownDiv(stateObj, "decreaseDiv", "Decrease a card's cost by one", true, changeStatus, Status.DecreasingCost, altText=false);
+  let decreaseDiv = await renderTownDiv(stateObj, "decreaseDiv", "Decrease a card's cost by 1. Lose 10 Max HP", true, changeStatus, Status.DecreasingCost, altText=false);
   let increaseDiv = await renderTownDiv(stateObj, "increaseDiv", "Increase a card's cost by 1. Gain 100 gold", true, changeStatus, Status.IncreasingCost, altText=false);
   
   document.getElementById("level-up-div").append(decreaseDiv, increaseDiv);
@@ -2341,6 +2341,11 @@ function decreaseCardCost(stateObj, index, array) {
     newState.eventUsed = true;
     newState.status = Status.OverworldMap
     newState.townMapSquares[newState.playerHere] = "completed"
+    newState.playerMonster.maxHP -= 10;
+    if (newState.playerMonster.currentHP > newState.playerMonster.maxHP) {
+      newState.playerMonster.currentHP = newState.playerMonster.maxHP;
+    }
+    
   })
   changeState(stateObj);
   return stateObj;
@@ -2378,7 +2383,7 @@ async function renderHitsAttackChoice(stateObj) {
   divContainer("app", "level-up-div");
   eventText("level-up-div", newDivName=false, "Offensive Master", "A powerful offensive wizard offers you the choice between two strong options. She can make an offensive spell hit for a second time, but only for lighter spells. Alternatively, she can increase the base damage of one of your offensive spells");
   let div1 = await renderTownDiv(stateObj, "duplicateOnce", "Choose a card that costs 1 mana or less. It hits an extra time", true, changeStatus, Status.IncreasingHits, altText=false);
-  let div2 = await renderTownDiv(stateObj, "increaseDex", "Choose an attack to deal 5 extra base damage", true, changeStatus, Status.IncreasingAttack, altText=false);
+  let div2 = await renderTownDiv(stateObj, "increaseDex", "Choose an attack to deal 3 extra base damage", true, changeStatus, Status.IncreasingAttack, altText=false);
   
   document.getElementById("level-up-div").append(div1, div2);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
@@ -2567,7 +2572,7 @@ async function renderIncreaseBlockChoice(stateObj) {
   divContainer("app", "level-up-div");
   eventText("level-up-div", newDivName=false, "Master of Balance", "You find a traveler whose monster appears to be an expert in both offense and defense. Quite a rarity. The man offers to boost one spell for you - either offensive or defensive, your choice.");
   let div1 = await renderTownDiv(stateObj, "binaryChoiceDefend", "Choose a defensive spell to gain 5 extra base block", true, changeStatus, Status.IncreasingBlock, altText=false);
-  let div2 = await renderTownDiv(stateObj, "binaryChoiceAttack", "Choose an offensive spell to deal 5 extra base damage", true, changeStatus, Status.IncreasingAttack, altText=false);
+  let div2 = await renderTownDiv(stateObj, "binaryChoiceAttack", "Choose an offensive spell to deal 3 extra base damage", true, changeStatus, Status.IncreasingAttack, altText=false);
   
   document.getElementById("level-up-div").append(div1, div2);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);

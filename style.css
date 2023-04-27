@@ -176,60 +176,61 @@
 
 @keyframes slide {
   0% {
-    transform: translateX(-20vw);
+    transform: translate(-20vw, 0vh);
     visibility: hidden;
   }
   49% {
-    transform: translateX(0vw);
+    transform: translate(0vw, 0vh);
     visibility: hidden;
   }
   50% {
-    transform: translateX(0vw);
+    transform: translate(0vw, 0vh);
     visibility: visible;
   }
   100% {
-    transform: translateX(45vw);
+    transform: translate(45vw, 0vh);
     visibility: visible;
   }
 }
 
 @keyframes slide2 {
   0% {
-    transform: translateX(-20vw);
+    transform: translate(-20vw, 0vh);
     visibility: hidden;
   }
   49% {
-    transform: translateX(0vw);
+    transform: translate(0vw, 0vh);
     visibility: hidden;
   }
   50% {
-    transform: translateX(0vw);
+    transform: translate(0vw, 0vh);
     visibility: visible;
   }
   100% {
-    transform: translateX(25vw);
+    transform: translate(25vw, 0vh);
     visibility: visible;
   }
 }
 
 @keyframes slide3 {
   0% {
-    transform: translateX(-20vw);
+    transform: translate(0vw, 0vh);
     visibility: hidden;
   }
   49% {
-    transform: translateX(0vw);
+    transform: translate(0vw, 0vh);
     visibility: hidden;
   }
   50% {
-    transform: translateX(0vw);
+    transform: translate(0vw, 0vh);
     visibility: visible;
   }
   100% {
-    transform: translateX(55vw);
+    transform: translate(55vw, 0vh);
     visibility: visible;
   }
 }
+
 
 .fire-choose:hover {
   background-color: rgb(102, 20, 20);
@@ -740,8 +741,8 @@
 }
 
 .avatar {
-  width: 25vmin;
-  height: 25vmin;
+  width: 10vw;
+  height: 10vw;
   flex-shrink: 1;
 
 }
@@ -1301,25 +1302,51 @@ button:hover {
   height: 60vh;
 }
 
-.clickable-square:hover {
-  cursor: pointer;
-  color: rgb(255, 225, 0);
-  background-color: rgba(255, 255, 255, 0.837);
-  animation: fadeIn 0.5s forwards;
-  /*background: linear-gradient(215deg, rgba(255, 236, 219, 0.716), rgba(229, 181, 151, 0.7));*/
+@media only screen and (min-width: 1500px) {
+  .clickable-square:hover {
+    cursor: pointer;
+    color: rgb(255, 225, 0);
+    background-color: rgba(255, 255, 255, 0.837);
+    animation: fadeIn 0.5s forwards;
+    /*background: linear-gradient(215deg, rgba(255, 236, 219, 0.716), rgba(229, 181, 151, 0.7));*/
+  }
+
+  .clickable-square:hover .monster-hp {
+    border-image: radial-gradient(rgb(255, 225, 0) 69%,#0000 70%) 84.5% fill/100%;
+  }
+  
+  .clickable-square:hover .pentagram {
+    border: solid 4px rgb(255, 225, 0);
+  }
+  
+  .clickable-square:hover .pentagram::before {
+    background: rgb(255, 225, 0);
+   }
 }
 
-.clickable-square:hover .monster-hp {
-  border-image: radial-gradient(rgb(255, 225, 0) 69%,#0000 70%) 84.5% fill/100%;
+@media only screen and (max-width: 1500px) {
+  .clickable-square:active {
+    cursor: pointer;
+    color: rgb(255, 225, 0);
+    background-color: rgba(255, 255, 255, 0.837);
+    animation: fadeIn 0.5s forwards;
+    /*background: linear-gradient(215deg, rgba(255, 236, 219, 0.716), rgba(229, 181, 151, 0.7));*/
+  }
+
+  .clickable-square:active .monster-hp {
+    border-image: radial-gradient(rgb(255, 225, 0) 69%,#0000 70%) 84.5% fill/100%;
+  }
+  
+  .clickable-square:active .pentagram {
+    border: solid 4px rgb(255, 225, 0);
+  }
+  
+  .clickable-square:active .pentagram::before {
+    background: rgb(255, 225, 0);
+   }
 }
 
-.clickable-square:hover .pentagram {
-  border: solid 4px rgb(255, 225, 0);
-}
 
-.clickable-square:hover .pentagram::before {
-  background: rgb(255, 225, 0);
- }
 
 .pentagram {
 	width: 12vmin;
