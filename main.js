@@ -809,41 +809,80 @@ function addBackstepsToHand(stateObj, numberToAdd=1) {
   return stateObj
 }
 
-async function energyGainAnimation(stateObj, energyToGain=1) {
+async function energyGainAnimation(stateObj, energyToGain=1, targetIndex=0) {
   console.log("recieved energy to gain is " + energyToGain)
-  let monsterObj = stateObj.opponentMonster[stateObj.targetedMonster]
+  let monsterObj = stateObj.opponentMonster[targetIndex]
   let monsterDivs = document.querySelectorAll("#opponents .monster")
     let startingEnergy = monsterObj.encounterEnergy;
     for (let i=1; i < energyToGain+1; i++) {
-      if (monsterObj.moves.length >= (startingEnergy+i)) {
-        monsterDivs[stateObj.targetedMonster].querySelectorAll(".move")[startingEnergy+i].classList.add("energy-filled")
-        await pause(1000)
+      if (monsterObj.moves.length > (startingEnergy+i)) {
+        monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy+i].classList.add("energy-filled")
+        await pause(300)
       }
     }  
 }
 
+async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0) {
+  let monsterObj = stateObj.opponentMonster[targetIndex]
+  let monsterDivs = document.querySelectorAll("#opponents .monster")
+    let startingEnergy = monsterObj.encounterEnergy;
+    for (let i=0; i < energyToLose; i++) {
+      if ((startingEnergy - i) > 0) {
+        monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy].classList.remove("energy-filled")
+        await pause(300)
+      }
+    }  
+}
+
+// async function opponentLoseEnergy(stateObj, energyToLose, targetIndex=0) {
+//   await energyLoseAnimation(stateObj, energyToLose, targetIndex)
+//   if (energyToLose > 0) {
+//     stateObj = immer.produce(stateObj, (newState) => {
+//       if ((stateObj.opponentMonster[targetIndex].encounterEnergy -= energyToLose) >= 0) {
+//         newState.fightEnergyDrainCount += 1
+//         newState.fightEnergyDrainTotal += energyToLose
+//         newState.opponentMonster[targetIndex].encounterEnergy -= energyToLose;
+//       } else {
+//         newState.fightEnergyDrainCount += 1
+//         newState.fightEnergyDrainTotal += stateObj.opponentMonster[targetIndex].encounterEnergy
+//         newState.opponentMonster[targetIndex].encounterEnergy = 0;
+//       }
+//     })
+//   }
+//   return stateObj
+// }
+
+async function opponentGainEnergy(stateObj, energyToGain, targetIndex=0) {
+  await energyGainAnimation(stateObj, energyToGain, targetIndex)
+
+  stateObj = immer.produce(stateObj, (newState) => {
+    if ( (stateObj.opponentMonster[targetIndex].encounterEnergy += energyToGain) > 0 && energyToGain > 0) {
+      newState.opponentMonster[targetIndex].encounterEnergy += energyToGain;
+      newState.fightEnergyGiftCount += 1
+      newState.fightEnergyGiftTotal += energyToGain
+    }
+  })
+  return stateObj
+}
+
 async function energyGift(stateObj, energyToGain, energyCost=false, all=false) {
   console.log("triggering energyGift; energy to gain is " + energyToGain)
-  await energyGainAnimation(stateObj, energyToGain)
+  stateObj = await opponentGainEnergy(stateObj, energyToGain, stateObj.targetedMonster)
   
 
   stateObj = immer.produce(stateObj, (newState) => {
     if ( (stateObj.opponentMonster[stateObj.targetedMonster].encounterEnergy += energyToGain) > 0 && energyToGain > 0) {
-      newState.opponentMonster[newState.targetedMonster].encounterEnergy += energyToGain;
-      newState.fightEnergyGiftCount += 1
-      newState.fightEnergyGiftTotal += energyToGain
-    }
- 
     
-    if (energyCost) {
-      newState.playerMonster.encounterEnergy -= energyCost
-    }
-    if (newState.energyGiftBlock > 0) {
-      newState.playerMonster.encounterBlock += newState.energyGiftBlock;
-    }
-    if (newState.gainStrengthEnergyChange > 0) {
-      newState.playerMonster.strength += newState.gainStrengthEnergyChange;
-      newState.playerMonster.fightStrength += newState.gainStrengthEnergyChange;
+      if (energyCost) {
+        newState.playerMonster.encounterEnergy -= energyCost
+      }
+      if (newState.energyGiftBlock > 0) {
+        newState.playerMonster.encounterBlock += newState.energyGiftBlock;
+      }
+      if (newState.gainStrengthEnergyChange > 0) {
+        newState.playerMonster.strength += newState.gainStrengthEnergyChange;
+        newState.playerMonster.fightStrength += newState.gainStrengthEnergyChange;
+      }
     }
   })
   
@@ -3031,6 +3070,7 @@ function renderOpponents(stateObj) {
 
       if (moveIndex === monsterObj.opponentMoveIndex) {
         moveDiv.classList.add("chosen");
+        moveDiv.classList.add("energy-filled");
       }
 
       if (moveObj.name) {
@@ -3176,6 +3216,7 @@ async function playOpponentMove(stateObj) {
   if (stateObj.opponentMonster.length === 3) {
     const move = stateObj.opponentMonster[0].moves[stateObj.opponentMonster[0].opponentMoveIndex];
     stateObj = await move.action(stateObj, 0, stateObj.opponentMonster);
+    await changeState(stateObj)
     const move1 = stateObj.opponentMonster[1].moves[stateObj.opponentMonster[1].opponentMoveIndex];
     stateObj = await move1.action(stateObj, 1, stateObj.opponentMonster);
     const move2 = stateObj.opponentMonster[2].moves[stateObj.opponentMonster[2].opponentMoveIndex];
@@ -3183,6 +3224,7 @@ async function playOpponentMove(stateObj) {
   } else if (stateObj.opponentMonster.length === 2) {
     const move = stateObj.opponentMonster[0].moves[stateObj.opponentMonster[0].opponentMoveIndex];
     stateObj = await move.action(stateObj, 0, stateObj.opponentMonster);
+    await changeState(stateObj)
     const move1 = stateObj.opponentMonster[1].moves[stateObj.opponentMonster[1].opponentMoveIndex];
     stateObj = await move1.action(stateObj, 1, stateObj.opponentMonster);
   } else if (stateObj.opponentMonster.length === 1) {

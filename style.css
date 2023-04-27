@@ -528,7 +528,7 @@
   margin-top: 1vmin;
   margin-bottom: 1vmin;
   background-position: 0% 0%;
-  transition: background-color 1s linear;
+  transition: background-color 0.3s ;
 }
 
 .power {
@@ -544,7 +544,6 @@
   border-radius: 0.6vw;
   height: 3vh;
   margin: 1.5vmin;
-  transition: background-color 1s ease-in;
 }
 
 .map-div {
@@ -553,7 +552,6 @@
 }
 
 .chosen {
-  background: rgba(255, 52, 52, 0.916);
   border: 4px dashed rgb(255, 254, 253);
   color: white;
   font-size: 2.7vmin;
