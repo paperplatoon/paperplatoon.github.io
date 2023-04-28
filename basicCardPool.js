@@ -632,12 +632,13 @@ let cards = {
         cardID: 51,
         name: "Protective Aura",
         text: (state, index, array) => {
-          if (state.status === Status.InEncounter) {
-            return `Gain ${array[index].baseBlock + (array[index].upgrades*4) + state.playerMonster.dex} block. Add total energy gifted and drained this fight (${state.fightEnergyGiftTotal + state.fightEnergyDrainTotal} total)`;
-          } else {
-            return `Gain ${array[index].baseBlock + (array[index].upgrades*4) + state.playerMonster.dex} block. Add total energy gifted and drained this fight`;
-          }
-            
+            let blockNum = array[index].baseBlock + (array[index].upgrades*4) + state.playerMonster.dex;
+            let energyNum = state.fightEnergyGiftTotal + state.fightEnergyDrainTotal;
+            let textString = `Gain ${blockNum} block. Add total energy gifted and drained this fight`
+            if (state.status === Status.InEncounter) {
+              textString += ` (${blockNum+energyNum} total)`
+            }
+            return textString;
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -742,7 +743,7 @@ let cards = {
         cardType: "attack",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-            let damageTotal = array[index].baseDamage + (array[index].upgrades*2) + stateObj.fightEnergyDrainTotal + stateObj.fightEnergyGiftTotal
+            let damageTotal = array[index].baseDamage + (array[index].upgrades*3) + stateObj.fightEnergyDrainTotal + stateObj.fightEnergyGiftTotal
           stateObj = await dealOpponentDamage(stateObj, damageTotal, array[index].baseHits, array[index].baseCost);
           return stateObj;
         }
