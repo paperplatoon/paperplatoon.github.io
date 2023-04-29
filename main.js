@@ -662,9 +662,11 @@ async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energy
   }
 
   if (energyChange && energyChange > 0) {
-    await energyGainAnimation(stateObj, energyChange, monsterIndex)
+    stateObj = await opponentGainEnergy(stateObj, energyChange, monsterIndex)
+    //await energyGainAnimation(stateObj, energyChange, monsterIndex)
   } else if (energyChange && energyChange < 0) {
-    await energyLoseAnimation(stateObj, -energyChange, monsterIndex)
+    stateObj = await opponentLoseEnergy(stateObj, -energyChange, monsterIndex)
+    //await energyLoseAnimation(stateObj, -energyChange, monsterIndex)
   }
   
   
@@ -690,9 +692,9 @@ async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energy
         newState.playerMonster.currentHP -= (calculatedDamage - newState.playerMonster.encounterBlock);
         newState.playerMonster.encounterBlock = 0;
       }
-      if (energyChange) {
-        monsterObj.encounterEnergy += energyChange
-      }
+      // if (energyChange) {
+      //   monsterObj.encounterEnergy += energyChange
+      // }
     }
   });
   if (reflectDamage > 0) {
@@ -842,6 +844,21 @@ async function opponentLoseEnergy(stateObj, energyToLose, targetIndex=0, playerT
 }
 
 async function opponentGainEnergy(stateObj, energyToGain, targetIndex=0, playerTriggered=false) {
+  let currentEnergy = stateObj.opponentMonster[targetIndex].encounterEnergy;
+  let totalMoves = stateObj.opponentMonster[targetIndex].moves.length-1
+
+  //if would take opponent negative
+  if ( currentEnergy + energyToGain < 0 || energyToGain <= 0) {
+    return stateObj
+  }
+  //if opponent already at max
+  if (currentEnergy >= totalMoves) {
+    return stateObj
+  }
+  //if opponent close to max
+  if ( currentEnergy + energyToGain > totalMoves) {
+    energyToGain = totalMoves - currentEnergy
+  }
   await energyGainAnimation(stateObj, energyToGain, targetIndex, playerTriggered)
 
   stateObj = immer.produce(stateObj, (newState) => {
@@ -870,11 +887,27 @@ async function energyGainAnimation(stateObj, energyToGain=1, targetIndex=0, play
 
 async function energyGift(stateObj, energyToGain, energyCost=false, all=false) {
   console.log("triggering energyGift; energy to gain is " + energyToGain)
+  let currentEnergy = stateObj.opponentMonster[stateObj.targetedMonster].encounterEnergy;
+  let totalMoves = stateObj.opponentMonster[stateObj.targetedMonster].moves.length-1
+  console.log("energy is " + currentEnergy + "   total potential energy is " + totalMoves)
+
+  //if would take opponent negative
+  if ( currentEnergy + energyToGain < 0 || energyToGain <= 0) {
+    return stateObj
+  }
+  //if opponent already at max
+  if (currentEnergy >= totalMoves) {
+    return stateObj
+  }
+  //if opponent close to max
+  if ( currentEnergy + energyToGain > totalMoves) {
+    energyToGain = totalMoves - currentEnergy
+  }
+  
   stateObj = await opponentGainEnergy(stateObj, energyToGain, stateObj.targetedMonster, playerTriggered=true)
   
-
   stateObj = immer.produce(stateObj, (newState) => {
-    if ( (stateObj.opponentMonster[stateObj.targetedMonster].encounterEnergy += energyToGain) > 0 && energyToGain > 0) {
+    if ( (currentEnergy + energyToGain) > 0 && energyToGain > 0) {
       newState.fightEnergyGiftCount += 1
       newState.fightEnergyGiftTotal += energyToGain
     
@@ -895,8 +928,6 @@ async function energyGift(stateObj, energyToGain, energyCost=false, all=false) {
     let targetIndex = Math.floor(Math.random() * (stateObj.opponentMonster.length))
     stateObj = await dealOpponentDamage(stateObj, (stateObj.energyGiftAttack-stateObj.playerMonster.strength), attackNumber=1, all=true);  
   }
-
-  
 
   return stateObj
 }
@@ -3034,7 +3065,7 @@ function renderOpponents(stateObj) {
 
     let monsterStrengthAndDex = document.createElement("H4");
     let monsterEncounterEnergy = document.createElement("H4");
-    monsterEncounterEnergy.textContent = "Energy: " + monsterObj.encounterEnergy;
+    monsterEncounterEnergy.textContent = "Energy: " + (monsterObj.encounterEnergy+1);
     monsterEncounterEnergy.classList.add("monster-energy");
     monsterStrengthAndDex.textContent = "Strength: " + monsterObj.strength + " Dex: " + monsterObj.dex;
     monsterDiv.append(monsterEncounterEnergy, monsterStrengthAndDex);
