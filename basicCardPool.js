@@ -1528,7 +1528,7 @@ let cards = {
           if (array[index].upgrades === 0) {
               return `Deal ${array[index].baseDamage + state.playerMonster.strength + array[index].upgrades} damage ${array[index].baseHits} times. Upgrade your top left card`
           } else {
-            return `Deal ${array[index].baseDamage + state.playerMonster.strength + array[index].upgrades} damage ${array[index].baseHits} times. Upgrade your top left card ${1 + (array[index].upgrades)} times`
+            return `Deal ${array[index].baseDamage + state.playerMonster.strength + array[index].upgrades} damage ${array[index].baseHits} times. Upgrade your top left card ${1 + Math.floor(array[index].upgrades/2)} times`
           }
           },
         minReq: (state, index, array) => {
@@ -1545,11 +1545,11 @@ let cards = {
         cardType: "attack",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          upgradeAnimation(stateObj, 0, stateObj.encounterHand, 1+array[index].upgrades, divIDName="handContainer2")       
+          upgradeAnimation(stateObj, 0, stateObj.encounterHand, 1+Math.floor(array[index].upgrades/2), divIDName="handContainer2")       
           
           await pause(array[index].timeValue)
           stateObj = await dealOpponentDamage(stateObj, (array[index].baseDamage + array[index].upgrades), array[index].baseHits, array[index].baseCost);
-          for (i = 0; i < (1+array[index].upgrades); i++) {
+          for (i = 0; i < (1+Math.floor(array[index].upgrades/2)); i++) {
             stateObj = upgradeCard(stateObj);
           }
           return stateObj;
@@ -1991,7 +1991,7 @@ let cards = {
       rareupgrade: {
         cardID: 30,
         name: "Bide",
-        text: (state, index, array) => { return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} block. Upgrade your top left card ${2+array[index].upgrades} times.`},
+        text: (state, index, array) => { return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} block. Upgrade your top left card ${1+Math.floor(array[index].upgrades/2)} times.`},
         minReq: (state, index, array) => {
           return array[index].baseCost;
         },
@@ -2002,14 +2002,14 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         upgrades: 0,
-        baseBlock: 5,
+        baseBlock: 6,
         timeValue: upgradeAnimationTiming,
         action: async (stateObj, index, array) => {
-          upgradeAnimation(stateObj, 0, stateObj.encounterHand, 2+array[index].upgrades, divIDName="handContainer2")       
+          upgradeAnimation(stateObj, 0, stateObj.encounterHand, 1+Math.floor(array[index].upgrades/2), divIDName="handContainer2")       
           
           await pause(array[index].timeValue)
           stateObj = gainBlock(stateObj, (array[index].baseBlock + (array[index].upgrades*2)), array[index].baseCost )
-          for (i = 0; i < (2+array[index].upgrades); i++) {
+          for (i = 0; i < (1+Math.floor(array[index].upgrades/2)); i++) {
             stateObj = upgradeCard(stateObj);
           }
          return stateObj;
@@ -2327,7 +2327,7 @@ let cards = {
       siphon: {
         cardID: 33,
         name: "Siphon",
-        text: (state, index, array) => { return `Destroy ${array[index].energyDrain} energy. Upgrade your top left card ${2 + array[index].upgrades} times.`},
+        text: (state, index, array) => { return `Destroy ${array[index].energyDrain} energy. Upgrade your top left card ${2 + Math.floor(array[index].upgrades/2)} times.`},
         minReq: (state, index, array) => {
           return array[index].baseCost;
         },
@@ -2341,11 +2341,11 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          upgradeAnimation(stateObj, 0, stateObj.encounterHand, 2+array[index].upgrades, divIDName="handContainer2")       
+          upgradeAnimation(stateObj, 0, stateObj.encounterHand, 2 + Math.floor(array[index].upgrades/2), divIDName="handContainer2")       
           
           await pause(array[index].timeValue)
           stateObj = await destroyEnergy(stateObj, array[index].energyDrain, array[index].baseCost)
-          for (i = 0; i < (2+array[index].upgrades); i++) {
+          for (i = 0; i < (2 + Math.floor(array[index].upgrades/2)); i++) {
             stateObj = await upgradeCard(stateObj);
           }  
           return stateObj;
