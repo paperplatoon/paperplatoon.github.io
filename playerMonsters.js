@@ -35,7 +35,7 @@ let playerMonsters = {
 
   swirly: {
     name: "Normal",
-    type: "Water",
+    type: "water",
     cardPool: waterCardPool,
     encounterEnergy: 0,
     opponentMoveIndex: false,

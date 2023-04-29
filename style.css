@@ -785,10 +785,7 @@
 
 
 
-.card-reward:hover .invisible-cost, .card-reward:hover .paid-invisible-cost {
-  animation: fadeIn 0.3s;
-  display: block;
-}
+
 
 .invisible-cost {
   color: rgb(255, 117, 117);
@@ -861,7 +858,6 @@
 }
 
 .card {
-  border: 3px solid rgb(255, 211, 101);
   background: linear-gradient(90deg, rgb(255, 238, 208),rgb(230, 171, 94), rgb(255, 200, 127), rgb(243, 133, 23));
   margin: 0.4vmax;
   width: 13vw;
@@ -882,16 +878,7 @@
   overflow: wrap;
 }
 
-.card.playable:hover {
-  cursor: pointer;
-  box-shadow: 0 0 10px rgb(178, 95, 0); 
-  background: linear-gradient(90deg, rgb(64, 59, 52),rgb(108, 80, 43), rgb(88, 68, 43), rgb(87, 47, 8));
-  color: white;
-}
 
-#handContainer2 .playable:hover {
-  border: 1.5px solid rgb(255, 211, 101);
-}
 
 #handContainer2 {
   width: 30vw;
@@ -940,8 +927,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 .monster-energy {
   font-size: 4vmin;
-  background-color: rgba(255, 52, 52, 0.916);
-  border: 1px solid white;
+  background: linear-gradient(90deg,rgb(255, 208, 208), rgb(243, 23, 23),rgb(230, 0, 0), rgb(243, 23, 23),rgb(255, 208, 208));
   color: white;
   border-radius: 10px;
   padding: 0.3vh 0.4vw;
@@ -972,6 +958,17 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   float: right;
   transition: background-color 0.5s;
  }
+
+ .player-energy-fire, .hand-card-cost-fire {
+  background: linear-gradient(90deg,rgb(255, 208, 208), rgb(243, 23, 23),rgb(230, 0, 0), rgb(243, 23, 23),rgb(255, 208, 208));
+}
+.hand-card-cost-fire {
+  background: linear-gradient(90deg, rgb(224, 84, 84),rgb(187, 0, 0), rgb(226, 69, 69));
+}
+
+.player-energy-water, .hand-card-cost-water {
+  background: linear-gradient(90deg,rgb(208, 209, 255), rgb(23, 27, 243),rgb(0, 58, 230), rgb(23, 30, 243),rgb(208, 211, 255));
+}
 
  .largerHeight {
   font-size: 3vmin;
@@ -1108,6 +1105,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
  }
 
  .fire-energy {
+  border: 3px solid rgb(155, 9, 9);
   background: linear-gradient(90deg, rgb(174, 4, 4),rgb(200, 58, 58), rgb(172, 10, 10), rgb(128, 8, 8));
   line-height: 3vh;
   text-align: center;
@@ -1124,6 +1122,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 }
 
 .water-energy {
+  border: 3px solid rgb(44, 40, 175);
   background: linear-gradient(90deg, rgb(168, 165, 255),rgb(55, 55, 194), rgb(44, 40, 175), rgb(23, 1, 110));
   line-height: 3vh;
   text-align: center;
@@ -1138,10 +1137,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 }
 
 
-button:hover {
-  background-color: rgb(213, 212, 212);
-  cursor: pointer;
-}
+
 
 .alt-upgrade-text, .alt-cost, .alt-hits-text, .alt-card-text {
   display: none;
@@ -1292,6 +1288,12 @@ button:hover {
     /*background: linear-gradient(215deg, rgba(255, 236, 219, 0.716), rgba(229, 181, 151, 0.7));*/
   }
 
+  button:hover {
+    background-color: rgb(24, 24, 24);
+    color: white;
+    cursor: pointer;
+  }
+
   .clickable-square:hover .monster-hp {
     border-image: radial-gradient(rgb(255, 225, 0) 69%,#0000 70%) 84.5% fill/100%;
   }
@@ -1356,7 +1358,25 @@ button:hover {
   animation: fadeIn 1s;
   display: block;
 }
+.card-reward:hover .invisible-cost, .card-reward:hover .paid-invisible-cost {
+  animation: fadeIn 0.3s;
+  display: block;
 }
+.card.playable:hover {
+  cursor: pointer;
+  box-shadow: 0 0 10px rgb(178, 95, 0); 
+  background: linear-gradient(90deg, rgb(64, 59, 52),rgb(108, 80, 43), rgb(88, 68, 43), rgb(87, 47, 8));
+  color: white;
+}
+
+#handContainer2 .playable:hover {
+  border: 1.5px solid rgb(255, 211, 101);
+}
+}
+
+
+
+
 
 @media (hover: none) {
   .clickable-square:active {
@@ -1400,6 +1420,16 @@ button:hover {
 #playerDeckPile:active #deckDiv {
   animation: fadeIn 1s;
   display: block;
+}
+
+.card-reward .invisible-cost, .card-reward .paid-invisible-cost {
+  animation: fadeIn 0.3s;
+  display: block;
+}
+
+#handContainer2 .playable {
+  box-shadow: 0 0 10px rgb(178, 95, 0); 
+  background: linear-gradient(90deg, rgb(208, 194, 170),rgb(192, 142, 78), rgb(210, 164, 103), rgb(213, 116, 20));
 }
 }
 

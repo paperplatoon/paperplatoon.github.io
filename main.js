@@ -1428,6 +1428,11 @@ async function renderPlayerMonster(stateObj) {
 
   let playerEnergyText = document.createElement("H4");
   playerEnergyText.classList.add("player-energy")
+  if (stateObj.playerMonster.type === "fire") {
+    playerEnergyText.classList.add("player-energy-fire")
+  } else if (stateObj.playerMonster.type === "water") {
+    playerEnergyText.classList.add("player-energy-water")
+  }
   let playerStrengthandDexText = document.createElement("H4");
   playerEnergyText.textContent = "Energy: " + stateObj.playerMonster.encounterEnergy;
   if (stateObj.comboPerTurn > 0) {
@@ -2770,6 +2775,11 @@ function renderCard(stateObj, cardArray, index, divName=false, functionToAdd=fal
         if (typeof cardObj.cost === 'function') {
           cardCost.textContent = cardObj.cost(stateObj, index, cardArray);
           cardCost.classList.add("hand-card-cost");
+          if (stateObj.playerMonster.type === "fire") {
+            cardCost.classList.add("hand-card-cost-fire")
+          } else if (stateObj.playerMonster.type === "water") {
+            cardCost.classList.add("hand-card-cost-water")
+          }
           topCardRowDiv.append(cardCost);
         } else if (cardObj.cost !== "energy") {
           cardCost.textContent = cardObj.cost;
