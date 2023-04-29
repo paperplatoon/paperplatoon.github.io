@@ -75,7 +75,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 50,
-  testingMode: false,
+  testingMode: true,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,
@@ -240,7 +240,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [ [ easySoloEncounters.e2], [easySoloEncounters.e7, mediumSoloEncounters.m8]  ]
+    townMonsterEncounters = [ bosses[4], [easySoloEncounters.e7, mediumSoloEncounters.m8]  ]
   } else {
     let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
     let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
@@ -561,7 +561,7 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
 
             if (monsterObj.deflate && calculatedDamage >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
               monsterObj.encounterEnergy -= 1;
-            } else if (monsterObj.angry) {
+            } else if (monsterObj.angry && monsterObj.encounterEnergy < monsterObj.moves.length) {
               monsterObj.encounterEnergy += 1;
             } else if (monsterObj.shakedown) {
               newState.gold += monsterObj.shakedown;
@@ -579,7 +579,7 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
 
             if (monsterObj.deflate && takenDamage >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
               newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 1;
-            } else if (monsterObj.angry) {
+            } else if (monsterObj.angry && monsterObj.encounterEnergy < monsterObj.moves.length) {
               monsterObj.encounterEnergy += 1;
             } else if (monsterObj.shakedown) {
               newState.gold += monsterObj.shakedown;
@@ -601,7 +601,7 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
           newState.fightDamageTotal += calculatedDamage;
           if (monsterObj.deflate && calculatedDamage >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
             monsterObj.encounterEnergy -= 1;
-          } else if (monsterObj.angry) {
+          } else if (monsterObj.angry && monsterObj.encounterEnergy < monsterObj.moves.length) {
             monsterObj.encounterEnergy += 1;
           } else if (monsterObj.shakedown) {
             newState.gold += monsterObj.shakedown;
@@ -619,7 +619,7 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
           newState.fightDamageTotal += takenDamage
           if (monsterObj.deflate && takenDamage >= monsterObj.deflate && monsterObj.encounterEnergy > 0) {
             newState.opponentMonster[newState.targetedMonster].encounterEnergy -= 1;
-          } else if (monsterObj.angry) {
+          } else if (monsterObj.angry && monsterObj.encounterEnergy < monsterObj.moves.length) {
             monsterObj.encounterEnergy += 1;
           } else if (monsterObj.shakedown) {
             newState.gold += monsterObj.shakedown;
@@ -3254,17 +3254,28 @@ async function playOpponentMove(stateObj) {
   if (stateObj.opponentMonster.length === 3) {
     const move = stateObj.opponentMonster[0].moves[stateObj.opponentMonster[0].opponentMoveIndex];
     stateObj = await move.action(stateObj, 0, stateObj.opponentMonster);
-    await changeState(stateObj)
-    const move1 = stateObj.opponentMonster[1].moves[stateObj.opponentMonster[1].opponentMoveIndex];
-    stateObj = await move1.action(stateObj, 1, stateObj.opponentMonster);
-    const move2 = stateObj.opponentMonster[2].moves[stateObj.opponentMonster[2].opponentMoveIndex];
-    stateObj = await move.action(stateObj, 2, stateObj.opponentMonster);
+    stateObj = await changeState(stateObj)
+
+    if (stateObj.opponentMonster[1]) {
+      const move1 = stateObj.opponentMonster[1].moves[stateObj.opponentMonster[1].opponentMoveIndex];
+      stateObj = await move1.action(stateObj, 1, stateObj.opponentMonster);
+      stateObj = await changeState(stateObj)
+    }
+
+    if (stateObj.opponentMonster[2]) {
+      const move2 = stateObj.opponentMonster[2].moves[stateObj.opponentMonster[2].opponentMoveIndex];
+      stateObj = await move.action(stateObj, 2, stateObj.opponentMonster);
+    }
   } else if (stateObj.opponentMonster.length === 2) {
     const move = stateObj.opponentMonster[0].moves[stateObj.opponentMonster[0].opponentMoveIndex];
     stateObj = await move.action(stateObj, 0, stateObj.opponentMonster);
-    await changeState(stateObj)
-    const move1 = stateObj.opponentMonster[1].moves[stateObj.opponentMonster[1].opponentMoveIndex];
-    stateObj = await move1.action(stateObj, 1, stateObj.opponentMonster);
+    stateObj = await changeState(stateObj)
+    
+    if (stateObj.opponentMonster[1]) {
+      const move1 = stateObj.opponentMonster[1].moves[stateObj.opponentMonster[1].opponentMoveIndex];
+      stateObj = await move1.action(stateObj, 1, stateObj.opponentMonster);
+      stateObj = await changeState(stateObj)
+    }
   } else if (stateObj.opponentMonster.length === 1) {
     const move = stateObj.opponentMonster[0].moves[stateObj.opponentMonster[0].opponentMoveIndex];
     stateObj = await move.action(stateObj, 0, stateObj.opponentMonster);
@@ -3350,10 +3361,6 @@ async function endTurnIncrement(stateObj) {
 async function endTurn(stateObj) {
   
 
-  if (stateObj.opponentMonster.length === 0) {
-    console.log("breaking out of function endTurn")
-    return stateObj
-  }
 
   
   stateObj = immer.produce(stateObj, (newState) => {
@@ -3364,6 +3371,10 @@ async function endTurn(stateObj) {
 
   stateObj = await discardHand(stateObj);
   stateObj = await endTurnIncrement(stateObj);
+  if (stateObj.opponentMonster.length === 0) {
+    console.log("breaking out of function endTurn")
+    return stateObj
+  }
   stateObj = await playOpponentMove(stateObj);
   stateObj = await changeState(stateObj);
   

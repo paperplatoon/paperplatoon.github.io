@@ -43,7 +43,7 @@ let fireCardPool = {
     // ------------------------------------------  17
     //-6
     followupslap: {...cards.followupslap},
-    buildingflame: {...cards.buildingflame},
+    eighthdimension: {...cards.eighthdimension},
     //heal
     vampiricstrike: {...cards.vampiricstrike},
     //return
@@ -183,7 +183,7 @@ let fireCardPool = {
     disablingblow: {...cards.disablingblow},
     //retain and scale
     chargedblast: {...cards.chargedblast},
-    buildingflame: {...cards.buildingflame},
+    eighthdimension: {...cards.eighthdimension},
 
     //3+
     bloatedbomb: {...cards.bloatedbomb},

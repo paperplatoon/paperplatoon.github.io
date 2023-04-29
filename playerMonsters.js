@@ -18,7 +18,6 @@ let playerMonsters = {
     startingDeck: [
       //1 energy
     fireCardPool.fireenergy,
-    fireCardPool.fireenergy,
     //5 block
     fireCardPool.essencedrain,
     cards.withdraw,
@@ -52,7 +51,6 @@ let playerMonsters = {
     avatar: "img/watertongue.png",
     startingDeck: [
       //2 energy
-      waterCardPool.waterenergy,
       waterCardPool.waterenergy,
       //11 attacks
       cards.withdraw,
@@ -88,13 +86,12 @@ let playerMonsters = {
       startingDeck: [
         //2 energy
         fireCardPool.fireenergy,
-        fireCardPool.fireenergy,
         //5 attack
         cards.tackle,
         cards.tackle,
         cards.tackle,
+        cards.tackle,
         fireCardPool.gainstrength,
-        fireCardPool.explode,
         //5 block
         cards.withdraw,
         cards.withdraw,
@@ -122,7 +119,6 @@ let playerMonsters = {
       avatar: "img/adorablefire.png",
       startingDeck: [
         //2 energy
-        waterCardPool.waterenergy,
         waterCardPool.waterenergy,
         //5 attack
         waterCardPool.recall,
@@ -166,8 +162,8 @@ let playerMonsters = {
         //block
         specialCardPool.testkill,
         //win
-        cards.fierymissiles,
-        cards.basicpoison,
+        specialCardPool.testdamage,
+        cards.buildingflame,
         fireCardPool.essencedrain
       ],
     },

@@ -81,10 +81,10 @@ let bossMonsters = {
       Level: 1,
       XPGain: opponentXPGain*3,
       goldOnDefeat: Math.floor(opponentGold*10),
-      maxHP: opponentMaxHP*16,
+      maxHP: opponentMaxHP*21,
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      currentHP: opponentMaxHP*16,
+      currentHP: opponentMaxHP*21,
       strength: 0,
       dex: 0,
       drown: 0,
@@ -107,12 +107,12 @@ let bossMonsters = {
           cost: "0",
           energyChange: "0",
           text: (state, index, array) => {
-            return `Deal ${(array[index].baseDamage-2) + array[index].strength} damage 3 times`
+            return `Deal ${(array[index].baseDamage-2) + array[index].strength} damage 4 times`
           },
 
           minReq: 0,
           action: async (stateObj, index, array) => {
-            stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage-2), index, 0, 3)
+            stateObj = await dealPlayerDamage (stateObj, (array[index].baseDamage-2), index, 0, 4)
             return stateObj;
           }
         },
@@ -152,15 +152,15 @@ let bossMonsters = {
     },
 
     offbalanceboss: {
-        name: "Angry Boss",
+        name: "Off-balance Boss",
         type: "Air",
         Level: 1,
         XPGain: opponentXPGain*3,
         goldOnDefeat: Math.floor(opponentGold*10),
-        maxHP: opponentMaxHP*18,
+        maxHP: opponentMaxHP*28,
         encounterEnergy: 0,
         opponentMoveIndex: false,
-        currentHP: opponentMaxHP*18,
+        currentHP: opponentMaxHP*28,
         strength: 0,
         dex: 0,
         drown: 0,
@@ -183,7 +183,7 @@ let bossMonsters = {
             cost: "0",
             energyChange: "+1",
             text: (state, index, array) => {
-              return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage`
+              return `Deal ${(array[index].baseDamage*2)+2 + array[index].strength} damage`
             },
   
             minReq: 0,
@@ -200,7 +200,7 @@ let bossMonsters = {
             cost: "2",
             energyChange: "+2",
             text: (state, index, array) => {
-              return `Deal ${(array[index].baseDamage*3) + array[index].strength} damage`
+              return `Deal ${(array[index].baseDamage*3) + 3 + array[index].strength} damage`
             },
   
             minReq: 2,
@@ -216,7 +216,7 @@ let bossMonsters = {
             name: "Spinning Jump Kick",
             cost: "4",
             text: (state, index, array) => {
-              return `Deal ${(Math.floor(array[index].baseDamage*4)) + array[index].strength} damage`
+              return `Deal ${(Math.floor(array[index].baseDamage*6)) + array[index].strength} damage`
             },
             minReq: 4,
             energyChange: "-4",
