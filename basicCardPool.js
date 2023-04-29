@@ -1819,29 +1819,31 @@ let cards = {
           retain: true,
           name: "Stoke Up",
           text: (stateObj, index, array) => {
-            let cardDamage = array[index].baseDamage + (array[index].upgrades*2) + stateObj.playerMonster.strength;
+            let cardDamage = array[index].baseDamage + array[index].upgrades + stateObj.playerMonster.strength;
             if (array[index].baseHits === 1) {
               return `Deal ${cardDamage} damage. Permanently increase by 1. Add a copy to your hand. Retain`;
             } else {
-              return `Combo. Deal ${cardDamage} damage ${array[index].baseHits} times. Permanently increase by 1. Add a copy to your hand. Retain`
+              return `Deal ${cardDamage} damage ${array[index].baseHits} times. Permanently increase by 1. Add a copy to your hand. Retain`
             }
         },
         minReq: (state, index, array) => {
-          return array[index].baseCost + Math.floor(array[index].upgrades/20);
+          let costIncrease = Math.floor(array[index].baseDamage/20)
+          return array[index].baseCost + costIncrease;
         },
-          baseCost: 2,
+          baseCost: 1,
           cost:  (state, index, array) => {
-            return array[index].baseCost + Math.floor(array[index].upgrades/20);
+            let costIncrease = Math.floor(array[index].baseDamage/20)
+            return array[index].baseCost + costIncrease;
           },
           upgrades: 0,
-          baseDamage: 5,
+          baseDamage: 1,
           baseHits: 1,
           cardType: "attack",
           elementType: "fire",
           action: async (stateObj, index, array) => {
-            let cardDamage = array[index].baseDamage + (array[index].upgrades*2)
-            stateObj = await dealOpponentDamage(stateObj, cardDamage, array[index].baseHits, array[index].baseCost);
-        
+            let costIncrease = Math.floor(array[index].baseDamage/20)
+            let cardDamage = array[index].baseDamage + array[index].upgrades
+            stateObj = await dealOpponentDamage(stateObj, cardDamage, array[index].baseHits, array[index].baseCost + costIncrease);
             let cardClone = {...array[index]};
             cardClone.baseDamage += 1;
             stateObj = immer.produce(stateObj, (newState) => {
