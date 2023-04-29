@@ -118,26 +118,28 @@
   background-color: rgb(105, 60, 60);
 }
 
-#fireball {
+.fireball-class {
   background: rgb(214, 82, 0);
   background: radial-gradient(circle, rgb(255, 47, 40) 30%, rgb(255, 108, 23) 75%, rgb(254, 143, 52));
   border-radius: 50%;
-  height: 12vmin;
-  width: 12vmin;
-  position: absolute;
-  transform: translateX(-50vw);
-  visibility: hidden;
-}
-
-#hugefireball {
-  background: rgb(214, 82, 0);
-  background: radial-gradient(circle, rgb(255, 47, 40) 30%, rgb(255, 108, 23) 75%, rgb(254, 143, 52));
-  border-radius: 50%;
-  height: 20vmin;
-  width: 20vmin;
   position: absolute;
   transform: translateX(-35vw);
   visibility: hidden;
+}
+
+#fireball {
+  height: 10vmin;
+  width: 10vmin;
+}
+
+#mediumfireball {
+  height: 15vmin;
+  width: 15vmin;
+}
+
+#hugefireball {
+  height: 20vmin;
+  width: 20vmin;
 }
 
 .fireball-move {
@@ -161,10 +163,17 @@
   /*animation: name duration timing-function delay iteration-count direction fill-mode;*/
 }
 
+
+
 .green-filter {
-  filter: grayscale(100%) hue-rotate(120deg);
-  transition: filter 0.75s ease-out;
+  filter: contrast(0) sepia(100%) hue-rotate(100deg);
+   
 }
+
+/* .green-filter {
+  filter: grayscale(100%) sepia(100%) hue-rotate(100deg);
+  transition: filter 1s ease-in-out;  
+} */
 
 
 
@@ -688,6 +697,7 @@
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
+  transition: filter 0.5s ease-out; 
 }
 
 

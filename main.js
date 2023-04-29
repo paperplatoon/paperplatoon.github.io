@@ -74,7 +74,7 @@ let gameStartState = {
   enemyFightHealTotal: 0,
   gymCount: 0,
   gymFightCount: 0,
-  gold: 50,
+  gold: 10,
   testingMode: true,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
@@ -521,7 +521,11 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
   let calculatedDamage = (damageNumber + stateObj.playerMonster.strength) * attackNumber;
   
   document.querySelector("#playerStats .avatar").classList.add("player-windup");
-  let fireballString = (calculatedDamage > 20) ? "hugefireball" : "fireball" 
+  let fireballString = "fireball";
+  if (calculatedDamage > 19) {
+    fireballString = (calculatedDamage > 29) ? "hugefireball" : "mediumfireball" 
+  }
+   
   let classString = "fireball-move"; 
   if (stateObj.opponentMonster.length > 1) {
     classString = (stateObj.targetedMonster === 0) ? "fireball-move-2" : "fireball-move-3"
@@ -1018,14 +1022,14 @@ function gainBlock(stateObj, blockToGain, energyCost=false, blockNumber=1) {
 async function applyPoison(stateObj, poisonToApply, energyCost=false, poisonNumber=1, all=false) {
   
     if (all===true) {
-      await applyGreenFilter(document.querySelectorAll("#opponents .monster-top-row"), 750)
+      await applyGreenFilter(document.querySelectorAll("#opponents .monster-top-row"), 500)
       stateObj = immer.produce(stateObj, (newState) => {
         newState.opponentMonster.forEach(function(monsterObj) {
           monsterObj.poison += poisonToApply * poisonNumber;
         })
       })
     } else {
-      await applyGreenFilter([document.querySelectorAll("#opponents .monster-top-row")[stateObj.targetedMonster]], 750)
+      await applyGreenFilter([document.querySelectorAll("#opponents .monster-top-row")[stateObj.targetedMonster]], 500)
       stateObj = immer.produce(stateObj, (newState) => {
         let monsterObj = newState.opponentMonster[newState.targetedMonster];
         monsterObj.poison += poisonToApply * poisonNumber;
@@ -1047,6 +1051,7 @@ async function applyGreenFilter(elementArray, duration) {
     elementArray.forEach((element) => {
       element.classList.remove('green-filter');
     })
+    await pause(duration)
 }
 
 
@@ -1365,10 +1370,16 @@ async function renderPlayerMonster(stateObj) {
 
   let fireballDiv = document.createElement("Div");
   fireballDiv.setAttribute("id", "fireball");
+  fireballDiv.classList.add("fireball-class")
+
+  let mediumFireballDiv = document.createElement("Div");
+  mediumFireballDiv.setAttribute("id", "mediumfireball");
+  mediumFireballDiv.classList.add("fireball-class")
 
   let hugeFireballDiv = document.createElement("Div");
   hugeFireballDiv.setAttribute("id", "hugefireball");
-  topRowDiv.append(fireballDiv, hugeFireballDiv);
+  hugeFireballDiv.classList.add("fireball-class")
+  topRowDiv.append(fireballDiv, mediumFireballDiv, hugeFireballDiv);
 
   
 
@@ -3344,12 +3355,13 @@ async function endTurnIncrement(stateObj) {
       if (monsterObj.hunted > 0) {
         monsterObj.hunted -=1;
       };
-      if (monsterObj.poison > 0) {
-        monsterObj.currentHP -= (monsterObj.poison)
-        //await applyGreenFilter([document.querySelectorAll("#opponents .monster-top-row")[monsterIndex]], 750)
-      }
       if (monsterObj.inflame) {
         monsterObj.strength += monsterObj.inflame;
+      }
+      //can be fixed by pushing to an array and making happen outside the immer.produce??
+      if (monsterObj.poison > 0) {
+        monsterObj.currentHP -= (monsterObj.poison)
+        await applyGreenFilter([document.querySelectorAll("#opponents .monster-top-row")[monsterIndex]], 500)
       }
     })
     newState.turnDouble = false;

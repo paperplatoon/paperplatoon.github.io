@@ -1018,8 +1018,8 @@ let cards = {
         elementType: "fire",
         action: async (stateObj, index, array) => {
           stateObj = immer.produce(stateObj, (newState) => {
-            newState.playerMonster.tempStrength += 2;
-            newState.playerMonster.strength += 2;
+            newState.playerMonster.tempStrength += 3 + array[index].upgrades;
+            newState.playerMonster.strength += 3 + array[index].upgrades;
             newState.playerMonster.encounterEnergy -= array[index].baseCost;
           })
           stateObj = await destroyEnergy(stateObj, 2)

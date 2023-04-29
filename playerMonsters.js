@@ -162,8 +162,8 @@ let playerMonsters = {
         //block
         specialCardPool.testkill,
         //win
-        specialCardPool.testdamage,
-        cards.buildingflame,
+        cards.poisonedblade,
+        cards.pinprick,
         fireCardPool.essencedrain
       ],
     },
