@@ -2460,7 +2460,7 @@ async function renderHitsAttackChoice(stateObj) {
   topRowDiv(stateObj, "app");
   divContainer("app", "level-up-div");
   eventText("level-up-div", newDivName=false, "Offensive Master", "A powerful offensive wizard offers you the choice between two strong options. She can make an offensive spell hit for a second time, but only for lighter spells. Alternatively, she can increase the base damage of one of your offensive spells");
-  let div1 = await renderTownDiv(stateObj, "duplicateOnce", "Choose a card that costs 1 mana or less. It hits an extra time", true, changeStatus, Status.IncreasingHits, altText=false);
+  let div1 = await renderTownDiv(stateObj, "duplicateOnce", "Choose a card. It hits an extra time and costs 1 more energy", true, changeStatus, Status.IncreasingHits, altText=false);
   let div2 = await renderTownDiv(stateObj, "increaseDex", "Choose an attack to deal 3 extra base damage", true, changeStatus, Status.IncreasingAttack, altText=false);
   
   document.getElementById("level-up-div").append(div1, div2);
@@ -2474,7 +2474,7 @@ function renderIncreaseBaseHit(stateObj) {
   divContainer("app");
   stateObj.playerDeck.forEach(function (cardObj, index) {
     if (cardObj.baseHits && typeof cardObj.baseHits === 'number') {
-      if (typeof cardObj.cost === "function" && cardObj.cost(stateObj, index, stateObj.playerDeck) < 2)
+      if (typeof cardObj.cost === "function")
       renderCard(stateObj, stateObj.playerDeck, index, "remove-div", increaseBaseHits, goldCost="moreHits")
     }
   });
@@ -2484,6 +2484,7 @@ function renderIncreaseBaseHit(stateObj) {
 function increaseBaseHits(stateObj, index, array) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerDeck[index].baseHits += 1;
+    newState.playerDeck[index].baseCost += 1;
     newState.eventUsed = true;
     newState.status = Status.OverworldMap
     newState.townMapSquares[newState.playerHere] = "completed"

@@ -2859,9 +2859,8 @@ let cards = {
             } else {
               textString += `Deal damage equal to your block ${array[index].baseHits} times`
             }
-
-            if (state.status === Status.InEncounter) {
-              textString += `(${totalDamage*array[index].baseHits} total)`
+            if (stateObj.status === Status.InEncounter) {
+              textString += ` (${damageToDo*array[index].baseHits} total)`
             }
           return textString
     },
