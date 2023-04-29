@@ -1182,13 +1182,13 @@ button:hover {
 }
 
 .map-square {
-  height: 14vmin;
-  width: 14vmin;
+  height: 15vh;
+  width: 10vw;
   /*border: 1px solid green;
   background: linear-gradient(215deg, rgba(197, 255, 199, 0.916), rgba(187, 255, 187, 0.9)); */
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.529);
-  margin: 2vmin;
+  margin: 2vh 1vw;
   text-align: center;
   display: flex;
   align-items: center;
@@ -1396,22 +1396,21 @@ button:hover {
 
 
 .pentagram {
-	width: 12vmin;
-	height: 12vmin;
+	width: 10vw;
+	height: 15vh;
 	position: relative;
 	border: solid 4px #c60505;
 	border-radius: 50%;
 	transform-origin: center;
 	box-sizing: border-box;
 }
-
 .pentagram::before {
 	content: "";
-	width: 11.5vmin;
-	height: 11.5vmin;
+	width: 8vw;
+	height: 13vh;
 	position: absolute;
-	top: -0.7vmin;
-	left: -0.1vmin;
+	top: -0.6vh;
+	left: 0.5vw;
 	clip-path: polygon(50% 5%, 61% 40%, 98% 40%, 68% 62%, 79% 96%, 50% 75%, 21% 96%, 32% 62%, 2% 40%, 39% 40%);
 	background: #db1010;
 }
@@ -1536,12 +1535,12 @@ button:hover {
 .Shop {
   /*background: linear-gradient( rgba(218, 218, 218, 0.758), rgba(214, 214, 58, 0.85)); */
   color: rgb(88, 88, 0);
-  font-size: 6em;
+  font-size: 4em;
 }
 
 .Event {
   color: rgb(103, 0, 90);
-  font-size: 6em;
+  font-size: 5em;
 }
 
 .Town {
@@ -1557,8 +1556,8 @@ button:hover {
 .completed, .path {
   background: linear-gradient(215deg, rgba(255, 236, 219, 0.916), rgba(229, 181, 151, 0.9));
   border-radius: 7%;
-  width: 18vmin;
-  height: 14vmin;
+  width: 12vw;
+  height: 15vh;
   color: rgb(63, 63, 63);
 }
 
