@@ -769,7 +769,7 @@ let mediumMultiEncounters = {
             name: "Wind Shield",
             cost: "0",
             text: (state, index, array) => {
-              return `All enemies gain +${Math.floor((array[index].baseBlock / 2)) + array[index].dex} block`
+              return `All enemies gain ${Math.floor((array[index].baseBlock / 2)) + array[index].dex} block`
             },
             minReq: 0,
             energyChange: "+1",
@@ -780,7 +780,7 @@ let mediumMultiEncounters = {
                 })
               })
               stateObj = await opponentGainEnergy(stateObj, 1, index)
-              return toChangeState;
+              return stateObj;
             }
           },
           {
@@ -838,7 +838,7 @@ let mediumMultiEncounters = {
                 })
               })
               stateObj = await opponentGainEnergy(stateObj, 1, index)
-              return toChangeState;
+              return stateObj;
             }
           },
           {
