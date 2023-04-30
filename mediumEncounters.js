@@ -105,12 +105,12 @@ let mediumSoloEncounters = {
             },
             minReq: 0,
             energyChange: "+3",
-            action: (state, index, array) => {
-              let toChangeState = immer.produce(state, (newState) => {
+            action: async (stateObj, index, array) => {
+              stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock*2)  + array[index].dex);
-                newState.opponentMonster[index].encounterEnergy += 3;
               })
-              return toChangeState;
+              stateObj = opponentGainEnergy(stateObj, 3, index)
+              return stateObj;
             }
           },
     
@@ -199,7 +199,7 @@ let mediumSoloEncounters = {
             minReq: 5,
             energyChange: "-5",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*4) + 2, index, -4);
+              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*4) + 2, index, -5);
               stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].dex += array[index].baseScale;
               })
@@ -244,7 +244,7 @@ let mediumSoloEncounters = {
             minReq: 0,
             energyChange: "+1",
             action: async (stateObj, index, array) => {
-              stateObj = dealPlayerDamage(stateObj, array[index].baseDamage+2, index, +1)
+              stateObj = dealPlayerDamage(stateObj, array[index].baseDamage+2, index, 1)
               return stateObj;
             }
           },
@@ -256,14 +256,14 @@ let mediumSoloEncounters = {
           },
           {
             name: "Payback",
-            cost: "2",
+            cost: "3",
             text: (state, index, array) => {
                 return `Deal ${Math.floor(array[index].baseDamage-3) + array[index].strength} damage for each time you've taken unblocked attack damage (${state.fightDamageCount})`
             },
-            minReq: 2,
-            energyChange: "-2",
+            minReq: 3,
+            energyChange: "-3",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage-3), index, -2, stateObj.fightDamageCount);
+              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage-3), index, -3, stateObj.fightDamageCount);
               return stateObj;
             }
           }
@@ -318,12 +318,12 @@ let mediumSoloEncounters = {
           },
           minReq: 3,
           energyChange: "-3",
-          action: (state, index, array) => {
-            let toChangeState = immer.produce(state, (newState) => {
+          action: async (stateObj, index, array) => {
+            stateObj = immer.produce(stateObj, (newState) => {
               newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock*2) + array[index].dex);
-              newState.opponentMonster[index].encounterEnergy -= 3;
               newState.opponentMonster[index].strength += array[index].baseScale;
             })
+            stateObj = await opponentLoseEnergy(stateObj, 3, index)
             return toChangeState;
           }
         }
@@ -390,12 +390,12 @@ let mediumSoloEncounters = {
           },
           minReq: 3,
           energyChange: "+1",
-          action: (state, index, array) => {
-            let toChangeState = immer.produce(state, (newState) => {
+          action: async (stateObj, index, array) => {
+            stateObj = immer.produce(stateObj, (newState) => {
               newState.opponentMonster[index].encounterBlock += 1+(array[index].baseBlock*2);
-              newState.opponentMonster[index].encounterEnergy += 1;
             })
-            return toChangeState;
+            stateObj = await opponentGainEnergy(stateObj, 1, index)
+            return stateObj;
           }
         },
         {
@@ -465,13 +465,13 @@ let mediumSoloEncounters = {
           action: async (stateObj, index, array) => {
             stateObj = await opponentGainEnergy(stateObj, 2, index)
             stateObj = immer.produce(stateObj, (newState) => {
-              newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock)  + array[index].dex);
+              newState.opponentMonster[index].encounterBlock += array[index].baseBlock  + array[index].dex;
               newState.opponentMonster[index].strength += array[index].baseScale;
               newState.opponentMonster[index].dex += array[index].baseScale;
             })
             return stateObj;
           }
-        }  ,
+        },
         {
           name: false,
         },
@@ -531,10 +531,13 @@ let mediumSoloEncounters = {
           energyChange: "+1",
           action: async (stateObj, index, array) => {
             stateObj = immer.produce(stateObj, (newState) => {
-              newState.opponentMonster[index].encounterBlock += array[index].baseBlock + 1 + array[index].dex;
+              let blockToGain = array[index].baseBlock + 1 + array[index].dex
+              if (blockToGain > 0) {
+                newState.opponentMonster[index].encounterBlock += blockToGain;
+              }
               newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
-              newState.opponentMonster[index].encounterEnergy += 1;
             })
+            stateObj = await opponentGainEnergy(stateObj, 1, index)
             return stateObj;
           }
         },
@@ -770,15 +773,13 @@ let mediumMultiEncounters = {
             },
             minReq: 0,
             energyChange: "+1",
-            action: (state, index, array) => {
-              let toChangeState = immer.produce(state, (newState) => {
+            action: async (stateObj, index, array) => {
+              stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster.forEach(function (monsterObj) {
                   monsterObj.encounterBlock += (Math.floor((array[index].baseBlock / 2)) + array[index].dex);
                 })
-                newState.opponentMonster[index].encounterEnergy += 1;
-    
-    
               })
+              stateObj = await opponentGainEnergy(stateObj, 1, index)
               return toChangeState;
             }
           },
@@ -826,19 +827,17 @@ let mediumMultiEncounters = {
             name: "Wind Shield",
             cost: "0",
             text: (state, index, array) => {
-              return `All enemies gain +${Math.floor((array[index].baseBlock)) + array[index].dex} block`
+              return `All enemies gain +${Math.floor((array[index].baseBlock / 2)) + array[index].dex} block`
             },
             minReq: 0,
             energyChange: "+1",
-            action: (state, index, array) => {
-              let toChangeState = immer.produce(state, (newState) => {
+            action: async (stateObj, index, array) => {
+              stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster.forEach(function (monsterObj) {
-                  monsterObj.encounterBlock += (Math.floor(array[index].baseBlock) + array[index].dex);
+                  monsterObj.encounterBlock += (Math.floor((array[index].baseBlock / 2)) + array[index].dex);
                 })
-                newState.opponentMonster[index].encounterEnergy += 1;
-    
-    
               })
+              stateObj = await opponentGainEnergy(stateObj, 1, index)
               return toChangeState;
             }
           },
@@ -912,14 +911,15 @@ let mediumMultiEncounters = {
                 return `Gain ${array[index].baseBlock - 2 + array[index].dex} block. Gain ${Math.floor(array[index].baseScale/3)} strength`
             },
             minReq: 2,
-            energyChange: "-1",
-            action: (state, index, array) => {
-              let toChangeState = immer.produce(state, (newState) => {
+            energyChange: "-2",
+            action: async (stateObj, index, array) => {
+              stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].encounterBlock += array[index].baseBlock - 2 + array[index].dex;
                 newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
                 newState.opponentMonster[index].encounterEnergy -= 1;
               })
-              return toChangeState;
+              stateObj = opponentLoseEnergy(stateObj, 2, index)
+              return stateObj;
             }
           },
         ]
