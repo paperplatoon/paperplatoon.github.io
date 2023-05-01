@@ -43,7 +43,7 @@ let fireCardPool = {
     // ------------------------------------------  17
     //-6
     followupslap: {...cards.followupslap},
-    eighthdimension: {...cards.eighthdimension},
+    //eighthdimension: {...cards.eighthdimension},
     //heal
     vampiricstrike: {...cards.vampiricstrike},
     //return
@@ -62,7 +62,6 @@ let fireCardPool = {
     explode: {...cards.explode},
     fireball: {...cards.fireball},
     //energy effects - 3
-    overcharge: {...cards.overcharge},
     fierymissiles: {...cards.fierymissiles},
     flamewhip: {...cards.flamewhip},
 
@@ -165,7 +164,6 @@ let fireCardPool = {
     bodyslam: {...cards.bodyslam},
     cautiousblow: {...cards.cautiousblow},
     followupslap: {...cards.followupslap},
-    overcharge: {...cards.overcharge},
     //multi-card
     pirouettespin: {...cards.pirouettespin},
     retreatingslash: {...cards.retreatingslash},

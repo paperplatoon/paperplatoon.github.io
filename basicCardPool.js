@@ -1762,9 +1762,8 @@ let cards = {
             stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage, (drainTotal + array[index].baseHits));
           } else {}
           
-          stateObj = immer.produce(stateObj, (newState) => {
-            newState.playerMonster.encounterEnergy -= array[index].baseCost;
-          })
+
+      
           
           return stateObj;
         }

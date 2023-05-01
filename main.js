@@ -75,7 +75,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 10,
-  testingMode: false,
+  testingMode: true,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,
@@ -120,13 +120,13 @@ let gameStartState = {
 };
 
 const eventsArray = [
-  // {
-  //   divID: "TownEvent",
-  //   imgSrc: "img/wizardshop.png",
-  //   divText: "ShowCardPool",
-  //   newStatus: Status.ShowCardPool,
-  //   eventID: 100
-  // },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.png",
+    divText: "ShowCardPool",
+    newStatus: Status.ShowCardPool,
+    eventID: 100
+  },
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
@@ -240,7 +240,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [ bosses[4], [easySoloEncounters.e7, mediumSoloEncounters.m8]  ]
+    townMonsterEncounters = [ [hardSoloEncounters.h5], [easySoloEncounters.e7, mediumSoloEncounters.m8]  ]
   } else {
     let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
     let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
@@ -258,7 +258,7 @@ function fillMapWithArray(stateObj) {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
       if (stateObj.testingMode === true) {
-        newState.townMapSquares[4] = "Fight"
+        newState.townMapSquares[4] = "?1"
       } else {
       newState.townMapSquares[4] =  "Fight";
       }

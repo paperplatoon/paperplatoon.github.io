@@ -287,8 +287,8 @@ let bossMonsters = {
             action: async (stateObj, index, array) => {
               stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
-                newState.opponentMonster[index].encounterEnergy += 1;
               })
+              stateObj = await opponentGainEnergy(stateObj, 1, index)
               return stateObj;
             }
           },
