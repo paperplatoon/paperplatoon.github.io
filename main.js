@@ -75,7 +75,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 10,
-  testingMode: true,
+  testingMode: false,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,
@@ -120,13 +120,13 @@ let gameStartState = {
 };
 
 const eventsArray = [
-  {
-    divID: "TownEvent",
-    imgSrc: "img/wizardshop.png",
-    divText: "ShowCardPool",
-    newStatus: Status.ShowCardPool,
-    eventID: 100
-  },
+  // {
+  //   divID: "TownEvent",
+  //   imgSrc: "img/wizardshop.png",
+  //   divText: "ShowCardPool",
+  //   newStatus: Status.ShowCardPool,
+  //   eventID: 100
+  // },
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
