@@ -14,6 +14,7 @@ let playerMonsters = {
     fightStrength: 0,
     fightDex: 0,
     turnEnergy: 3,
+    turnCards: 6,
     avatar: "img/fireMonster.png",
     startingDeck: [
       //1 energy
@@ -48,6 +49,7 @@ let playerMonsters = {
     fightStrength: 0,
     fightDex: 0,
     turnEnergy: 3,
+    turnCards: 6,
     avatar: "img/watertongue.png",
     startingDeck: [
       //2 energy
@@ -82,6 +84,7 @@ let playerMonsters = {
       fightStrength: 0,
       fightDex: 0,
       turnEnergy: 3,
+      turnCards: 6,
       avatar: "img/flamingbaby.png",
       startingDeck: [
         //2 energy
@@ -116,6 +119,7 @@ let playerMonsters = {
       fightStrength: 0,
       fightDex: 0,
       turnEnergy: 3,
+      turnCards: 6,
       avatar: "img/adorablefire.png",
       startingDeck: [
         //2 energy
@@ -144,7 +148,7 @@ let playerMonsters = {
       type: "water",
       encounterEnergy: 0,
       opponentMoveIndex: false,
-      cardPool: waterCardPool,
+      cardPool: simpleCardPool,
       maxHP: 50,
       currentHP: 50,
       strength: 0,
@@ -154,17 +158,18 @@ let playerMonsters = {
       fightStrength: 0,
       fightDex: 0,
       turnEnergy: 3,
+      turnCards: 6,
       avatar: "img/playerturtle.png",
       startingDeck: [
         //draw
-        fireCardPool.rarefireenergy,
-        fireCardPool.darkknowledge,
+        fireCardPool.fireenergy,
+        fireCardPool.fireenergy,
         //block
+        cards.withdraw,
+        cards.withdraw,
+        //attack
+        cards.tackle,
         specialCardPool.testkill,
-        //win
-        cards.poisonedblade,
-        cards.pinprick,
-        fireCardPool.essencedrain
       ],
     },
 

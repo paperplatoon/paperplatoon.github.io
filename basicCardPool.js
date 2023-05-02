@@ -558,7 +558,7 @@ let cards = {
         elementType: "fire",
         action: async (stateObj, index, array) => {
           stateObj = await dealOpponentDamage(stateObj, (array[index].baseDamage + array[index].upgrades), array[index].baseHits, array[index].baseCost);
-          stateObj = immer.produce(state, (newState) => {
+          stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[newState.targetedMonster].strength -= 2 + array[index].upgrades
           })
           return stateObj;

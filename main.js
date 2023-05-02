@@ -197,13 +197,13 @@ const eventsArray = [
     newStatus: Status.MaxHPvsHealChoice,
     eventID: 9
   },
-  {
-    divID: "TownEvent",
-    imgSrc: "img/wizardshop.PNG",
-    divText: "Choose One",
-    newStatus: Status.PeekBehindTheCurtain,
-    eventID: 10
-  },
+  // {
+  //   divID: "TownEvent",
+  //   imgSrc: "img/wizardshop.PNG",
+  //   divText: "Choose One",
+  //   newStatus: Status.PeekBehindTheCurtain,
+  //   eventID: 10
+  // },
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
@@ -1818,7 +1818,7 @@ function returnCard(stateObj) {
 function drawAHand(stateObj) {
   console.log("drawing a hand");
   stateObj = immer.produce(stateObj, (newState) => {
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < stateObj.playerMonster.turnCards; i++) {
       if (
         newState.encounterDraw.length !== 0 ||
         newState.encounterDiscard.length !== 0

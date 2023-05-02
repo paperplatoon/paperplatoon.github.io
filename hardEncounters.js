@@ -105,7 +105,7 @@ let hardSoloEncounters = {
             minReq: 0,
             energyChange: "+1",
             action: async (stateObj, index, array) => {
-              stateObj = dealPlayerDamage(stateObj, array[index].baseDamage+3, index, +1)
+              stateObj = dealPlayerDamage(stateObj, array[index].baseDamage+3, index, 1)
               return stateObj;
             }
           },
@@ -124,6 +124,9 @@ let hardSoloEncounters = {
               stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage-2), index, 1, stateObj.fightDamageCount);
               return stateObj;
             }
+          },
+          {
+            name: false,
           },
           {
             name: false,
@@ -198,12 +201,12 @@ let hardSoloEncounters = {
             },
             minReq: 4,
             energyChange: "+2",
-            action: (state, index, array) => {
-              let toChangeState = immer.produce(state, (newState) => {
+            action: async (stateObj, index, array) => {
+              stateObj = immer.produce(state, (newState) => {
                 newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].strength + array[index].dex;
-                newState.opponentMonster[index].encounterEnergy += 2;
               })
-              return toChangeState;
+              stateObj = await opponentGainEnergy(stateObj, 2, index);
+              return stateObj;
             }
           },
           {
@@ -269,11 +272,11 @@ let hardSoloEncounters = {
           },
           {
             name: "Fire Lance",
-            cost: "0",
+            cost: "2",
             text: (state, index, array) => {
               return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage. `
             },
-            minReq: 0,
+            minReq: 2,
             energyChange: "+2",
             action: async (stateObj, index, array) => {
               stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage*3, index, 2);
@@ -295,9 +298,8 @@ let hardSoloEncounters = {
               stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].strength += Math.ceiling(array[index].baseScale/2);
                 newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].dex;
-                newState.opponentMonster[index].encounterEnergy -= 4;
               })
-              stateObj = await dealPlayerDamage(stateObj, 0, index, -6);
+              stateObj = await opponentLoseEnergy(stateObj, 4, index);
               return stateObj;
             }
           }
