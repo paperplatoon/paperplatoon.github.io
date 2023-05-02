@@ -2667,15 +2667,20 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         text: (state, index, array) => {
-          return `Double your strength.`
+          let textString = `Double your strength` 
+          if (array[index].upgrades > 0) {
+            textString += `. Gain ${array[index].upgrades} Strength`
+          }
+          return textString
         },
-        action: (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
-            newState.playerMonster.encounterEnergy -= array[index].baseCost-Math.floor(array[index].upgrades/2);
-            newState.playerMonster.strength *= 2;
-            newState.playerMonster.fightStrength *= 2;
+        action: (stateObj, index, array) => {
+          let strengthToGain = stateObj.playerMonster.strength + array[index].upgrades
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.playerMonster.encounterEnergy -= array[index].baseCost;
+            newState.playerMonster.strength += strengthToGain;
+            newState.playerMonster.fightStrength += strengthToGain;
           })
-          return toChangeState;
+          return stateObj;
         }
       },
 
