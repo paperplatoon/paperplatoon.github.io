@@ -324,7 +324,7 @@ let mediumSoloEncounters = {
               newState.opponentMonster[index].strength += array[index].baseScale;
             })
             stateObj = await opponentLoseEnergy(stateObj, 3, index)
-            return toChangeState;
+            return stateObj;
           }
         }
       ]
