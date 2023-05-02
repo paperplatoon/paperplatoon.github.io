@@ -1291,7 +1291,13 @@ let cards = {
         cardID: 3,
         name: "",
         text: (state, index, array) => {
-          return `Gain ${2 + array[index].upgrades} energy`
+          let textString = `Gain 2 energy`;
+          if (array[index].upgrades > 2) {
+            textString += `. Destroy ${array[index].upgrades - 2} opponent energy` 
+           } else if (array[index].upgrades < 2) {
+            textString += `. Gift opponent ${2-array[index].upgrades}`
+           }
+          return textString;
         },
         minReq: -99,
         cost: "energy",
@@ -1313,28 +1319,22 @@ let cards = {
         name: "Accelerate",
         minReq: -99,
         upgrades: 0,
-        cost: 0,
+        minReq: (state, index, array) => {
+          return array[index].baseCost
+        },
+        baseCost: 4,
+        cost:  (state, index, array) => {
+            return array[index].baseCost
+        },
         cardType: "ability",
         elementType: "fire",
         text: (state, index, array) => {
-          if (array[index].upgrades < 3) {
-            return `You gain ${3} energy. Your opponent gains ${3-array[index].upgrades}.`
-          } else {
-            return `You gain ${3+(array[index].upgrades-3)} energy`
-          }
-          
+            return `Gain ${7 + array[index].upgrades} energy`
         },
         action: (stateObj, index, array) => {
-          if (array[index].upgrades < 3) {
             stateObj = immer.produce(stateObj, (newState) => {
-              newState.playerMonster.encounterEnergy += 3;
+              newState.playerMonster.encounterEnergy += 7 + array[index].upgrades;
             })
-            stateObj = energyGift(stateObj, 3-array[index].upgrades)
-          } else {
-            stateObj = immer.produce(stateObj, (newState) => {
-              newState.playerMonster.encounterEnergy += 3+(array[index].upgrades-3);
-            })
-          }
           return stateObj;
         }
       },
