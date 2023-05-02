@@ -1148,20 +1148,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   
 }
 
-.card-upgrade:hover .upgrade-text, 
-.card-upgrade:hover .card-text, 
-.card-upgrade:hover .hand-card-cost,
-.card-change-text:hover .hand-card-cost, 
-.card-change-text:hover .upgrade-text, 
-.card-change-text:hover .card-text,
-.card-change-text:hover .alt-card-text {
-  display: none;
-}
 
-.card-upgrade:hover .alt-upgrade-text, .card-upgrade:hover .alt-card-text, .card-upgrade:hover .alt-cost,  .card-change-text:hover .alt-hits-text, .card-change-text:hover .alt-card-text,
-.card-change-text:hover .alt-cost {
-  display: block;
-}
 
 .ability-card {
   border: 3px solid blue;
@@ -1180,12 +1167,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 }
 
-.trigger-condition-met:hover {
-  cursor: pointer;
-  box-shadow: 0 0 10px rgb(0, 141, 207); 
-  background: linear-gradient(90deg, rgb(47, 109, 150),rgb(43, 69, 108), rgb(43, 77, 88), rgb(12, 8, 87));
-  color: white;
-}
+
 
 .map-square {
   height: 15vh;
@@ -1372,6 +1354,27 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 #handContainer2 .playable:hover {
   border: 1.5px solid rgb(255, 211, 101);
 }
+
+.card-upgrade:hover .upgrade-text, 
+.card-upgrade:hover .card-text, 
+.card-upgrade:hover .hand-card-cost,
+.card-change-text:hover .hand-card-cost, 
+.card-change-text:hover .upgrade-text, 
+.card-change-text:hover .card-text,
+.card-change-text:hover .alt-card-text {
+  display: none;
+}
+
+.card-upgrade:hover .alt-upgrade-text, .card-upgrade:hover .alt-card-text, .card-upgrade:hover .alt-cost,  .card-change-text:hover .alt-hits-text, .card-change-text:hover .alt-card-text,
+.card-change-text:hover .alt-cost {
+  display: block;
+}
+.trigger-condition-met:hover {
+  cursor: pointer;
+  box-shadow: 0 0 10px rgb(0, 141, 207); 
+  background: linear-gradient(90deg, rgb(47, 109, 150),rgb(43, 69, 108), rgb(43, 77, 88), rgb(12, 8, 87));
+  color: white;
+}
 }
 
 
@@ -1430,6 +1433,21 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 #handContainer2 .playable {
   box-shadow: 0 0 10px rgb(178, 95, 0); 
   background: linear-gradient(90deg, rgb(208, 194, 170),rgb(192, 142, 78), rgb(210, 164, 103), rgb(213, 116, 20));
+}
+
+.card-upgrade .upgrade-text, 
+.card-upgrade .card-text, 
+.card-upgrade .hand-card-cost,
+.card-change-text .hand-card-cost, 
+.card-change-text .upgrade-text, 
+.card-change-text .card-text,
+.card-change-text .alt-card-text {
+  display: none;
+}
+
+.card-upgrade .alt-upgrade-text, .card-upgrade .alt-card-text, .card-upgrade .alt-cost,  .card-change-text .alt-hits-text, .card-change-text .alt-card-text,
+.card-change-text .alt-cost {
+  display: block;
 }
 }
 
