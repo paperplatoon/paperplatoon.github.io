@@ -163,10 +163,10 @@ let playerMonsters = {
       startingDeck: [
         //draw
         fireCardPool.fireenergy,
-        fireCardPool.fireenergy,
+        cards.withdraw,
         //block
-        cards.withdraw,
-        cards.withdraw,
+        cards.whirlwind,
+        cards.fireBlockEnergy,
         //attack
         cards.tackle,
         specialCardPool.testkill,

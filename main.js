@@ -75,7 +75,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 10,
-  testingMode: false,
+  testingMode: true,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,
@@ -240,7 +240,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [ [hardSoloEncounters.h5], [easySoloEncounters.e7, mediumSoloEncounters.m8]  ]
+    townMonsterEncounters = [ [mediumSoloEncounters.m3], [easySoloEncounters.e7, mediumSoloEncounters.m8]  ]
   } else {
     let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
     let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
@@ -258,7 +258,7 @@ function fillMapWithArray(stateObj) {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
       if (stateObj.testingMode === true) {
-        newState.townMapSquares[4] = "?1"
+        newState.townMapSquares[4] = "Fight"
       } else {
       newState.townMapSquares[4] =  "Fight";
       }

@@ -945,9 +945,9 @@ let cards = {
         name: "Annihilation",
         text: (state, index, array) => {
           if (array[index].baseHits===1) {
-            return `Gain ${array[index].baseBlock + (array[index].upgrades*4) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*7) + state.playerMonster.strength} damage to all enemies`;
+            return `Gain ${array[index].baseBlock + (array[index].upgrades*2) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*5) + state.playerMonster.strength} damage`;
           } else {
-            return `Gain ${array[index].baseBlock + (array[index].upgrades*4) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*7) + state.playerMonster.strength} damage to all enemies ${array[index].baseHits} times`;
+            return `Gain ${array[index].baseBlock + (array[index].upgrades*2) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*5) + state.playerMonster.strength} damage ${array[index].baseHits} times`;
           }
             
         },
@@ -965,8 +965,8 @@ let cards = {
         cardType: "attack",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*4), array[index].baseCost);
-          stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*7), array[index].baseHits, energyCost=false, all=true)
+          stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*5), array[index].baseCost);
+          stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*5), array[index].baseHits, energyCost=false, all=false)
           return stateObj;
         }
       },
@@ -1171,7 +1171,6 @@ let cards = {
         cardType: "ability",
         elementType: "water",
         action: (stateObj, index, array) => {
-          stateObj = gainBlock(stateObj, array[index].baseBlock + (5*array[index].upgrades), array[index].baseCost);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.backstepDamage = true;
           })
@@ -3198,12 +3197,12 @@ let specialCardPool = {
       cardType: "ability",
       elementType: "fire",
       action: async (stateObj, index, array) => {
-        stateObj = gainBlock(stateObj, array[index].baseBlock+(array[index].upgrades*2), array[index].baseCost);
+        stateObj = await gainBlock(stateObj, array[index].baseBlock+(array[index].upgrades*2), array[index].baseCost);
+        if (stateObj.backstepDamage === true ) {
+          stateObj = await dealOpponentDamage(stateObj, array[index].baseBlock+(array[index].upgrades*2))
+        }
         document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
         await pause(500);
-        if (stateObj.backstepDamage === true ) {
-          stateObj = await dealOpponentDamage(stateObj, array[index].baseBlock+(array[index].upgrades*2), 1, false, true)
-        }
         document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
         return stateObj;
       }
