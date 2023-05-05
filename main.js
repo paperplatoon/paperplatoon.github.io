@@ -50,6 +50,7 @@ const Status = {
   LevelUpEvent: renderLevelUp,
   ChooseRareEvent: renderChooseRareEvent,
   PaidRemovalEvent: renderPaidRemovalEvent,
+  opponentSelfHealChoice: renderOpponentSelfHealChoice,
   PaidRemovalCardList: renderPaidRemovalCardList,
   AssassinTrainingEvent: renderAssassinTrainingEvent,
   ShowCardPool: renderCardPool,
@@ -75,7 +76,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 10,
-  testingMode: true,
+  testingMode: false,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,
@@ -100,6 +101,7 @@ let gameStartState = {
   blockKeep: false,
   gainStrengthEnergyChange: 0,
   backstepDamage: false,
+  healOpponentBlocked: false,
   gainLifePerCard: 0,
   townEventChosen: false,
   townFreeHealUsed: false,
@@ -197,6 +199,13 @@ const eventsArray = [
     newStatus: Status.MaxHPvsHealChoice,
     eventID: 9
   },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.PNG",
+    divText: "Choose One",
+    newStatus: Status.opponentSelfHealChoice,
+    eventID: 10
+  },
   // {
   //   divID: "TownEvent",
   //   imgSrc: "img/wizardshop.PNG",
@@ -226,7 +235,7 @@ const eventsArray = [
     imgSrc: "img/wizardshop.PNG",
     divText: "Upgrade Card 2x",
     newStatus: Status.DoubleUpgradeEvent,
-    eventID: 12
+    eventID: 13
   },
   //add the ability to retain, OR upgrade a card twice 
   //gain one extra turn energy, but lose HELLA max health
@@ -240,7 +249,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [ [mediumSoloEncounters.m3], [easySoloEncounters.e7, mediumSoloEncounters.m8]  ]
+    townMonsterEncounters = [ [easySoloEncounters.e3], [easySoloEncounters.e7, mediumSoloEncounters.m8]  ]
   } else {
     let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
     let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
@@ -258,7 +267,7 @@ function fillMapWithArray(stateObj) {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
       if (stateObj.testingMode === true) {
-        newState.townMapSquares[4] = "Fight"
+        newState.townMapSquares[4] = "?1"
       } else {
       newState.townMapSquares[4] =  "Fight";
       }
@@ -402,7 +411,7 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
         let shuffledEventsArray = fisherYatesShuffle(eventsArray);
         stateObj = immer.produce(stateObj, (newState) => {
           if (stateObj.testingMode === true) {
-            newState.status = eventsArray[0].newStatus
+            newState.status = eventsArray[10].newStatus
           } else {
             if (stateObj.townMapSquares[indexToMoveTo] === "?1") {
               newState.status = shuffledEventsArray[1].newStatus;
@@ -937,31 +946,35 @@ async function energyGift(stateObj, energyToGain, energyCost=false, all=false) {
 }
 
 async function healOpponent(stateObj, HPToGain, index=0, energyChange=false, all=false) {
-  stateObj = immer.produce(stateObj, (newState) => {
-    if (all === true) {
-      newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
-          if (monsterObj.currentHP < (monsterObj.maxHP - (HPToGain + 1))) {
-            monsterObj.currentHP += HPToGain;
-            newState.enemyFightHealTotal += HPToGain;
-          } else {
-            newState.enemyFightHealTotal += monsterObj.maxHP - monsterObj.currentHP
-            monsterObj.currentHP = monsterObj.maxHP;
-          };
-      }) 
-    } else {
-      let monsterObj = newState.opponentMonster[index];
-      if (monsterObj.currentHP < (monsterObj.maxHP - (HPToGain + 1))) {
-        monsterObj.currentHP += HPToGain;
-        newState.enemyFightHealTotal += HPToGain;
+  console.log("heal block state is " + stateObj.healOpponentBlocked )
+  if (stateObj.healOpponentBlocked === false) {
+    stateObj = immer.produce(stateObj, (newState) => {
+      if (all === true) {
+        newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
+            if (monsterObj.currentHP < (monsterObj.maxHP - (HPToGain + 1))) {
+              monsterObj.currentHP += HPToGain;
+              newState.enemyFightHealTotal += HPToGain;
+            } else {
+              newState.enemyFightHealTotal += monsterObj.maxHP - monsterObj.currentHP
+              monsterObj.currentHP = monsterObj.maxHP;
+            };
+        }) 
       } else {
-        newState.enemyFightHealTotal += monsterObj.maxHP - monsterObj.currentHP
-        monsterObj.currentHP = monsterObj.maxHP;
-      };
+        let monsterObj = newState.opponentMonster[index];
+        if (monsterObj.currentHP < (monsterObj.maxHP - (HPToGain + 1))) {
+          monsterObj.currentHP += HPToGain;
+          newState.enemyFightHealTotal += HPToGain;
+        } else {
+          newState.enemyFightHealTotal += monsterObj.maxHP - monsterObj.currentHP
+          monsterObj.currentHP = monsterObj.maxHP;
+        };
     }
+
     if (energyChange) {
       newState.opponentMonster[index].encounterEnergy += energyChange
     }
-  })
+    })
+  }
   return stateObj
 }
 
@@ -2379,7 +2392,7 @@ async function renderDuplicateChoice(stateObj) {
   divContainer("app", "level-up-div");
   eventText("level-up-div", newDivName=false, "Refracting Prism", "Your monster is playing in a nearby stream. It comes back with a piece of quartz that reflects the light strangely. You realize it's a Prismatic Amplifier. You can use this to either copy a spell in your deck, or exchange some of your life force to copy it five times.");
   let OneDuplicateDiv = await renderTownDiv(stateObj, "duplicateOnce", "Add a copy of any card to your deck", true, changeStatus, Status.DuplicatingCards, altText=false);
-  let sevenDuplicateDiv = await renderTownDiv(stateObj, "increaseDex", "Add 5 copies of any card to your deck. Lose 15 max HP", true, changeStatus, Status.DuplicatingCardFiveTimes, altText=false);
+  let sevenDuplicateDiv = await renderTownDiv(stateObj, "increaseDex", "Add 5 copies of any card to your deck. Lose 20 HP", true, changeStatus, Status.DuplicatingCardFiveTimes, altText=false);
   
   document.getElementById("level-up-div").append(OneDuplicateDiv, sevenDuplicateDiv);
   skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
@@ -2422,7 +2435,7 @@ async function duplicateCardFiveTimes(stateObj, index, array) {
       newState.playerDeck.push(cardObj);
     }
     newState.status = Status.OverworldMap
-    newState.playerMonster.maxHP -= 15;
+    newState.playerMonster.currentHP -= 20;
     if (newState.playerMonster.currentHP > newState.playerMonster.maxHP) {newState.playerMonster.currentHP = newState.playerMonster.maxHP};
     newState.townMapSquares[newState.playerHere] = "completed"
   })
@@ -2433,12 +2446,11 @@ async function duplicateCardFiveTimes(stateObj, index, array) {
 //Decrease Card Cost Choice
 // ----------------------------------------------------------------------------------------------------------------
 async function renderDecreaseChoice(stateObj) {
-  console.log("dupe choice triggfered")
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app", "level-up-div");
   eventText("level-up-div", newDivName=false, "Energy Master", "A fellow traveler on the road flags you down. 'You look powerful!' he says. 'I'll help you on your journey - I can decrease the cost of any spell to be 1 energy less. Or, if you wish to demonstrate your power, I'll increase the cost of one of your cards by one, and pay you handsomely.'");
-  let decreaseDiv = await renderTownDiv(stateObj, "decreaseDiv", "Decrease a card's cost by 1. Lose 10 Max HP", true, changeStatus, Status.DecreasingCost, altText=false);
+  let decreaseDiv = await renderTownDiv(stateObj, "decreaseDiv", "Decrease a card's cost by 1. Lose 15 HP", true, changeStatus, Status.DecreasingCost, altText=false);
   let increaseDiv = await renderTownDiv(stateObj, "increaseDiv", "Increase a card's cost by 1. Gain 100 gold", true, changeStatus, Status.IncreasingCost, altText=false);
   
   document.getElementById("level-up-div").append(decreaseDiv, increaseDiv);
@@ -2466,7 +2478,7 @@ function decreaseCardCost(stateObj, index, array) {
     newState.eventUsed = true;
     newState.status = Status.OverworldMap
     newState.townMapSquares[newState.playerHere] = "completed"
-    newState.playerMonster.maxHP -= 10;
+    newState.playerMonster.currentHP -= 15;
     if (newState.playerMonster.currentHP > newState.playerMonster.maxHP) {
       newState.playerMonster.currentHP = newState.playerMonster.maxHP;
     }
@@ -2571,6 +2583,33 @@ async function increaseExtraHeal(stateObj, statusToChange, valueToPass) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.eventUsed = true;
     newState.extraHeal += valueToPass;
+    newState.status = statusToChange
+    newState.townMapSquares[newState.playerHere] = "completed"
+  })
+  await changeState(stateObj);
+  return stateObj;
+}
+
+// extraHeal vs block opponent Heal
+// ----------------------------------------------------------------------------------------------------------------
+async function renderOpponentSelfHealChoice(stateObj) {
+  console.log("self heal choice triggered")
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app", "level-up-div");
+  eventText("level-up-div", newDivName=false, "Drain", "You come across a cruel object that appears to draw its power from the enemies you face. You can either draw upon their power to boost your own healing, or else interfere with their healing spells");
+  let maxHPDiv = await renderTownDiv(stateObj, "blockOpponentHealing", "Enemies can no longer heal", true, blockEnemyHealing, Status.OverworldMap, altText=false);
+  let extraHealDiv = await renderTownDiv(stateObj, "increaseExtraHeal", "Whenever you heal, heal 3 extra damage", true, increaseExtraHeal, Status.OverworldMap, altText=false, 3);
+  
+  document.getElementById("level-up-div").append(maxHPDiv, extraHealDiv);
+  skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+ };
+
+ async function blockEnemyHealing(stateObj, statusToChange) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.eventUsed = true;
+    newState.healOpponentBlocked = true;
     newState.status = statusToChange
     newState.townMapSquares[newState.playerHere] = "completed"
   })

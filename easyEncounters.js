@@ -169,16 +169,7 @@ let easySoloEncounters = {
             energyChange: "+1",
             action: async (stateObj, index, array) => {
               stateObj = await opponentGainEnergy(stateObj, 1, index)
-              stateObj = immer.produce(stateObj, (newState) => {
-                if (array[index].currentHP < (array[index].maxHP - (array[index].baseHeal + 1))) {
-                  newState.opponentMonster[index].currentHP += array[index].baseHeal;
-                  newState.enemyFightHealTotal += array[index].baseHeal;
-                } else {
-                  newState.enemyFightHealTotal += (newState.opponentMonster[index].maxHP - newState.opponentMonster[index].currentHP)
-                  newState.opponentMonster[index].currentHP = newState.opponentMonster[index].maxHP;
-                };
-                newState.opponentMonster[index].strength += 1;
-              })
+              stateObj = await healOpponent(stateObj, array[index].baseHeal, index)
               return stateObj;
             }
           },
