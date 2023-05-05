@@ -30,6 +30,8 @@ const Status = {
   OverworldMap: renderMapScreen,
   InEncounter: renderDivs,
   RemovingCards: renderRemoveCard,
+  RetainingCards: renderRetainCard,
+  RetainCardChoice: renderRetainVsRemoveChoice,
   InTown: renderTown,
   DecreasingChoice: renderDecreaseChoice,
   DecreasingCost: renderDecreaseCardCost,
@@ -237,6 +239,13 @@ const eventsArray = [
     newStatus: Status.DoubleUpgradeEvent,
     eventID: 13
   },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.PNG",
+    divText: "Upgrade Card 2x",
+    newStatus: Status.RetainCardChoice,
+    eventID: 13
+  },
   //add the ability to retain, OR upgrade a card twice 
   //gain one extra turn energy, but lose HELLA max health
 ];
@@ -411,7 +420,7 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
         let shuffledEventsArray = fisherYatesShuffle(eventsArray);
         stateObj = immer.produce(stateObj, (newState) => {
           if (stateObj.testingMode === true) {
-            newState.status = eventsArray[10].newStatus
+            newState.status = eventsArray[14].newStatus
           } else {
             if (stateObj.townMapSquares[indexToMoveTo] === "?1") {
               newState.status = shuffledEventsArray[1].newStatus;
@@ -1227,7 +1236,7 @@ function buyThisCard(stateObj, index, cardArray) {
   return stateObj;
 }
 
-function removeCard(stateObj, index) {
+async function removeCard(stateObj, index) {
   console.log("removed " + stateObj.playerDeck[index].name + " from deck")
 
   
@@ -1243,7 +1252,20 @@ function removeCard(stateObj, index) {
       newState.status = Status.OverworldMap
     }
   })
-  changeState(stateObj);
+  stateObj = await changeState(stateObj);
+  return stateObj;
+}
+
+async function retainCard(stateObj, index) {
+  console.log("Gave " + stateObj.playerDeck[index].name + " retain")
+
+  
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerDeck[index].retain = true;
+      newState.townMapSquares[newState.playerHere] = "completed"
+      newState.status = Status.OverworldMap
+  })
+  stateObj = await changeState(stateObj);
   return stateObj;
 }
 
@@ -2134,7 +2156,11 @@ function renderRetainCard(stateObj) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app");
-  renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", retainCard);
+  stateObj.playerDeck.forEach(function (cardObj, index) {
+    if (cardObj.retain) {    } else {
+      renderCard(stateObj, stateObj.playerDeck, index, "remove-div", retainCard)
+    }
+  });
   renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 
@@ -2616,6 +2642,22 @@ async function renderOpponentSelfHealChoice(stateObj) {
   await changeState(stateObj);
   return stateObj;
 }
+
+//retain vs remove card
+// ----------------------------------------------------------------------------------------------------------------
+async function renderRetainVsRemoveChoice(stateObj) {
+  console.log("max HP heal triggerd")
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app", "level-up-div");
+  eventText("level-up-div", newDivName=false, "Timepiece", "You can either linger nostalgically over the past, or leave it behind and start anew. What will it be?");
+  let maxHPDiv = await renderTownDiv(stateObj, "increaseMaxHP", "Choose a card to gain retain", true, changeStatus, Status.RetainingCards, altText=false);
+  let extraHealDiv = await renderTownDiv(stateObj, "increaseExtraHeal", "Choose a card to remove from your deck", true, changeStatus, Status.RemovingCards, altText=false, 3);
+  
+  document.getElementById("level-up-div").append(maxHPDiv, extraHealDiv);
+  skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+ };
 
 
 //Max HP vs end-of-fight heal
