@@ -151,7 +151,7 @@ let playerMonsters = {
       cardPool: simpleCardPool,
       maxHP: 50,
       currentHP: 50,
-      strength: 0,
+      strength: 2,
       dex: 0,
       tempStrength: 0,
       tempDex: 0,
@@ -163,7 +163,7 @@ let playerMonsters = {
       startingDeck: [
         //draw
         fireCardPool.fireenergy,
-        cards.withdraw,
+        cards.hypertrain,
         //block
         cards.whirlwind,
         cards.fireBlockEnergy,

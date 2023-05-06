@@ -824,7 +824,7 @@ let cards = {
         baseHits: 1,
         baseDamage: 40,
         playCount: 0,
-        cardType: "attack",
+        cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
           stateObj = immer.produce(stateObj, (newState) => {
@@ -2874,7 +2874,7 @@ let cards = {
           return array[index].baseCost;
         },
         upgrades: 0,
-        baseCost: 2,
+        baseCost: 4,
         basePoison: 5,
         cost:  (state, index, array) => {
           return array[index].baseCost;

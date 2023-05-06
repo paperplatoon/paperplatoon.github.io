@@ -1619,14 +1619,15 @@ function resetAfterFight(stateObj) {
 
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster.strength -= newState.playerMonster.tempStrength;
-    newState.playerMonster.dex -= newState.playerMonster.tempDex;
     newState.playerMonster.tempStrength = 0;
-    newState.playerMonster.tempDex = 0;
     newState.playerMonster.strength -= newState.playerMonster.fightStrength;
-    newState.playerMonster.dex -= newState.playerMonster.fightDex;
     newState.playerMonster.fightStrength = 0;
+    newState.playerMonster.dex -= newState.playerMonster.tempDex;
+    newState.playerMonster.tempDex = 0;
+    newState.playerMonster.dex -= newState.playerMonster.fightDex;
     newState.playerMonster.fightDex = 0;
     newState.playerMonster.encounterBlock = 0;
+    
     newState.fightHealCount = 0;
     newState.fightHealTotal = 0;
     newState.fightSelfDamageCount = 0;
@@ -1774,6 +1775,7 @@ function setUpEncounter(stateObj, isBoss=false) {
 
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster.tempStrength = 0;
+    newState.playerMonster.fightStrength = 0;
     newState.playerMonster.tempDex = 0;
     newState.playerMonster.encounterBlock = 0;
     newState.opponentMonster.forEach(function (monster, index) {
