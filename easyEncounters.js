@@ -18,10 +18,10 @@ let easySoloEncounters = {
         baseDamage: opponentBaseDamage+1,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/firebaby.png",
+        avatar: "img/easy/bearcub1.png",
         moves: [
           {
-            name: "Fiery Slap",
+            name: "Fiery Swipe",
             cost: "0",
             text: (state, index, array) => {
                 return `Deal ${array[index].baseDamage + 4 + array[index].strength} damage.`
@@ -57,7 +57,7 @@ let easySoloEncounters = {
             name: false,
           },
           {
-            name: "Whirling Dervish",
+            name: "Flaming Claws",
             cost: "4",
             text: (state, index, array) => {
                 return `Deal ${Math.floor(array[index].baseDamage/4) + array[index].strength} damage 6 times`
@@ -74,7 +74,7 @@ let easySoloEncounters = {
 
       e2: {
         name: "Balance E2",
-        type: "Air",
+        type: "Fire",
         XPGain: opponentXPGain,
         goldOnDefeat: Math.floor(opponentGold*2),
         Level: 1,
@@ -91,10 +91,10 @@ let easySoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/earthpsycho.png",
+        avatar: "img/easy/adorablefire.png",
         moves: [
           {
-            name: "Fiery Slap",
+            name: "Fiery Swipe",
             cost: "0",
             text: (state, index, array) => {
               return `Deal ${(array[index].baseDamage+4) + array[index].strength} damage.`
@@ -116,7 +116,7 @@ let easySoloEncounters = {
             name: false,
           },
           {
-            name: "Study Openings",
+            name: "Rising Flames",
             cost: "4",
             text: (state, index, array) => {
               return `Gain ${(array[index].baseBlock) + array[index].dex} block. Gain ${array[index].baseScale} Strength & Dexterity`
@@ -140,7 +140,7 @@ let easySoloEncounters = {
 
       e3: {
         name: "Heal E3",
-        type: "Air",
+        type: "earth",
         XPGain: opponentXPGain,
         goldOnDefeat: Math.floor(opponentGold*2),
         Level: 1,
@@ -157,7 +157,7 @@ let easySoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: 0,
         baseHeal: opponentBaseHeal,
-        avatar: "img/earthevil.png",
+        avatar: "img/easy/plant1.png",
         moves: [
           {
             name: "Replenish",
@@ -215,7 +215,7 @@ let easySoloEncounters = {
     baseDamage: opponentBaseDamage,
     baseScale: opponentBaseScale,
     baseHeal: 0,
-    avatar: "img/cat3.png",
+    avatar: "img/easy/firecub1.png",
     powers: [{
       name: "Power: Inflame",
       text: (state, index, array) => {
@@ -224,7 +224,7 @@ let easySoloEncounters = {
     }],
     moves: [
       {
-        name: "Wake Up",
+        name: "Yawn and Stretch",
         cost: "0",
         text: (state, index, array) => {
             return `Gain ${Math.floor(array[index].baseScale/3)} strength.`
@@ -247,7 +247,7 @@ let easySoloEncounters = {
         name: false,
       },
       {
-        name: "Fiery Slap",
+        name: "Fiery Swipe",
         cost: "3",
         text: (state, index, array) => {
             return `Deal ${Math.floor(array[index].baseDamage) + array[index].strength} damage`
@@ -282,7 +282,7 @@ let easySoloEncounters = {
     baseDamage: 0,
     baseScale: opponentBaseScale,
     baseHeal: 0,
-    avatar: "img/hornsfire.png",
+    avatar: "img/easy/hornsfire.png",
     powers: [{
       name: "Power: Inflame",
       text: (state, index, array) => {
@@ -291,7 +291,7 @@ let easySoloEncounters = {
     }],
     moves: [
       {
-        name: "Fiery Slap",
+        name: "Horn Charge",
         cost: "0",
         text: (state, index, array) => {
             return `Deal ${Math.floor(array[index].baseDamage) + array[index].strength} damage`
@@ -300,6 +300,65 @@ let easySoloEncounters = {
         energyChange: "0",
         action: async (stateObj, index, array) => {
           stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage-array[index].inflame, index)
+          return stateObj;
+        }
+      },
+    ]
+  },
+
+  e8: {
+    name: "Water E8",
+    type: "Water",
+    XPGain: opponentXPGain,
+    goldOnDefeat: Math.floor(opponentGold*2),
+    Level: 1,
+    maxHP: opponentMaxHP*6,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: opponentMaxHP*6,
+    strength: 0,
+    dex: 0,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    baseBlock: opponentBaseBlock,
+    baseDamage: 0,
+    baseScale: opponentBaseScale,
+    baseHeal: 0,
+    avatar: "img/easy/shrimp1.png",
+    moves: [
+      {
+        name: "Reef Camouflage",
+        cost: "",
+        text: (state, index, array) => {
+          return `Gain ${array[index].baseBlock*3 + array[index].dex} block.`
+        },
+        minReq: 0,
+        energyChange: "+1",
+        action: async (stateObj, index, array) => {
+          stateObj = immer.produce(state, (newState) => {
+            newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].strength + array[index].dex;
+          })
+          stateObj = await opponentGainEnergy(stateObj, 2, index);
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Mantis Punch",
+        cost: "3",
+        text: (state, index, array) => {
+            return `Deal ${Math.floor(array[index].baseDamage*3)+3 + array[index].strength} damage`
+        },
+        minReq: 3,
+        energyChange: "-3",
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage*3)+3, index, -3)
           return stateObj;
         }
       },
@@ -363,7 +422,7 @@ let easyMultiEncounters = {
     baseDamage: opponentBaseDamage,
     baseScale: opponentBaseScale,
     baseHeal: 0,
-    avatar: "img/littleturtle1.png",
+    avatar: "img/easy/fireturtle.png",
     moves: [
       {
         name: "Shell Smack",
@@ -426,7 +485,7 @@ let easyMultiEncounters = {
     baseDamage: opponentBaseDamage,
     baseScale: opponentBaseScale,
     baseHeal: 0,
-    avatar: "img/littleturtle2.png",
+    avatar: "img/easy/fireturtle1.png",
     moves: [
       {
         name: "Turtle Up",

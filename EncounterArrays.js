@@ -35,7 +35,8 @@ let easyEncounters = [
   [easySoloEncounters.e3],
   [easyMultiEncounters.e4, easyMultiEncounters.e5],
   [easySoloEncounters.e6],
-  [easySoloEncounters.e7]
+  [easySoloEncounters.e7],
+  [easySoloEncounters.e8]
 ]
 
 let mediumEncounters = [
