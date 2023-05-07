@@ -1,7 +1,7 @@
 let mediumSoloEncounters = {
       m1: {
         name: "Heal Gym Disciple",
-        type: "Air",
+        type: "Earth",
         XPGain: opponentXPGain*2,
         goldOnDefeat: Math.floor(opponentGold*3),
         Level: 1,
@@ -18,7 +18,7 @@ let mediumSoloEncounters = {
         baseBlock: 0,
         baseDamage: opponentBaseDamage,
         baseScale: 0,
-        avatar: "img/cuteearthbad.png",
+        avatar: "img/medium/cuteearthbad.png",
         moves: [
           {
             name: "Replenish",
@@ -43,7 +43,7 @@ let mediumSoloEncounters = {
             name: false,
           },
           {
-            name: "Shield Throw",
+            name: "Trident Throw",
             cost: "4",
             text: (state, index, array) => {
               return `Deal ${Math.floor(array[index].baseDamage*2) + 2 + array[index].strength} damage`
@@ -78,7 +78,7 @@ let mediumSoloEncounters = {
 
       m2: {
         name: "Block Gym Disciple",
-        type: "Air",
+        type: "Water",
         XPGain: opponentXPGain*2,
         goldOnDefeat: Math.floor(opponentGold*3),
         Level: 1,
@@ -95,10 +95,10 @@ let mediumSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/airmask.png",
+        avatar: "img/medium/jellyfish1.png",
         moves: [
           {
-            name: "Balloon Shield",
+            name: "Tentacle Shield",
             cost: "0",
             text: (state, index, array) => {
               return `Gain ${(array[index].baseBlock*2) + array[index].dex} block`
@@ -121,7 +121,7 @@ let mediumSoloEncounters = {
             name: false,
           },
           {
-            name: "Explosive Pop",
+            name: "Strangle",
             cost: "3",
             text: (state, index, array) => {
               return `Deal ${(array[index].baseDamage*2) + array[index].dex + array[index].strength} damage. Gain ${array[index].baseScale} dexterity. Increases off Dexterity`

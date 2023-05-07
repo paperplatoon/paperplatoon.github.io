@@ -585,7 +585,7 @@
   color:rgb(23, 23, 109);
 }
 .energy-filled-earth {
-  background-color: rgba(100, 35, 0, 0.916);
+  background-color: rgba(5, 100, 0, 0.916);
   border: 1px solid white;
   background-position: 0% 100%;
 }
@@ -735,7 +735,7 @@
 }
 
 .targeted-earth {
-  border: 6px dashed brown;
+  border: 6px dashed rgba(5, 100, 0, 0.916);;
   background-color: #50010163;
 }
 
@@ -981,7 +981,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 }
 
 .monster-energy-earth {
-  background: linear-gradient(90deg,rgb(255, 235, 208), rgb(186, 72, 1),rgb(151, 56, 2), rgb(196, 72, 0),rgb(255, 232, 208));
+  background: linear-gradient(90deg,rgb(208, 255, 208), rgb(57, 198, 26),rgb(2, 151, 9), rgb(3, 196, 0),rgb(208, 255, 210));
 }
 
 
