@@ -2749,7 +2749,7 @@ let cards = {
         //takes the state object, declares a toChangeState which takes immer.produce
         //and returns a new state reflecting the changes
         action: async (stateObj, index, array) => {
-          let stateObj = immer.produce(stateObj, (newState) => {
+          stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.strength += 1;
             newState.playerMonster.encounterEnergy -=  array[index].baseCost-(array[index].upgrades);
 
@@ -2784,7 +2784,7 @@ let cards = {
         //takes the state object, declares a toChangeState which takes immer.produce
         //and returns a new state reflecting the changes
         action: async (stateObj, index, array) => {
-          let stateObj = immer.produce(stateObj, (newState) => {
+          stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.dex += 1;
             newState.playerMonster.encounterEnergy -=  array[index].baseCost-(array[index].upgrades);
 
