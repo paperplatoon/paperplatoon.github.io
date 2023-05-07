@@ -140,7 +140,7 @@ let easySoloEncounters = {
 
       e3: {
         name: "Heal E3",
-        type: "earth",
+        type: "Earth",
         XPGain: opponentXPGain,
         goldOnDefeat: Math.floor(opponentGold*2),
         Level: 1,
@@ -339,7 +339,7 @@ let easySoloEncounters = {
           stateObj = immer.produce(state, (newState) => {
             newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].strength + array[index].dex;
           })
-          stateObj = await opponentGainEnergy(stateObj, 2, index);
+          stateObj = await opponentGainEnergy(stateObj, 1, index);
           return stateObj;
         }
       },

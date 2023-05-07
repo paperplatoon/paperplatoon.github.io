@@ -566,8 +566,26 @@
   font-size: 2.7vmin;
 }
 
-.energy-filled {
+.energy-filled-fire {
   background-color: rgba(255, 52, 52, 0.916);
+  border: 1px solid white;
+  background-position: 0% 100%;
+}
+
+.energy-filled-water {
+  background-color: rgba(52, 62, 255, 0.916);
+  border: 1px solid white;
+  background-position: 0% 100%;
+}
+
+.energy-filled-air {
+  background-color: rgba(255, 241, 52, 0.916);
+  border: 1px solid white;
+  background-position: 0% 100%;
+  color:rgb(23, 23, 109);
+}
+.energy-filled-earth {
+  background-color: rgba(100, 35, 0, 0.916);
   border: 1px solid white;
   background-position: 0% 100%;
 }
@@ -701,9 +719,24 @@
 }
 
 
-.targeted {
+.targeted-fire {
     border: 6px dashed red;
     background-color: #50010163;
+}
+
+.targeted-water {
+  border: 6px dashed blue;
+  background-color: #50010163;
+}
+
+.targeted-air {
+  border: 6px dashed yellow;
+  background-color: #50010163;
+}
+
+.targeted-earth {
+  border: 6px dashed brown;
+  background-color: #50010163;
 }
 
 #playerStats {
@@ -927,13 +960,31 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 .monster-energy {
   font-size: 4vmin;
-  background: linear-gradient(90deg,rgb(255, 208, 208), rgb(243, 23, 23),rgb(230, 0, 0), rgb(243, 23, 23),rgb(255, 208, 208));
   color: white;
   border-radius: 10px;
   padding: 0.3vh 0.4vw;
   margin-left: 0.1vw;
   text-align: center;
 }
+
+.monster-energy-fire {
+  background: linear-gradient(90deg,rgb(255, 208, 208), rgb(243, 23, 23),rgb(230, 0, 0), rgb(243, 23, 23),rgb(255, 208, 208));
+}
+
+.monster-energy-water {
+  background: linear-gradient(90deg,rgb(208, 209, 255), rgb(23, 27, 243),rgb(0, 58, 230), rgb(23, 30, 243),rgb(208, 211, 255));
+}
+
+.monster-energy-air {
+  background: linear-gradient(90deg,rgb(255, 240, 208), rgb(243, 225, 23),rgb(230, 203, 0), rgb(243, 228, 23),rgb(255, 248, 208));
+  color:rgb(23, 23, 109)
+}
+
+.monster-energy-earth {
+  background: linear-gradient(90deg,rgb(255, 235, 208), rgb(186, 72, 1),rgb(151, 56, 2), rgb(196, 72, 0),rgb(255, 232, 208));
+}
+
+
 
 .player-energy {
   font-size: 4vmin;
@@ -943,6 +994,17 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   padding: 0.3vh 0.4vw;
   margin-left: 0.1vw;
   text-align: center;
+}
+
+.player-energy-fire, .hand-card-cost-fire {
+  background: linear-gradient(90deg,rgb(255, 208, 208), rgb(243, 23, 23),rgb(230, 0, 0), rgb(243, 23, 23),rgb(255, 208, 208));
+}
+.hand-card-cost-fire {
+  background: linear-gradient(90deg, rgb(224, 84, 84),rgb(187, 0, 0), rgb(226, 69, 69));
+}
+
+.player-energy-water, .hand-card-cost-water {
+  background: linear-gradient(90deg,rgb(208, 209, 255), rgb(23, 27, 243),rgb(0, 58, 230), rgb(23, 30, 243),rgb(208, 211, 255));
 }
 
 .energy-cost, .hand-card-cost {
@@ -959,16 +1021,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   transition: background-color 0.5s;
  }
 
- .player-energy-fire, .hand-card-cost-fire {
-  background: linear-gradient(90deg,rgb(255, 208, 208), rgb(243, 23, 23),rgb(230, 0, 0), rgb(243, 23, 23),rgb(255, 208, 208));
-}
-.hand-card-cost-fire {
-  background: linear-gradient(90deg, rgb(224, 84, 84),rgb(187, 0, 0), rgb(226, 69, 69));
-}
 
-.player-energy-water, .hand-card-cost-water {
-  background: linear-gradient(90deg,rgb(208, 209, 255), rgb(23, 27, 243),rgb(0, 58, 230), rgb(23, 30, 243),rgb(208, 211, 255));
-}
 
  .largerHeight {
   font-size: 3vmin;

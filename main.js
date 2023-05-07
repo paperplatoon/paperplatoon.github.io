@@ -837,12 +837,22 @@ function addBackstepsToHand(stateObj, numberToAdd=1) {
 
 async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, playerTriggered=false) {
   let monsterObj = stateObj.opponentMonster[targetIndex]
+  let monsterTypeString = ""
+  if (monsterObj.type==="Fire") {
+    monsterTypeString = "energy-filled-fire";
+  } else if (monsterObj.type==="Water") {
+    monsterTypeString = "energy-filled-water";
+  } else if (monsterObj.type==="Air") {
+    monsterTypeString = "energy-filled-air";
+  } else if (monsterObj.type==="Earth") {
+    monsterTypeString = "energy-filled-earth";
+  }
   let monsterDivs = document.querySelectorAll("#opponents .monster")
     let startingEnergy = monsterObj.encounterEnergy;
     for (let i=0; i < energyToLose; i++) {
       if ( ((startingEnergy - i) > 0) && ((startingEnergy - i) < monsterObj.moves.length)) {
         console.log("removing energy at index " + (startingEnergy-1))
-        monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy-i].classList.remove("energy-filled")
+        monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy-i].classList.remove(monsterTypeString)
         if (playerTriggered === false) {
           monsterDivs[targetIndex].querySelector(".chosen .energy-cost").classList.add("largerHeight");
         }
@@ -893,12 +903,22 @@ async function opponentGainEnergy(stateObj, energyToGain, targetIndex=0, playerT
 
 async function energyGainAnimation(stateObj, energyToGain=1, targetIndex=0, playerTriggered=false) {
   console.log("recieved energy to gain is " + energyToGain + "for monster at index " + targetIndex)
-  let monsterObj = stateObj.opponentMonster[targetIndex]
+  let monsterObj = stateObj.opponentMonster[targetIndex];
+  let monsterTypeString = ""
+  if (monsterObj.type==="Fire") {
+    monsterTypeString = "energy-filled-fire";
+  } else if (monsterObj.type==="Water") {
+    monsterTypeString = "energy-filled-water";
+  } else if (monsterObj.type==="Air") {
+    monsterTypeString = "energy-filled-air";
+  } else if (monsterObj.type==="Earth") {
+    monsterTypeString = "energy-filled-earth";
+  }
   let monsterDivs = document.querySelectorAll("#opponents .monster")
     let startingEnergy = monsterObj.encounterEnergy;
     for (let i=1; i < energyToGain+1; i++) {
       if (monsterObj.moves.length > (startingEnergy+i)) {
-        monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy+i].classList.add("energy-filled")
+        monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy+i].classList.add(monsterTypeString)
         if (playerTriggered === false) {
           monsterDivs[targetIndex].querySelector(".chosen .energy-cost").classList.add("largerHeight");
         }
@@ -1627,7 +1647,7 @@ function resetAfterFight(stateObj) {
     newState.playerMonster.dex -= newState.playerMonster.fightDex;
     newState.playerMonster.fightDex = 0;
     newState.playerMonster.encounterBlock = 0;
-    
+
     newState.fightHealCount = 0;
     newState.fightHealTotal = 0;
     newState.fightSelfDamageCount = 0;
@@ -3169,8 +3189,19 @@ function renderOpponents(stateObj) {
 
     let monsterStrengthAndDex = document.createElement("H4");
     let monsterEncounterEnergy = document.createElement("H4");
-    monsterEncounterEnergy.textContent = "Energy: " + (monsterObj.encounterEnergy+1);
+    monsterEncounterEnergy.textContent = "Energy: " + (monsterObj.encounterEnergy) + "/" + (monsterObj.moves.length-1);
     monsterEncounterEnergy.classList.add("monster-energy");
+
+    if (monsterObj.type==="Fire") {
+      monsterEncounterEnergy.classList.add("monster-energy-fire");
+    } else if (monsterObj.type==="Water") {
+      monsterEncounterEnergy.classList.add("monster-energy-water");
+    } else if (monsterObj.type==="Air") {
+      monsterEncounterEnergy.classList.add("monster-energy-air");
+    } else if (monsterObj.type==="Earth") {
+      monsterEncounterEnergy.classList.add("monster-energy-earth");
+    }
+
     monsterStrengthAndDex.textContent = "Strength: " + monsterObj.strength + " Dex: " + monsterObj.dex;
     monsterDiv.append(monsterEncounterEnergy, monsterStrengthAndDex);
 
@@ -3178,6 +3209,15 @@ function renderOpponents(stateObj) {
 
     if (stateObj.targetedMonster == index) {
       monsterDiv.classList.add("targeted");
+      if (monsterObj.type==="Fire") {
+        monsterDiv.classList.add("targeted-fire");
+      } else if (monsterObj.type==="Water") {
+        monsterDiv.classList.add("targeted-water");
+      } else if (monsterObj.type==="Air") {
+        monsterDiv.classList.add("targeted-air");
+      } else if (monsterObj.type==="Earth") {
+        monsterDiv.classList.add("targeted-earth");
+      }
     } else {
       monsterDiv.classList.add("clickable-monster")
     }
@@ -3212,6 +3252,15 @@ function renderOpponents(stateObj) {
       if (moveIndex === monsterObj.opponentMoveIndex) {
         moveDiv.classList.add("chosen");
         moveDiv.classList.add("energy-filled");
+        if (monsterObj.type==="Fire") {
+          moveDiv.classList.add("energy-filled-fire");
+        } else if (monsterObj.type==="Water") {
+          moveDiv.classList.add("energy-filled-water");
+        } else if (monsterObj.type==="Air") {
+          moveDiv.classList.add("energy-filled-air");
+        } else if (monsterObj.type==="Earth") {
+          moveDiv.classList.add("energy-filled-earth");
+        }
       }
 
       if (moveObj.name) {
@@ -3237,6 +3286,15 @@ function renderOpponents(stateObj) {
         if (moveIndex < monsterObj.opponentMoveIndex) {
           moveDiv.classList.add("not-chosen");
           moveDiv.classList.add("energy-filled");
+          if (monsterObj.type==="Fire") {
+            moveDiv.classList.add("energy-filled-fire");
+          } else if (monsterObj.type==="Water") {
+            moveDiv.classList.add("energy-filled-water");
+          } else if (monsterObj.type==="Air") {
+            moveDiv.classList.add("energy-filled-air");
+          } else if (monsterObj.type==="Earth") {
+            moveDiv.classList.add("energy-filled-earth");
+          }
         }
         
         moveDiv.append(moveNameCostDiv, moveText);
@@ -3245,6 +3303,15 @@ function renderOpponents(stateObj) {
         moveDiv.classList.add("move");
         if (moveIndex <= monsterObj.encounterEnergy) {
           moveDiv.classList.add("energy-filled");
+          if (monsterObj.type==="Fire") {
+            moveDiv.classList.add("energy-filled-fire");
+          } else if (monsterObj.type==="Water") {
+            moveDiv.classList.add("energy-filled-water");
+          } else if (monsterObj.type==="Air") {
+            moveDiv.classList.add("energy-filled-air");
+          } else if (monsterObj.type==="Earth") {
+            moveDiv.classList.add("energy-filled-earth");
+          }
         }
       }
 
