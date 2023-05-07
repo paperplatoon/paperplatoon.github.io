@@ -120,7 +120,7 @@ let playerMonsters = {
       fightDex: 0,
       turnEnergy: 3,
       turnCards: 6,
-      avatar: "img/adorablefire.png",
+      avatar: "img/easy/adorablefire.png",
       startingDeck: [
         //2 energy
         waterCardPool.waterenergy,
