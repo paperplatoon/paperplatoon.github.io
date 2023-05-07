@@ -15,6 +15,10 @@ let fireCardPool = {
     sunlight: {...cards.sunlight},
     gainstrength: {...cards.gainstrength},
     expand: {...cards.expand},
+
+    makeshiftforge: {...cards.makeshiftforge},
+    gainstrengthtemp: {...cards.gainstrengthtemp},
+    gaindextemp: {...cards.gaindextemp},
 //MISC ABILITIES
 // ------------------------------------------  12
     //strength scaling - 4
@@ -134,6 +138,10 @@ let fireCardPool = {
     sunlight: {...cards.sunlight},
     whirlwind: {...cards.whirlwind},
     expand: {...cards.expand},
+
+    makeshiftforge: {...cards.makeshiftforge},
+    gainstrengthtemp: {...cards.gainstrengthtemp},
+    gaindextemp: {...cards.gaindextemp},
     
     //draw and recall - 4
     darkknowledge: {...cards.darkknowledge},

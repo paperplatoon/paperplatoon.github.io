@@ -2318,6 +2318,82 @@ let cards = {
           return stateObj;
           }
       },
+
+      makeshiftforge: {
+        rare: true,
+        exhaust: true,
+        cardID: 56,
+        name: "Makeshift Forge",
+        text: (state, index, array) => {
+          if (array[index].upgrades < array[index].baseCost) {
+            return `Upgrade a random card in your deck permanently. Remove from your deck permanently`;
+          } else {
+            return `Upgrade a random card in your deck permanently ${array[index].upgrades - array[index].baseCost + 1} times. Remove from your deck permanently`;
+          }
+            ;
+        },
+        minReq: (state, index, array) => {
+          if (array[index].upgrades < array[index].baseCost) {
+              return array[index].baseCost - array[index].upgrades
+            } else {
+              return 0
+            }
+        },
+        timeValue: upgradeAnimationTiming,
+        baseCost: 1,
+        cost:  (state, index, array) => {
+          if (array[index].upgrades < array[index].baseCost) {
+              return array[index].baseCost - array[index].upgrades
+            } else {
+              return 0
+            }
+        },
+        upgrades: 0,
+        cardType: "ability",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {
+          let randomIndex  = Math.floor(Math.random() * stateObj.playerDeck.length)
+          let cardUpgrades = 1;
+          if (array[index].upgrades > array[index].baseCost) {
+            cardUpgrades += array[index].upgrades - array[index].baseCost
+          }
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+
+  
+          await upgradeAnimation(stateObj, randomIndex, stateObj.playerDeck, cardUpgrades, divIDName="handContainer2")       
+          
+          //await pause(array[index].timeValue)
+          stateObj = immer.produce(stateObj, (newState) => {
+            console.log('upgrading ' + newState.playerDeck[randomIndex].name)
+            let cardUpgrades = 1;
+            if (array[index].upgrades < array[index].baseCost) {
+              newState.playerMonster.encounterEnergy -= array[index].baseCost - array[index].upgrades
+            } else {
+              cardUpgrades = array[index].upgrades - array[index].baseCost + 1
+            }
+            newState.playerDeck[randomIndex].upgrades += cardUpgrades;
+
+            let deckIndex = newState.playerDeck.findIndex(card =>card.name === "Makeshift Forge")
+            newState.playerDeck.splice(deckIndex, 1);
+            
+            if (stateObj.encounterHand.find(card => card.name === stateObj.playerDeck[randomIndex].name)) {
+              let handIndex = newState.encounterHand.findIndex(card => card.name === stateObj.playerDeck[randomIndex].name)
+              newState.encounterHand[handIndex].upgrades += cardUpgrades;
+            } else if (stateObj.encounterDiscard.find(card => card.name === stateObj.playerDeck[randomIndex].name)) {
+              let discardIndex = newState.encounterDiscard.findIndex(card => card.name === stateObj.playerDeck[randomIndex].name)
+              newState.encounterDiscard[discardIndex].upgrades += cardUpgrades;
+            } else if (stateObj.encounterDraw.find(card => card.name === stateObj.playerDeck[randomIndex].name)) {
+              let drawIndex = newState.encounterDraw.findIndex(card => card.name === stateObj.playerDeck[randomIndex].name)
+              newState.encounterDraw[drawIndex].upgrades += cardUpgrades;
+            } else {
+              console.log('could not find card');
+            }
+          });
+          
+          return stateObj;
+          }
+      },
   
       expertsforge: {
         rare: true,
@@ -2649,6 +2725,76 @@ let cards = {
           await pause(500);
           document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
           return toChangeState;
+        }
+      },
+
+      gainstrengthtemp: {
+        rare: true,
+        cardID: "strength4",
+        name: "Leg Day",
+        text: (state, index, array) => {
+          return `+1 permanent strength. Remove from your deck permanently`;
+        },
+        minReq: (state, index, array) => {
+          return (array[index].baseCost - (array[index].upgrades))
+        },
+        upgrades: 0,
+        baseCost: 3,
+        cost: (state, index, array) => {
+          return (array[index].baseCost - (array[index].upgrades))
+        },
+        cardType: "ability",
+        elementType: "fire",
+        exhaust: true,
+        //takes the state object, declares a toChangeState which takes immer.produce
+        //and returns a new state reflecting the changes
+        action: async (stateObj, index, array) => {
+          let stateObj = immer.produce(stateObj, (newState) => {
+            newState.playerMonster.strength += 1;
+            newState.playerMonster.encounterEnergy -=  array[index].baseCost-(array[index].upgrades);
+
+            let deckIndex = newState.playerDeck.findIndex(card =>card.name === "Leg Day")
+            newState.playerDeck.splice(deckIndex, 1);
+          })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
+          return stateObj;
+        }
+      },
+
+      gaindextemp: {
+        rare: true,
+        cardID: "strength4",
+        name: "Footwork",
+        text: (state, index, array) => {
+          return `+1 permanent dex. Remove from your deck permanently`;
+        },
+        minReq: (state, index, array) => {
+          return (array[index].baseCost - (array[index].upgrades))
+        },
+        upgrades: 0,
+        baseCost: 3,
+        cost: (state, index, array) => {
+          return (array[index].baseCost - (array[index].upgrades))
+        },
+        cardType: "ability",
+        elementType: "water",
+        exhaust: true,
+        //takes the state object, declares a toChangeState which takes immer.produce
+        //and returns a new state reflecting the changes
+        action: async (stateObj, index, array) => {
+          let stateObj = immer.produce(stateObj, (newState) => {
+            newState.playerMonster.dex += 1;
+            newState.playerMonster.encounterEnergy -=  array[index].baseCost-(array[index].upgrades);
+
+            let deckIndex = newState.playerDeck.findIndex(card =>card.name === "Footwork")
+            newState.playerDeck.splice(deckIndex, 1);
+          })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
+          return stateObj;
         }
       },
   
