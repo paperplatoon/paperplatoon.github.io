@@ -165,8 +165,9 @@ let playerMonsters = {
         fireCardPool.fireenergy,
         cards.hypertrain,
         //block
-        cards.whirlwind,
-        cards.fireBlockEnergy,
+        cards.makeshiftforge,
+        cards.gainstrengthtemp,
+        cards.gaindextemp,
         //attack
         cards.tackle,
         specialCardPool.testkill,
