@@ -276,7 +276,7 @@ function fillMapWithArray(stateObj) {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
       if (stateObj.testingMode === true) {
-        newState.townMapSquares[4] = "?1"
+        newState.townMapSquares[4] = "Shop"
       } else {
       newState.townMapSquares[4] =  "Fight";
       }
@@ -2755,6 +2755,9 @@ function renderShop(stateObj) {
   }
   
   let sampledCardPool = stateObj.availableCardPoolForShop.slice(0, 3);
+  if (stateObj.testingMode === true) {
+    sampledCardPool = [cards.wellspring, cards.puffofsmoke, cards.retreatingslash] 
+  }
 
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
@@ -2894,11 +2897,12 @@ function renderCard(stateObj, cardArray, index, divName=false, functionToAdd=fal
         
         
         let cardText = document.createElement("P");
-        cardText.textContent = cardObj.text(stateObj, index, cardArray);
         cardText.classList.add("card-text")
-        
+        cardText.innerHTML = cardObj.text(stateObj, index, cardArray);
         cardDiv.append(topCardRowDiv);
         cardDiv.append(cardText);
+
+
 
         if (goldCost === "remove") {
           if (stateObj.InTown === true) {

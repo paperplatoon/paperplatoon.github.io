@@ -39,6 +39,7 @@ let fireCardPool = {
     ignite: {...cards.ignite},
     //self-scaling
     ascension: {...cards.ascension},
+    buildingflame: {...cards.buildingflame},
   
   
 //ATTACKS
@@ -82,6 +83,7 @@ let fireCardPool = {
     bloatedbomb: {...cards.bloatedbomb},
     bowlthrough: {...cards.bowlthrough},
     annihilation: {...cards.annihilation},
+    theocho: {...cards.theocho},
     //destroy energy
     decimate: {...cards.decimate},
   
@@ -138,7 +140,7 @@ let fireCardPool = {
     sunlight: {...cards.sunlight},
     whirlwind: {...cards.whirlwind},
     expand: {...cards.expand},
-
+    buildingflame: {...cards.buildingflame},
     makeshiftforge: {...cards.makeshiftforge},
     gainstrengthtemp: {...cards.gainstrengthtemp},
     gaindextemp: {...cards.gaindextemp},
@@ -158,8 +160,9 @@ let fireCardPool = {
     basicpoison: {...cards.basicpoison},
     poisonedblade: {...cards.poisonedblade},
     venomshield: {...cards.venomshield},
+    testingtoxin: {...cards.testingtoxin},
     //also blockKeep
-    chokingsmog: {...cards.chokingsmog},
+    //chokingsmog: {...cards.chokingsmog},
 
     //other
     huntprey: {...cards.huntprey},
@@ -193,9 +196,9 @@ let fireCardPool = {
 
     //3+
     bloatedbomb: {...cards.bloatedbomb},
-    pickoff: {...cards.pickoff},
     precisionstrike: {...cards.precisionstrike},
     annihilation: {...cards.annihilation},
+    theocho: {...cards.theocho},
 
 
   // ----------------------------------------------------------------  21
@@ -234,6 +237,20 @@ let fireCardPool = {
     sabotage: {...cards.sabotage},
   }
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 let simpleCardPool = {
     //energy
     fireenergy: {...cards.fireenergy},

@@ -163,13 +163,12 @@ let playerMonsters = {
       startingDeck: [
         //draw
         fireCardPool.fireenergy,
-        cards.hypertrain,
+        cards.puffofsmoke,
         //block
         cards.makeshiftforge,
-        cards.gainstrengthtemp,
-        cards.gaindextemp,
+        cards.wellspring,
         //attack
-        cards.tackle,
+        cards.retreatingslash,
         specialCardPool.testkill,
       ],
     },
