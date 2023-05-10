@@ -37,6 +37,7 @@ const Status = {
   DecreasingCost: renderDecreaseCardCost,
   IncreasingCost: renderIncreaseCardCost,
   HealEndOfFightChoice: renderHealEndOfFightChoice,
+  StartingEnergyChoice: renderStartingEnergyChoice,
   IncreaseBlockChoice: renderIncreaseBlockChoice,
   IncreasingBlock: renderIncreaseCardBlock,
   IncreasingHits: renderIncreaseBaseHit,
@@ -79,6 +80,7 @@ let gameStartState = {
   gymFightCount: 0,
   gold: 10,
   testingMode: false,
+  doubleEndOfTurnEnergy: false,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,
@@ -244,7 +246,14 @@ const eventsArray = [
     imgSrc: "img/wizardshop.PNG",
     divText: "Upgrade Card 2x",
     newStatus: Status.RetainCardChoice,
-    eventID: 13
+    eventID: 14
+  },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.PNG",
+    divText: "Upgrade Card 2x",
+    newStatus: Status.StartingEnergyChoice,
+    eventID: 15
   },
   //add the ability to retain, OR upgrade a card twice 
   //gain one extra turn energy, but lose HELLA max health
@@ -276,7 +285,7 @@ function fillMapWithArray(stateObj) {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
       if (stateObj.testingMode === true) {
-        newState.townMapSquares[4] = "Shop"
+        newState.townMapSquares[4] = "?1"
       } else {
       newState.townMapSquares[4] =  "Fight";
       }
@@ -420,7 +429,7 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
         let shuffledEventsArray = fisherYatesShuffle(eventsArray);
         stateObj = immer.produce(stateObj, (newState) => {
           if (stateObj.testingMode === true) {
-            newState.status = eventsArray[14].newStatus
+            newState.status = eventsArray[15].newStatus
           } else {
             if (stateObj.townMapSquares[indexToMoveTo] === "?1") {
               newState.status = shuffledEventsArray[1].newStatus;
@@ -1790,7 +1799,7 @@ function setUpEncounter(stateObj, isBoss=false) {
       newState.encounterDraw = [...stateObj.playerDeck];
     }
     newState.targetedMonster = 0;
-    newState.playerMonster.encounterEnergy = newState.playerMonster.turnEnergy;
+    newState.playerMonster.encounterEnergy = newState.playerMonster.turnEnergy + newState.playerMonster.startingEnergy;
   });
 
   stateObj = immer.produce(stateObj, (newState) => {
@@ -2342,6 +2351,42 @@ async function renderLevelUp(stateObj) {
 function increaseStrengthEvent(stateObj) {
   stateObj = immer.produce(stateObj, (newState) => {
     newState.playerMonster.strength += 1;
+    newState.status = Status.OverworldMap
+    newState.townMapSquares[newState.playerHere] = "completed"
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+//startingEnergy
+// ----------------------------------------------------------------------------------------------------------------
+async function renderStartingEnergyChoice(stateObj) {
+  document.getElementById("app").innerHTML = ""
+  topRowDiv(stateObj, "app");
+  divContainer("app", "level-up-div");
+  eventText("level-up-div", newDivName=false, "Energy Cube", "You and your monster stumble across a strange, shifting cube in the forest. Your monster begins to grow slowly, and then shrink, like when it's filling or draining energy. You sense that this cube can be used to alter your monster's energy processes.");
+  let strengthDiv = await renderTownDiv(stateObj, "increaseStrength", "Start combat with 1 extra energy", true, increaseStartingEnergy, Status.InTown, altText=false);
+  let DexDiv = await renderTownDiv(stateObj, "increaseDex", "Start combat with 1 less energy. Double your energy at end of turn", true, doubleEndEnergy, Status.InTown, altText=false);
+  
+  document.getElementById("level-up-div").append(strengthDiv, DexDiv);
+  skipToTownButton(stateObj, "Skip event (+50 gold)", ".remove-div", cardSkip=false, isEventUsedForSkipButton=true);
+  renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
+};
+
+function increaseStartingEnergy(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerMonster.startingEnergy += 1;
+    newState.status = Status.OverworldMap
+    newState.townMapSquares[newState.playerHere] = "completed"
+  })
+  changeState(stateObj);
+  return stateObj;
+}
+
+function doubleEndEnergy(stateObj) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    newState.playerMonster.startingEnergy -= 1;
+    newState.doubleEndOfTurnEnergy = true;
     newState.status = Status.OverworldMap
     newState.townMapSquares[newState.playerHere] = "completed"
   })
@@ -3526,6 +3571,10 @@ async function endTurnIncrement(stateObj) {
       if (monsterObj.poison > 0) {
         monsterObj.currentHP -= (monsterObj.poison)
         await applyGreenFilter([document.querySelectorAll("#opponents .monster-top-row")[monsterIndex]], 500)
+      }
+
+      if (newState.doubleEndOfTurnEnergy === true) {
+        newState.playerMonster.encounterEnergy *= 2;
       }
     })
     newState.turnDouble = false;

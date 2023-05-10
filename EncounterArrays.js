@@ -65,6 +65,7 @@ let hardEncounters = [
   [hardSoloEncounters.h4],
   [hardSoloEncounters.h5],
   [hardSoloEncounters.h6],
+  [hardSoloEncounters.h7],
   [easySoloEncounters.e6, easySoloEncounters.e2],
   [easySoloEncounters.e6, easySoloEncounters.e7],
   [easySoloEncounters.e2, easySoloEncounters.e7],
