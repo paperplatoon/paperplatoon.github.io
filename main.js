@@ -764,7 +764,7 @@ async function upgradeAnimation(stateObj, cardIndex, cardArray, upgradeTimes, di
   }
   await pause(500)
 
-  textElement.textContent = newText;
+  textElement.innerHTML = newText;
   textElement.classList.remove("fade-out");
   textElement.classList.add("fade-in");
 
