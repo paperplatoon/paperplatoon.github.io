@@ -163,7 +163,7 @@ let easySoloEncounters = {
             name: "Replenish",
             cost: "0",
             text: (state, index, array) => {
-              return `Restore ${array[index].baseHeal} health. Gain 1 strength`
+              return `Restore ${array[index].baseHeal} health`
             },
             minReq: 0,
             energyChange: "+1",

@@ -842,7 +842,7 @@ let cards = {
             textString += `Play once more: `
           }
           textString += `Deal ${cardDamage} damage`
-          if (array[index].baseHits > 0) {
+          if (array[index].baseHits > 1) {
             textString += ` ${array[index].baseHits} times`
           }
           return textString;
