@@ -45,7 +45,7 @@ let cards = {
         elementType: "water",
         action: async (stateObj, index, array) => {
           stateObj = await gainBlock(stateObj, array[index].baseBlock+ (array[index].upgrades*3), array[index].baseCost)
-          stateObj = await destroyEnergy(stateObj, array[index].destroyEnergy + Math.floor(array[index].upgrades/2))
+          stateObj = await destroyEnergy(stateObj, array[index].energyDrain + Math.floor(array[index].upgrades/2))
           return stateObj;
         }
       },
