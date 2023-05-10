@@ -159,14 +159,14 @@ let mediumSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/dracula.png",
+        avatar: "img/medium/dracula.png",
         powers: [{
             name: "Power: Deflate",
             text:  `Loses 1 energy after taking 5 unblocked damage`
           }],
         moves: [
           {
-            name: "Spiked Shield",
+            name: "Bite",
             cost: "0",
             text: (state, index, array) => {
               return `Deal ${array[index].baseDamage+1 + array[index].strength} damage`
@@ -191,7 +191,7 @@ let mediumSoloEncounters = {
             name: false,
           },
           {
-            name: "Explosion",
+            name: "Consume Soul",
             cost: "5",
             text: (state, index, array) => {
               return `Deal ${(array[index].baseDamage*3) + 3 + array[index].strength} damage.`
@@ -229,17 +229,17 @@ let mediumSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/evilfirebaby.png",
+        avatar: "img/medium/firecat5.png",
         powers: [{
           name: "Power: Enrage",
           text:  `Gains 2 strength after taking unblocked damage`
         }],
         moves: [
           {
-            name: "Fiery Slap",
+            name: "Flame Swipe",
             cost: "0",
             text: (state, index, array) => {
-                return `Deal ${array[index].baseDamage + 2 + array[index].strength} damage.`
+                return `Deal ${array[index].baseDamage + array[index].strength} damage.`
             },
             minReq: 0,
             energyChange: "+1",
@@ -255,15 +255,15 @@ let mediumSoloEncounters = {
             name: false,
           },
           {
-            name: "Payback",
+            name: "Blazing Claws",
             cost: "3",
             text: (state, index, array) => {
-                return `Deal ${Math.floor(array[index].baseDamage-3) + array[index].strength} damage for each time you've taken unblocked attack damage (${state.fightDamageCount})`
+                return `Deal ${Math.floor(array[index].baseDamage/4) + array[index].strength} damage twice`
             },
             minReq: 3,
             energyChange: "-3",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage-3), index, -3, stateObj.fightDamageCount);
+              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage/4), index, -3, 2);
               return stateObj;
             }
           }
@@ -289,10 +289,10 @@ let mediumSoloEncounters = {
       baseDamage: opponentBaseDamage,
       baseScale: opponentBaseScale,
       baseHeal: 0,
-      avatar: "img/firesheep.png",
+      avatar: "img/medium/firesheep.png",
       moves: [
         {
-          name: "Power Strike",
+          name: "Flame Swipe",
           cost: "0",
           text: (state, index, array) => {
             return `Deal ${array[index].baseDamage*2 + array[index].strength} damage`
@@ -332,7 +332,7 @@ let mediumSoloEncounters = {
 
     m6: {
       name: "Sindur M6",
-      type: "fire",
+      type: "Water",
       XPGain: opponentXPGain*2,
       goldOnDefeat: Math.floor(opponentGold*3),
       Level: 1,
@@ -348,13 +348,13 @@ let mediumSoloEncounters = {
       drown: 0,
       hunted: 0,
       poison: 0,
-      avatar: "img/watersprite.png",
+      avatar: "img/medium/waterdevil.png",
       moves: [
         {
           name: "Rising Tide",
           cost: "0",
           text: (state, index, array) => {
-            return `Deal ${array[index].baseDamage +3+ array[index].strength} damage. Gain ${array[index].baseScale} strength`
+            return `Deal ${array[index].baseDamage +3+ array[index].strength} damage. Gain ${Math.floor(array[index].baseScale)} dexterity`
           },
           minReq: 0,
           energyChange: "+1",
@@ -370,23 +370,13 @@ let mediumSoloEncounters = {
           name: false,
         },
         {
-          name: "Water Jets",
-          cost: "2",
-          text: (state, index, array) => {
-            return `Deal strength damage (${array[index].strength}) twice `
-          },
-          minReq: 2,
-          energyChange: "+1",
-          action: async (stateObj, monsterIndex, array) => {
-            stateObj = await dealPlayerDamage(stateObj, 0, monsterIndex, energyChange=1, attackNumber=2);
-            return stateObj;
-          }
+          name: false,
         },
         {
           name: "Sea Wall",
           cost: "3",
           text: (state, index, array) => {
-            return `Gain (${1+(array[index].baseBlock*2)}) block `
+            return `Gain (${array[index].baseBlock + array[index].dex}) block. Deal ${array[index].baseDamage + 1 + array[index].strength} damage. `
           },
           minReq: 3,
           energyChange: "+1",
@@ -398,25 +388,12 @@ let mediumSoloEncounters = {
             return stateObj;
           }
         },
-        {
-          name: "Tsunami",
-          cost: "4",
-          text: (state, index, array) => {
-            return `Deal ${(array[index].baseDamage * 3) + array[index].strength} damage.`
-          },
-          minReq: 4,
-          energyChange: "-4",
-          action: async (stateObj, index, array) => {
-            stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*2), index, energyChange=-4);
-            return stateObj;
-          }
-        },
       ]
     },
 
     m7: {
       name: "Balance M7",
-      type: "Air",
+      type: "Water",
       XPGain: opponentXPGain*2,
       goldOnDefeat: Math.floor(opponentGold*3),
       Level: 1,
@@ -433,10 +410,10 @@ let mediumSoloEncounters = {
       baseDamage: opponentBaseDamage,
       baseScale: opponentBaseScale,
       baseHeal: 0,
-      avatar: "img/firedeviant.png",
+      avatar: "img/medium/dolphin1.png",
       moves: [
         {
-          name: "Fiery Slap",
+          name: "Aqua Jet",
           cost: "0",
           text: (state, index, array) => {
             return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage. Gain ${Math.ceil(array[index].baseScale/2)} dexterity`
@@ -455,7 +432,7 @@ let mediumSoloEncounters = {
           name: false,
         },
         {
-          name: "Channel",
+          name: "Dive Deep",
           cost: "2",
           text: (state, index, array) => {
             return `Gain ${(array[index].baseBlock) + array[index].dex} block. Gain ${array[index].baseScale} Strength & Dexterity`
@@ -476,19 +453,15 @@ let mediumSoloEncounters = {
           name: false,
         },
         {
-          name: "Burning Lance",
+          name: "Tail Swipe",
           cost: "4",
           text: (state, index, array) => {
-            return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage. You lose 1 dexterity`
+            return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage`
           },
           minReq: 4,
           energyChange: "-4",
           action: async (stateObj, index, array) => {
             stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage*2, index, -4);
-            stateObj = immer.produce(stateObj, (newState) => {
-              newState.playerMonster.dex -= 1;
-              newState.playerMonster.fightDex -= 1;
-            })
             return stateObj;
           }
         }    
@@ -515,7 +488,7 @@ let mediumSoloEncounters = {
       baseDamage: opponentBaseDamage,
       baseScale: opponentBaseScale,
       baseHeal: 0,
-      avatar: "img/turtle3.png",
+      avatar: "img/medium/turtle3.png",
       powers: [{
         name: "Power: Prickles",
         text:  `Take 2 damage when attacking this enemy`
@@ -565,7 +538,7 @@ let mediumSoloEncounters = {
   
     m9: {
       name: "Shakedown E7",
-      type: "Fire",
+      type: "Earth",
       XPGain: opponentXPGain*2,
       goldOnDefeat: Math.floor(opponentGold*3),
       Level: 1,
@@ -583,14 +556,14 @@ let mediumSoloEncounters = {
       baseDamage: opponentBaseDamage,
       baseScale: opponentBaseScale,
       baseHeal: 0,
-      avatar: "img/littleturtle2.png",
+      avatar: "img/medium/earthpsycho.png",
       powers: [{
         name: "Power: Shakedown",
         text:  `Gain 1 gold each time you deal unblocked attack damage to this enemy`
       }],
       moves: [
         {
-          name: "Fiery Slap",
+          name: "Horn Strike",
           cost: "0",
           text: (state, index, array) => {
               return `Deal ${array[index].baseDamage+1 + array[index].strength} damage.`
@@ -667,7 +640,7 @@ let mediumSoloEncounters = {
       baseDamage: opponentBaseDamage,
       baseScale: opponentBaseScale,
       baseHeal: 0,
-      avatar: "img/cat1.png",
+      avatar: "img/flamingbaby.png",
       powers: [{
         name: "Power: Enrage",
         text:  `Gains 2 strength after taking unblocked damage`
@@ -763,7 +736,7 @@ let mediumMultiEncounters = {
         baseBlock: opponentBaseBlock,
         baseScale: 0,
         baseHeal: 0,
-        avatar: "img/bird1.png",
+        avatar: "img/medium/bird1.png",
         moves: [
           {
             name: "Wind Shield",
@@ -787,7 +760,7 @@ let mediumMultiEncounters = {
             name: false,
           },
           {
-            name: "Gust",
+            name: "Dive Strike",
             cost: "2",
             energyChange: "-2",
             text: (state, index, array) => {
@@ -821,7 +794,7 @@ let mediumMultiEncounters = {
         baseBlock: opponentBaseBlock,
         baseScale: 0,
         baseHeal: 0,
-        avatar: "img/icetorch.png",
+        avatar: "img/medium/prettybird.png",
         moves: [
           {
             name: "Wind Shield",
@@ -848,7 +821,7 @@ let mediumMultiEncounters = {
             name: false,
           },
           {
-            name: "Windstorm",
+            name: "Deadly Plumage",
             cost: "3",
             energyChange: "-3",
             text: (state, index, array) => {
@@ -886,7 +859,7 @@ let mediumMultiEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/firebaby.png",
+        avatar: "img/medium/firebaby.png",
         moves: [
           {
             name: "Whirling Dervish",
@@ -919,6 +892,59 @@ let mediumMultiEncounters = {
                 newState.opponentMonster[index].encounterEnergy -= 1;
               })
               stateObj = opponentLoseEnergy(stateObj, 2, index)
+              return stateObj;
+            }
+          },
+        ]
+      },
+
+      mm4: {
+        name: "Crab",
+        type: "Fire",
+        XPGain: opponentXPGain,
+        goldOnDefeat: Math.floor(opponentGold*2),
+        Level: 1,
+        maxHP: opponentMaxHP*8,
+        encounterEnergy: 0,
+        opponentMoveIndex: false,
+        currentHP: opponentMaxHP*8,
+        strength: 0,
+        dex: 0,
+        drown: 0,
+        hunted: 0,
+        poison: 0,
+        baseBlock: opponentBaseBlock,
+        baseDamage: opponentBaseDamage,
+        baseScale: opponentBaseScale,
+        baseHeal: 0,
+        avatar: "img/medium/crab3.png",
+        moves: [
+          {
+            name: "Left Claw",
+            cost: "0",
+            text: (state, index, array) => {
+                return `Deal ${Math.floor(array[index].baseDamage-2) + array[index].strength} damage`
+            },
+            minReq: 0,
+            energyChange: "+2",
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage -2), index, 2);
+              return stateObj;
+            }
+          },
+          {
+            name: false,
+          },
+          {
+            name: "Right Claw",
+            cost: "2",
+            text: (state, index, array) => {
+                return `Deal ${Math.floor(array[index].baseDamage+1) + array[index].strength} damage`
+            },
+            minReq: 2,
+            energyChange: "-2",
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage +1), index, -2);
               return stateObj;
             }
           },

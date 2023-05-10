@@ -606,10 +606,6 @@
   justify-content: space-between;
 }
 
-
-
-
-
 .fade-in {
   animation: fadeIn 0.7s;
 }
@@ -1048,7 +1044,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
  .card-reward {
   margin-left: 2vw;
-  width: 16vw;
+  width: 21vw;
   height: 14vh;
 }
 

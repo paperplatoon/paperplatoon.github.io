@@ -21,7 +21,7 @@ let easySoloEncounters = {
         avatar: "img/easy/bearcub1.png",
         moves: [
           {
-            name: "Fiery Swipe",
+            name: "Flame Swipe",
             cost: "0",
             text: (state, index, array) => {
                 return `Deal ${array[index].baseDamage + 4 + array[index].strength} damage.`
@@ -57,7 +57,7 @@ let easySoloEncounters = {
             name: false,
           },
           {
-            name: "Flaming Claws",
+            name: "Blazing Claws",
             cost: "4",
             text: (state, index, array) => {
                 return `Deal ${Math.floor(array[index].baseDamage/4) + array[index].strength} damage 6 times`
@@ -322,7 +322,7 @@ let easySoloEncounters = {
     hunted: 0,
     poison: 0,
     baseBlock: opponentBaseBlock,
-    baseDamage: 0,
+    baseDamage: opponentBaseDamage,
     baseScale: opponentBaseScale,
     baseHeal: 0,
     avatar: "img/easy/shrimp1.png",
@@ -331,13 +331,13 @@ let easySoloEncounters = {
         name: "Reef Camouflage",
         cost: "",
         text: (state, index, array) => {
-          return `Gain ${array[index].baseBlock*3 + array[index].dex} block.`
+          return `Gain ${array[index].baseBlock + 3 + array[index].dex} block.`
         },
         minReq: 0,
         energyChange: "+1",
         action: async (stateObj, index, array) => {
           stateObj = immer.produce(state, (newState) => {
-            newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].strength + array[index].dex;
+            newState.opponentMonster[index].encounterBlock += array[index].baseBlock + 3 + array[index].dex;
           })
           stateObj = await opponentGainEnergy(stateObj, 1, index);
           return stateObj;
