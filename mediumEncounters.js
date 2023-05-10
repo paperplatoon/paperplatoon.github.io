@@ -419,7 +419,7 @@ let mediumSoloEncounters = {
             return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage. Gain ${Math.ceil(array[index].baseScale/2)} dexterity`
           },
           minReq: 0,
-          energyChange: "+1",
+          energyChange: "+2",
           action: async (stateObj, index, array) => {
             stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage*2, index, 2);
             stateObj = immer.produce(stateObj, (newState) => {

@@ -79,7 +79,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 10,
-  testingMode: false,
+  testingMode: true,
   doubleEndOfTurnEnergy: false,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
@@ -429,7 +429,7 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
         let shuffledEventsArray = fisherYatesShuffle(eventsArray);
         stateObj = immer.produce(stateObj, (newState) => {
           if (stateObj.testingMode === true) {
-            newState.status = eventsArray[15].newStatus
+            newState.status = eventsArray[14].newStatus
           } else {
             if (stateObj.townMapSquares[indexToMoveTo] === "?1") {
               newState.status = shuffledEventsArray[1].newStatus;
@@ -2947,6 +2947,13 @@ function renderCard(stateObj, cardArray, index, divName=false, functionToAdd=fal
         cardDiv.append(topCardRowDiv);
         cardDiv.append(cardText);
 
+        if (cardObj.retain === true) {
+          let holdP = document.createElement("P");
+          holdP.classList.add("card-text")
+          holdP.innerHTML = "Hold";
+          cardDiv.append(holdP);
+        }
+
 
 
         if (goldCost === "remove") {
@@ -3014,7 +3021,7 @@ function renderCard(stateObj, cardArray, index, divName=false, functionToAdd=fal
         } else if (goldCost === "increaseattack") {
           cardDiv.classList.add("card-change-text");
           let altUpgradeText =  document.createElement("P");
-          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseDamage", 5)
+          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseDamage", 3)
           altUpgradeText.classList.add("alt-card-text");
           cardDiv.append(altUpgradeText);
         } else if (goldCost === "doubleattack") {
