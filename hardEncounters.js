@@ -290,13 +290,13 @@ let hardSoloEncounters = {
             name: "Reload",
             cost: "4",
             text: (state, index, array) => {
-              return `Gain ${array[index].baseBlock + array[index].dex} block. Gain ${Math.ceiling(array[index].baseScale/2)} strength`
+              return `Gain ${array[index].baseBlock + array[index].dex} block. Gain ${Math.ceil(array[index].baseScale/2)} strength`
             },
             minReq: 4,
             energyChange: "-4",
             action: async (stateObj, index, array) => {
               stateObj = immer.produce(stateObj, (newState) => {
-                newState.opponentMonster[index].strength += Math.ceiling(array[index].baseScale/2);
+                newState.opponentMonster[index].strength += Math.ceil(array[index].baseScale/2);
                 newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].dex;
               })
               stateObj = await opponentLoseEnergy(stateObj, 4, index);
