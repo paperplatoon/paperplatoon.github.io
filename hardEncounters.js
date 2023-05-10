@@ -18,7 +18,7 @@ let hardSoloEncounters = {
         baseScale: opponentBaseScale,
         baseBlock: opponentBaseBlock,
         baseHeal: 0,
-        avatar: "img/hugeair.png",
+        avatar: "img/hard/hugeair.png",
         moves: [
           {
             name: "Shielded Strike",
@@ -90,7 +90,7 @@ let hardSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/flamingbaby.png",
+        avatar: "img/hard/firebeard.png",
         powers: [{
           name: "Power: Enrage",
           text:  `Gains 3 strength after taking unblocked damage`
@@ -166,10 +166,10 @@ let hardSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/firebeard.png",
+        avatar: "img/hard/firemuscles.png",
         moves: [
           {
-            name: "Roll Up",
+            name: "Channel Flames",
             cost: "0",
             text: (state, index, array) => {
               return `Deal ${array[index].baseDamage + array[index].strength} damage. Gain ${array[index].baseScale*2} strength`
@@ -248,14 +248,14 @@ let hardSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/creepyalien.png",
+        avatar: "img/hardrobocroc.png",
         powers: [{
           name: "Power: Off-balance",
           text:  `Whenever you fully block an attack from this monster, reflect it`
         }],
         moves: [
           {
-            name: "Fire Punch",
+            name: "Laser Beam",
             cost: "0",
             text: (state, index, array) => {
               return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage. `
@@ -271,7 +271,7 @@ let hardSoloEncounters = {
             name: false,
           },
           {
-            name: "Fire Lance",
+            name: "Bombard",
             cost: "2",
             text: (state, index, array) => {
               return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage. `
@@ -287,7 +287,7 @@ let hardSoloEncounters = {
             name: false,
           },
           {
-            name: "Inflame",
+            name: "Reload",
             cost: "4",
             text: (state, index, array) => {
               return `Gain ${array[index].baseBlock + array[index].dex} block. Gain ${Math.ceiling(array[index].baseScale/2)} strength`
@@ -326,14 +326,14 @@ let hardSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/poke1.png",
+        avatar: "img/hard/airdemon1.png",
         powers: [{
             name: "Power: Deflate",
             text:  `Loses 1 energy after taking 5 unblocked damage`
           }],
         moves: [
           {
-            name: "Spiked Shield",
+            name: "Gain Altitude",
             cost: "0",
             text: (state, index, array) => {
               return `Gain ${(array[index].baseBlock*2) + array[index].dex} block. Deal ${(array[index].baseDamage) + array[index].strength} damage`
@@ -362,7 +362,7 @@ let hardSoloEncounters = {
             name: false,
           },
           {
-            name: "Explosion",
+            name: "Dive Bomb",
             cost: "5",
             text: (state, index, array) => {
               return `Deal ${(array[index].baseDamage*4) + 2 + array[index].strength} damage.`
@@ -382,7 +382,7 @@ let hardSoloEncounters = {
 
       h6: {
         name: "Strength on Block",
-        type: "Air",
+        type: "Water",
         XPGain: opponentXPGain*3,
         goldOnDefeat: Math.floor(opponentGold*5),
         Level: 1,
@@ -400,14 +400,14 @@ let hardSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/poke1.png",
+        avatar: "img/hard/poke1.png",
         powers: [{
             name: "Power: Embodied",
             text:  `Gains 1 strength whenever your monster gains block`
           }],
         moves: [
           {
-            name: "Fire Punch",
+            name: "Splash",
             cost: "0",
             text: (state, index, array) => {
               return `Deal ${array[index].baseDamage + 3 + array[index].strength} damage. `
@@ -429,7 +429,7 @@ let hardSoloEncounters = {
             name: false,
           },
           {
-            name: "Flame Cloak",
+            name: "Ice Shield",
             cost: "4",
             text: (state, index, array) => {
               return `Gain ${(array[index].baseBlock) + array[index].dex} block. Gain ${array[index].baseScale + 2} dexterity.`
@@ -454,10 +454,10 @@ let hardSoloEncounters = {
         XPGain: opponentXPGain*3,
         goldOnDefeat: Math.floor(opponentGold*5),
         Level: 1,
-        maxHP: opponentMaxHP*11,
+        maxHP: opponentMaxHP*14,
         encounterEnergy: 0,
         opponentMoveIndex: false,
-        currentHP: opponentMaxHP*11,
+        currentHP: opponentMaxHP*14,
         strength: 0,
         dex: 0,
         drown: 0,
@@ -468,22 +468,22 @@ let hardSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/poke1.png",
+        avatar: "img/hard/airdragon2.png",
         powers: [{
             name: "Power: Deflate",
             text:  `Loses 1 energy after taking 5 unblocked damage`
           }],
         moves: [
           {
-            name: "Grab",
+            name: "Clamp Down",
             cost: "0",
             text: (state, index, array) => {
-              return `Deal ${(array[index].baseDamage) + array[index].strength} damage`
+              return `Deal ${array[index].baseDamage + 1 + array[index].strength} damage`
             },
             minReq: 0,
             energyChange: "+5",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage), index, 5)
+              stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage + 1, index, 5)
               return stateObj;
             }
           },
@@ -494,15 +494,15 @@ let hardSoloEncounters = {
             name: false,
           },
           {
-            name: "Latch On",
+            name: "Shake Jaws",
             cost: "3",
             text: (state, index, array) => {
-              return `Deal ${(array[index].baseDamage) + 4 + array[index].strength} damage`
+              return `Deal ${(array[index].baseDamage) + 6 + array[index].strength} damage`
             },
             minReq: 3,
             energyChange: "+2",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage) + 4, index, 2)
+              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage) + 6, index, 2)
               return stateObj;
             }
           },
@@ -510,7 +510,7 @@ let hardSoloEncounters = {
             name: false,
           },
           {
-            name: "Piledrive",
+            name: "Crushing Bite",
             cost: "5",
             text: (state, index, array) => {
               return `Deal ${(array[index].baseDamage*4) + 2 + array[index].strength} damage.`
