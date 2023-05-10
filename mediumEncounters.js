@@ -900,7 +900,7 @@ let mediumMultiEncounters = {
 
       mm4: {
         name: "Crab",
-        type: "Fire",
+        type: "Water",
         XPGain: opponentXPGain,
         goldOnDefeat: Math.floor(opponentGold*2),
         Level: 1,
