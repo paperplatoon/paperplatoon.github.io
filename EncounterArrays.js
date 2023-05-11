@@ -59,7 +59,7 @@ let mediumEncounters = [
   [mediumMultiEncounters.mm2, mediumMultiEncounters.mm3],
   [mediumMultiEncounters.mm1, mediumMultiEncounters.mm4],
   [mediumMultiEncounters.mm3, mediumMultiEncounters.mm4],
-  [easyMultiEncounters.e4, easyMultiEncounters.e5, easyMultiEncounters.e4],
+  [easyMultiEncounters.em1, easyMultiEncounters.em2, easyMultiEncounters.em1],
 ]
 
 let hardEncounters = [
