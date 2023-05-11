@@ -610,7 +610,7 @@ let mediumSoloEncounters = {
           energyChange: "-5",
           action: async (stateObj, index, array) => {
             stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index, -5, 3);
-            stateObj = immer.produce(staetObj, (newState) => {
+            stateObj = immer.produce(stateObj, (newState) => {
               if (stateObj.gold > 20) {
                 newState.gold -= 20
               } else {
