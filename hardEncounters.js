@@ -1,3 +1,5 @@
+//fire -3, air 3, water 1
+
 let hardSoloEncounters = {
     h1: {
         name: "Block Gym Boss",

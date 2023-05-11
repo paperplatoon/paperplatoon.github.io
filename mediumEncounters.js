@@ -1,3 +1,5 @@
+//4 fire, 3 water, 2 earth, 1 air
+
 let mediumSoloEncounters = {
       m1: {
         name: "Heal Gym Disciple",

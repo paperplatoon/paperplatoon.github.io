@@ -1,3 +1,8 @@
+//fire - 6
+//earth - 2
+//water - 2
+//air - 1
+
 let easySoloEncounters = {
     e1: {
         name: "Strength E1",
@@ -181,12 +186,12 @@ let easySoloEncounters = {
             name: "Seed Eruption",
             cost: "2",
             text: (state, index, array) => {
-              return `Deal ${(array[index].baseDamage*3) + 2 + array[index].strength} damage`
+              return `Deal ${(array[index].baseDamage*3) + 1 + array[index].strength} damage`
             },
             minReq: 2,
             energyChange: "-2",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*3) + 2, index, -2);
+              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*3) + 1, index, -2);
               return stateObj;
             }
           },
@@ -364,6 +369,61 @@ let easySoloEncounters = {
       },
     ]
   },
+  e9: {
+    name: "Little Plant",
+    type: "Earth",
+    XPGain: opponentXPGain,
+    goldOnDefeat: Math.floor(opponentGold*2),
+    Level: 1,
+    maxHP: opponentMaxHP*6,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: opponentMaxHP*6,
+    strength: 0,
+    dex: 0,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    baseBlock: 0,
+    baseDamage: opponentBaseDamage,
+    baseScale: 0,
+    baseHeal: opponentBaseHeal,
+    avatar: "img/easy/babyplant.png",
+    moves: [
+      {
+        name: "Drain",
+        cost: "0",
+        text: (state, index, array) => {
+          return `Deal 5 damage. Restore 5 health`
+        },
+        minReq: 0,
+        energyChange: "+1",
+        action: async (stateObj, index, array) => {
+          stateObj = await opponentGainEnergy(stateObj, 1, index)
+          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index, 1);
+          stateObj = await healOpponent(stateObj, 5, index)
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+
+      {
+        name: "Petal Strike",
+        cost: "2",
+        text: (state, index, array) => {
+          return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage`
+        },
+        minReq: 2,
+        energyChange: "-2",
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*2), index, -2);
+          return stateObj;
+        }
+      },
+]
+},
 }
 
 
@@ -403,7 +463,7 @@ let easySoloEncounters = {
 
 
 let easyMultiEncounters = {
-  e4: {
+  em1: {
     name: "Strength E4",
     type: "Fire",
     XPGain: opponentXPGain,
@@ -466,7 +526,7 @@ let easyMultiEncounters = {
     ]
   },
 
-  e5: {
+  em2: {
     name: "Strength E5",
     type: "Fire",
     XPGain: opponentXPGain,
@@ -523,6 +583,185 @@ let easyMultiEncounters = {
         energyChange: "-4",
         action: async (stateObj, index, array) => {
           stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage + 2), index, -4);
+          return stateObj;
+        }
+      }
+    ]
+  },
+
+  em3: {
+    name: "Clam 1",
+    type: "Water",
+    XPGain: opponentXPGain,
+    goldOnDefeat: Math.floor(opponentGold),
+    Level: 1,
+    maxHP: (opponentMaxHP*2)+4,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: (opponentMaxHP*2)+4,
+    strength: 0,
+    dex: 0,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    baseBlock: opponentBaseBlock,
+    baseDamage: opponentBaseDamage,
+    baseScale: opponentBaseScale,
+    baseHeal: 0,
+    avatar: "img/easy/waterhelmet.png",
+    moves: [
+      {
+        name: "Helmet",
+        cost: "0",
+        text: (state, index, array) => {
+            return `Gain ${array[index].baseBlock + 3 + array[index].dex} block.`
+        },
+        minReq: 0,
+        energyChange: "+2",
+        action: async (stateObj, index, array) => {
+          stateObj = await opponentGainEnergy(stateObj, 2, index)
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.opponentMonster[index].encounterBlock += array[index].baseBlock + 3 + array[index].dex;
+          })
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Headbutt",
+        cost: "2",
+        text: (state, index, array) => {
+            return `Deal ${Math.floor(array[index].baseDamage + 2) + array[index].strength} damage`
+        },
+        minReq: 2,
+        energyChange: "-2",
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage + 2), index, -2);
+          return stateObj;
+        }
+      }
+    ]
+  },
+
+  em4: {
+    name: "Clam 2",
+    type: "Water",
+    XPGain: opponentXPGain,
+    goldOnDefeat: Math.floor(opponentGold),
+    Level: 1,
+    maxHP: (opponentMaxHP*2)+4,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: (opponentMaxHP*2)+4,
+    strength: 0,
+    dex: 0,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    baseBlock: opponentBaseBlock,
+    baseDamage: opponentBaseDamage,
+    baseScale: opponentBaseScale,
+    baseHeal: 0,
+    avatar: "img/easy/waterhelmet.png",
+    moves: [
+      {
+        name: "Headbutt",
+        cost: "0",
+        text: (state, index, array) => {
+            return `Deal ${Math.floor(array[index].baseDamage + 2) + array[index].strength} damage`
+        },
+        minReq: 0,
+        energyChange: "2",
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage + 2), index, 2);
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Helmet",
+        cost: "2",
+        text: (state, index, array) => {
+            return `Gain ${array[index].baseBlock + 3 + array[index].dex} block.`
+        },
+        minReq: 2,
+        energyChange: "-2",
+        action: async (stateObj, index, array) => {
+          stateObj = await opponentLoseEnergy(stateObj, 2, index)
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.opponentMonster[index].encounterBlock += array[index].baseBlock + 3 + array[index].dex;
+          })
+          return stateObj;
+        }
+      },
+      
+    ]
+  },
+
+  e10: {
+    name: "Energy Thief",
+    type: "Air",
+    Level: 1,
+    XPGain: opponentXPGain,
+    goldOnDefeat: Math.floor(opponentGold*2),
+    maxHP: opponentMaxHP*7,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: opponentMaxHP*7,
+    strength: 0,
+    dex: 1,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    baseDamage: opponentBaseDamage,
+    baseBlock: opponentBaseBlock,
+    baseScale: 0,
+    baseHeal: 0,
+    avatar: "img/easy/bee.png",
+    moves: [
+      {
+        name: "Air Strike",
+        cost: "0",
+        text: (state, index, array) => {
+          return `Deal ${Math.floor(array[index].baseDamage*2) + array[index].strength} damage`
+        },
+        minReq: 0,
+        energyChange: "+3",
+        action: async (stateObj, index, array) => {
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.opponentMonster.forEach(function (monsterObj) {
+              monsterObj.encounterBlock += (Math.floor((array[index].baseBlock / 2)) + array[index].dex);
+            })
+          })
+          stateObj = await opponentGainEnergy(stateObj, 3, index)
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Sting",
+        cost: "3",
+        energyChange: "-3",
+        text: (state, index, array) => {
+          return ` Deal ${array[index].baseDamage + 2 + array[index].strength} damage. Lose 1 energy`
+        },
+        minReq: 3,
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage + 2), index, -3);
+          stateObj = immer.produce(state, (newState) => {
+            if (newState.playerMonster.encounterEnergy > 0) {
+              newState.playerMonster.encounterEnergy -= 1
+            }
+            })
           return stateObj;
         }
       }
