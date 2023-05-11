@@ -603,6 +603,33 @@
   border-radius: 1vw;
   width: 21vw;
   justify-content: space-between;
+  animation: gradient2 1s infinite;
+  background: linear-gradient(135deg, #ffa1a155, #f7f7f74f, #ff9f9c49);
+}
+
+.monster-fire {
+  background: linear-gradient(135deg, #bf383855, #f7f7f74f, #cb080149);
+}
+.monster-earth {
+  background: linear-gradient(135deg, #02bd0f55, #f7f7f74f, #00860b49);
+}
+.monster-air {
+  background: linear-gradient(135deg, #aca5a555, #f7f7f74f, #73737349);
+}
+.monster-water {
+  background: linear-gradient(135deg, #0328df55, #f7f7f74f, #0c7fcc49);
+}
+
+@keyframes gradient2 {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .fade-in {

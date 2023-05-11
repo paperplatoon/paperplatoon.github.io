@@ -3198,6 +3198,16 @@ function renderOpponents(stateObj) {
     monsterDiv.classList.add("monster");
     monsterDiv.id = index;
 
+    if (monsterObj.type==="Fire") {
+      monsterDiv.classList.add("monster-fire");
+    } else if (monsterObj.type==="Water") {
+      monsterDiv.classList.add("monster-water");
+    } else if (monsterObj.type==="Air") {
+      monsterDiv.classList.add("monster-air");
+    } else if (monsterObj.type==="Earth") {
+      monsterDiv.classList.add("monster-earth");
+    }
+
     let monsterStatsDiv = document.createElement("Div");  
     monsterStatsDiv.classList.add("monster-top-row");
 
