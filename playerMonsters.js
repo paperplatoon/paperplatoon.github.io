@@ -149,7 +149,7 @@ let playerMonsters = {
 
     devCheat: {
       name: "Testing Mode",
-      type: "water",
+      type: "air",
       encounterEnergy: 0,
       startingEnergy: 0,
       opponentMoveIndex: false,

@@ -1,4 +1,5 @@
 //4 fire, 3 water, 2 earth, 1 air
+//wqnt - 2 air, 1 earth
 
 let mediumSoloEncounters = {
       m1: {

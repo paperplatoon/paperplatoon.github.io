@@ -101,6 +101,7 @@ let gameStartState = {
   selfDamageAttack: 0,
   blockPerTurn: 0,
   cardsPerTurn: 0,
+  combatTurnNumber: 0,
   comboPerTurn: 0,
   blockKeep: false,
   gainStrengthEnergyChange: 0,
@@ -267,7 +268,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [ [easySoloEncounters.e3], [easySoloEncounters.e7, mediumSoloEncounters.m8]  ]
+    townMonsterEncounters = [ [easySoloEncounters.e10], [easySoloEncounters.e7, mediumSoloEncounters.m8]  ]
   } else {
     let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
     let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
@@ -1678,6 +1679,7 @@ function resetAfterFight(stateObj) {
     newState.backstepDamage = false;
     newState.gainStrengthEnergyChange = 0;
     newState.cardsPerTurn = 0;
+    newState.combatTurnNumber = 0;
     newState.comboPerTurn = 0;
     newState.fightStarted = false;
 
@@ -1788,7 +1790,8 @@ function setUpEncounter(stateObj, isBoss=false) {
     newState.backstepDamage = false;
     newState.gainStrengthEnergyChange = 0;
     newState.comboPerTurn = 0;
-    
+    newState.combatTurnNumber = 1;
+
     newState.cardsPerTurn = 0;
     if (!stateObj.playerDeck) {
       newState.playerDeck = [...stateObj.playerMonster.startingDeck];
@@ -3340,16 +3343,19 @@ function renderOpponents(stateObj) {
         }
 
         if (moveIndex < monsterObj.opponentMoveIndex) {
-          moveDiv.classList.add("not-chosen");
           moveDiv.classList.add("energy-filled");
           if (monsterObj.type==="Fire") {
             moveDiv.classList.add("energy-filled-fire");
+            moveDiv.classList.add("not-chosen");
           } else if (monsterObj.type==="Water") {
             moveDiv.classList.add("energy-filled-water");
+            moveDiv.classList.add("not-chosen");
           } else if (monsterObj.type==="Air") {
             moveDiv.classList.add("energy-filled-air");
+            moveDiv.classList.add("not-chosen-air");
           } else if (monsterObj.type==="Earth") {
             moveDiv.classList.add("energy-filled-earth");
+            moveDiv.classList.add("not-chosen");
           }
         }
         
@@ -3566,6 +3572,7 @@ async function endTurnIncrement(stateObj) {
     newState.playerMonster.tempDex = 0;
     newState.cardsPerTurn = 0;
     newState.comboPerTurn = 0;
+    newState.combatTurnNumber += 1;
     newState.playerMonster.encounterBlock += newState.blockPerTurn;
     newState.opponentMonster.forEach(async (monsterObj, monsterIndex) => {
       if (monsterObj.hunted > 0) {

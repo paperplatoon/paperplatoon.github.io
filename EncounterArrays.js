@@ -35,11 +35,13 @@ let easyEncounters = [
   [easySoloEncounters.e3],
   [easyMultiEncounters.em1, easyMultiEncounters.em2],
   [easyMultiEncounters.em3, easyMultiEncounters.em4],
+
   [easyMultiEncounters.em2, easyMultiEncounters.em4],
   [easySoloEncounters.e6],
   [easySoloEncounters.e7],
   [easySoloEncounters.e8],
   [easySoloEncounters.e9],
+
   [easySoloEncounters.e10]
 ]
 
@@ -49,16 +51,19 @@ let mediumEncounters = [
   [mediumSoloEncounters.m3],
   [mediumSoloEncounters.m4],
   [mediumSoloEncounters.m5],
+
   [mediumSoloEncounters.m6],
   [mediumSoloEncounters.m7],
   [mediumSoloEncounters.m8],
   [mediumSoloEncounters.m9],
   [mediumSoloEncounters.m10],
+
   [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
   [mediumMultiEncounters.mm1, mediumMultiEncounters.mm3],
   [mediumMultiEncounters.mm2, mediumMultiEncounters.mm3],
   [mediumMultiEncounters.mm1, mediumMultiEncounters.mm4],
   [mediumMultiEncounters.mm3, mediumMultiEncounters.mm4],
+
   [easyMultiEncounters.em1, easyMultiEncounters.em2, easyMultiEncounters.em1],
 ]
 
@@ -68,18 +73,22 @@ let hardEncounters = [
   [hardSoloEncounters.h3],
   [hardSoloEncounters.h4],
   [hardSoloEncounters.h5],
+
   [hardSoloEncounters.h6],
   [hardSoloEncounters.h7],
-  [easySoloEncounters.e6, easySoloEncounters.e2],
-  [easySoloEncounters.e6, easySoloEncounters.e7],
-  [easySoloEncounters.e2, easySoloEncounters.e7],
+  [hardSoloEncounters.h8],
+  [hardSoloEncounters.h9],
+  // [easySoloEncounters.e6, easySoloEncounters.e2],
+  // [easySoloEncounters.e6, easySoloEncounters.e7],
+  // [easySoloEncounters.e2, easySoloEncounters.e7],
 ]
 
 
 let bosses = [
-    [bossMonsters.angryboss],
-    [bossMonsters.deflateboss],
-    [bossMonsters.offbalanceboss],
-    [bossMonsters.strengthblockboss],
+    [bossMonsters.boss1],
+    [bossMonsters.boss2],
+    [bossMonsters.boss3],
+    [bossMonsters.boss4],
+    [bossMonsters.boss5],
     [opponentMonsters.healgymboss, opponentMonsters.healgymguard2],
 ]

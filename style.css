@@ -579,10 +579,10 @@
 }
 
 .energy-filled-air {
-  background-color: rgba(255, 241, 52, 0.916);
+  background-color: rgba(193, 193, 188, 0.916);
   border: 1px solid white;
   background-position: 0% 100%;
-  color:rgb(23, 23, 109);
+  color:rgb(11, 11, 17);
 }
 .energy-filled-earth {
   background-color: rgba(5, 100, 0, 0.916);
@@ -593,11 +593,15 @@
 
 
 #opponents .not-chosen {
-  color: rgba(176, 176, 176, 0.702);
+  color: rgba(199, 199, 199, 0.702);
   font-size: 1.8vmin;
   border: 1px solid white;
 }
-
+#opponents .not-chosen-air {
+  color: rgba(73, 73, 73, 0.702);
+  font-size: 1.8vmin;
+  border: 1px solid white;
+}
 
 .monster {
   border: 0.2px solid red;
@@ -726,7 +730,7 @@
 }
 
 .targeted-air {
-  border: 6px dashed yellow;
+  border: 6px dashed silver;
   background-color: #50010163;
 }
 
@@ -972,8 +976,8 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 }
 
 .monster-energy-air {
-  background: linear-gradient(90deg,rgb(255, 240, 208), rgb(243, 225, 23),rgb(230, 203, 0), rgb(243, 228, 23),rgb(255, 248, 208));
-  color:rgb(23, 23, 109)
+  background: linear-gradient(90deg,rgb(255, 252, 244), rgb(188, 188, 188),rgb(173, 172, 160), rgb(172, 172, 167),rgb(223, 222, 214));
+  color:rgb(11, 11, 17);
 }
 
 .monster-energy-earth {

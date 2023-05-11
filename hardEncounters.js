@@ -1,4 +1,5 @@
 //fire -3, air 3, water 1
+//hard - want 2 earth, 1 water
 
 let hardSoloEncounters = {
     h1: {
@@ -530,6 +531,221 @@ let hardSoloEncounters = {
         ]
       },
 
+      h8: {
+        name: "Heal Full",
+        type: "Earth",
+        XPGain: opponentXPGain,
+        goldOnDefeat: Math.floor(opponentGold*2),
+        Level: 1,
+        maxHP: opponentMaxHP*8,
+        encounterEnergy: 0,
+        opponentMoveIndex: false,
+        currentHP: opponentMaxHP*8,
+        strength: 0,
+        dex: 0,
+        drown: 0,
+        hunted: 0,
+        poison: 0,
+        baseBlock: 0,
+        baseDamage: opponentBaseDamage,
+        baseScale: 0,
+        baseHeal: opponentBaseHeal,
+        avatar: "img/hard/evilplant.png",
+        moves: [
+          {
+            name: "Regrow",
+            cost: "0",
+            text: (state, index, array) => {
+              return `Heal 25 health`
+            },
+            minReq: 0,
+            energyChange: "+1",
+            action: async (stateObj, index, array) => {
+              stateObj = await opponentGainEnergy(stateObj, 1, index)
+              stateObj = await healOpponent(stateObj, 25, index)
+              return stateObj;
+            }
+          },
+          {
+            name: false,
+          },
+          {
+            name: false,
+          },
+          {
+            name: "Seed Eruption",
+            cost: "3",
+            text: (state, index, array) => {
+              return `Deal ${(array[index].baseDamage*4) + 4 + array[index].strength} damage`
+            },
+            minReq: 3,
+            energyChange: "-3",
+            action: async (stateObj, index, array) => {
+              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*4) + 4, index, -3);
+              return stateObj;
+            }
+          },
+    ]
+  },
+
+  h9: {
+    name: "Energy Drain",
+    type: "Air",
+    Level: 1,
+    XPGain: opponentXPGain,
+    goldOnDefeat: Math.floor(opponentGold*2),
+    maxHP: opponentMaxHP*12,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: opponentMaxHP*12,
+    strength: 0,
+    dex: 1,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    baseDamage: opponentBaseDamage,
+    baseBlock: opponentBaseBlock,
+    baseScale: 0,
+    baseHeal: 0,
+    avatar: "img/hard/electricbee.png",
+    moves: [
+      {
+        name: "Stinger Jab",
+        cost: "0",
+        energyChange: "+1",
+        text: (state, index, array) => {
+          return ` Deal ${(array[index].baseDamage*2) + 2 + array[index].strength} damage. Drain 1 energy`
+        },
+        minReq: 0,
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*2) + 2, index, 1);
+          stateObj = immer.produce(state, (newState) => {
+            if (newState.playerMonster.encounterEnergy > 0) {
+              newState.playerMonster.encounterEnergy -= 1
+            }
+            })
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Electrocute",
+        cost: "2",
+        energyChange: "+1",
+        text: (state, index, array) => {
+          return `Drain all of your energy. Gain 5 strength`
+        },
+        minReq: 2,
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage + 2), index, 1);
+          stateObj = immer.produce(state, (newState) => {
+            newState.playerMonster.encounterEnergy = 0;
+            newState.opponentMonster[index].strength += 5;
+            })
+          return stateObj;
+        }
+      },
+      {
+        name: "Dive Bomb",
+        cost: "3",
+        energyChange: "-3",
+        text: (state, index, array) => {
+          return ` Deal ${(array[index].baseDamage*3) + array[index].strength} damage`
+        },
+        minReq: 3,
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage *3), index, -3);
+          return stateObj;
+        }
+      }
+    ]
+  },
+
+  h10: {
+    name: "Energize",
+    type: "Air",
+    Level: 1,
+    XPGain: opponentXPGain,
+    goldOnDefeat: Math.floor(opponentGold*2),
+    maxHP: opponentMaxHP*10,
+    encounterEnergy: 0,
+    opponentMoveIndex: false,
+    currentHP: opponentMaxHP*10,
+    strength: 0,
+    dex: 1,
+    drown: 0,
+    hunted: 0,
+    poison: 0,
+    baseDamage: opponentBaseDamage,
+    baseBlock: opponentBaseBlock,
+    baseScale: 0,
+    baseHeal: 0,
+    avatar: "img/hard/evilstork.png",
+    moves: [
+      {
+        name: "Energize",
+        cost: "0",
+        energyChange: "+3",
+        text: (state, index, array) => {
+          return `All monsters gain 3 energy`
+        },
+        minReq: 0,
+        action: async (stateObj, index, array) => {
+          
+          stateObj = immer.produce(state, (newState) => {
+              newState.playerMonster.encounterEnergy += 3
+            })
+          return stateObj;
+        }
+      },
+      {
+        name: false,
+      },
+      {
+        name: false,
+      },
+      {
+        name: "Triple Claws",
+        cost: "3",
+        energyChange: "-3",
+        text: (state, index, array) => {
+          return `Deal ${array[index].baseDamage + 3 + array[index].strength} damage 3 times`
+        },
+        minReq: 3,
+        action: async (stateObj, index, array) => {
+          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage + 3), index, -3);
+          return stateObj;
+        }
+      }
+    ]
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       m4: {
         name: "Enrage H2",
         type: "Fire",
@@ -674,4 +890,5 @@ let hardSoloEncounters = {
         },
       ]
     },
+
 }
