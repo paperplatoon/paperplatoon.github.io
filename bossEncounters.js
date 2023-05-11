@@ -96,7 +96,7 @@ let bossMonsters = {
       baseScale: opponentBaseScale,
       baseBlock: opponentBaseBlock,
       baseHeal: 0,
-      avatar: "img/firedragon.png",
+      avatar: "img/boss/firedragon.png",
       powers: [{
         name: "Power: Angry",
         text:  `Whenever this creature receives unblocked attack damage, gain 1 energy`

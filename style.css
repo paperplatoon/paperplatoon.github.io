@@ -278,7 +278,7 @@
 }
 
 #stats {
-  background-image: url(img/newpentacle.PNG);
+  background-image: url(img/backgrounds/newpentacle.PNG);
   background-size: cover;
 }
 
@@ -286,12 +286,12 @@
   justify-content: space-evenly;
   vertical-align: center;
   align-items: center;
-  background-image: url(img/town5.png);
+  background-image: url(img/backgrounds/town5.png);
   background-size: cover;
 }
 
 .monster-choice-window {
-  background-image: url(img/pent4.png);
+  background-image: url(img/backgrounds/pent4.png);
   background-size: cover;
   color: grey;
 }
@@ -556,7 +556,7 @@
 }
 
 .map-div {
-  background-image: url("img/forest2.png");
+  background-image: url("img/backgrounds/forest2.png");
   background-size: contain;
 }
 
@@ -786,7 +786,7 @@
 #discardDiv,
 #deckDiv {
   color: black;
-  background-image: url(img/sky.jpeg);
+  background-image: url(img/backgrounds/sky.jpeg);
   background-size: cover;
   height: 80vh;
   width: 90vw;
@@ -869,7 +869,7 @@
 }
 
 .remove-div {
-  background-image: url(img/sky.jpeg);
+  background-image: url(img/backgrounds/sky.jpeg);
   background-size: cover;
   height: 80vh;
   padding-left: 1vw;

@@ -738,7 +738,7 @@ let easyMultiEncounters = {
             return `Deal ${Math.floor(array[index].baseDamage + 2) + array[index].strength} damage`
         },
         minReq: 0,
-        energyChange: "2",
+        energyChange: "+2",
         action: async (stateObj, index, array) => {
           stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage + 2), index, 2);
           return stateObj;

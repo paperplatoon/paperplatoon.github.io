@@ -251,7 +251,7 @@ let hardSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/hardrobocroc.png",
+        avatar: "img/hard/robocroc.png",
         powers: [{
           name: "Power: Off-balance",
           text:  `Whenever you fully block an attack from this monster, reflect it`
