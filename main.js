@@ -115,7 +115,7 @@ let gameStartState = {
   fightingBoss: false,
   InTown: false,
   leveledUpDuringCombat: 0,
-  townMapSquares: ["hidden", "here", "hidden", "Fight", "Fight", "Fight", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "hidden", "Town", "hidden"],
+  townMapSquares: ["hidden", "here", "hidden", "Fight", "Fight","Fight",0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0, "hidden", "Town", "hidden"],
   townMonsterArray: [],
   townBossEncounter: false,
   townBossArray: false,
@@ -263,7 +263,7 @@ const eventsArray = [
 //takes a stateObject and fills its map with events
 function fillMapWithArray(stateObj) {
   console.log("fill Mpa with Array is being called")
-  let mapFillArray = ["?1", "?2", "Fight", "Fight", "Fight", "Fight", "path", "path", "path", "Fight", "Shop", "Healer", "Upgrade", "Remove"];
+  let mapFillArray = ["?1", "?2", "Fight", "Fight", "Fight", "Fight", "path", "path", "path","path", "path", "path", "Fight", "Shop", "Healer", "Upgrade", "Remove"];
   let shuffledMap = fisherYatesShuffle(mapFillArray);
 
   let townMonsterEncounters = []
@@ -291,7 +291,7 @@ function fillMapWithArray(stateObj) {
       } else {
       newState.townMapSquares[4] =  "Fight";
       }
-      for (let i=6; i < 18; i++) {
+      for (let i=6; i < 21; i++) {
           newState.townMapSquares[i] = shuffledMap[i-4];
     }
     //newState.status = Status.InTown;
@@ -326,10 +326,12 @@ function renderMapScreen(stateObj) {
       let mapSquareDiv = createMapSquareDiv(stateObj, squareIndex, ["Start"])
       mapSquareDiv.classList.add("completed")
       mapDiv.append(mapSquareDiv);
-    } else if (squareIndex === 19) {
+    } 
+    else if (squareIndex === 22) {
       let mapSquareDiv = createMapSquareDiv(stateObj, squareIndex, ["Town"])
       mapDiv.append(mapSquareDiv);
-    } else {
+    } 
+    else {
       let newMapDiv = createMapSquareDiv(stateObj, squareIndex, [stateObj.townMapSquares[squareIndex]])
       mapDiv.append(newMapDiv);
     }
@@ -427,7 +429,7 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
       stateObj = immer.produce(stateObj, (newState) => {
         newState.status = Status.cardShop
       })
-    }  else if (indexToMoveTo === 19) {
+    }  else if (indexToMoveTo === 22) {
       console.log("clicked on a town")
       stateObj = immer.produce(stateObj, (newState) => {
         newState.status = Status.InTown;

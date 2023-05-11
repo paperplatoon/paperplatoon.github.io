@@ -170,8 +170,8 @@ let playerMonsters = {
         fireCardPool.puffofsmoke,
         cards.puffofsmoke,
         //block
-        cards.puffofsmoke,
-        cards.puffofsmoke,
+        specialCardPool.testkill,
+        specialCardPool.testkill,
         //attack
         cards.retreatingslash,
         specialCardPool.testkill,
