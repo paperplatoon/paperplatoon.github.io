@@ -2079,7 +2079,7 @@ function topRowDiv(stateObj, divName) {
   goldDiv.setAttribute("id", "goldDiv");
 
   let goldImg = document.createElement("img");
-  goldImg.src = "img/goldsack.PNG";
+  goldImg.src = "img/icons/goldsack.PNG";
   goldImg.classList.add("bg-image");
   goldDiv.append(goldImg);
 
@@ -2814,13 +2814,13 @@ function renderShop(stateObj) {
   renderClickableCardList(stateObj, sampledCardPool, "shop-div", buyThisCard, goldCost="cardshop");
   let healthDiff = stateObj.playerMonster.maxHP - stateObj.playerMonster.currentHP;
   
-  let cheapHealDiv = renderChoiceDiv(stateObj, ["heal-div"], "img/potion.svg", 
+  let cheapHealDiv = renderChoiceDiv(stateObj, ["heal-div"], "img/icons/potion.svg", 
   `Spend ${Math.floor(stateObj.healCost/2)} gold to heal 25% of your max health (${Math.floor(stateObj.playerMonster.maxHP/4)}) gold`, 
   (stateObj.gold >= Math.floor(stateObj.healCost/2) && healthDiff > 0), 
   cheapHeal, statusToChange=false, altText=`Costs ${Math.floor(stateObj.healCost/2)} to heal ${Math.floor(stateObj.playerMonster.maxHP/4)}`);
   document.getElementById("shop-div").append(cheapHealDiv);
 
-  let fullHealDiv = renderChoiceDiv(stateObj, ["heal-div"], "img/potion.svg", `Spend ${stateObj.healCost} gold to fully heal`, 
+  let fullHealDiv = renderChoiceDiv(stateObj, ["heal-div"], "img/icons/potion.svg", `Spend ${stateObj.healCost} gold to fully heal`, 
   ((stateObj.gold >= stateObj.healCost) && healthDiff > 0), 
   fullHeal, statusToChange=false, altText=`Costs ${stateObj.healCost} to fully heal`);
 
@@ -3398,7 +3398,6 @@ async function renderTown(stateObj) {
     townDiv.classList.add("flex-container")
     townDiv.setAttribute("id", "town");
 
-  //let townHealDiv = renderTownDiv(stateObj, "TownHealer", "img/healer.PNG", "Visit Healer", (stateObj.gold >= Math.floor(stateObj.healCost/2)), changeStatus, Status.HealersShop, "Not enough gold");
   let townShopDiv = await renderTownDiv(stateObj, "TownShop", "Visit Shop", true, changeStatus, Status.cardShop);
   let townRemoveDiv = await renderTownDiv(stateObj, "TownRemove", `${stateObj.cardRemoveCost} gold`,  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `${stateObj.cardRemoveCost} gold needed`);
   let townUpgradeDiv = await renderTownDiv(stateObj, "TownUpgrade", `${stateObj.cardUpgradeCost} gold`, (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `${stateObj.cardUpgradeCost} gold needed`);
@@ -3422,7 +3421,6 @@ async function renderTown(stateObj) {
     townDiv.classList.add("flex-container")
     townDiv.setAttribute("id", "town");
 
-  //let townHealDiv = renderTownDiv(stateObj, "TownHealer", "img/healer.PNG", "Visit Healer", (stateObj.gold >= Math.floor(stateObj.healCost/2)), changeStatus, Status.HealersShop, "Not enough gold");
   let townShopDiv = await renderTownDiv(stateObj, "TownShop", "Visit Shop", true, changeStatus, Status.cardShop);
   let townRemoveDiv = await renderTownDiv(stateObj, "TownRemove", `${stateObj.cardRemoveCost} gold`,  (stateObj.gold >=stateObj.cardRemoveCost), changeStatus, Status.RemovingCards, `${stateObj.cardRemoveCost} gold needed`);
   let townUpgradeDiv = await renderTownDiv(stateObj, "TownUpgrade", `${stateObj.cardUpgradeCost} gold`, (stateObj.gold >=stateObj.cardUpgradeCost), changeStatus, Status.UpgradingCards, `${stateObj.cardUpgradeCost} gold needed`);

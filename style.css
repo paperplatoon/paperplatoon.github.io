@@ -263,7 +263,7 @@
 
 #town-top-row {
   height: 8vh;
-  background:url(img/sky.jpeg);
+  background:url(img/backgrounds/sky.jpeg);
   border: 2px double rgba(11, 0, 22, 0.848);
 }
 
