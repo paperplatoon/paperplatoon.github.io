@@ -378,16 +378,19 @@ function createMapSquareDiv(stateObj, indexOfSquare, classesToAdd) {
     mapSquareDiv.textContent = "";
     let pentagram = document.createElement("Div");
     pentagram.classList.add("pentagram");
+    pentagram.classList.add("map-icon");
     mapSquareDiv.append(pentagram); 
   } else if (classesToAdd.includes("Upgrade")) {
     mapSquareDiv.textContent = "";
     let cross = document.createElement("Div");
     cross.classList.add("cross");
+    cross.classList.add("map-icon");
     mapSquareDiv.append(cross); 
   } else if (classesToAdd.includes("Remove")) {
     mapSquareDiv.textContent = "";
     let minus = document.createElement("Div");
     minus.classList.add("minus-sign");
+    minus.classList.add("map-icon");
     mapSquareDiv.append(minus); 
   } else if (classesToAdd.includes("Healer")) {
     mapSquareDiv.textContent = "";
@@ -395,7 +398,11 @@ function createMapSquareDiv(stateObj, indexOfSquare, classesToAdd) {
     heart.classList.add("monster-hp");
     mapSquareDiv.append(heart); 
   } else if (classesToAdd.includes("Shop")) {
-    mapSquareDiv.textContent = "$";
+    mapSquareDiv.textContent = "";
+    let shop = document.createElement("Div");
+    shop.classList.add("overworld-shop");
+    shop.classList.add("map-icon");
+    mapSquareDiv.append(shop); 
   } else {}
 
   if (indexOfSquare === stateObj.playerHere) {

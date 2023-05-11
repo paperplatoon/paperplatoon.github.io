@@ -1223,13 +1223,13 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 
 .map-square {
-  height: 15vh;
-  width: 10vw;
-  /*border: 1px solid green;
-  background: linear-gradient(215deg, rgba(197, 255, 199, 0.916), rgba(187, 255, 187, 0.9)); */
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.529);
-  margin: 2vh 1vw;
+  background:  rgba(229, 181, 151, 0.9);
+  border-radius: 5%;
+  width: 13.5vw;
+  height: 14vh;
+  border: none;
+  color: rgb(63, 63, 63);
+  margin: 2vh 0vw;
   text-align: center;
   display: flex;
   align-items: center;
@@ -1333,13 +1333,6 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
     border-image: radial-gradient(rgb(255, 225, 0) 69%,#0000 70%) 84.5% fill/100%;
   }
   
-  .clickable-square:hover .pentagram {
-    border: solid 4px rgb(255, 225, 0);
-  }
-  
-  .clickable-square:hover .pentagram::before {
-    background: rgb(255, 225, 0);
-   }
 
    .fire-choose:hover {
     background-color: rgb(102, 20, 20);
@@ -1447,13 +1440,6 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
     border-image: radial-gradient(rgb(255, 225, 0) 69%,#0000 70%) 84.5% fill/100%;
   }
   
-  .clickable-square:active .pentagram {
-    border: solid 4px rgb(255, 225, 0);
-  }
-  
-  .clickable-square:active .pentagram::before {
-    background: rgb(255, 225, 0);
-   }
 
    .fire-choose:active {
     background-color: rgb(102, 20, 20);
@@ -1505,32 +1491,30 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 }
 }
 
-
+.map-icon {
+  height: 12vmin;
+  width: 12vmin;
+  position: relative;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
 
 .pentagram {
-	width: 10vw;
-	height: 15vh;
-	position: relative;
-	border: solid 4px #c60505;
-	border-radius: 50%;
-	transform-origin: center;
-	box-sizing: border-box;
+  width: 10vmin;
+  height: 10vmin;
+  background-image: url(img/icons/trainer.png);
 }
-.pentagram::before {
-	content: "";
-	width: 8vw;
-	height: 13vh;
-	position: absolute;
-	top: -0.6vh;
-	left: 0.5vw;
-	clip-path: polygon(50% 5%, 61% 40%, 98% 40%, 68% 62%, 79% 96%, 50% 75%, 21% 96%, 32% 62%, 2% 40%, 39% 40%);
-	background: #db1010;
+
+.overworld-shop {
+  background-image: url(img/icons/shop.png);
 }
 
 .cross {
-  width: 8vmin;
-  height: 8vmin;
-  position: relative;
+  background-image: url(img/icons/altar.png);
+}
+
+.minus-sign {
+  background-image: url(img/icons/church.png);
 }
 
 .TownUpgrade {
@@ -1605,20 +1589,20 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   animation: towndiv 6s linear infinite;
 }
 
-.cross:before, .cross:after, .TownUpgrade:before, .TownUpgrade:after {
+.TownUpgrade:before, .TownUpgrade:after {
  content: "";
  position: absolute;
  background: rgb(7, 220, 0);
 }
 
-.cross:before, .TownUpgrade:before {
+.TownUpgrade:before {
  left: 50%;
  width: 30%;
  margin-left: -15%;
  height: 100%;
 }
 
-.cross:after, .TownUpgrade::after {
+.TownUpgrade::after {
   top: 50%;
   left: 0%;
   height: 30%;
@@ -1626,13 +1610,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   width: 100%;
 }
 
-.minus-sign {
-  width: 8vmin;
-  height: 8vmin;
-  position: relative;
-}
-
-.minus-sign:before, .TownRemove::before {
+ .TownRemove::before {
   content: "";
   position: absolute;
   top: 50%;
@@ -1644,11 +1622,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
  }
 
 
-.Shop {
-  /*background: linear-gradient( rgba(218, 218, 218, 0.758), rgba(214, 214, 58, 0.85)); */
-  color: rgb(88, 88, 0);
-  font-size: 4em;
-}
+
 
 .Event {
   color: rgb(103, 0, 90);
@@ -1662,16 +1636,6 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   background: linear-gradient(90deg, rgba(255, 236, 219, 0.89), rgba(56, 56, 56, 0.85));
 }
 
-
-
-
-.completed, .path {
-  background: linear-gradient(215deg, rgba(255, 236, 219, 0.916), rgba(229, 181, 151, 0.9));
-  border-radius: 7%;
-  width: 12vw;
-  height: 15vh;
-  color: rgb(63, 63, 63);
-}
 
 .here {
   background: linear-gradient( rgb(255, 218, 185, 0.85), rgba(243, 179, 133, 0.85),rgba(244, 181, 98, 0.85));  
