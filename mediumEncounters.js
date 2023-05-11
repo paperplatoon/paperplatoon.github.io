@@ -157,7 +157,7 @@ let mediumSoloEncounters = {
         drown: 0,
         hunted: 0,
         poison: 0,
-        deflate: 5,
+        deflate: 6,
         baseBlock: opponentBaseBlock,
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
@@ -165,7 +165,7 @@ let mediumSoloEncounters = {
         avatar: "img/medium/dracula.png",
         powers: [{
             name: "Power: Deflate",
-            text:  `Loses 1 energy after taking 5 unblocked damage`
+            text:  `Loses 1 energy after taking 6+ unblocked damage`
           }],
         moves: [
           {
@@ -379,15 +379,15 @@ let mediumSoloEncounters = {
           name: "Sea Wall",
           cost: "3",
           text: (state, index, array) => {
-            return `Gain (${array[index].baseBlock + array[index].dex}) block. Deal ${array[index].baseDamage + 1 + array[index].strength} damage. `
+            return `Gain ${array[index].baseBlock + array[index].dex} block. Deal ${array[index].baseDamage + 1 + array[index].strength} damage. `
           },
           minReq: 3,
-          energyChange: "+1",
+          energyChange: "-3",
           action: async (stateObj, index, array) => {
             stateObj = immer.produce(stateObj, (newState) => {
-              newState.opponentMonster[index].encounterBlock += 1+(array[index].baseBlock*2);
+              newState.opponentMonster[index].encounterBlock += array[index].baseBlock;
             })
-            stateObj = await opponentGainEnergy(stateObj, 1, index)
+            stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage+1, index, -3);
             return stateObj;
           }
         },

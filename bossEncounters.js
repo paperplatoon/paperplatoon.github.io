@@ -23,7 +23,7 @@ let bossMonsters = {
       avatar: "img/boss/thundercloud.png",
       powers: [{
         name: "Power: Deflate",
-        text:  `Loses 1 energy after taking 10 unblocked damage at once`
+        text:  `Loses 1 energy after taking 10+ unblocked damage at once`
       }],
       moves: [
         {

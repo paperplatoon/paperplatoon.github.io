@@ -324,7 +324,7 @@ let hardSoloEncounters = {
         drown: 0,
         hunted: 0,
         poison: 0,
-        deflate: 5,
+        deflate: 6,
         baseBlock: opponentBaseBlock,
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
@@ -332,7 +332,7 @@ let hardSoloEncounters = {
         avatar: "img/hard/airdemon1.png",
         powers: [{
             name: "Power: Deflate",
-            text:  `Loses 1 energy after taking 5 unblocked damage`
+            text:  `Loses 1 energy after taking 6+ unblocked damage`
           }],
         moves: [
           {
@@ -466,7 +466,7 @@ let hardSoloEncounters = {
         drown: 0,
         hunted: 0,
         poison: 0,
-        deflate: 5,
+        deflate: 6,
         baseBlock: opponentBaseBlock,
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
@@ -474,7 +474,7 @@ let hardSoloEncounters = {
         avatar: "img/hard/airdragon2.png",
         powers: [{
             name: "Power: Deflate",
-            text:  `Loses 1 energy after taking 5 unblocked damage`
+            text:  `Loses 1 energy after taking 6+ unblocked damage`
           }],
         moves: [
           {

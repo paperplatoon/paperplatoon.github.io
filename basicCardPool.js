@@ -569,9 +569,9 @@ let cards = {
         name: "Disabling Blow",
         text: (state, index, array) => { 
           if (array[index].baseHits === 1) {
-            return `Deal ${array[index].baseDamage + array[index].upgrades + state.playerMonster.strength} damage. Opponent loses ${2 + array[index].upgrades} strength`;
+            return `Deal ${array[index].baseDamage + array[index].upgrades + state.playerMonster.strength} damage. Opponent loses ${2 + Math.floor(array[index].upgrades/2)} strength`;
           } else {
-            return `Deal ${array[index].baseDamage + array[index].upgrades + state.playerMonster.strength} damage ${array[index].baseHits} times. Opponent loses ${2 + array[index].upgrades} strength`
+            return `Deal ${array[index].baseDamage + array[index].upgrades + state.playerMonster.strength} damage ${array[index].baseHits} times. Opponent loses ${Math.floor(array[index].upgrades/2)} strength`
           }
       },
       minReq: (state, index, array) => {
@@ -589,7 +589,7 @@ let cards = {
         action: async (stateObj, index, array) => {
           stateObj = await dealOpponentDamage(stateObj, (array[index].baseDamage + array[index].upgrades), array[index].baseHits, array[index].baseCost);
           stateObj = immer.produce(stateObj, (newState) => {
-            newState.opponentMonster[newState.targetedMonster].strength -= 2 + array[index].upgrades
+            newState.opponentMonster[newState.targetedMonster].strength -= 2 + Math.floor(array[index].upgrades/2)
           })
           return stateObj;
         }
@@ -2075,7 +2075,7 @@ let cards = {
         cardID: 28,
         name: "Flaming Cloak",
         text: (state, index, array) => {
-            return `Gain ${array[index].baseBlock + (array[index].upgrades*3) + state.playerMonster.dex} block. Attacks deal +${(2*array[index].upgrades)+4} damage this turn`
+            return `Gain ${array[index].baseBlock + (array[index].upgrades*2) + state.playerMonster.dex} block. Attacks deal +${array[index].upgrades+3} damage this turn`
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -2085,16 +2085,16 @@ let cards = {
           return array[index].baseCost;
         },
         upgrades: 0,
-        baseBlock: 8,
+        baseBlock: 6,
         baseHits: 1,
         cardType: "ability",
-        elementType: "fire",
+        elementType: "water",
         action: async (stateObj, index, array) => {
           stateObj = immer.produce(state, (newState) => {
-            newState.playerMonster.tempStrength += (2*array[index].upgrades)+4;
-            newState.playerMonster.strength += (2*array[index].upgrades)+4;
+            newState.playerMonster.tempStrength += array[index].upgrades+3;
+            newState.playerMonster.strength += array[index].upgrades+3;
           })
-          stateObj = await gainBlock(stateObj, (array[index].baseBlock + (array[index].upgrades*3)), array[index].baseCost)
+          stateObj = await gainBlock(stateObj, (array[index].baseBlock + (array[index].upgrades*2)), array[index].baseCost)
           return stateObj;
         }
       },
