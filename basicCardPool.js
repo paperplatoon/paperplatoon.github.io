@@ -473,10 +473,7 @@ let cards = {
         cardID: 44,
         name: "Skip Away",
         text: (state, index, array) => { 
-          let textString = `Gain ${(1+array[index].upgrades)} Backstep card`;
-          if (array[index].upgrades > 0) {
-            textString += `s`;
-          } 
+          let textString = `Gain ${(2+array[index].upgrades)} Backstep cards`;
           if (state.status === Status.ChooseEncounterCardReward || state.status === Status.cardShop) {
             textString += "<br></br><br> (Backstep cards cost 0, gain 4 block, and are removed from your deck when played)</br>"
           }
