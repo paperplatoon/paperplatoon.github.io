@@ -200,7 +200,7 @@ let easySoloEncounters = {
 
 
 
-  e6: {
+  e4: {
     name: "Inflame E9",
     type: "Fire",
     XPGain: opponentXPGain,
@@ -267,7 +267,7 @@ let easySoloEncounters = {
     ]
   },
 
-  e7: {
+  e5: {
     name: "Inflame E9",
     type: "Fire",
     XPGain: opponentXPGain,
@@ -311,7 +311,7 @@ let easySoloEncounters = {
     ]
   },
 
-  e8: {
+  e6: {
     name: "Water E8",
     type: "Water",
     XPGain: opponentXPGain,
@@ -369,7 +369,7 @@ let easySoloEncounters = {
       },
     ]
   },
-  e9: {
+  e7: {
     name: "Little Plant",
     type: "Earth",
     XPGain: opponentXPGain,
@@ -424,7 +424,7 @@ let easySoloEncounters = {
       },
 ]
 },
-e10: {
+e8: {
   name: "Energy Thief",
   type: "Air",
   Level: 1,

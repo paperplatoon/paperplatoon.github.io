@@ -33,16 +33,16 @@ let easyEncounters = [
   [easySoloEncounters.e1],
   [easySoloEncounters.e2],
   [easySoloEncounters.e3],
+  [easySoloEncounters.e4],
+  [easySoloEncounters.e5],
+
+  [easySoloEncounters.e6],
+  [easySoloEncounters.e7],
+  [easySoloEncounters.e8],
   [easyMultiEncounters.em1, easyMultiEncounters.em2],
   [easyMultiEncounters.em3, easyMultiEncounters.em4],
 
   [easyMultiEncounters.em2, easyMultiEncounters.em4],
-  [easySoloEncounters.e6],
-  [easySoloEncounters.e7],
-  [easySoloEncounters.e8],
-  [easySoloEncounters.e9],
-
-  [easySoloEncounters.e10]
 ]
 
 let mediumEncounters = [
