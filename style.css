@@ -555,11 +555,6 @@
   margin: 1.5vmin;
 }
 
-.map-div {
-  background-image: url("img/backgrounds/forest2.png");
-  background-size: contain;
-}
-
 .chosen {
   border: 4px dashed rgb(255, 254, 253);
   color: white;
@@ -1225,11 +1220,11 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 .map-square {
   background:  rgba(229, 181, 151, 0.9);
   border-radius: 5%;
-  width: 13.5vw;
-  height: 14vh;
+  width: 13.3vw;
+  height: 15vh;
   border: none;
   color: rgb(63, 63, 63);
-  margin: 2vh 0vw;
+  margin: 5vh 0vw;
   text-align: center;
   display: flex;
   align-items: center;
@@ -1308,10 +1303,11 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  padding-top: 12vh;
-  padding-bottom: 10vh;
-  
-  height: 60vh;
+  padding-top: 6vh;
+  padding-left: 1vw;
+  background-image: url("img/backgrounds/forest1.jpg");
+  background-size: contain;
+  height: 82vh;
 }
 
 @media (hover: hover) {
