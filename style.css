@@ -599,7 +599,6 @@
 .monster {
   border: 0.2px solid red;
   border-radius: 1vw;
-  width: 21vw;
   justify-content: space-between;
   animation: gradient2 1s infinite;
   background: linear-gradient(135deg, #ffa1a155, #f7f7f74f, #ff9f9c49);
@@ -680,8 +679,8 @@
     background-color: blue;
     color: white;
     width: 20%;
-    min-width: 0;
     text-align: center;
+    margin: 0.05vmin;
     font-size: 2.7vmin;
     width: 3.9vmin;
     height: 3.9vmin;
@@ -696,6 +695,7 @@
     width: 20%;
     min-width: 0;
     text-align: center;
+    display: inline-block;
     font-size: 2vw;
     width: 3vmax;
     height: 3vmax;
@@ -768,9 +768,8 @@
 
 
 #opponents .avatar {
-  width: 13vmax;
-  height: 13vmax;
-  flex-shrink: 1;
+  width: 15vmax;
+  height: 15vmax;
 }
 
 .avatar {
