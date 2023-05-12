@@ -57,7 +57,7 @@ let hardSoloEncounters = {
             name: false,
           },
           {
-            name: "Rear Up",
+            name: "Dive Bomb",
             cost: "6",
             text: (state, index, array) => {
               return `Deal ${(array[index].baseDamage * 5) + array[index].strength} damage`

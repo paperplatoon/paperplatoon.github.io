@@ -98,7 +98,7 @@ let opponentMonsters = {
     baseDamage: opponentBaseDamage,
     baseScale: 0,
     baseHeal: opponentBaseHeal,
-    avatar: "img/earthevil.png",
+    avatar: "img/easy/plant1.png",
     moves: [
       {
         name: "Replenish",
@@ -136,134 +136,7 @@ let opponentMonsters = {
     ]
   },
 
-      healgymguard2: {
-        name: "Heal Gym Guard",
-        type: "Air",
-        XPGain: opponentXPGain,
-        Level: 1,
-        maxHP: opponentMaxHP*10,
-        goldOnDefeat: Math.floor(opponentGold*3),
-        encounterEnergy: 0,
-        opponentMoveIndex: false,
-        currentHP: opponentMaxHP*10,
-        strength: 0,
-        dex: 0,
-        drown: 0,
-        hunted: 0,
-        poison: 0,
-        baseBlock: 0,
-        baseDamage: opponentBaseDamage,
-        baseScale: 0,
-        baseHeal: opponentBaseHeal,
-        avatar: "img/earthevil.png",
-        moves: [
-          {
-            name: "Replenish",
-            cost: "0",
-            text: (state, index, array) => {
-              return `Restore ${array[index].baseHeal} health`
-            },
-            minReq: 0,
-            energyChange: "+1",
-            action: (stateObj, index, array) => {
-              stateObj = healOpponent(stateObj, array[index].baseHeal, index, 1)
-              return stateObj;
-            }
-          },
-          {
-            name: false,
-          },
-    
-          {
-            name: "Seed Eruption",
-            cost: "2",
-            text: (state, index, array) => {
-              return `Deal ${(array[index].baseDamage*3) + array[index].strength} damage`
-            },
-            minReq: 2,
-            energyChange: "-2",
-            action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*3), index, -2);
-              return stateObj;
-            }
-          },
-    ]
-  },
-
-  healgymboss: {
-    name: "Heal Gym Boss",
-    type: "Air",
-    XPGain: opponentXPGain*3,
-    goldOnDefeat: Math.floor(opponentGold*8),
-    Level: 1,
-    maxHP: opponentMaxHP*18,
-    encounterEnergy: 0,
-    opponentMoveIndex: false,
-    currentHP: opponentMaxHP*18,
-    strength: 0,
-    dex: 0,
-    drown: 0,
-    hunted: 0,
-    poison: 0,
-    baseBlock: 0,
-    baseDamage: opponentBaseDamage,
-    baseScale: 0,
-    baseHeal: opponentBaseHeal,
-    avatar: "img/earthpsycho.png",
-    moves: [
-      {
-        name: "Acid Floor",
-        cost: "0",
-        text: (state, index, array) => {
-          //maybe scale health restore for a later fight???
-          return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage to ALL creatures. Heal ${(array[index].baseHeal)} health`
-        },
-        minReq: 0,
-        energyChange: "+4",
-        action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage*2, index, 4);
-          stateObj = immer.produce(stateObj, (newState) => {
-            let calculatedDamage = (array[index].baseDamage*2) + array[index].strength;
-            newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
-              if (monsterObj.encounterBlock == 0) {
-                monsterObj.currentHP -= calculatedDamage;
-              } else if (monsterObj.encounterBlock >= calculatedDamage) {
-                monsterObj.encounterBlock -= calculatedDamage;
-              } else {
-                monsterObj.currentHP -= (calculatedDamage - monsterObj.encounterBlock);
-                monsterObj.encounterBlock = 0;
-              }
-            })
-          })
-          stateObj = healOpponent(stateObj, array[index].baseHeal, index, 4)
-          return stateObj;
-        }
-      },
-      {
-        name: false,
-      },
-      {
-        name: false,
-      },
-      {
-        name: false,
-      },
-      {
-        name: "Unleash Growth",
-        cost: "4",
-        text: (state, index, array) => {
-          return `Deal damage equal to the total amount healed this fight (${state.enemyFightHealTotal + array[index].strength})`
-        },
-        minReq: 4,
-        energyChange: "-4",
-        action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, state.enemyFightHealTotal, index, -4);
-          return stateObj;
-        }
-      },
-
-    ]
-  },      
+            
 }
 
 

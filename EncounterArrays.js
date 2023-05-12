@@ -90,5 +90,5 @@ let bosses = [
     [bossMonsters.boss3],
     [bossMonsters.boss4],
     [bossMonsters.boss5],
-    [opponentMonsters.healgymboss, opponentMonsters.healgymguard2],
+    [bossMonsters.healgymboss, bossMonsters.healgymguard2],
 ]
