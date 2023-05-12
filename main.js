@@ -79,7 +79,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 10,
-  testingMode: false,
+  testingMode: true,
   doubleEndOfTurnEnergy: false,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
@@ -268,7 +268,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [ [easySoloEncounters.e5],[easySoloEncounters.e6], [easySoloEncounters.e7],[easySoloEncounters.e8],[easyMultiEncounters.em1, easyMultiEncounters.em2], [easyMultiEncounters.em3, easyMultiEncounters.em4]]  
+    townMonsterEncounters = [ [easyMultiEncounters.em1, easyMultiEncounters.em2], [easyMultiEncounters.em3, easyMultiEncounters.em4],[easySoloEncounters.e5],[easySoloEncounters.e6], [easySoloEncounters.e7],[easySoloEncounters.e8]]  
   } else {
     let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
     let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
@@ -756,7 +756,7 @@ async function opponentDeathAnimation(toDieIndexArray) {
     opponentHPDiv.classList.add("hidden");
     
   } )
-  await pause(700);
+  await pause(500);
 }
 
 
@@ -782,7 +782,7 @@ async function upgradeAnimation(stateObj, cardIndex, cardArray, upgradeTimes, di
   if (costElement) {
     costElement.classList.add("fade-out");
   }
-  await pause(500)
+  await pause(400)
 
   textElement.innerHTML = newText;
   textElement.classList.remove("fade-out");
@@ -876,7 +876,7 @@ async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, play
         if (playerTriggered === false) {
           monsterDivs[targetIndex].querySelector(".chosen .energy-cost").classList.add("largerHeight");
         }
-        await pause(500)
+        await pause(300)
       }
     }  
 }
@@ -942,7 +942,7 @@ async function energyGainAnimation(stateObj, energyToGain=1, targetIndex=0, play
         if (playerTriggered === false) {
           monsterDivs[targetIndex].querySelector(".chosen .energy-cost").classList.add("largerHeight");
         }
-        await pause(500)
+        await pause(300)
       }
     }  
 }
@@ -1084,14 +1084,14 @@ function gainBlock(stateObj, blockToGain, energyCost=false, blockNumber=1) {
 async function applyPoison(stateObj, poisonToApply, energyCost=false, poisonNumber=1, all=false) {
   
     if (all===true) {
-      await applyGreenFilter(document.querySelectorAll("#opponents .monster-top-row"), 500)
+      await applyGreenFilter(document.querySelectorAll("#opponents .monster-top-row"), 400)
       stateObj = immer.produce(stateObj, (newState) => {
         newState.opponentMonster.forEach(function(monsterObj) {
           monsterObj.poison += poisonToApply * poisonNumber;
         })
       })
     } else {
-      await applyGreenFilter([document.querySelectorAll("#opponents .monster-top-row")[stateObj.targetedMonster]], 500)
+      await applyGreenFilter([document.querySelectorAll("#opponents .monster-top-row")[stateObj.targetedMonster]], 400)
       stateObj = immer.produce(stateObj, (newState) => {
         let monsterObj = newState.opponentMonster[newState.targetedMonster];
         monsterObj.poison += poisonToApply * poisonNumber;

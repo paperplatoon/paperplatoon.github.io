@@ -63,6 +63,10 @@
   animation: opponentWindup 0.3s forwards ;
 }
 
+.opponent-move-list {
+  padding-top: 1vh;
+}
+
 @keyframes opponentImpact {
   0% { transform: translateX(0); }
   80% { transform: translateX(0); }
@@ -170,17 +174,11 @@
    
 }
 
-/* .green-filter {
-  filter: grayscale(100%) sepia(100%) hue-rotate(100deg);
-  transition: filter 1s ease-in-out;  
-} */
 
 
 
 
-.avatar {
-  z-index: 1;
-}
+
 
 
 @keyframes slide {
@@ -530,14 +528,14 @@
 }
 
 .move {
-  font-size: 2.3vmin;
+  font-size: 1.9vmin;
   border: 1px solid rgba(191, 191, 191, 0.632);
   color: rgba(191, 191, 191, 0.632);
   border-radius: 0.6vw;
-  margin-top: 1vmin;
-  margin-bottom: 1vmin;
+  margin-top: 0.8vmin;
+  margin-bottom: 0.8vmin;
   background-position: 0% 0%;
-  transition: background-color 0.5s;
+  transition: background-color 0.3s;
 }
 
 .power {
@@ -551,14 +549,14 @@
   border: 1px solid;
   padding: 0.05vh 0.05vw;
   border-radius: 0.6vw;
-  height: 3vh;
-  margin: 1.5vmin;
+  height: 2.2vh;
+  margin: 1.2vmin;
 }
 
 .chosen {
   border: 4px dashed rgb(255, 254, 253);
   color: white;
-  font-size: 2.7vmin;
+  font-size: 2.5vmin;
 }
 
 .energy-filled-fire {
@@ -589,12 +587,12 @@
 
 #opponents .not-chosen {
   color: rgba(199, 199, 199, 0.702);
-  font-size: 1.8vmin;
+  font-size: 1.6vmin;
   border: 1px solid white;
 }
 #opponents .not-chosen-air {
   color: rgba(73, 73, 73, 0.702);
-  font-size: 1.8vmin;
+  font-size: 1.7vmin;
   border: 1px solid white;
 }
 
@@ -652,6 +650,7 @@
   clip-path: polygon(-41% 0,50% 91%, 141% 0);
   color: white;
   text-align: center;
+  height: -3vh;
   flex-grow: 0.1;
   font-size: 1.5vw;
   flex-shrink: 2;
@@ -721,12 +720,6 @@
   border: 2px dashed rgb(93, 0, 0);
 }
 
-/* .monster-button: hoooover {
-  color: #fff;
-  background-color: rgb(93, 0, 0);
-  box-shadow: 0 0 10px rgba(33,33,33); 
-  transition: .7s;
-} */
 
 .monster-drown {
   color: blue;
@@ -735,9 +728,10 @@
 .monster-top-row {
   display: flex;
   flex-direction: row;
+  padding: 0.02vmin;
   justify-content: space-evenly;
-  align-items: center;
-  transition: filter 0.5s ease-out; 
+  align-items: top;
+  transition: filter 0.4s ease-out; 
 }
 
 
@@ -772,11 +766,17 @@
   font-size: 3vmin;
 }
 
-.avatar {
-  width: 10vw;
-  height: 10vw;
-  flex-shrink: 1;
 
+#opponents .avatar {
+  width: 13vmax;
+  height: 13vmax;
+  flex-shrink: 1;
+}
+
+.avatar {
+  width: 12vmax;
+  height: 12vmax;
+  margin: 0.2vmin;
 }
 
 #opponents {
@@ -954,7 +954,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   margin-block-start: 0.01em;
   margin-block-end: 0.01em;
   margin-left: 0.1em;
-  padding: 0.2vw;
+  padding: 0.05vw;
 }
 
 #status-text-div p {
@@ -1040,7 +1040,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   line-height: 3vmin;
   color: rgb(0, 0, 0);
   float: right;
-  transition: background-color 0.5s;
+  transition: background-color 0.3s;
  }
 
 
