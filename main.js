@@ -573,14 +573,14 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
 
   if (all===false) {
     document.querySelector(".targeted .avatar").classList.add("opponent-impact");
-    await pause(350);
+    await pause(1350);
     document.querySelector(".targeted .avatar").classList.remove("opponent-impact");
     document.getElementById(fireballString).classList.remove(classString);
   } else {
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.add("opponent-impact");
     })
-    await pause(350);
+    await pause(1350);
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.remove("opponent-impact");
     })

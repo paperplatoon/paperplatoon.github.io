@@ -183,57 +183,57 @@
 
 @keyframes slide {
   0% {
-    transform: translate(-20vw, 0vh);
+    transform: translate(-20vw, 10vh);
     visibility: hidden;
   }
   49% {
-    transform: translate(0vw, 0vh);
+    transform: translate(0vw, 10vh);
     visibility: hidden;
   }
   50% {
-    transform: translate(0vw, 0vh);
+    transform: translate(0vw, 10vh);
     visibility: visible;
   }
   100% {
-    transform: translate(45vw, 0vh);
+    transform: translate(40vw, 10vh);
     visibility: visible;
   }
 }
 
 @keyframes slide2 {
   0% {
-    transform: translate(-20vw, 0vh);
+    transform: translate(-20vw, 10vh);
     visibility: hidden;
   }
   49% {
-    transform: translate(0vw, 0vh);
+    transform: translate(0vw, 10vh);
     visibility: hidden;
   }
   50% {
-    transform: translate(0vw, 0vh);
+    transform: translate(0vw, 10vh);
     visibility: visible;
   }
   100% {
-    transform: translate(25vw, 0vh);
+    transform: translate(25vw, 10vh);
     visibility: visible;
   }
 }
 
 @keyframes slide3 {
   0% {
-    transform: translate(0vw, 0vh);
+    transform: translate(0vw, 10vh);
     visibility: hidden;
   }
   49% {
-    transform: translate(0vw, 0vh);
+    transform: translate(0vw, 10vh);
     visibility: hidden;
   }
   50% {
-    transform: translate(0vw, 0vh);
+    transform: translate(0vw, 10vh);
     visibility: visible;
   }
   100% {
-    transform: translate(55vw, 0vh);
+    transform: translate(55vw, 10vh);
     visibility: visible;
   }
 }
@@ -600,6 +600,7 @@
   border: 0.2px solid red;
   border-radius: 1vw;
   justify-content: space-between;
+  width: 22vw;
   animation: gradient2 1s infinite;
   background: linear-gradient(135deg, #ffa1a155, #f7f7f74f, #ff9f9c49);
 }

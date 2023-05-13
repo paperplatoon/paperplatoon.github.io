@@ -473,7 +473,7 @@ let mediumSoloEncounters = {
 
     m8: {
       name: "Prickles E6",
-      type: "Fire",
+      type: "Water",
       XPGain: opponentXPGain*2,
       goldOnDefeat: Math.floor(opponentGold*3),
       Level: 1,
@@ -491,7 +491,7 @@ let mediumSoloEncounters = {
       baseDamage: opponentBaseDamage,
       baseScale: opponentBaseScale,
       baseHeal: 0,
-      avatar: "img/medium/turtle3.png",
+      avatar: "img/medium/pricklefish.png",
       powers: [{
         name: "Power: Prickles",
         text:  `Take 2 damage when attacking this enemy`
@@ -501,7 +501,7 @@ let mediumSoloEncounters = {
           name: "Turtle Up",
           cost: "0",
           text: (state, index, array) => {
-              return `Gain ${array[index].baseBlock+1 + array[index].dex} block. Gain ${Math.floor(array[index].baseScale/3)} strength`
+              return `Gain ${array[index].baseBlock+1 + array[index].dex} block`
           },
           minReq: 0,
           energyChange: "+1",
@@ -511,7 +511,6 @@ let mediumSoloEncounters = {
               if (blockToGain > 0) {
                 newState.opponentMonster[index].encounterBlock += blockToGain;
               }
-              newState.opponentMonster[index].strength += Math.floor(array[index].baseScale/3);
             })
             stateObj = await opponentGainEnergy(stateObj, 1, index)
             return stateObj;
