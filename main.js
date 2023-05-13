@@ -1412,7 +1412,7 @@ async function renderPlayerMonster(stateObj) {
   let drawDiv = document.createElement("Div");
   drawDiv.setAttribute("id", "drawDiv");
   drawPileDiv.append(drawDiv);
-  topRowDiv.append(drawPileDiv);
+  //topRowDiv.append(drawPileDiv);
 
   let avatar = document.createElement('img');
   avatar.classList.add("avatar");
@@ -1459,7 +1459,7 @@ async function renderPlayerMonster(stateObj) {
   let discardDiv = document.createElement("Div");
   discardDiv.setAttribute("id", "discardDiv")
   discardPileDiv.append(discardDiv);
-  topRowDiv.append(discardPileDiv);
+  //topRowDiv.append(discardPileDiv);
 
   document.getElementById("playerStats").appendChild(topRowDiv);
 
@@ -1872,6 +1872,10 @@ function returnCard(stateObj) {
 
 function drawAHand(stateObj) {
   console.log("drawing a hand");
+  if (document.querySelector("#handContainer2")) {
+    document.querySelector("#handContainer2").classList.remove("hidden");  
+  }
+  
   stateObj = immer.produce(stateObj, (newState) => {
     for (let i = 0; i < stateObj.playerMonster.turnCards; i++) {
       if (
@@ -3553,7 +3557,7 @@ async function discardHand(stateObj) {
   const indicesToRemove = stateObj.encounterHand.map((obj, index) => obj.hasOwnProperty('retain') ? undefined : index)
                               .filter(index => index !== undefined);
   indicesToRemove.reverse()
-  let cardElements = document.querySelectorAll("#handContainer2 .card")
+  let cardElements = document.querySelectorAll("#handContainer2 .card");
    stateObj = immer.produce(stateObj, (newState) => {
     indicesToRemove.forEach(async function(indice, index) {
       cardElements[index].classList.remove("discarding")
@@ -3571,6 +3575,7 @@ async function discardHand(stateObj) {
   cardElements.forEach(async function(cardObj, index) {
     cardObj.classList.remove("discarding")
   })
+  document.querySelector("#handContainer2").classList.add("hidden");
   return stateObj;
 }
 
@@ -3596,7 +3601,7 @@ async function startEncounter(stateObj) {
   console.log('triggering start encounter');
   stateObj = await pickOpponentMove(stateObj);
   stateObj = shuffleDraw(stateObj);
-  stateObj = drawAHand(stateObj);
+  stateObj = await drawAHand(stateObj);
   stateObj = immer.produce(stateObj, (newState) => {
     newState.fightStarted = true;
   })

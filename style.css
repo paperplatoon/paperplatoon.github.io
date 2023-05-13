@@ -948,7 +948,8 @@
           overflow: hidden;
           opacity: 0;
           margin-right: 1vw;
-        color: rgb(230, 171, 94);}
+        color: rgb(230, 171, 94);
+      visibility: hidden;}
 }
 
 
