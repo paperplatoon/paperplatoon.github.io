@@ -174,7 +174,17 @@
    
 }
 
-
+.arrow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1px solid white;
+  z-index: 10;
+  border-top: none;
+  width: 0;
+  height: 0;
+}
 
 
 
@@ -870,12 +880,12 @@
 
 
 .pile {
-  width: 3vw;
-  height: 10vh;
+  width: 8vmin;
+  height: 4vmin;
   color: white;
   background-color: brown;
   border: 1px dashed red;
-  font-size: 2vh;
+  font-size: 2vmin;
 }
 
 .remove-pile {
@@ -919,7 +929,29 @@
   height: 10vh;
   float: left;
   justify-content: center;
+  position: relative;
 }
+
+.discarding {
+  animation: discarding 1s ease-out;
+}
+
+@keyframes discarding {
+  0% { overflow: hidden;}
+  50% { transform: translateX(30%);
+    margin-right: 4vw; 
+    overflow: hidden;
+    }
+  100% { transform: translateX(100%) translateY(-50%);
+          width: 2vw;
+          height: 1.5vh; 
+          overflow: hidden;
+          opacity: 0;
+          margin-right: 1vw;
+        color: rgb(230, 171, 94);}
+}
+
+
 
 .card-pile-card {
   border: 1px solid black;

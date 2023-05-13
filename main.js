@@ -492,31 +492,7 @@ let potentialMonsterChoicesNoDev = playerMonsterArray.slice(0, 4);
 
 async function changeState(newStateObj) {
   let stateObj = {...newStateObj}
-
-  // if (state.status === Status.InEncounter) {
-  //   await stateObj.opponentMonster.forEach(async (monsterObj, monsterIndex) => {
-  //     let oldEnergy = state.opponentMonster[monsterIndex].encounterEnergy
-  //     let energyDifference = stateObj.opponentMonster[monsterIndex].encounterEnergy - oldEnergy
-  //     if (energyDifference === 2) {
-  //       console.log("energy is Changing by 2");
-  //       let monsterDivs = document.querySelectorAll("#opponents .monster")
-  //       monsterDivs[monsterIndex].querySelectorAll(".move")[oldEnergy+1].classList.add("active")
-  //       await pause(1000)
-
-  //       // for (let i=1; i < energyDifference+1; i++) {
-  //       //   let monsterDivs = document.querySelectorAll("#opponents .monster")
-  //       //   monsterDivs[monsterIndex].querySelectorAll(".move")[oldEnergy+i].classList.add("active")
-  //       //   console.log("adding active to move  " + (oldEnergy+i));
-  //       //   console.log(monsterDivs[monsterIndex].querySelectorAll(".move")[oldEnergy+i])
-  //       //   await pause(1000);
-  //       // }
-  //     }
-  //   }) 
-  // }
   
-
-
-
   if (stateObj.status === Status.InEncounter) {
     stateObj = await handleDeaths(stateObj);
   }
@@ -573,14 +549,14 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
 
   if (all===false) {
     document.querySelector(".targeted .avatar").classList.add("opponent-impact");
-    await pause(1350);
+    await pause(350);
     document.querySelector(".targeted .avatar").classList.remove("opponent-impact");
     document.getElementById(fireballString).classList.remove(classString);
   } else {
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.add("opponent-impact");
     })
-    await pause(1350);
+    await pause(350);
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.remove("opponent-impact");
     })
@@ -3112,6 +3088,44 @@ function renderCard(stateObj, cardArray, index, divName=false, functionToAdd=fal
             functionToAdd(stateObj, index, cardArray);
           });
         }
+          const arrow = document.createElement('div');
+          arrow.classList.add('arrow');
+          cardDiv.appendChild(arrow);
+
+          let isDragging = false;
+          let startMouseX, startMouseY;
+
+          cardDiv.addEventListener('mousedown', (event) => {
+            console.log('clikced card')
+            isDragging = true;
+            startMouseX = event.clientX;
+            startMouseY = event.clientY;
+          });
+
+          document.addEventListener('mousemove', (event) => {
+            if (isDragging) {
+              const deltaX = event.clientX - startMouseX;
+              const deltaY = event.clientY - startMouseY;
+              const angle = Math.atan2(deltaY, deltaX);
+              const length = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+
+              arrow.style.transform = `translate(-50%, -100%) rotate(${angle}rad)`;
+              arrow.style.width = `${length*2}px`;
+            }
+          });
+
+          cardDiv.addEventListener('mouseup', () => {
+            isDragging = false;
+            console.log('released card')
+            arrow.style.width = `0px`;
+          });
+
+          document.addEventListener('mouseup', () => {
+            isDragging = false;
+            arrow.style.width = `0px`;
+          });
+
+
         if (cardObj.cardType == "fireEnergy") {
           cardDiv.classList.add("fire-energy");
         } else if (cardObj.cardType == "waterEnergy") {
@@ -3539,8 +3553,12 @@ async function discardHand(stateObj) {
   const indicesToRemove = stateObj.encounterHand.map((obj, index) => obj.hasOwnProperty('retain') ? undefined : index)
                               .filter(index => index !== undefined);
   indicesToRemove.reverse()
+  let cardElements = document.querySelectorAll("#handContainer2 .card")
    stateObj = immer.produce(stateObj, (newState) => {
-    indicesToRemove.forEach(function(indice, index) {
+    indicesToRemove.forEach(async function(indice, index) {
+      cardElements[index].classList.remove("discarding")
+      cardElements[index].classList.add("discarding")
+      console.log(cardElements[index])
       let cardToRemove = newState.encounterHand.splice(indice, 1)[0];
       newState.encounterDiscard.push(cardToRemove);
     })
@@ -3549,6 +3567,10 @@ async function discardHand(stateObj) {
       cardObj.upgrades +=1
     })
   });
+  await pause(1000);
+  cardElements.forEach(async function(cardObj, index) {
+    cardObj.classList.remove("discarding")
+  })
   return stateObj;
 }
 

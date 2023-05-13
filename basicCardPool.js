@@ -5,7 +5,7 @@ let cards = {
         cardID: 8,
         name: "Icy Freeze",
         text: (state, index, array) => { 
-          return `Gain ${array[index].baseBlock + state.playerMonster.dex + (5*array[index].upgrades)} block. Drain ${array[index].energyDrain + Math.floor(array[index].upgrades/2)} energy from all opponents` 
+          return `Gain ${array[index].baseBlock + state.playerMonster.dex + (5*array[index].upgrades)} block. All ${array[index].energyDrain + Math.floor(array[index].upgrades/2)} enemies lose 1 energy` 
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -29,7 +29,7 @@ let cards = {
       sabotage: {
         name: "Sabotage",
         text: (state, index, array) => {
-          return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*3)} block. Drain ${array[index].energyDrain+Math.floor(array[index].upgrades/2)} opponent energy`
+          return `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*3)} block. Enemy loses ${array[index].energyDrain+Math.floor(array[index].upgrades/2)} energy`
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -59,9 +59,9 @@ let cards = {
           if (array[index].upgrades > 0) {
               textString += 's'
           } 
-          textString += '. Hold: Draw one more'
+          textString += 'Doesn\'t discard. Unplayed: draw an extra card.'
           if (state.status === Status.ChooseEncounterCardReward || state.status === Status.cardShop) {
-            textString += "<br></br><br> (Unplayed Hold cards aren't discarded. They upgrade each turn)</br>"
+            textString += "<br></br><br> (Unplayed cards upgrade each turn they aren't played)</br>"
           }
           return textString
         },
