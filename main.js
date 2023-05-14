@@ -3569,7 +3569,7 @@ async function discardHandAnimation(removeIndicesArray, cardElementsArray) {
     let discardString = `discarding-` + indice.toString();
     cardElementsArray[indice].classList.add(discardString)
   }
-  await pause(600)
+  await pause(800)
   for (let indice of removeIndicesArray) {
     cardElementsArray[indice].classList.add("hidden")
   }
