@@ -831,7 +831,7 @@ function addBackstepsToHand(stateObj, numberToAdd=1) {
   return stateObj
 }
 
-async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, playerTriggered=false) {
+async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, playerTriggered=false, animateYes=false, cardIndex=false) {
   let monsterObj = stateObj.opponentMonster[targetIndex]
   let monsterTypeString = ""
   if (monsterObj.type==="Fire") {
@@ -842,6 +842,10 @@ async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, play
     monsterTypeString = "energy-filled-air";
   } else if (monsterObj.type==="Earth") {
     monsterTypeString = "energy-filled-earth";
+  }
+
+  if (playerTriggered===true && animateYes===true) {
+    document.querySelectorAll("#handContainer2 .card")[cardIndex].classList.add("discarding-"+cardIndexInHand.toString())
   }
   let monsterDivs = document.querySelectorAll("#opponents .monster")
     let startingEnergy = monsterObj.encounterEnergy;
@@ -1004,8 +1008,8 @@ async function healOpponent(stateObj, HPToGain, index=0, energyChange=false, all
 }
 
 
-async function destroyEnergy(stateObj, energyToDestroy, energyCost=false, all=false) {
-  await energyLoseAnimation(stateObj, energyToDestroy, stateObj.targetedMonster, playerTriggered=true)
+async function destroyEnergy(stateObj, energyToDestroy, energyCost=false, all=false, animation=false, index=false) {
+  await energyLoseAnimation(stateObj, energyToDestroy, stateObj.targetedMonster, playerTriggered=true, animateYes=animation, cardIndex=index)
   stateObj = immer.produce(stateObj, (newState) => {
     if (all === true) {
       newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
@@ -1970,8 +1974,7 @@ async function playACard(stateObj, cardIndexInHand, arrayObj) {
   stateObj = await PlayACardImmer(stateObj, cardIndexInHand);
   stateObj = await pickOpponentMove(stateObj);
   stateObj = await changeState(stateObj);
-  document.querySelectorAll("#handContainer2 .card")[cardIndexInHand].classList.remove("discarding")
-  document.querySelectorAll("#handContainer2 .card")[cardIndexInHand].classList.add("discarding-"+cardIndexInHand.toString())
+  //document.querySelectorAll("#handContainer2 .card")[cardIndexInHand].classList.add("discarding-"+cardIndexInHand.toString())
   
   return stateObj;
 }
@@ -3566,7 +3569,7 @@ async function discardHandAnimation(removeIndicesArray, cardElementsArray) {
     let discardString = `discarding-` + indice.toString();
     cardElementsArray[indice].classList.add(discardString)
   }
-  await pause(1000)
+  await pause(600)
   for (let indice of removeIndicesArray) {
     cardElementsArray[indice].classList.add("hidden")
   }

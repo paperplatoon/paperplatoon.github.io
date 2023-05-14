@@ -1729,40 +1729,45 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 
 
-
+.discarding-0, .discarding-1, .discarding-2, .discarding-3, .discarding-4,
+.discarding-5, .discarding-6, .discarding-7 {
+  animation-duration: 1.2s;
+  animation-timing-function: ease-out;
+  animation-direction: forwards;
+}
 
 
 
 .discarding-0 {
-  animation: discard-0 2s ease-out;
+  animation-name: discard-0;
 }
 
 .discarding-1 {
-  animation: discard-1 2s ease-out;
+  animation-name: discard-1;
 }
 
 .discarding-2 {
-  animation: discard-2 2s ease-out;
+  animation-name: discard-2;
 }
 
 .discarding-3 {
-  animation: discard-3 2s ease-out;
+  animation-name: discard-3;
 }
 
 .discarding-4 {
-  animation: discard-4 2s ease-out;
+  animation-name: discard-4;
 }
 .discarding-5 {
-  animation: discard-5 2s ease-out;
+  animation-name: discard-5;
 }
 .discarding-6 {
-  animation: discard-6 2s ease-out;
+  animation-name: discard-6;
 }
 .discarding-7 {
-  animation: discard-7 2s ease-out;
+  animation-name: discard-7;
 }
 .play-discarding {
-  animation: discarding 2s ease-out;
+  animation: discarding  ;
 }
 
 /* @keyframes discarding {
@@ -1800,7 +1805,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
         margin-right: 2vw;
         background-color: brown;
       color: rgb(230, 171, 94);
-    visibility: hidden;}
+    }
 }
 
 @keyframes discard-1 {
@@ -1818,7 +1823,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
         margin-right: 2vw;
         background-color: brown;
       color: rgb(230, 171, 94);
-    visibility: hidden;}
+    }
 }
 
 @keyframes discard-2 {
@@ -1836,7 +1841,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
           margin-right: 2vw;
           background-color: brown;
         color: rgb(230, 171, 94);
-      visibility: hidden;}
+      }
 }
 
 @keyframes discard-3 {
@@ -1856,7 +1861,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
           margin-right: 2vw;
           background-color: brown;
         color: rgb(230, 171, 94);
-      visibility: hidden;}
+      }
 }
 
 @keyframes discard-4 {
@@ -1874,7 +1879,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
           margin-right: 2vw;
           background-color: brown;
         color: rgb(230, 171, 94);
-      visibility: hidden;}
+      }
 }
 @keyframes discard-5 {
   0% { overflow: hidden;}
@@ -1891,5 +1896,5 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
           margin-right: 2vw;
           background-color: brown;
         color: rgb(230, 171, 94);
-      visibility: hidden;}
+      }
 }

@@ -832,7 +832,7 @@ let mediumMultiEncounters = {
             minReq: 3,
             action: async (stateObj, index, array) => {
               stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage + 3), index, -3);
-              stateObj = immer.produce(state, (newState) => {
+              stateObj = immer.produce(stateObj, (newState) => {
                 newState.playerMonster.dex -= 1;
                 newState.playerMonster.fightDex -= 1;
                 })

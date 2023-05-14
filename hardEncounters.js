@@ -205,7 +205,7 @@ let hardSoloEncounters = {
             minReq: 4,
             energyChange: "+2",
             action: async (stateObj, index, array) => {
-              stateObj = immer.produce(state, (newState) => {
+              stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].encounterBlock += array[index].baseBlock + array[index].strength + array[index].dex;
               })
               stateObj = await opponentGainEnergy(stateObj, 2, index);
@@ -344,7 +344,7 @@ let hardSoloEncounters = {
             minReq: 0,
             energyChange: "+5",
             action: async (stateObj, index, array) => {
-              stateObj = immer.produce(state, (newState) => {
+              stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock*2)  + array[index].dex);
               })
               stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage), index, 5)
@@ -619,7 +619,7 @@ let hardSoloEncounters = {
         minReq: 0,
         action: async (stateObj, index, array) => {
           stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*2) + 2, index, 1);
-          stateObj = immer.produce(state, (newState) => {
+          stateObj = immer.produce(stateObj, (newState) => {
             if (newState.playerMonster.encounterEnergy > 0) {
               newState.playerMonster.encounterEnergy -= 1
             }
@@ -640,7 +640,7 @@ let hardSoloEncounters = {
         minReq: 2,
         action: async (stateObj, index, array) => {
           stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage + 2), index, 1);
-          stateObj = immer.produce(state, (newState) => {
+          stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.encounterEnergy = 0;
             newState.opponentMonster[index].strength += 5;
             })
@@ -694,7 +694,7 @@ let hardSoloEncounters = {
         minReq: 0,
         action: async (stateObj, index, array) => {
           
-          stateObj = immer.produce(state, (newState) => {
+          stateObj = immer.produce(stateObj, (newState) => {
               newState.playerMonster.encounterEnergy += 3
             })
           return stateObj;
