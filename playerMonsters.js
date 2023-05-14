@@ -171,7 +171,7 @@ let playerMonsters = {
         cards.puffofsmoke,
         //block
         specialCardPool.testkill,
-        specialCardPool.testkill,
+        specialCardPool.fataltoxin,
         //attack
         cards.retreatingslash,
         specialCardPool.testkill,

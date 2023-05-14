@@ -852,7 +852,7 @@ async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, play
         if (playerTriggered === false) {
           monsterDivs[targetIndex].querySelector(".chosen .energy-cost").classList.add("largerHeight");
         }
-        await pause(300)
+        await pause(250)
       }
     }  
 }
@@ -918,7 +918,7 @@ async function energyGainAnimation(stateObj, energyToGain=1, targetIndex=0, play
         if (playerTriggered === false) {
           monsterDivs[targetIndex].querySelector(".chosen .energy-cost").classList.add("largerHeight");
         }
-        await pause(300)
+        await pause(250)
       }
     }  
 }
@@ -1404,15 +1404,7 @@ async function renderPlayerMonster(stateObj) {
   let topRowDiv = document.createElement("Div");
   topRowDiv.classList.add("monster-top-row");
 
-  let drawPileDiv = document.createElement("Div");
-  drawPileDiv.setAttribute("id", "drawPile");
-  drawPileDiv.classList.add("pile");
-  drawPileDiv.textContent = "Draw";
-
-  let drawDiv = document.createElement("Div");
-  drawDiv.setAttribute("id", "drawDiv");
-  drawPileDiv.append(drawDiv);
-  //topRowDiv.append(drawPileDiv);
+  
 
   let avatar = document.createElement('img');
   avatar.classList.add("avatar");
@@ -1450,32 +1442,11 @@ async function renderPlayerMonster(stateObj) {
     topRowDiv.appendChild(playerBlock);
   }
 
-        
-  let discardPileDiv = document.createElement("Div");
-  discardPileDiv.setAttribute("id", "discardPile")
-  discardPileDiv.classList.add("pile")
-  discardPileDiv.textContent = "Discard"
-
-  let discardDiv = document.createElement("Div");
-  discardDiv.setAttribute("id", "discardDiv")
-  discardPileDiv.append(discardDiv);
-  //topRowDiv.append(discardPileDiv);
-
   document.getElementById("playerStats").appendChild(topRowDiv);
 
   let turnEnergyStrengthDiv = document.createElement("Div");
   turnEnergyStrengthDiv.classList.add("flex", "row", "space-evenly");
   let EnergyStrengthDiv = document.createElement("Div");
-  let turnButtonDiv = document.createElement("Div");
-
-
-  let endTurnButton = document.createElement("Button");
-  endTurnButton.classList.add("font5vmin")
-  endTurnButton.addEventListener("click", function() {
-    endTurn(stateObj)
-  })
-  endTurnButton.textContent = "End Turn";
-  turnButtonDiv.append(endTurnButton)
 
   let playerEnergyText = document.createElement("H4");
   playerEnergyText.classList.add("player-energy")
@@ -1493,10 +1464,35 @@ async function renderPlayerMonster(stateObj) {
   }
 
   EnergyStrengthDiv.append(playerEnergyText, playerStrengthandDexText);
-  turnEnergyStrengthDiv.append(EnergyStrengthDiv, turnButtonDiv);
+  turnEnergyStrengthDiv.append(EnergyStrengthDiv);
   
   document.getElementById("playerStats").appendChild(turnEnergyStrengthDiv);
 
+  let deckRowDiv = document.createElement("Div");
+  deckRowDiv.classList.add("monster-top-row");
+  deckRowDiv.classList.add("monster-deck-row");
+
+  let drawPileDiv = document.createElement("Div");
+  drawPileDiv.setAttribute("id", "drawPile");
+  drawPileDiv.classList.add("pile");
+  drawPileDiv.textContent = "Draw";
+
+  let drawDiv = document.createElement("Div");
+  drawDiv.setAttribute("id", "drawDiv");
+  drawPileDiv.append(drawDiv);
+  deckRowDiv.append(drawPileDiv);
+
+  let discardPileDiv = document.createElement("Div");
+  discardPileDiv.setAttribute("id", "discardPile")
+  discardPileDiv.classList.add("pile")
+  discardPileDiv.textContent = "Discard"
+
+  let discardDiv = document.createElement("Div");
+  discardDiv.setAttribute("id", "discardDiv")
+  discardPileDiv.append(discardDiv);
+  deckRowDiv.append(discardPileDiv);
+  
+  document.getElementById("playerStats").appendChild(deckRowDiv);
   
 
   let imageRowDiv = document.createElement("Div");
@@ -1872,9 +1868,7 @@ function returnCard(stateObj) {
 
 function drawAHand(stateObj) {
   console.log("drawing a hand");
-  if (document.querySelector("#handContainer2")) {
-    document.querySelector("#handContainer2").classList.remove("hidden");  
-  }
+
   
   stateObj = immer.produce(stateObj, (newState) => {
     for (let i = 0; i < stateObj.playerMonster.turnCards; i++) {
@@ -1976,6 +1970,9 @@ async function playACard(stateObj, cardIndexInHand, arrayObj) {
   stateObj = await PlayACardImmer(stateObj, cardIndexInHand);
   stateObj = await pickOpponentMove(stateObj);
   stateObj = await changeState(stateObj);
+  document.querySelectorAll("#handContainer2 .card")[cardIndexInHand].classList.remove("discarding")
+  document.querySelectorAll("#handContainer2 .card")[cardIndexInHand].classList.add("discarding-"+cardIndexInHand.toString())
+  
   return stateObj;
 }
 
@@ -1997,6 +1994,17 @@ function renderHand(stateObj) {
       renderCard(stateObj, stateObj.encounterHand, index, "handContainer2", functionToAdd=false)
     });
   }
+  let turnButtonDiv = document.createElement("Div");
+
+
+  let endTurnButton = document.createElement("Button");
+  endTurnButton.classList.add("font5vmin")
+  endTurnButton.addEventListener("click", function() {
+    endTurn(stateObj)
+  })
+  endTurnButton.textContent = "End Turn";
+  turnButtonDiv.append(endTurnButton)
+  document.getElementById("handContainer2").append(turnButtonDiv)
 }
 
 function renderCardPile(stateObj, cardArrayObj, divStringName) {
@@ -3553,29 +3561,40 @@ async function playOpponentMove(stateObj) {
   return stateObj;
 }
 
+async function discardHandAnimation(removeIndicesArray, cardElementsArray) {
+  for (let indice of removeIndicesArray) {
+    let discardString = `discarding-` + indice.toString();
+    cardElementsArray[indice].classList.add(discardString)
+  }
+  await pause(1000)
+  for (let indice of removeIndicesArray) {
+    cardElementsArray[indice].classList.add("hidden")
+  }
+}
+
 async function discardHand(stateObj) {
   const indicesToRemove = stateObj.encounterHand.map((obj, index) => obj.hasOwnProperty('retain') ? undefined : index)
                               .filter(index => index !== undefined);
-  indicesToRemove.reverse()
   let cardElements = document.querySelectorAll("#handContainer2 .card");
-   stateObj = immer.produce(stateObj, (newState) => {
-    indicesToRemove.forEach(async function(indice, index) {
-      cardElements[index].classList.remove("discarding")
-      cardElements[index].classList.add("discarding")
-      console.log(cardElements[index])
+  await discardHandAnimation(indicesToRemove, cardElements);
+  let reversedIndices = indicesToRemove.reverse()
+  for (let indice of reversedIndices) {
+    stateObj = immer.produce(stateObj, (newState) => {
       let cardToRemove = newState.encounterHand.splice(indice, 1)[0];
       newState.encounterDiscard.push(cardToRemove);
     })
+  }
 
+  stateObj = immer.produce(stateObj, (newState) => {  
     newState.encounterHand.forEach(function(cardObj, index) {
       cardObj.upgrades +=1
     })
-  });
-  await pause(1000);
-  cardElements.forEach(async function(cardObj, index) {
-    cardObj.classList.remove("discarding")
   })
-  document.querySelector("#handContainer2").classList.add("hidden");
+  for (let indice of indicesToRemove) {
+    let discardString = `discarding-` + indice.toString();
+    cardElements[indice].classList.remove(discardString)
+  }
+
   return stateObj;
 }
 
