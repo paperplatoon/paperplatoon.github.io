@@ -168,7 +168,7 @@ let playerMonsters = {
       startingDeck: [
         //draw
         fireCardPool.puffofsmoke,
-        cards.puffofsmoke,
+        cards.icyfreeze,
         //block
         specialCardPool.testkill,
         specialCardPool.fataltoxin,

@@ -681,10 +681,8 @@ async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energy
 
   if (energyChange && energyChange > 0) {
     stateObj = await opponentGainEnergy(stateObj, energyChange, monsterIndex)
-    //await energyGainAnimation(stateObj, energyChange, monsterIndex)
   } else if (energyChange && energyChange < 0) {
     stateObj = await opponentLoseEnergy(stateObj, -energyChange, monsterIndex)
-    //await energyLoseAnimation(stateObj, -energyChange, monsterIndex)
   }
   
   
@@ -831,7 +829,7 @@ function addBackstepsToHand(stateObj, numberToAdd=1) {
   return stateObj
 }
 
-async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, playerTriggered=false, animateYes=false, cardIndex=false) {
+async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, playerTriggered=false) {
   let monsterObj = stateObj.opponentMonster[targetIndex]
   let monsterTypeString = ""
   if (monsterObj.type==="Fire") {
@@ -842,10 +840,6 @@ async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, play
     monsterTypeString = "energy-filled-air";
   } else if (monsterObj.type==="Earth") {
     monsterTypeString = "energy-filled-earth";
-  }
-
-  if (playerTriggered===true && animateYes===true) {
-    document.querySelectorAll("#handContainer2 .card")[cardIndex].classList.add("discarding-"+cardIndexInHand.toString())
   }
   let monsterDivs = document.querySelectorAll("#opponents .monster")
     let startingEnergy = monsterObj.encounterEnergy;
@@ -1008,8 +1002,8 @@ async function healOpponent(stateObj, HPToGain, index=0, energyChange=false, all
 }
 
 
-async function destroyEnergy(stateObj, energyToDestroy, energyCost=false, all=false, animation=false, index=false) {
-  await energyLoseAnimation(stateObj, energyToDestroy, stateObj.targetedMonster, playerTriggered=true, animateYes=animation, cardIndex=index)
+async function destroyEnergy(stateObj, energyToDestroy, energyCost=false, all=false) {
+  await energyLoseAnimation(stateObj, energyToDestroy, stateObj.targetedMonster, playerTriggered=true)
   stateObj = immer.produce(stateObj, (newState) => {
     if (all === true) {
       newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
@@ -1969,6 +1963,14 @@ function PlayACardImmer(stateObj, cardIndexInHand) {
 
 async function playACard(stateObj, cardIndexInHand, arrayObj) {
   console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
+  let cardElements = document.querySelectorAll("#handContainer2 .card");
+  discardCardArrayAnimation([cardIndexInHand], cardElements)
+  await pause(400)
+  // document.querySelectorAll("#handContainer2 .card")[cardIndexInHand].classList.add(discardString)
+  // console.log("discardString " + discardString)
+  // await pause(400)
+  // document.querySelectorAll("#handContainer2 .card")[cardIndexInHand].classList.add("hidden")
+  
   stateObj = await stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
 
   stateObj = await PlayACardImmer(stateObj, cardIndexInHand);
@@ -3564,12 +3566,12 @@ async function playOpponentMove(stateObj) {
   return stateObj;
 }
 
-async function discardHandAnimation(removeIndicesArray, cardElementsArray) {
+async function discardCardArrayAnimation(removeIndicesArray, cardElementsArray) {
   for (let indice of removeIndicesArray) {
     let discardString = `discarding-` + indice.toString();
     cardElementsArray[indice].classList.add(discardString)
   }
-  await pause(800)
+  await pause(400)
   for (let indice of removeIndicesArray) {
     cardElementsArray[indice].classList.add("hidden")
   }
@@ -3579,7 +3581,7 @@ async function discardHand(stateObj) {
   const indicesToRemove = stateObj.encounterHand.map((obj, index) => obj.hasOwnProperty('retain') ? undefined : index)
                               .filter(index => index !== undefined);
   let cardElements = document.querySelectorAll("#handContainer2 .card");
-  await discardHandAnimation(indicesToRemove, cardElements);
+  await discardCardArrayAnimation(indicesToRemove, cardElements);
   let reversedIndices = indicesToRemove.reverse()
   for (let indice of reversedIndices) {
     stateObj = immer.produce(stateObj, (newState) => {

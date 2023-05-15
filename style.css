@@ -961,7 +961,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center;
+  /* justify-content: center; */
   align-content: start;
   /*background: linear-gradient(45deg, rgba(32, 78, 70, 0.6) 0%, rgba(255,175,70,0.23) 35%, rgba(0,212,255,0.08) 100%); */
 }
@@ -1731,7 +1731,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 .discarding-0, .discarding-1, .discarding-2, .discarding-3, .discarding-4,
 .discarding-5, .discarding-6, .discarding-7 {
-  animation-duration: 0.8s;
+  animation-duration: 0.4s;
   animation-timing-function: ease-out;
   animation-direction: forwards;
 }
@@ -1766,92 +1766,154 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 .discarding-7 {
   animation-name: discard-7;
 }
-.play-discarding {
-  animation: discarding  ;
+
+
+
+/* .play-discarding-0, .play-discarding-1, .play-discarding-2, .play-discarding-3, .play-discarding-4,
+.play-discarding-5, .play-discarding-6, .play-discarding-7 {
+  animation-duration: 0.4s;
+  animation-timing-function: ease-out;
+  animation-direction: forwards;
+}
+.play-discarding-0 {
+  animation-name: discard-0;
 }
 
-/* @keyframes discarding {
-  0% { overflow: hidden;}
-  50% { transform: translateX(30%);
-    margin-right: 4vw;
-    width: 2vw;
-    height: 2.5vh; 
-    overflow: hidden;
-    background-color: brown;
-    }
-  100% { transform: translateX(100%) translateY(-50%);
-          width: 0.1vw;
-          height: 0.1vh; 
-          overflow: hidden;
-          opacity: 0;
-          margin-right: 0vw;
-          background-color: brown;
-        color: rgb(230, 171, 94);
-      visibility: hidden;}
+.play-discarding-1 {
+  animation-name: discard-1;
+}
+
+.play-discarding-2 {
+  animation-name: discard-2;
+}
+
+.play-discarding-3 {
+  animation-name: discard-3;
+}
+
+.play-discarding-4 {
+  animation-name: discard-4;
+}
+.play-discarding-5 {
+  animation-name: discard-5;
+}
+.play-discarding-6 {
+  animation-name: discard-6;
+}
+.play-discarding-7 {
+  animation-name: discard-7;
 } */
 
 @keyframes discard-0 {
-  0% { overflow: hidden;}
-  100% { transform: translateX(18vw) translateY(-5vh);
+  0% { transform: translateX(0) translateY(0);
+    overflow: hidden;}
+  70% {transform: translateX(18vw) translateY(-5vh);
+      margin-right: 4vw;
+      width: 6vw;
+      height: 4vh;
+      overflow: hidden;
+  }
+  100% { 
+    transform: translateX(18vw) translateY(-5vh);
     margin-right: 4vw;
     width: 6vw;
     height: 4vh;
-    overflow: hidden;
     opacity: 0;
+    overflow: hidden;
   }
 }
 
 @keyframes discard-1 {
-  0% { overflow: hidden;}
-  100% { transform: translateX(7vw) translateY(-5vh);
+  0% { transform: translateX(0) translateY(0);
+    overflow: hidden;}
+  70% {transform: translateX(9vw) translateY(-5vh);
+      margin-right: 4vw;
+      width: 6vw;
+      height: 4vh;
+      overflow: hidden;
+  }
+  100% { 
+    transform: translateX(9vw) translateY(-5vh);
     margin-right: 4vw;
     width: 6vw;
     height: 4vh;
-    overflow: hidden;
     opacity: 0;
+    overflow: hidden;
   }
 }
 
 @keyframes discard-2 {
-  0% { overflow: hidden;}
-  100% { transform: translateX(18vw) translateY(-12vh);
+  0% { transform: translateX(0) translateY(0);
+    overflow: hidden;}
+  70% {transform: translateX(18vw) translateY(-12vh);
+      margin-right: 4vw;
+      width: 6vw;
+      height: 4vh;
+      overflow: hidden;
+  }
+  100% { 
+    transform: translateX(18vw) translateY(-12vh);
     margin-right: 4vw;
     width: 6vw;
     height: 4vh;
-    overflow: hidden;
     opacity: 0;
+    overflow: hidden;
   }
 }
 
 @keyframes discard-3 {
-  0% { overflow: hidden;}
-  100% { transform: translateX(7vw) translateY(-12vh);
+  0% { transform: translateX(0) translateY(0);
+    overflow: hidden;}
+  70% {transform: translateX(9vw) translateY(-12vh);
+      margin-right: 4vw;
+      width: 6vw;
+      height: 4vh;
+      overflow: hidden;
+  }
+  100% { 
+    transform: translateX(9vw) translateY(-12vh);
     margin-right: 4vw;
     width: 6vw;
     height: 4vh;
-    overflow: hidden;
     opacity: 0;
+    overflow: hidden;
   }
 }
 
 @keyframes discard-4 {
-  0% { overflow: hidden;}
-  100% { transform: translateX(18vw) translateY(-18vh);
+  0% { transform: translateX(0) translateY(0);
+    overflow: hidden;}
+  70% {transform: translateX(18vw) translateY(-18vh);
+      margin-right: 4vw;
+      width: 6vw;
+      height: 4vh;
+      overflow: hidden;
+  }
+  100% { 
+    transform: translateX(18vw) translateY(-18vh);
     margin-right: 4vw;
     width: 6vw;
     height: 4vh;
-    overflow: hidden;
     opacity: 0;
+    overflow: hidden;
   }
 }
 
 @keyframes discard-5 {
-  0% { overflow: hidden;}
-  100% { transform: translateX(7vw) translateY(-18vh);
+  0% { transform: translateX(0) translateY(0);
+    overflow: hidden;}
+  70% {transform: translateX(9vw) translateY(-18vh);
+      margin-right: 4vw;
+      width: 6vw;
+      height: 4vh;
+      overflow: hidden;
+  }
+  100% { 
+    transform: translateX(9vw) translateY(-18vh);
     margin-right: 4vw;
     width: 6vw;
     height: 4vh;
-    overflow: hidden;
     opacity: 0;
+    overflow: hidden;
   }
 }
