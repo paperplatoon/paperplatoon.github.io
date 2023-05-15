@@ -1444,6 +1444,17 @@ async function renderPlayerMonster(stateObj) {
 
   let turnEnergyStrengthDiv = document.createElement("Div");
   turnEnergyStrengthDiv.classList.add("flex", "row", "space-evenly");
+
+  let drawPileDiv = document.createElement("Div");
+  drawPileDiv.setAttribute("id", "drawPile");
+  drawPileDiv.classList.add("pile");
+  drawPileDiv.textContent = "Draw";
+
+  let drawDiv = document.createElement("Div");
+  drawDiv.setAttribute("id", "drawDiv");
+  drawPileDiv.append(drawDiv);
+  turnEnergyStrengthDiv.append(drawPileDiv);
+
   let EnergyStrengthDiv = document.createElement("Div");
 
   let playerEnergyText = document.createElement("H4");
@@ -1463,22 +1474,21 @@ async function renderPlayerMonster(stateObj) {
 
   EnergyStrengthDiv.append(playerEnergyText, playerStrengthandDexText);
   turnEnergyStrengthDiv.append(EnergyStrengthDiv);
+
+  let turnButtonDiv = document.createElement("Div");
+  let endTurnButton = document.createElement("Button");
+  endTurnButton.classList.add("font5vmin")
+  endTurnButton.addEventListener("click", function() {
+    endTurn(stateObj)
+  })
+  endTurnButton.textContent = "End Turn";
+  turnButtonDiv.append(endTurnButton)
+  turnEnergyStrengthDiv.append(turnButtonDiv)
   
   document.getElementById("playerStats").appendChild(turnEnergyStrengthDiv);
 
-  let deckRowDiv = document.createElement("Div");
-  deckRowDiv.classList.add("monster-top-row");
-  deckRowDiv.classList.add("monster-deck-row");
 
-  let drawPileDiv = document.createElement("Div");
-  drawPileDiv.setAttribute("id", "drawPile");
-  drawPileDiv.classList.add("pile");
-  drawPileDiv.textContent = "Draw";
-
-  let drawDiv = document.createElement("Div");
-  drawDiv.setAttribute("id", "drawDiv");
-  drawPileDiv.append(drawDiv);
-  deckRowDiv.append(drawPileDiv);
+  
 
   let discardPileDiv = document.createElement("Div");
   discardPileDiv.setAttribute("id", "discardPile")
@@ -1488,19 +1498,9 @@ async function renderPlayerMonster(stateObj) {
   let discardDiv = document.createElement("Div");
   discardDiv.setAttribute("id", "discardDiv")
   discardPileDiv.append(discardDiv);
-  deckRowDiv.append(discardPileDiv);
-  
-  document.getElementById("playerStats").appendChild(deckRowDiv);
-  
-
-  let imageRowDiv = document.createElement("Div");
-  imageRowDiv.classList.add("player-decks-row");
-
-  
-  //let discardPileDiv.textConte
-
-  document.getElementById('playerStats').appendChild(imageRowDiv);
+  document.getElementById('playerStats').appendChild(discardPileDiv);
 }
+
 async function renderDivs(stateObj) {
 
   if (stateObj.fightStarted === false) {
@@ -1964,8 +1964,7 @@ function PlayACardImmer(stateObj, cardIndexInHand) {
 async function playACard(stateObj, cardIndexInHand, arrayObj) {
   console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
   let cardElements = document.querySelectorAll("#handContainer2 .card");
-  discardCardArrayAnimation([cardIndexInHand], cardElements)
-  await pause(400)
+  await discardCardArrayAnimation([cardIndexInHand], cardElements, played=true)
   // document.querySelectorAll("#handContainer2 .card")[cardIndexInHand].classList.add(discardString)
   // console.log("discardString " + discardString)
   // await pause(400)
@@ -1999,18 +1998,8 @@ function renderHand(stateObj) {
       renderCard(stateObj, stateObj.encounterHand, index, "handContainer2", functionToAdd=false)
     });
   }
-  let turnButtonDiv = document.createElement("Div");
-
-
-  let endTurnButton = document.createElement("Button");
-  endTurnButton.classList.add("font5vmin")
-  endTurnButton.addEventListener("click", function() {
-    endTurn(stateObj)
-  })
-  endTurnButton.textContent = "End Turn";
-  turnButtonDiv.append(endTurnButton)
-  document.getElementById("handContainer2").append(turnButtonDiv)
 }
+  
 
 function renderCardPile(stateObj, cardArrayObj, divStringName) {
   document.getElementById(divStringName).innerHTML = "";
@@ -3566,14 +3555,28 @@ async function playOpponentMove(stateObj) {
   return stateObj;
 }
 
-async function discardCardArrayAnimation(removeIndicesArray, cardElementsArray) {
+async function discardCardArrayAnimation(removeIndicesArray, cardElementsArray, played=false) {
   for (let indice of removeIndicesArray) {
-    let discardString = `discarding-` + indice.toString();
+    let discardString = ""
+    if (played) {
+      discardString += "play-"
+    }
+    discardString += `discarding-` + indice.toString();
     cardElementsArray[indice].classList.add(discardString)
   }
-  await pause(400)
+
+  
+  await pause(4000)
+
   for (let indice of removeIndicesArray) {
     cardElementsArray[indice].classList.add("hidden")
+    let discardString = ""
+    if (played) {
+      discardString += "play-"
+    }
+    discardString += `discarding-` + indice.toString();
+    cardElementsArray[indice].classList.add("hidden")
+    cardElementsArray[indice].classList.remove(discardString)
   }
 }
 
@@ -3595,10 +3598,10 @@ async function discardHand(stateObj) {
       cardObj.upgrades +=1
     })
   })
-  for (let indice of indicesToRemove) {
-    let discardString = `discarding-` + indice.toString();
-    cardElements[indice].classList.remove(discardString)
-  }
+  // for (let indice of indicesToRemove) {
+  //   let discardString = `discarding-` + indice.toString();
+  //   cardElements[indice].classList.remove(discardString)
+  // }
 
   return stateObj;
 }
