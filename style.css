@@ -1740,7 +1740,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 .discarding-0, .discarding-1, .discarding-2, .discarding-3, .discarding-4,
 .discarding-5, .discarding-6, .discarding-7 {
-  animation-duration: 4s;
+  animation-duration: 0.3s;
   animation-timing-function: ease-out;
   animation-direction: forwards;
 }
@@ -1780,7 +1780,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 .play-discarding-0, .play-discarding-1, .play-discarding-2, .play-discarding-3, .play-discarding-4,
 .play-discarding-5, .play-discarding-6, .play-discarding-7 {
-  animation-duration: 4s;
+  animation-duration: 0.3s;
   animation-timing-function: ease-out;
   animation-direction: forwards;
 }
@@ -1819,8 +1819,14 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 @keyframes discard-0 {
   0% { transform: translateX(0) translateY(0);
-    overflow: hidden;}
-  70% {transform: translateX(1vw) translateY(45.5vh);
+    overflow: hidden;
+    position: absolute;
+    top: 45vh;
+    left: 1vw;
+    }
+  70% {position: absolute;
+      top: 90vh;
+      left: 2vw;
       margin-right: var(--card-margin-left);
       width: 8vmin;
       height: 4vmin;
@@ -1828,7 +1834,9 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
       opacity: 0.8;
   }
   100% { 
-    transform: translateX(1vw) translateY(45.5vh);
+    position: absolute;
+      top: 90vh;
+      left: 2vw;
     margin-right: var(--card-margin-left);
     width: 8vmin;
     height: 4vmin;
@@ -1839,8 +1847,14 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 @keyframes discard-1 {
   0% { transform: translateX(0) translateY(0);
-    overflow: hidden;}
-  70% {transform: translateX(-8.5vw) translateY(45.5vh);
+    overflow: hidden;
+    position: absolute;
+    top: 45vh;
+    left: 15vw;
+    }
+  70% {position: absolute;
+      top: 90vh;
+      left: 2vw;
       margin-right: var(--card-margin-left);
       width: 8vmin;
       height: 4vmin;
@@ -1848,7 +1862,9 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
       opacity: 0.8;
   }
   100% { 
-    transform: translateX(-8.5vw) translateY(45.5vh);
+    position: absolute;
+      top: 90vh;
+      left: 2vw;
     margin-right: var(--card-margin-left);
     width: 8vmin;
     height: 4vmin;
@@ -1861,7 +1877,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   0% { transform: translateX(0) translateY(0);
     overflow: hidden;
     position: absolute;
-    top: 60vh;
+    top: 56vh;
     left: 1vw;
     }
   70% {position: absolute;
@@ -1889,8 +1905,8 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   0% { transform: translateX(0) translateY(0);
     overflow: hidden;
     position: absolute;
-    top: 60vh;
-    left: 15vw;}
+    top: 56vh;
+    left: 14vw;}
   70% {position: absolute;
     top: 90vh;
     left: 2vw;
@@ -1914,8 +1930,14 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 @keyframes discard-4 {
   0% { transform: translateX(0) translateY(0);
-    overflow: hidden;}
-  70% {transform: translateX(0.5vw) translateY(15vh);
+    overflow: hidden;
+    position: absolute;
+    top: 67vh;
+    left: 1vw;
+    }
+  70% {position: absolute;
+      top: 90vh;
+      left: 2vw;
       margin-right: var(--card-margin-left);
       width: 8vmin;
       height: 4vmin;
@@ -1923,7 +1945,9 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
       opacity: 0.8;
   }
   100% { 
-    transform: translateX(0.5vw) translateY(15vh);
+    position: absolute;
+      top: 90vh;
+      left: 2vw;
     margin-right: var(--card-margin-left);
     width: 8vmin;
     height: 4vmin;
@@ -1934,8 +1958,14 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 @keyframes discard-5 {
   0% { transform: translateX(0) translateY(0);
-    overflow: hidden;}
-  70% {transform: translateX(-9vw) translateY(15vh);
+    overflow: hidden;
+    position: absolute;
+    top: 67vh;
+    left: 15vw;
+    }
+  70% {position: absolute;
+      top: 90vh;
+      left: 2vw;
       margin-right: var(--card-margin-left);
       width: 8vmin;
       height: 4vmin;
@@ -1943,7 +1973,9 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
       opacity: 0.8;
   }
   100% { 
-    transform: translateX(-9vw) translateY(15vh);
+    position: absolute;
+      top: 90vh;
+      left: 2vw;
     margin-right: var(--card-margin-left);
     width: 8vmin;
     height: 4vmin;

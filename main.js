@@ -3566,7 +3566,7 @@ async function discardCardArrayAnimation(removeIndicesArray, cardElementsArray, 
   }
 
   
-  await pause(4000)
+  await pause(300)
 
   for (let indice of removeIndicesArray) {
     cardElementsArray[indice].classList.add("hidden")
