@@ -530,7 +530,7 @@ renderScreen(state);
 // - - - - - -  - - - - -Functions used by Cards.js and Monsters.js - - - - - -  - - - - -
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-async function dealOpponentDamageAnimation(stateObj, calculatedDamage, isAll=false) {
+async function addDealOpponentDamageAnimation(stateObj, calculatedDamage, isAll=false) {
   document.querySelector("#playerStats .avatar").classList.add("player-windup");
   let fireballString = "fireball";
   if (calculatedDamage > 19) {
@@ -542,32 +542,48 @@ async function dealOpponentDamageAnimation(stateObj, calculatedDamage, isAll=fal
     classString = (stateObj.targetedMonster === 0) ? "fireball-move-2" : "fireball-move-3"
   }
   document.getElementById(fireballString).classList.add(classString);
-  
 
   if (isAll===false) {
     document.querySelector(".targeted .avatar").classList.add("opponent-impact");
-    await pause(350);
+  } else {
+    stateObj.opponentMonster.forEach(function (monsterObj, index) {
+      document.querySelectorAll("#opponents .avatar")[index].classList.add("opponent-impact");
+    }) 
+  }
+}
+
+async function removeDealOpponentDamageAnimation(stateObj, calculatedDamage, isAll=false) {
+  document.querySelector("#playerStats .avatar").classList.remove("player-windup");
+  let fireballString = "fireball";
+  if (calculatedDamage > 19) {
+    fireballString = (calculatedDamage > 29) ? "hugefireball" : "mediumfireball" 
+  }
+   
+  let classString = "fireball-move"; 
+  if (stateObj.opponentMonster.length > 1) {
+    classString = (stateObj.targetedMonster === 0) ? "fireball-move-2" : "fireball-move-3"
+  }
+  document.getElementById(fireballString).classList.remove(classString);
+
+  if (isAll===false) {
     document.querySelector(".targeted .avatar").classList.remove("opponent-impact");
     document.getElementById(fireballString).classList.remove(classString);
   } else {
     stateObj.opponentMonster.forEach(function (monsterObj, index) {
-      document.querySelectorAll("#opponents .avatar")[index].classList.add("opponent-impact");
-    })
-    await pause(350);
-    stateObj.opponentMonster.forEach(function (monsterObj, index) {
       document.querySelectorAll("#opponents .avatar")[index].classList.remove("opponent-impact");
     })
-    document.querySelector("#playerStats .avatar").classList.remove("player-windup");
-    document.getElementById(fireballString).classList.remove(classString);
   }
 }
+    
 
 
 async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, energyCost=false, all=false, specifiedIndex=false) {
   let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster;
   let calculatedDamage = (damageNumber + stateObj.playerMonster.strength) * attackNumber;
   
-  await dealOpponentDamageAnimation(stateObj, calculatedDamage, all)
+  // await addDealOpponentDamageAnimation(stateObj, calculatedDamage, all)
+  // await pause(350)
+  // await removeDealOpponentDamageAnimation(stateObj, calculatedDamage, all)
 
   stateObj = immer.produce(stateObj, (newState) => {
     if (calculatedDamage > 0) {
@@ -1971,7 +1987,7 @@ function PlayACardImmer(stateObj, cardIndexInHand) {
 async function playACard(stateObj, cardIndexInHand, arrayObj) {
   console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
   let cardElements = document.querySelectorAll("#handContainer2 .card");
-  await discardCardArrayAnimation([cardIndexInHand], cardElements, played=true)
+  //await discardCardArrayAnimation([cardIndexInHand], cardElements, played=true)
   // document.querySelectorAll("#handContainer2 .card")[cardIndexInHand].classList.add(discardString)
   // console.log("discardString " + discardString)
   // await pause(400)

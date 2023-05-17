@@ -1788,7 +1788,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 .play-discarding-0, .play-discarding-1, .play-discarding-2, .play-discarding-3, .play-discarding-4,
 .play-discarding-5, .play-discarding-6, .play-discarding-7 {
-  animation-duration: 0.3s;
+  animation-duration: 0.35s;
   animation-timing-function: ease-out;
   animation-direction: forwards;
 }

@@ -1488,7 +1488,14 @@ let cards = {
         cardType: "attack",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*3), array[index].baseHits, array[index].baseCost)
+          let calculatedDamage = array[index].baseDamage + (array[index].upgrades*3)
+          await addDiscardAnimation(index)
+          await addDealOpponentDamageAnimation(stateObj, calculatedDamage)
+          await pause(350)
+          await finishDiscardAnimation(index)
+          await removeDealOpponentDamageAnimation(stateObj, calculatedDamage)
+
+          stateObj = await dealOpponentDamage(stateObj, calculatedDamage, array[index].baseHits, array[index].baseCost)
           return stateObj;
         }
       },
