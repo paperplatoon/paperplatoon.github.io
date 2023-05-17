@@ -82,12 +82,12 @@ let cards = {
         },
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
           stateObj = immer.produce(state, (newState) => {      
             newState.playerMonster.encounterEnergy -= array[index].baseCost 
           })
           for (let i=0; i < 1+array[index].upgrades; i++) {
-            stateObj = drawACard(stateObj);
+            stateObj = await drawACard(stateObj);
           }
           return stateObj;
         }
@@ -2664,12 +2664,12 @@ let cards = {
         energyGift: 2,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
           stateObj = immer.produce(state, (newState) => {      
             newState.playerMonster.encounterEnergy -= array[index].baseCost 
           })
           for (let i=0; i < 2+array[index].upgrades; i++) {
-            stateObj = drawACard(stateObj);
+            stateObj = await drawACard(stateObj);
           }
           stateObj = energyGift(stateObj, array[index].energyGift-array[index].upgrades)
           return stateObj;
@@ -3014,7 +3014,7 @@ let cards = {
         basePoison: 1,
         action: async (stateObj, index, array) => {
           stateObj = await applyPoison(stateObj, array[index].basePoison + array[index].upgrades, array[index].baseCost)
-          stateObj = drawACard(stateObj);
+          stateObj = await drawACard(stateObj);
           return stateObj;
         }
       },

@@ -1735,7 +1735,16 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 
 
+.drawing-0, .discarding-1, .discarding-2, .discarding-3, .discarding-4,
+.discarding-5, .discarding-6, .discarding-7 {
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+  animation-direction: forwards;
+}
 
+.drawing-0 {
+  animation-name: draw-0;
+}
 
 
 .discarding-0, .discarding-1, .discarding-2, .discarding-3, .discarding-4,
@@ -1744,7 +1753,6 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   animation-timing-function: ease-out;
   animation-direction: forwards;
 }
-
 
 
 .discarding-0 {
@@ -1842,6 +1850,39 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
     height: 4vmin;
     opacity: 0;
     overflow: hidden;
+  }
+}
+
+@keyframes draw-0 {
+  0% { transform: translateX(0) translateY(0);
+    overflow: hidden;
+    position: absolute;
+    top: 35vh;
+    left: 2vw;
+    width: 8vmin;
+    height: 4vmin;
+    opacity: 0.4;
+    }
+  70% {position: absolute;
+      top: 45vh;
+      left: 1vw;
+      margin-right: var(--card-margin-left);
+      width: 13vw;
+      height: 10vh;
+      overflow: hidden;
+      opacity: 0.8;
+  }
+  100% { 
+    position: absolute;
+    top: 45vh;
+    left: 1vw;
+    width: 13vw;
+    height: 10vh;
+    margin-right: var(--card-margin-left);
+    width: 8vmin;
+    height: 4vmin;
+    overflow: hidden;
+    opacity: 1;
   }
 }
 
