@@ -268,7 +268,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [ [easyMultiEncounters.em1, easyMultiEncounters.em2], [easyMultiEncounters.em3, easyMultiEncounters.em4],[easySoloEncounters.e5],[easySoloEncounters.e6], [easySoloEncounters.e7],[easySoloEncounters.e8]]  
+    townMonsterEncounters = [ [easySoloEncounters.e8], [easyMultiEncounters.em3, easyMultiEncounters.em4],[easySoloEncounters.e5],[easySoloEncounters.e6], [easySoloEncounters.e7],[easySoloEncounters.e8]]  
   } else {
     let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
     let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
@@ -287,7 +287,7 @@ function fillMapWithArray(stateObj) {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
       if (stateObj.testingMode === true) {
-        newState.townMapSquares[4] = "?1"
+        newState.townMapSquares[4] = "Fight"
       } else {
       newState.townMapSquares[4] =  "Fight";
       }
@@ -852,22 +852,12 @@ function addBackstepsToHand(stateObj, numberToAdd=1) {
 
 async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, playerTriggered=false) {
   let monsterObj = stateObj.opponentMonster[targetIndex]
-  let monsterTypeString = ""
-  if (monsterObj.type==="Fire") {
-    monsterTypeString = "energy-filled-fire";
-  } else if (monsterObj.type==="Water") {
-    monsterTypeString = "energy-filled-water";
-  } else if (monsterObj.type==="Air") {
-    monsterTypeString = "energy-filled-air";
-  } else if (monsterObj.type==="Earth") {
-    monsterTypeString = "energy-filled-earth";
-  }
   let monsterDivs = document.querySelectorAll("#opponents .monster")
     let startingEnergy = monsterObj.encounterEnergy;
     for (let i=0; i < energyToLose; i++) {
       if ( ((startingEnergy - i) > 0) && ((startingEnergy - i) < monsterObj.moves.length)) {
         console.log("removing energy at index " + (startingEnergy-1))
-        monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy-i].classList.remove(monsterTypeString)
+        monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy-i].classList.remove("energy-filled")
         if (playerTriggered === false) {
           monsterDivs[targetIndex].querySelector(".chosen .energy-cost").classList.add("largerHeight");
         }
@@ -919,21 +909,11 @@ async function opponentGainEnergy(stateObj, energyToGain, targetIndex=0, playerT
 async function energyGainAnimation(stateObj, energyToGain=1, targetIndex=0, playerTriggered=false) {
   console.log("recieved energy to gain is " + energyToGain + "for monster at index " + targetIndex)
   let monsterObj = stateObj.opponentMonster[targetIndex];
-  let monsterTypeString = ""
-  if (monsterObj.type==="Fire") {
-    monsterTypeString = "energy-filled-fire";
-  } else if (monsterObj.type==="Water") {
-    monsterTypeString = "energy-filled-water";
-  } else if (monsterObj.type==="Air") {
-    monsterTypeString = "energy-filled-air";
-  } else if (monsterObj.type==="Earth") {
-    monsterTypeString = "energy-filled-earth";
-  }
   let monsterDivs = document.querySelectorAll("#opponents .monster")
     let startingEnergy = monsterObj.encounterEnergy;
     for (let i=1; i < energyToGain+1; i++) {
       if (monsterObj.moves.length > (startingEnergy+i)) {
-        monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy+i].classList.add(monsterTypeString)
+        monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy+i].classList.add("energy-filled")
         if (playerTriggered === false) {
           monsterDivs[targetIndex].querySelector(".chosen .energy-cost").classList.add("largerHeight");
         }
@@ -3374,20 +3354,20 @@ function renderOpponents(stateObj) {
       if (moveIndex === monsterObj.opponentMoveIndex) {
         moveDiv.classList.add("chosen");
         moveDiv.classList.add("energy-filled");
-        if (monsterObj.type==="Fire") {
-          moveDiv.classList.add("energy-filled-fire");
-        } else if (monsterObj.type==="Water") {
-          moveDiv.classList.add("energy-filled-water");
-        } else if (monsterObj.type==="Air") {
-          moveDiv.classList.add("energy-filled-air");
-        } else if (monsterObj.type==="Earth") {
-          moveDiv.classList.add("energy-filled-earth");
-        }
       }
 
       if (moveObj.name) {
         moveDiv.id = moveIndex;
         moveDiv.classList.add("move");
+        if (monsterObj.type==="Fire") {
+          moveDiv.classList.add("move-div-fire");
+        } else if (monsterObj.type==="Water") {
+          moveDiv.classList.add("move-div-water");
+        } else if (monsterObj.type==="Air") {
+          moveDiv.classList.add("move-div-air");
+        } else if (monsterObj.type==="Earth") {
+          moveDiv.classList.add("move-div-earth");
+        }
         let moveNameCostDiv = document.createElement("Div");
         moveNameCostDiv.classList.add("move-name-cost");
 
@@ -3407,36 +3387,24 @@ function renderOpponents(stateObj) {
 
         if (moveIndex < monsterObj.opponentMoveIndex) {
           moveDiv.classList.add("energy-filled");
-          if (monsterObj.type==="Fire") {
-            moveDiv.classList.add("energy-filled-fire");
-            moveDiv.classList.add("not-chosen");
-          } else if (monsterObj.type==="Water") {
-            moveDiv.classList.add("energy-filled-water");
-            moveDiv.classList.add("not-chosen");
-          } else if (monsterObj.type==="Air") {
-            moveDiv.classList.add("energy-filled-air");
-            moveDiv.classList.add("not-chosen-air");
-          } else if (monsterObj.type==="Earth") {
-            moveDiv.classList.add("energy-filled-earth");
-            moveDiv.classList.add("not-chosen");
-          }
+          moveDiv.classList.add("not-chosen");
         }
         
         moveDiv.append(moveNameCostDiv, moveText);
       } else {
+        if (monsterObj.type==="Fire") {
+          moveDiv.classList.add("move-div-fire");
+        } else if (monsterObj.type==="Water") {
+          moveDiv.classList.add("move-div-water");
+        } else if (monsterObj.type==="Air") {
+          moveDiv.classList.add("move-div-air");
+        } else if (monsterObj.type==="Earth") {
+          moveDiv.classList.add("move-div-earth");
+        }
         moveDiv.classList.add("fake-move-div");
         moveDiv.classList.add("move");
         if (moveIndex <= monsterObj.encounterEnergy) {
           moveDiv.classList.add("energy-filled");
-          if (monsterObj.type==="Fire") {
-            moveDiv.classList.add("energy-filled-fire");
-          } else if (monsterObj.type==="Water") {
-            moveDiv.classList.add("energy-filled-water");
-          } else if (monsterObj.type==="Air") {
-            moveDiv.classList.add("energy-filled-air");
-          } else if (monsterObj.type==="Earth") {
-            moveDiv.classList.add("energy-filled-earth");
-          }
         }
       }
 
