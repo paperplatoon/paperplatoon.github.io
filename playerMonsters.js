@@ -163,10 +163,12 @@ let playerMonsters = {
       fightStrength: 0,
       fightDex: 0,
       turnEnergy: 3,
-      turnCards: 6,
+      turnCards: 8,
       avatar: "img/playerturtle.png",
       startingDeck: [
         //draw
+        fireCardPool.puffofsmoke,
+        cards.icyfreeze,
         fireCardPool.puffofsmoke,
         cards.icyfreeze,
         //block

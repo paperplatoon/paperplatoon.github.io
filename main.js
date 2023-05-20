@@ -580,10 +580,6 @@ async function removeDealOpponentDamageAnimation(stateObj, calculatedDamage, isA
 async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, energyCost=false, all=false, specifiedIndex=false) {
   let targetIndex = (specifiedIndex) ? specifiedIndex : stateObj.targetedMonster;
   let calculatedDamage = (damageNumber + stateObj.playerMonster.strength) * attackNumber;
-  
-  // await addDealOpponentDamageAnimation(stateObj, calculatedDamage, all)
-  // await pause(350)
-  // await removeDealOpponentDamageAnimation(stateObj, calculatedDamage, all)
 
   stateObj = immer.produce(stateObj, (newState) => {
     if (calculatedDamage > 0) {
@@ -897,7 +893,9 @@ async function opponentGainEnergy(stateObj, energyToGain, targetIndex=0, playerT
     energyToGain = totalMoves - currentEnergy
   }
   await energyGainAnimation(stateObj, energyToGain, targetIndex, playerTriggered)
-  await pause(350)
+  if (playerTriggered === true) {
+    await pause(350)
+  }
 
   stateObj = immer.produce(stateObj, (newState) => {
     if ( (stateObj.opponentMonster[targetIndex].encounterEnergy += energyToGain) > 0 && energyToGain > 0) {
@@ -1840,7 +1838,7 @@ async function drawACard(stateObj, handDraw = true) {
   animString = "draw-div-anim-" + handLength
 
   if (handDraw !== true) {
-    document.querySelectorAll(".draw-animation-div")[handLength].classList.add("draw-div-anim-0")
+    document.querySelectorAll(".draw-animation-div")[handLength].classList.add(animString)
     await pause(350)
   }
   
@@ -1862,9 +1860,6 @@ async function drawACard(stateObj, handDraw = true) {
 
     newState.encounterHand.push(topCard);
   })
-  // let drawString = "drawing-" + (handLength-1).toString()
-  // document.querySelectorAll("#handContainer2 .card")[handLength].classList.add(drawString)
-  // await pause(1000);
 
 
   return stateObj;
@@ -1902,7 +1897,8 @@ async function drawAHand(stateObj) {
       document.querySelectorAll(".draw-animation-div")[i].classList.add(animString)
     }
   }
-  await pause(350)
+  await pause(500)
+  await changeState(stateObj)
   return stateObj;
 }
 
@@ -1987,21 +1983,12 @@ function PlayACardImmer(stateObj, cardIndexInHand) {
 }
 
 async function playACard(stateObj, cardIndexInHand, arrayObj) {
-  console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);
-  let cardElements = document.querySelectorAll("#handContainer2 .card");
-  //await discardCardArrayAnimation([cardIndexInHand], cardElements, played=true)
-  // document.querySelectorAll("#handContainer2 .card")[cardIndexInHand].classList.add(discardString)
-  // console.log("discardString " + discardString)
-  // await pause(400)
-  // document.querySelectorAll("#handContainer2 .card")[cardIndexInHand].classList.add("hidden")
-  
+  console.log("you played " + stateObj.encounterHand[cardIndexInHand].name);  
   stateObj = await stateObj.encounterHand[cardIndexInHand].action(stateObj, cardIndexInHand, arrayObj);
-
   stateObj = await PlayACardImmer(stateObj, cardIndexInHand);
   stateObj = await pickOpponentMove(stateObj);
   stateObj = await changeState(stateObj);
-  //document.querySelectorAll("#handContainer2 .card")[cardIndexInHand].classList.add("discarding-"+cardIndexInHand.toString())
-  
+
   return stateObj;
 }
 
@@ -3597,7 +3584,7 @@ async function discardCardArrayAnimation(removeIndicesArray, cardElementsArray, 
     cardElementsArray[indice].classList.add(discardString)
   }
 
-  await pause(300)
+  await pause(350)
 
   for (let indice of removeIndicesArray) {
     cardElementsArray[indice].classList.add("hidden")

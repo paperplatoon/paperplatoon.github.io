@@ -2011,8 +2011,16 @@ let cards = {
         cardType: "attack",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*2), array[index].baseHits, array[index].baseCost)
+          let calculatedDamage = array[index].baseDamage + (array[index].upgrades*2)
+          await addDiscardAnimation(index)
+          await addDealOpponentDamageAnimation(stateObj, calculatedDamage)
+          await energyGainAnimation(stateObj, energyToGain=2, targetIndex=stateObj.targetedMonster, playerTriggered=true)
+          await pause(350)
+          await finishDiscardAnimation(index)
+          await removeDealOpponentDamageAnimation(stateObj, calculatedDamage)
           stateObj = await energyGift(stateObj, array[index].energyGift)
+
+          stateObj = await dealOpponentDamage(stateObj, calculatedDamage, array[index].baseHits, array[index].baseCost)
           return stateObj;
         }
       },

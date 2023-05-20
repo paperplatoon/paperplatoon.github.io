@@ -18,7 +18,7 @@
 }
 
 .space-evenly {
-  justify-content: space-evenly;
+  justify-content: end;
 }
 
 .column {
@@ -1716,13 +1716,13 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 #discardPile {
   position: absolute;
   left: 2vw;
-  top: 90vh;
+  top: 94vh;
 }
 
 #drawPile {
   position: absolute;
   left: 2vw;
-  top: 40vh;
+  top: 35vh;
 }
 
 
@@ -1761,11 +1761,21 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 
 
-.discarding-0, .discarding-1, .discarding-2, .discarding-3, .discarding-4,
-.discarding-5, .discarding-6, .discarding-7, .draw-div-anim-0, .draw-div-anim-1 {
-  animation-duration: 0.3s;
+.discarding-0, .discarding-1, .discarding-2, .discarding-3, .discarding-4, .discarding-5, 
+.discarding-6, .discarding-7 {
+  animation-duration: 0.35s;
   animation-timing-function: ease-out;
   animation-direction: forwards;
+}
+
+.draw-div-anim-0, .draw-div-anim-1, .draw-div-anim-2, .draw-div-anim-3, 
+.draw-div-anim-4, .draw-div-anim-5, .draw-div-anim-6, .draw-div-anim-7 {
+  animation-duration: 0.5s;
+  background-color: brown;
+  overflow: hidden;
+  visibility: visible;
+  position: absolute;
+  opacity: 0.5;
 }
 
 .draw-div-anim-0 {
@@ -1776,56 +1786,147 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   animation-name: draw-1;
 }
 
+.draw-div-anim-2 {
+  animation-name: draw-2;
+}
+
+.draw-div-anim-3 {
+  animation-name: draw-3;
+}
+
+.draw-div-anim-4 {
+  animation-name: draw-4;
+}
+
+.draw-div-anim-5 {
+  animation-name: draw-5;
+}
+
+.draw-div-anim-6 {
+  animation-name: draw-6;
+}
+
+.draw-div-anim-7 {
+  animation-name: draw-7;
+}
 
 @keyframes draw-0 {
-  0% { transform: translateX(0) translateY(0);
-    overflow: hidden;
-    visibility: visible;
-    position: absolute;
+  0% { transform: translateX(0) translateY(0);    
     top: 35vh;
     left: 2vw;
     width: 8vmin;
     height: 4vmin;
-    opacity: 0.4;
-    background: linear-gradient(90deg, rgb(255, 238, 208),rgb(230, 171, 94), rgb(255, 200, 127), rgb(243, 133, 23));
     }
   100% { 
-    position: absolute;
     top: 45vh;
-    left: 1vw;
+    left: 2vw;
     width: 13vw;
     height: 10vh;
-    visibility: visible;
-    margin-right: var(--card-margin-left);
-    overflow: hidden;
-    opacity: 1;
-    background: linear-gradient(90deg, rgb(255, 238, 208),rgb(230, 171, 94), rgb(255, 200, 127), rgb(243, 133, 23));
   }
 }
 
 @keyframes draw-1 {
   0% { transform: translateX(0) translateY(0);
-    overflow: hidden;
-    visibility: visible;
-    position: absolute;
     top: 35vh;
     left: 2vw;
     width: 8vmin;
     height: 4vmin;
-    opacity: 0.4;
-    background: linear-gradient(90deg, rgb(255, 238, 208),rgb(230, 171, 94), rgb(255, 200, 127), rgb(243, 133, 23));
     }
   100% { 
-    position: absolute;
     top: 45vh;
-    left: 15vw;
+    left: 16vw;
     width: 13vw;
     height: 10vh;
-    visibility: visible;
-    margin-right: var(--card-margin-left);
-    overflow: hidden;
-    opacity: 1;
-    background: linear-gradient(90deg, rgb(255, 238, 208),rgb(230, 171, 94), rgb(255, 200, 127), rgb(243, 133, 23));
+  }
+}
+
+@keyframes draw-2 {
+  0% { transform: translateX(0) translateY(0);
+    top: 35vh;
+    left: 2vw;
+    width: 8vmin;
+    height: 4vmin;
+    }
+  100% { 
+    top: 57vh;
+    left: 2vw;
+    width: 13vw;
+    height: 10vh;
+  }
+}
+
+@keyframes draw-3 {
+  0% { transform: translateX(0) translateY(0);
+    top: 35vh;
+    left: 2vw;
+    width: 8vmin;
+    height: 4vmin;
+    }
+  100% { 
+    top: 57vh;
+    left: 16vw;
+    width: 13vw;
+    height: 10vh;
+  }
+}
+
+@keyframes draw-4 {
+  0% { transform: translateX(0) translateY(0);
+    top: 35vh;
+    left: 2vw;
+    width: 8vmin;
+    height: 4vmin;
+    }
+  100% { 
+    top: 69vh;
+    left: 2vw;
+    width: 13vw;
+    height: 10vh;
+  }
+}
+
+@keyframes draw-5 {
+  0% { transform: translateX(0) translateY(0);
+    top: 35vh;
+    left: 2vw;
+    width: 8vmin;
+    height: 4vmin;
+    }
+  100% { 
+    top: 69vh;
+    left: 16vw;
+    width: 13vw;
+    height: 10vh;
+  }
+}
+
+@keyframes draw-6 {
+  0% { transform: translateX(0) translateY(0);
+    top: 35vh;
+    left: 2vw;
+    width: 8vmin;
+    height: 4vmin;
+    }
+  100% { 
+    top: 81vh;
+    left: 2vw;
+    width: 13vw;
+    height: 10vh;
+  }
+}
+
+@keyframes draw-7 {
+  0% { transform: translateX(0) translateY(0);
+    top: 35vh;
+    left: 2vw;
+    width: 8vmin;
+    height: 4vmin;
+    }
+  100% { 
+    top: 81vh;
+    left: 16vw;
+    width: 13vw;
+    height: 10vh;
   }
 }
 
@@ -1866,6 +1967,9 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   animation-duration: 0.35s;
   animation-timing-function: ease-out;
   animation-direction: forwards;
+  overflow: hidden;
+  position: absolute;
+  margin: 0;
 }
 .play-discarding-0 {
   animation-name: play-discard-0;
@@ -1902,29 +2006,21 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 @keyframes discard-0 {
   0% { transform: translateX(0) translateY(0);
-    overflow: hidden;
-    position: absolute;
     top: 45vh;
     left: 1vw;
     }
-  70% {position: absolute;
-      top: 90vh;
+  70% {top: 94vh;
       left: 2vw;
-      margin-right: var(--card-margin-left);
       width: 8vmin;
       height: 4vmin;
-      overflow: hidden;
       opacity: 0.8;
   }
   100% { 
-    position: absolute;
-      top: 90vh;
-      left: 2vw;
-    margin-right: var(--card-margin-left);
+    top: 94vh;
+    left: 2vw;
     width: 8vmin;
     height: 4vmin;
     opacity: 0;
-    overflow: hidden;
   }
 }
 
@@ -1932,29 +2028,22 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 @keyframes discard-1 {
   0% { transform: translateX(0) translateY(0);
-    overflow: hidden;
-    position: absolute;
     top: 45vh;
     left: 15vw;
     }
-  70% {position: absolute;
-      top: 90vh;
+  70% {
+      top: 94vh;
       left: 2vw;
-      margin-right: var(--card-margin-left);
+      margin: 0;
       width: 8vmin;
       height: 4vmin;
-      overflow: hidden;
-      opacity: 0.8;
   }
   100% { 
-    position: absolute;
-      top: 90vh;
-      left: 2vw;
-    margin-right: var(--card-margin-left);
+    top: 94vh;
+    left: 2vw;
     width: 8vmin;
     height: 4vmin;
     opacity: 0;
-    overflow: hidden;
   }
 }
 
@@ -1962,13 +2051,14 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   0% { transform: translateX(0) translateY(0);
     overflow: hidden;
     position: absolute;
+    margin: 0;
     top: 56vh;
     left: 1vw;
     }
   70% {position: absolute;
-      top: 90vh;
+      top: 94vh;
       left: 2vw;
-      margin-right: var(--card-margin-left);
+      margin: 0;
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
@@ -1976,9 +2066,9 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   }
   100% { 
     position: absolute;
-      top: 90vh;
-      left: 2vw;
-    margin-right: var(--card-margin-left);
+    top: 95vh;
+    left: 2vw;
+    margin: 0;
     width: 8vmin;
     height: 4vmin;
     opacity: 0;
@@ -1990,22 +2080,23 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   0% { transform: translateX(0) translateY(0);
     overflow: hidden;
     position: absolute;
+    margin: 0;
     top: 56vh;
     left: 14vw;}
   70% {position: absolute;
-    top: 90vh;
+    top: 94vh;
     left: 2vw;
-      margin-right: var(--card-margin-left);
-      width: 8vmin;
-      height: 4vmin;
-      overflow: hidden;
-      opacity: 0.8;
+    margin: 0;
+    width: 8vmin;
+    height: 4vmin;
+    overflow: hidden;
+    opacity: 0.8;
   }
   100% { 
     position: absolute;
-      top: 90vh;
-      left: 2vw;
-    margin-right: var(--card-margin-left);
+    top: 94vh;
+    left: 2vw;
+    margin: 0;
     width: 8vmin;
     height: 4vmin;
     opacity: 0;
@@ -2017,13 +2108,14 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   0% { transform: translateX(0) translateY(0);
     overflow: hidden;
     position: absolute;
+    margin: 0;
     top: 67vh;
     left: 1vw;
     }
   70% {position: absolute;
-      top: 90vh;
+      top: 94vh;
       left: 2vw;
-      margin-right: var(--card-margin-left);
+      margin: 0;
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
@@ -2031,9 +2123,9 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   }
   100% { 
     position: absolute;
-      top: 90vh;
-      left: 2vw;
-    margin-right: var(--card-margin-left);
+    top: 94vh;
+    left: 2vw;
+    margin: 0;
     width: 8vmin;
     height: 4vmin;
     opacity: 0;
@@ -2047,11 +2139,12 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
     position: absolute;
     top: 67vh;
     left: 15vw;
+    margin: 0;
     }
   70% {position: absolute;
-      top: 90vh;
+      top: 94vh;
       left: 2vw;
-      margin-right: var(--card-margin-left);
+      margin: 0;
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
@@ -2059,9 +2152,67 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   }
   100% { 
     position: absolute;
-      top: 90vh;
+    top: 94vh;
+    left: 2vw;
+    margin: 0;
+    width: 8vmin;
+    height: 4vmin;
+    opacity: 0;
+    overflow: hidden;
+  }
+}
+
+@keyframes discard-6 {
+  0% { transform: translateX(0) translateY(0);
+    overflow: hidden;
+    position: absolute;
+    top: 78vh;
+    left: 1vw;
+    margin: 0;
+    }
+  70% {position: absolute;
+      top: 94vh;
       left: 2vw;
-    margin-right: var(--card-margin-left);
+      margin: 0;
+      width: 8vmin;
+      height: 4vmin;
+      overflow: hidden;
+      opacity: 0.8;
+  }
+  100% { 
+    position: absolute;
+    top: 94vh;
+    left: 2vw;
+    margin: 0;
+    width: 8vmin;
+    height: 4vmin;
+    opacity: 0;
+    overflow: hidden;
+  }
+}
+
+@keyframes discard-7 {
+  0% { transform: translateX(0) translateY(0);
+    overflow: hidden;
+    position: absolute;
+    margin: 0;
+    top: 78vh;
+    left: 15vw;
+    }
+  70% {position: absolute;
+      top: 94vh;
+      left: 2vw;
+      margin: 0;
+      width: 8vmin;
+      height: 4vmin;
+      overflow: hidden;
+      opacity: 0.8;
+  }
+  100% { 
+    position: absolute;
+    top: 94vh;
+    left: 2vw;
+    margin: 0;
     width: 8vmin;
     height: 4vmin;
     opacity: 0;
@@ -2073,17 +2224,24 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 @keyframes play-discard-0 {
   0% { transform: translateX(0) translateY(0);
-    overflow: hidden;}
-  70% {transform: translateX(0.5vw) translateY(45vh);
-      margin-right: var(--card-margin-left);
+    overflow: hidden;
+    position: absolute;
+    margin: 0;
+    top: 45vh;
+    left: 1vw;}
+  70% {position: absolute;
+      top: 94vh;
+      left: 2vw;
+      margin: 0;
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
       opacity: 0.8;
   }
-  100% { 
-    transform: translateX(0.5vw) translateY(45vh);
-    margin-right: var(--card-margin-left);
+  100% {position: absolute;
+    top: 94vh;
+    left: 2vw;
+    margin: 0;
     width: 8vmin;
     height: 4vmin;
     opacity: 0;
@@ -2093,17 +2251,23 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 @keyframes play-discard-1 {
   0% { transform: translateX(0) translateY(0);
-    overflow: hidden;}
-  70% {transform: translateX(-13vw) translateY(45vh);
-      margin-right: var(--card-margin-left);
+    overflow: hidden;
+    position: absolute;
+    top: 45vh;
+    left: 15vw;}
+  70% {position: absolute;
+      top: 94vh;
+      left: 2vw;
+      margin: 0;
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
       opacity: 0.8;
   }
-  100% { 
-    transform: translateX(-13vw) translateY(45vh);
-    margin-right: var(--card-margin-left);
+  100% {position: absolute;
+    top: 94vh;
+    left: 2vw;
+    margin: 0;
     width: 8vmin;
     height: 4vmin;
     opacity: 0;
@@ -2113,17 +2277,23 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 @keyframes play-discard-2 {
   0% { transform: translateX(0) translateY(0);
-    overflow: hidden;}
-  70% {transform: translateX(0.5vw) translateY(33vh);
-      margin-right: var(--card-margin-left);
+    overflow: hidden;
+    position: absolute;
+    top: 56vh;
+    left: 1vw;}
+  70% {position: absolute;
+      top: 94vh;
+      left: 2vw;
+      margin: 0;
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
       opacity: 0.8;
   }
-  100% { 
-    transform: translateX(0.5vw) translateY(33vh);
-    margin-right: var(--card-margin-left);
+  100% {position: absolute;
+    top: 94vh;
+    left: 2vw;
+    margin: 0;
     width: 8vmin;
     height: 4vmin;
     opacity: 0;
@@ -2133,17 +2303,23 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 @keyframes play-discard-3 {
   0% { transform: translateX(0) translateY(0);
-    overflow: hidden;}
-  70% {transform: translateX(-13vw) translateY(33vh);
-      margin-right: var(--card-margin-left);
+    overflow: hidden;
+    position: absolute;
+    top: 56vh;
+    left: 15vw;}
+  70% {position: absolute;
+      top: 94vh;
+      left: 2vw;
+      margin: 0;
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
       opacity: 0.8;
   }
-  100% { 
-    transform: translateX(-13vw) translateY(33vh);
-    margin-right: var(--card-margin-left);
+  100% {position: absolute;
+    top: 94vh;
+    left: 2vw;
+    margin: 0;
     width: 8vmin;
     height: 4vmin;
     opacity: 0;
@@ -2153,17 +2329,23 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 @keyframes play-discard-4 {
   0% { transform: translateX(0) translateY(0);
-    overflow: hidden;}
-  70% {transform: translateX(0.5vw) translateY(20vh);
-      margin-right: var(--card-margin-left);
+    overflow: hidden;
+    position: absolute;
+    top: 67vh;
+    left: 1vw;}
+  70% {position: absolute;
+      top: 94vh;
+      left: 2vw;
+      margin: 0;
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
       opacity: 0.8;
   }
-  100% { 
-    transform: translateX(0.5vw) translateY(20vh);
-    margin-right: var(--card-margin-left);
+  100% {position: absolute;
+    top: 94vh;
+    left: 2vw;
+    margin: 0;
     width: 8vmin;
     height: 4vmin;
     opacity: 0;
@@ -2173,17 +2355,77 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 @keyframes play-discard-5 {
   0% { transform: translateX(0) translateY(0);
-    overflow: hidden;}
-  70% {transform: translateX(-13vw) translateY(20vh);
-      margin-right: var(--card-margin-left);
+    overflow: hidden;
+    position: absolute;
+    top: 67vh;
+    left: 15vw;}
+  70% {position: absolute;
+      top: 94vh;
+      left: 2vw;
+      margin: 0;
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
       opacity: 0.8;
   }
   100% { 
-    transform: translateX(-13vw) translateY(20vh);
-    margin-right: var(--card-margin-left);
+    position: absolute;
+    top: 94vh;
+    left: 2vw;
+    margin: 0;
+    width: 8vmin;
+    height: 4vmin;
+    opacity: 0;
+    overflow: hidden;
+  }
+}
+
+@keyframes play-discard-6 {
+  0% { transform: translateX(0) translateY(0);
+    overflow: hidden;
+    position: absolute;
+    top: 78vh;
+    left: 1vw;}
+  70% {position: absolute;
+      top: 94vh;
+      left: 2vw;
+      margin: 0;
+      width: 8vmin;
+      height: 4vmin;
+      overflow: hidden;
+      opacity: 0.8;
+  }
+  100% {position: absolute;
+    top: 94vh;
+    left: 2vw;
+    margin: 0;
+    width: 8vmin;
+    height: 4vmin;
+    opacity: 0;
+    overflow: hidden;
+  }
+}
+
+@keyframes play-discard-7 {
+  0% { transform: translateX(0) translateY(0);
+    overflow: hidden;
+    position: absolute;
+    top: 78vh;
+    left: 15vw;}
+  70% {position: absolute;
+      top: 94vh;
+      left: 2vw;
+      margin: 0;
+      width: 8vmin;
+      height: 4vmin;
+      overflow: hidden;
+      opacity: 0.8;
+  }
+  100% { 
+    position: absolute;
+    top: 94vh;
+    left: 2vw;
+    margin: 0;
     width: 8vmin;
     height: 4vmin;
     opacity: 0;
