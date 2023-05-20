@@ -859,9 +859,9 @@ async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, play
         console.log("removing energy at index " + (startingEnergy-1))
         monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy-i].classList.remove("energy-filled")
         if (playerTriggered === false) {
-          monsterDivs[targetIndex].querySelector(".chosen .energy-cost").classList.add("largerHeight");
+          await pause(250);
         }
-        await pause(250)
+        
       }
     }  
 }
@@ -897,6 +897,7 @@ async function opponentGainEnergy(stateObj, energyToGain, targetIndex=0, playerT
     energyToGain = totalMoves - currentEnergy
   }
   await energyGainAnimation(stateObj, energyToGain, targetIndex, playerTriggered)
+  await pause(350)
 
   stateObj = immer.produce(stateObj, (newState) => {
     if ( (stateObj.opponentMonster[targetIndex].encounterEnergy += energyToGain) > 0 && energyToGain > 0) {
@@ -914,13 +915,14 @@ async function energyGainAnimation(stateObj, energyToGain=1, targetIndex=0, play
     for (let i=1; i < energyToGain+1; i++) {
       if (monsterObj.moves.length > (startingEnergy+i)) {
         monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy+i].classList.add("energy-filled")
-        if (playerTriggered === false) {
-          monsterDivs[targetIndex].querySelector(".chosen .energy-cost").classList.add("largerHeight");
-        }
+      }
+      if (playerTriggered === false) {
         await pause(250)
       }
     }  
 }
+
+// async function addEnergyGiftAnimation(stateObj, energyToGain=1, targetIndex=0, )
 
 async function energyGift(stateObj, energyToGain, energyCost=false, all=false) {
   console.log("triggering energyGift; energy to gain is " + energyToGain)
@@ -1403,6 +1405,15 @@ async function renderPlayerMonster(stateObj) {
   let topRowDiv = document.createElement("Div");
   topRowDiv.classList.add("monster-top-row");
 
+  //create invisible draw divs
+  for (i=0; i < 8; i++) {
+    let newDiv = document.createElement("Div");
+    newDivString = "draw-div-" + i;
+    newDiv.classList.add("draw-animation-div");
+    newDiv.classList.add(newDivString);
+    topRowDiv.append(newDiv)
+  };
+
   
 
   let avatar = document.createElement('img');
@@ -1510,6 +1521,7 @@ async function renderDivs(stateObj) {
       newState.fightStarted = true;
     })
     await changeState(stateObj);
+    stateObj = await drawAHand(stateObj);
   }
 
   document.getElementById("app").innerHTML = ""
@@ -1822,9 +1834,16 @@ function shuffleDiscardIntoDeck(stateObj) {
 
 
 
-async function drawACard(stateObj) {
+async function drawACard(stateObj, handDraw = true) {
   let topCard = false;
   const handLength = stateObj.encounterHand.length;
+  animString = "draw-div-anim-" + handLength
+
+  if (handDraw !== true) {
+    document.querySelectorAll(".draw-animation-div")[handLength].classList.add("draw-div-anim-0")
+    await pause(350)
+  }
+  
   stateObj = immer.produce(stateObj, (newState) => {
     if (handLength > 8 ) {
       console.log("hand is full");
@@ -1878,9 +1897,12 @@ async function drawAHand(stateObj) {
       stateObj.encounterDraw.length !== 0 ||
       stateObj.encounterDiscard.length !== 0
     ) {
-      stateObj = await drawACard(stateObj);
+      stateObj = await drawACard(stateObj, true);
+      animString = "draw-div-anim-" + i;
+      document.querySelectorAll(".draw-animation-div")[i].classList.add(animString)
     }
   }
+  await pause(350)
   return stateObj;
 }
 
@@ -3516,26 +3538,32 @@ async function playOpponentMove(stateObj) {
   if (stateObj.opponentMonster.length === 3) {
     const move = stateObj.opponentMonster[0].moves[stateObj.opponentMonster[0].opponentMoveIndex];
     stateObj = await move.action(stateObj, 0, stateObj.opponentMonster);
+    stateObj = await pickOpponentMove(stateObj);
     stateObj = await changeState(stateObj)
 
     if (stateObj.opponentMonster[1]) {
       const move1 = stateObj.opponentMonster[1].moves[stateObj.opponentMonster[1].opponentMoveIndex];
       stateObj = await move1.action(stateObj, 1, stateObj.opponentMonster);
+      stateObj = await pickOpponentMove(stateObj);
       stateObj = await changeState(stateObj)
     }
 
     if (stateObj.opponentMonster[2]) {
       const move2 = stateObj.opponentMonster[2].moves[stateObj.opponentMonster[2].opponentMoveIndex];
       stateObj = await move.action(stateObj, 2, stateObj.opponentMonster);
+      stateObj = await pickOpponentMove(stateObj);
     }
   } else if (stateObj.opponentMonster.length === 2) {
     const move = stateObj.opponentMonster[0].moves[stateObj.opponentMonster[0].opponentMoveIndex];
     stateObj = await move.action(stateObj, 0, stateObj.opponentMonster);
+    stateObj = await pickOpponentMove(stateObj);
     stateObj = await changeState(stateObj)
+    console.log("opponent 1 targetIndex is:")
     
     if (stateObj.opponentMonster[1]) {
       const move1 = stateObj.opponentMonster[1].moves[stateObj.opponentMonster[1].opponentMoveIndex];
       stateObj = await move1.action(stateObj, 1, stateObj.opponentMonster);
+      stateObj = await pickOpponentMove(stateObj);
       stateObj = await changeState(stateObj)
     }
   } else if (stateObj.opponentMonster.length === 1) {
@@ -3583,25 +3611,25 @@ async function discardCardArrayAnimation(removeIndicesArray, cardElementsArray, 
   }
 }
 
-async function drawCardArrayAnimation(drawIndicesArray, cardElementsArray) {
-  for (let indice of drawIndicesArray) {
-    let drawString = `drawing-` + indice.toString();
-    cardElementsArray[indice].classList.add(drawString)
-  }
+// async function drawCardArrayAnimation(drawIndicesArray) {
+//   for (let indice of drawIndicesArray) {
+//     let drawString = `drawing-` + indice.toString();
+//     cardElementsArray[indice].classList.add(drawString)
+//   }
 
-  await pause(300)
+//   await pause(300)
 
-  for (let indice of removeIndicesArray) {
-    cardElementsArray[indice].classList.add("hidden")
-    let discardString = ""
-    if (played) {
-      discardString += "play-"
-    }
-    discardString += `discarding-` + indice.toString();
-    cardElementsArray[indice].classList.add("hidden")
-    cardElementsArray[indice].classList.remove(discardString)
-  }
-}
+//   for (let indice of removeIndicesArray) {
+//     cardElementsArray[indice].classList.add("hidden")
+//     let discardString = ""
+//     if (played) {
+//       discardString += "play-"
+//     }
+//     discardString += `discarding-` + indice.toString();
+//     cardElementsArray[indice].classList.add("hidden")
+//     cardElementsArray[indice].classList.remove(discardString)
+//   }
+// }
 
 async function discardHand(stateObj) {
   const indicesToRemove = stateObj.encounterHand.map((obj, index) => obj.hasOwnProperty('retain') ? undefined : index)
@@ -3651,7 +3679,6 @@ async function startEncounter(stateObj) {
   console.log('triggering start encounter');
   stateObj = await pickOpponentMove(stateObj);
   stateObj = shuffleDraw(stateObj);
-  stateObj = await drawAHand(stateObj);
   stateObj = immer.produce(stateObj, (newState) => {
     newState.fightStarted = true;
   })
@@ -3709,9 +3736,7 @@ async function endTurn(stateObj) {
     console.log("breaking out of function endTurn")
     return stateObj
   }
-  stateObj = await playOpponentMove(stateObj);
-  stateObj = await changeState(stateObj);
-  
+  stateObj = await playOpponentMove(stateObj);  
 
   // console.log("picking opponent move");
   // stateObj = pickOpponentMove(stateObj);
@@ -3725,6 +3750,7 @@ async function endTurn(stateObj) {
     }
     draft.playerMonster.encounterEnergy += draft.playerMonster.turnEnergy;
   })
+  stateObj = await changeState(stateObj);
   stateObj = await drawAHand(stateObj);
   await changeState(stateObj);
 

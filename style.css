@@ -55,7 +55,7 @@
 }
 
 .energy-gain {
-  animation: energyGain 0.15s forwards ;
+  animation: energyGain 0.35s forwards ;
 }
 
 .player-windup {
@@ -553,12 +553,7 @@
 }
 
 
-.chosen {
-  border: 4px dashed rgb(255, 254, 253);
-  color: white;
-  font-size: 2.5vmin;
-  transition: all 0.2s;
-}
+
 
 .move-div-fire {
   background: linear-gradient(to right, rgba(255, 52, 52, 0.916) 50%,  rgba(255, 52, 52, 0) 50%) ;
@@ -614,7 +609,12 @@
 
 
 
-
+.chosen {
+  border: 4px dashed rgb(255, 254, 253);
+  color: white;
+  font-size: 2.5vmin;
+  transition: all 0.2s;
+}
 
 
 
@@ -905,6 +905,13 @@
   border: 1px dashed red;
   font-size: 2vmin;
 }
+
+/* .draw-animation-div {
+  width: 8vmin;
+  height: 4vmin;
+  background-color: green;
+  visibility: hidden;
+} */
 
 .remove-pile {
   width: 15vw;
@@ -1710,7 +1717,12 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   position: absolute;
   left: 2vw;
   top: 90vh;
+}
 
+#drawPile {
+  position: absolute;
+  left: 2vw;
+  top: 40vh;
 }
 
 
@@ -1747,23 +1759,74 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 
 
-.drawing-0, .discarding-1, .discarding-2, .discarding-3, .discarding-4,
-.discarding-5, .discarding-6, .discarding-7 {
-  animation-duration: 1s;
-  animation-timing-function: ease-out;
-  animation-direction: forwards;
-}
-
-.drawing-0 {
-  animation-name: draw-0;
-}
 
 
 .discarding-0, .discarding-1, .discarding-2, .discarding-3, .discarding-4,
-.discarding-5, .discarding-6, .discarding-7 {
+.discarding-5, .discarding-6, .discarding-7, .draw-div-anim-0, .draw-div-anim-1 {
   animation-duration: 0.3s;
   animation-timing-function: ease-out;
   animation-direction: forwards;
+}
+
+.draw-div-anim-0 {
+  animation-name: draw-0;
+}
+
+.draw-div-anim-1 {
+  animation-name: draw-1;
+}
+
+
+@keyframes draw-0 {
+  0% { transform: translateX(0) translateY(0);
+    overflow: hidden;
+    visibility: visible;
+    position: absolute;
+    top: 35vh;
+    left: 2vw;
+    width: 8vmin;
+    height: 4vmin;
+    opacity: 0.4;
+    background: linear-gradient(90deg, rgb(255, 238, 208),rgb(230, 171, 94), rgb(255, 200, 127), rgb(243, 133, 23));
+    }
+  100% { 
+    position: absolute;
+    top: 45vh;
+    left: 1vw;
+    width: 13vw;
+    height: 10vh;
+    visibility: visible;
+    margin-right: var(--card-margin-left);
+    overflow: hidden;
+    opacity: 1;
+    background: linear-gradient(90deg, rgb(255, 238, 208),rgb(230, 171, 94), rgb(255, 200, 127), rgb(243, 133, 23));
+  }
+}
+
+@keyframes draw-1 {
+  0% { transform: translateX(0) translateY(0);
+    overflow: hidden;
+    visibility: visible;
+    position: absolute;
+    top: 35vh;
+    left: 2vw;
+    width: 8vmin;
+    height: 4vmin;
+    opacity: 0.4;
+    background: linear-gradient(90deg, rgb(255, 238, 208),rgb(230, 171, 94), rgb(255, 200, 127), rgb(243, 133, 23));
+    }
+  100% { 
+    position: absolute;
+    top: 45vh;
+    left: 15vw;
+    width: 13vw;
+    height: 10vh;
+    visibility: visible;
+    margin-right: var(--card-margin-left);
+    overflow: hidden;
+    opacity: 1;
+    background: linear-gradient(90deg, rgb(255, 238, 208),rgb(230, 171, 94), rgb(255, 200, 127), rgb(243, 133, 23));
+  }
 }
 
 
@@ -1865,38 +1928,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   }
 }
 
-@keyframes draw-0 {
-  0% { transform: translateX(0) translateY(0);
-    overflow: hidden;
-    position: absolute;
-    top: 35vh;
-    left: 2vw;
-    width: 8vmin;
-    height: 4vmin;
-    opacity: 0.4;
-    }
-  70% {position: absolute;
-      top: 45vh;
-      left: 1vw;
-      margin-right: var(--card-margin-left);
-      width: 13vw;
-      height: 10vh;
-      overflow: hidden;
-      opacity: 0.8;
-  }
-  100% { 
-    position: absolute;
-    top: 45vh;
-    left: 1vw;
-    width: 13vw;
-    height: 10vh;
-    margin-right: var(--card-margin-left);
-    width: 8vmin;
-    height: 4vmin;
-    overflow: hidden;
-    opacity: 1;
-  }
-}
+
 
 @keyframes discard-1 {
   0% { transform: translateX(0) translateY(0);
