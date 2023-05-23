@@ -1887,7 +1887,7 @@ function returnCard(stateObj) {
 
 async function drawAHand(stateObj) {
   console.log("drawing a hand");
-  for (let i = 0; i < stateObj.playerMonster.turnCards; i++) {
+  for (let i = stateObj.playerMonster.turnCards-1; i > -1; i--) {
     if (
       stateObj.encounterDraw.length !== 0 ||
       stateObj.encounterDiscard.length !== 0
@@ -1895,9 +1895,10 @@ async function drawAHand(stateObj) {
       stateObj = await drawACard(stateObj, true);
       animString = "draw-div-anim-" + i;
       document.querySelectorAll(".draw-animation-div")[i].classList.add(animString)
+      await pause(150)
     }
   }
-  await pause(500)
+  //await pause(500)
   await changeState(stateObj)
   return stateObj;
 }
@@ -3584,7 +3585,7 @@ async function discardCardArrayAnimation(removeIndicesArray, cardElementsArray, 
     cardElementsArray[indice].classList.add(discardString)
   }
 
-  await pause(350)
+  await pause(700)
 
   for (let indice of removeIndicesArray) {
     cardElementsArray[indice].classList.add("hidden")

@@ -1763,7 +1763,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 
 .discarding-0, .discarding-1, .discarding-2, .discarding-3, .discarding-4, .discarding-5, 
 .discarding-6, .discarding-7 {
-  animation-duration: 0.35s;
+  animation-duration: 0.7s;
   animation-timing-function: ease-out;
   animation-direction: forwards;
 }
@@ -1778,28 +1778,38 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   opacity: 0.5;
 }
 
+.draw-div-anim-5 {
+  animation-duration: 0.9s;
+}
+
 .draw-div-anim-0 {
   animation-name: draw-0;
+  animation-duration: 0.15s;
 }
 
 .draw-div-anim-1 {
   animation-name: draw-1;
+  animation-duration: 0.3s;
 }
 
 .draw-div-anim-2 {
   animation-name: draw-2;
+  animation-duration: 0.45s;
 }
 
 .draw-div-anim-3 {
   animation-name: draw-3;
+  animation-duration: 0.6s;
 }
 
 .draw-div-anim-4 {
   animation-name: draw-4;
+  animation-duration: 0.75s;
 }
 
 .draw-div-anim-5 {
   animation-name: draw-5;
+  animation-duration: 0.9s;
 }
 
 .draw-div-anim-6 {
@@ -2008,12 +2018,15 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   0% { transform: translateX(0) translateY(0);
     top: 45vh;
     left: 1vw;
+    opacity: 0.7;
+    position: absolute;
     }
   70% {top: 94vh;
       left: 2vw;
       width: 8vmin;
       height: 4vmin;
-      opacity: 0.8;
+      opacity: 0.5;
+      position: absolute;
   }
   100% { 
     top: 94vh;
@@ -2021,6 +2034,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
     width: 8vmin;
     height: 4vmin;
     opacity: 0;
+    position: absolute;
   }
 }
 
@@ -2030,16 +2044,21 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   0% { transform: translateX(0) translateY(0);
     top: 45vh;
     left: 15vw;
+    opacity: 0.7;
+    position: absolute;
     }
   70% {
       top: 94vh;
+      position: absolute;
       left: 2vw;
       margin: 0;
       width: 8vmin;
       height: 4vmin;
+      opacity: 0.5;
   }
   100% { 
     top: 94vh;
+    position: absolute;
     left: 2vw;
     width: 8vmin;
     height: 4vmin;
@@ -2054,6 +2073,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
     margin: 0;
     top: 56vh;
     left: 1vw;
+    opacity: 0.7;
     }
   70% {position: absolute;
       top: 94vh;
@@ -2062,7 +2082,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
-      opacity: 0.8;
+      opacity: 0.5;
   }
   100% { 
     position: absolute;
@@ -2081,6 +2101,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
     overflow: hidden;
     position: absolute;
     margin: 0;
+    opacity: 0.7;
     top: 56vh;
     left: 14vw;}
   70% {position: absolute;
@@ -2090,7 +2111,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
     width: 8vmin;
     height: 4vmin;
     overflow: hidden;
-    opacity: 0.8;
+    opacity: 0.5;
   }
   100% { 
     position: absolute;
@@ -2111,6 +2132,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
     margin: 0;
     top: 67vh;
     left: 1vw;
+    opacity: 0.7;
     }
   70% {position: absolute;
       top: 94vh;
@@ -2119,7 +2141,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
-      opacity: 0.8;
+      opacity: 0.5;
   }
   100% { 
     position: absolute;
@@ -2140,6 +2162,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
     top: 67vh;
     left: 15vw;
     margin: 0;
+    opacity: 0.7;
     }
   70% {position: absolute;
       top: 94vh;
@@ -2148,7 +2171,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
-      opacity: 0.8;
+      opacity: 0.5;
   }
   100% { 
     position: absolute;
@@ -2169,6 +2192,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
     top: 78vh;
     left: 1vw;
     margin: 0;
+    opacity: 0.7;
     }
   70% {position: absolute;
       top: 94vh;
@@ -2177,7 +2201,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
-      opacity: 0.8;
+      opacity: 0.5;
   }
   100% { 
     position: absolute;
@@ -2198,6 +2222,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
     margin: 0;
     top: 78vh;
     left: 15vw;
+    opacity: 0.7;
     }
   70% {position: absolute;
       top: 94vh;
@@ -2206,7 +2231,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
       width: 8vmin;
       height: 4vmin;
       overflow: hidden;
-      opacity: 0.8;
+      opacity: 0.5;
   }
   100% { 
     position: absolute;

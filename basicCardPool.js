@@ -2018,8 +2018,8 @@ let cards = {
           await pause(350)
           await finishDiscardAnimation(index)
           await removeDealOpponentDamageAnimation(stateObj, calculatedDamage)
-          stateObj = await energyGift(stateObj, array[index].energyGift)
 
+          stateObj = await energyGift(stateObj, array[index].energyGift)
           stateObj = await dealOpponentDamage(stateObj, calculatedDamage, array[index].baseHits, array[index].baseCost)
           return stateObj;
         }
