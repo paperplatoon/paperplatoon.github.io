@@ -679,9 +679,9 @@
   flex-grow: 0.1;
   font-size: 1.5vw;
   flex-shrink: 2;
-  line-height: 6vmin;
-  height: 10vmin;
-  width: 10vmin;
+  line-height: 3.5vw;
+  height: 5vw;
+  width: 5vw;
 }
 
 .monster-hp-town {
@@ -701,6 +701,7 @@
 }
 
 .monster-block {
+    display: inline-block;
     border-radius: 50% 50% 50% 50% / 12% 12% 30% 30%;
     background-color: blue;
     color: white;
@@ -711,6 +712,7 @@
     width: 3.9vmin;
     height: 3.9vmin;
     flex-shrink: 1;
+    margin-top: 3vh;
     border: 1px dashed white;
   }
 
@@ -797,8 +799,8 @@
 
 
 #opponents .avatar {
-  width: 15vmax;
-  height: 15vmax;
+  width: 10vw;
+  height: 10vw;
 }
 
 .avatar {
