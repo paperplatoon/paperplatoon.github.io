@@ -208,7 +208,10 @@ let mediumSoloEncounters = {
               })
               return stateObj;
             }
-          }
+          },
+          {
+            name: false,
+          },
         ]
       },
 

@@ -454,12 +454,7 @@ e8: {
       minReq: 0,
       energyChange: "+3",
       action: async (stateObj, index, array) => {
-        stateObj = immer.produce(stateObj, (newState) => {
-          newState.opponentMonster.forEach(function (monsterObj) {
-            monsterObj.encounterBlock += (Math.floor((array[index].baseBlock / 2)) + array[index].dex);
-          })
-        })
-        stateObj = await opponentGainEnergy(stateObj, 3, index)
+        stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage * 2), index, 3);
         return stateObj;
       }
     },
@@ -474,11 +469,11 @@ e8: {
       cost: "3",
       energyChange: "-3",
       text: (state, index, array) => {
-        return ` Deal ${array[index].baseDamage + 2 + array[index].strength} damage. Lose 1 energy`
+        return ` Deal ${array[index].baseDamage + 3 + array[index].strength} damage. Lose 1 energy`
       },
       minReq: 3,
       action: async (stateObj, index, array) => {
-        stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage + 2), index, -3);
+        stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage + 3), index, -3);
         stateObj = immer.produce(stateObj, (newState) => {
           if (newState.playerMonster.encounterEnergy > 0) {
             newState.playerMonster.encounterEnergy -= 1
