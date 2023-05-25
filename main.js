@@ -104,6 +104,7 @@ let gameStartState = {
   combatTurnNumber: 0,
   comboPerTurn: 0,
   blockKeep: false,
+  cantSelfDamage: false,
   gainStrengthEnergyChange: 0,
   backstepDamage: false,
   healOpponentBlocked: false,
@@ -1094,24 +1095,28 @@ async function applyGreenFilter(elementArray, duration) {
 
 
 
-// async function dealSelfDamage(stateObj, damageToDo) {
-//   stateObj = immer.produce(stateObj, (newState) => {
-//       newState.playerMonster.currentHP -= damageToDo
-//       newState.fightSelfDamageCount += 1;
-//       newState.fightSelfDamageTotal += damageToDo;
+async function dealSelfDamage(stateObj, damageToDo) {
 
-//       if (newState.selfDamageBlock > 0) {
-//         newState.playerMonster.encounterBlock += newState.selfDamageBlock;
-//       }
-//       if (newState.selfDamageAttack > 0) {
-//         let targetIndex = Math.floor(Math.random() * (newState.opponentMonster.length))
-//         let tempState = await dealOpponentDamage(newState, (newState.selfDamageAttack-stateObj.playerMonster.strength), attackNumber=1, all=false, specifiedIndex=targetIndex);
-//         newState.opponentMonster[targetIndex].currentHP = tempState.opponentMonster[targetIndex].currentHP;
-//         newState.opponentMonster[targetIndex].encounterBlock = tempState.opponentMonster[targetIndex].encounterBlock;
-//       }
-//     });
-//   return stateObj; 
-// };
+  if (stateObj.cantSelfDamage === false) {
+    stateObj = immer.produce(stateObj, async (newState) => {
+      newState.playerMonster.currentHP -= damageToDo
+      newState.fightSelfDamageCount += 1;
+      newState.fightSelfDamageTotal += damageToDo;
+
+      if (newState.selfDamageBlock > 0) {
+        newState.playerMonster.encounterBlock += newState.selfDamageBlock;
+      }
+      if (newState.selfDamageAttack > 0) {
+        let targetIndex = Math.floor(Math.random() * (newState.opponentMonster.length))
+        let tempState = await dealOpponentDamage(newState, (newState.selfDamageAttack-stateObj.playerMonster.strength), attackNumber=1, all=false, specifiedIndex=targetIndex);
+        newState.opponentMonster[targetIndex].currentHP = tempState.opponentMonster[targetIndex].currentHP;
+        newState.opponentMonster[targetIndex].encounterBlock = tempState.opponentMonster[targetIndex].encounterBlock;
+      }
+    });
+  }
+
+  return stateObj; 
+};
 
 
 //----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -1667,6 +1672,7 @@ function resetAfterFight(stateObj) {
     newState.energyGiftAttack = 0;
     newState.blockPerTurn = 0;
     newState.blockKeep = false;
+    newState.cantSelfDamage = false;
     newState.backstepDamage = false;
     newState.gainStrengthEnergyChange = 0;
     newState.cardsPerTurn = 0;
@@ -1778,6 +1784,7 @@ function setUpEncounter(stateObj, isBoss=false) {
     newState.gainLifePerCard = 0;
     newState.blockPerTurn = 0;
     newState.blockKeep = false;
+    newState.cantSelfDamage = false;
     newState.backstepDamage = false;
     newState.gainStrengthEnergyChange = 0;
     newState.comboPerTurn = 0;

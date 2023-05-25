@@ -60,9 +60,9 @@ let cards = {
               textString += 's'
           } 
           textString += '. Doesn\'t discard. Draw +1 card per turn in hand.'
-          if (state.status === Status.ChooseEncounterCardReward || state.status === Status.cardShop) {
-            textString += "<br></br><br>This card stays in your hand until you play it. Each turn it stays in your hand, it becomes more powerful</br>"
-          }
+          // if (state.status === Status.ChooseEncounterCardReward || state.status === Status.cardShop) {
+          //   textString += "<br></br><br>This card stays in your hand until you play it. Each turn it stays in your hand, it becomes more powerful</br>"
+          // }
           return textString
         },
         minReq: (state, index, array) => {
@@ -307,16 +307,19 @@ let cards = {
         }
       },
 
-      bigtackle: {
+      weightythoughts: {
         cardID: 25,
-        name: "Big Tackle",
-        text: (state, index, array) => { 
-          if (array[index].baseHits === 1) {
-            return `Deal ${array[index].baseDamage + (array[index].upgrades*5) + state.playerMonster.strength} damage`;
-          } else {
-            return `Deal ${array[index].baseDamage + (array[index].upgrades*5) + state.playerMonster.strength} damage ${array[index].baseHits} times.`
+        name: "Weighty Thoughts",
+        text: (stateObj, index, array) => { 
+          let totalDamage = (array[index].baseDamage + (array[index].upgrades*4) + stateObj.playerMonster.strength);
+          let textString = `Deal ${totalDamage} + ${stateObj.playerDeck.length} damage`;
+          if (array[index].baseHits > 1) {
+            textString += ` ${array[index].baseHits} times`; 
           }
-      },
+          textString += ` (${(totalDamage+stateObj.playerDeck.length) * array[index].baseHits}) total`;
+          textString += `Deals extra damage for each card in your deck.`; 
+          return textString; 
+        },
       minReq: (state, index, array) => {
         return array[index].baseCost;
       },
@@ -325,12 +328,13 @@ let cards = {
           return array[index].baseCost;
         },
         upgrades: 0,
-        baseDamage: 15,
+        baseDamage: 10,
         baseHits: 1,
         cardType: "attack",
-        elementType: "fire",
+        elementType: "earth",
         action: async (stateObj, index, array) => {
-          stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*5), array[index].baseHits, array[index].baseCost)
+          let totalDamage = (array[index].baseDamage + (array[index].upgrades*4) +  stateObj.playerDeck.length);
+          stateObj = await dealOpponentDamage(stateObj, totalDamage, array[index].baseHits, array[index].baseCost)
           return stateObj;
         }
       },
@@ -1946,14 +1950,14 @@ let cards = {
             }
         },
         minReq: (state, index, array) => {
-          return array[index].baseCost;
+          return array[index].baseCost + Math.floor(array[index].baseDamage/20);
         },
           baseCost: 1,
           cost:  (state, index, array) => {
-            return array[index].baseCost;
+            return array[index].baseCost + Math.floor(array[index].baseDamage/20);
           },
           upgrades: 0,
-          baseDamage: 3,
+          baseDamage: 4,
           baseHits: 1,
           cardType: "attack",
           elementType: "fire",
@@ -2755,12 +2759,17 @@ let cards = {
       brandingiron: {
         cardID: "strength3",
         name: "Branding Iron",
-        text: (state, index, array) => { return `Deal ${array[index].baseSelfDamage - array[index].upgrades} damage to yourself. Gain ${3+Math.ceil(array[index].upgrades/2)} strength` },
+        text: (state, index, array) => { 
+          selfDamage = (stateObj.cantSelfDamage === true) ? 0  : array[index].baseSelfDamage; 
+          return `Deal ${selfDamage + array[index].upgrades} damage to yourself. Gain ${3+array[index].upgrades} strength`; 
+        },
         minReq: 0,
         upgrades: 0,
         baseCost: 1,
-        cost:  0,
-        baseSelfDamage: 5,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseSelfDamage: 2,
         cardType: "ability",
         elementType: "fire",
         action: (stateObj, index, array) => {
@@ -2769,8 +2778,58 @@ let cards = {
             newState.playerMonster.strength += (3+array[index].upgrades);
           })
           if (array[index].upgrades < array[index].baseSelfDamage) {
-            stateObj = dealSelfDamage(stateObj, array[index].baseSelfDamage - array[index].upgrades);
+            stateObj = dealSelfDamage(stateObj, array[index].baseSelfDamage + array[index].upgrades);
           }
+          return stateObj;
+        }
+      },
+
+      flagellate: {
+        cardID: "brand2",
+        name: "Flagellate",
+        text: (state, index, array) => {
+          selfDamage = (stateObj.cantSelfDamage === true) ? 0  : array[index].baseSelfDamage; 
+          return `Deal ${selfDamage + array[index].upgrades} damage to yourself. Gain ${1+array[index].upgrades} strength`;
+          },
+        minReq: 0,
+        upgrades: 0,
+        baseCost: 0,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseSelfDamage: 1,
+        cardType: "ability",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.playerMonster.fightStrength += (1+array[index].upgrades);
+            newState.playerMonster.strength += (1+array[index].upgrades);
+          })
+          if (array[index].upgrades < array[index].baseSelfDamage) {
+            stateObj = dealSelfDamage(stateObj, array[index].baseSelfDamage + array[index].upgrades);
+          }
+          return stateObj;
+        }
+      },
+
+      enlightened: {
+        cardID: "noselfdamage",
+        name: "Enlightened",
+        text: (state, index, array) => { return `Gain ${array[index].baseSelfDamage + array[index].upgrades} block. You can't damage yourself.` },
+        minReq: 0,
+        upgrades: 0,
+        baseCost: 1,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseBlock: 1,
+        cardType: "ability",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {
+          stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*3), array[index].baseCost)
+          let stateObj = immer.produce(stateObj, (newState) => {
+            newState.cantSelfDamage = true;
+          })
           return stateObj;
         }
       },
@@ -2795,15 +2854,15 @@ let cards = {
         exhaust: true,
         //takes the state object, declares a toChangeState which takes immer.produce
         //and returns a new state reflecting the changes
-        action: async (state, index, array) => {
-          let toChangeState = immer.produce(state, (newState) => {
+        action: async (stateObj, index, array) => {
+          let stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.strength += 1;
             newState.playerMonster.encounterEnergy -=  array[index].baseCost-(array[index].upgrades);
           })
           document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
           await pause(500);
           document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
-          return toChangeState;
+          return stateObj;
         }
       },
 

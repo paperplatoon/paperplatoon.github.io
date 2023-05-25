@@ -25,6 +25,8 @@ let fireCardPool = {
     cursedritual: {...cards.cursedritual},
     ritual: {...cards.ritual},
     brandingiron: {...cards.brandingiron},
+    flagellate: {...cards.flagellate},
+    enlightened: {...cards.enlightened},
     hypertrain: {...cards.hypertrain},
     //healing - 3 
     siphon: {...cards.siphon},
@@ -81,6 +83,7 @@ let fireCardPool = {
     //3+ energy
     //multi-enemy
     bloatedbomb: {...cards.bloatedbomb},
+    weightythoughts: {...cards.weightythoughts},
     bowlthrough: {...cards.bowlthrough},
     annihilation: {...cards.annihilation},
     theocho: {...cards.theocho},
@@ -95,6 +98,7 @@ let fireCardPool = {
     reformingshield: {...cards.reformingshield},
     unwaveringdefense: {...cards.unwaveringdefense},
     religiousfervor: {...cards.religiousfervor},
+    enlightened: {...cards.enlightened},
 
     flamingcloak: {...cards.flamingcloak},
     fortify: {...cards.fortify},
@@ -193,6 +197,7 @@ let fireCardPool = {
     //retain and scale
     chargedblast: {...cards.chargedblast},
     eighthdimension: {...cards.eighthdimension},
+    weightythoughts: {...cards.weightythoughts},
 
     //3+
     bloatedbomb: {...cards.bloatedbomb},
