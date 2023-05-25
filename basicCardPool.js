@@ -59,7 +59,7 @@ let cards = {
           if (array[index].upgrades > 0) {
               textString += 's'
           } 
-          textString += 'Doesn\'t discard. Draw +1 card per turn in hand.'
+          textString += '. Doesn\'t discard. Draw +1 card per turn in hand.'
           if (state.status === Status.ChooseEncounterCardReward || state.status === Status.cardShop) {
             textString += "<br></br><br>This card stays in your hand until you play it. Each turn it stays in your hand, it becomes more powerful</br>"
           }

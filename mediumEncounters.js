@@ -162,7 +162,7 @@ let mediumSoloEncounters = {
         baseDamage: opponentBaseDamage,
         baseScale: opponentBaseScale,
         baseHeal: 0,
-        avatar: "img/medium/dracula.png",
+        avatar: "img/oldairmonster.png",
         powers: [{
             name: "Power: Deflate",
             text:  `Loses 1 energy after taking 6+ unblocked damage`
