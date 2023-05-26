@@ -559,14 +559,12 @@
   background: linear-gradient(to right, rgba(255, 52, 52, 0.916) 50%,  rgba(255, 52, 52, 0) 50%) ;
   background-size: 200% 100%;
   background-position: right bottom;
-  transition: all 0.3s linear;
 }
 
 .move-div-water {
   background: linear-gradient(to right, rgba(52, 62, 255, 0.916) 50%,  rgba(255, 52, 52, 0) 50%) ;
   background-size: 200% 100%;
   background-position: right bottom;
-  transition: all 0.3s linear;
 }
 
 .move-div-air {
@@ -574,14 +572,12 @@
   background-size: 200% 100%;
   background-position: right bottom;
   color: rgb(11, 11, 17);
-  transition: all 0.3s linear;
 }
 
 .move-div-earth {
   background: linear-gradient(to right, rgba(5, 100, 0, 0.916) 50%,  rgba(255, 52, 52, 0) 50%) ;
   background-size: 200% 100%;
   background-position: right bottom;
-  transition: all 0.3s linear;
 }
 
 

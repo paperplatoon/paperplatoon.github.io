@@ -848,6 +848,7 @@ function addBackstepsToHand(stateObj, numberToAdd=1) {
 }
 
 async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, playerTriggered=false) {
+  console.log("playerTriggered = " + playerTriggered)
   let monsterObj = stateObj.opponentMonster[targetIndex]
   let monsterDivs = document.querySelectorAll("#opponents .monster")
     let startingEnergy = monsterObj.encounterEnergy;
@@ -924,10 +925,8 @@ async function energyGainAnimation(stateObj, energyToGain=1, targetIndex=0, play
 // async function addEnergyGiftAnimation(stateObj, energyToGain=1, targetIndex=0, )
 
 async function energyGift(stateObj, energyToGain, energyCost=false, all=false) {
-  console.log("triggering energyGift; energy to gain is " + energyToGain)
   let currentEnergy = stateObj.opponentMonster[stateObj.targetedMonster].encounterEnergy;
   let totalMoves = stateObj.opponentMonster[stateObj.targetedMonster].moves.length-1
-  console.log("energy is " + currentEnergy + "   total potential energy is " + totalMoves)
 
   //if would take opponent negative
   if ( currentEnergy + energyToGain < 0 || energyToGain <= 0) {
@@ -1894,7 +1893,9 @@ function returnCard(stateObj) {
 
 async function drawAHand(stateObj) {
   console.log("drawing a hand");
-  for (let i = stateObj.playerMonster.turnCards-1; i > -1; i--) {
+  let cardsToDraw = stateObj.encounterHand.length + (stateObj.playerMonster.turnCards-1)
+  cardsToDraw = (cardsToDraw > 7) ? 7 : cardsToDraw
+  for (let i = cardsToDraw; i > -1; i--) {
     if (
       stateObj.encounterDraw.length !== 0 ||
       stateObj.encounterDiscard.length !== 0
@@ -1905,7 +1906,6 @@ async function drawAHand(stateObj) {
       await pause(150)
     }
   }
-  //await pause(500)
   await changeState(stateObj)
   return stateObj;
 }
@@ -3773,4 +3773,10 @@ async function cardAnimationDamageDiscard(stateObj, index, calculatedDamage) {
   await pause(350)
   await finishDiscardAnimation(index)
   await removeDealOpponentDamageAnimation(stateObj, calculatedDamage)
+}
+
+async function cardAnimationDiscard(index) {
+  await addDiscardAnimation(index)
+  await pause(350)
+  await finishDiscardAnimation(index)
 }
