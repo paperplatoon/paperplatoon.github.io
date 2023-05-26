@@ -3764,3 +3764,13 @@ function animate(animationName, element) {
     element.classList.remove(`${animationName}--active`);
   }, durationMS);
 };
+
+
+
+async function cardAnimationDamageDiscard(stateObj, index, calculatedDamage) {
+  await addDiscardAnimation(index)
+  await addDealOpponentDamageAnimation(stateObj, calculatedDamage)
+  await pause(350)
+  await finishDiscardAnimation(index)
+  await removeDealOpponentDamageAnimation(stateObj, calculatedDamage)
+}

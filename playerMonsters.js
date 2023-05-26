@@ -167,10 +167,7 @@ let playerMonsters = {
       avatar: "img/playerturtle.png",
       startingDeck: [
         //draw
-        fireCardPool.puffofsmoke,
-        cards.icyfreeze,
-        fireCardPool.puffofsmoke,
-        cards.icyfreeze,
+        //cards.energyburst,
         //block
         specialCardPool.testkill,
         specialCardPool.fataltoxin,
