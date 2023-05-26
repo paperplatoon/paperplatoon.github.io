@@ -549,7 +549,7 @@
   margin-top: 0.8vmin;
   margin-bottom: 0.8vmin;
   background-position: 0% 0%;
-  transition: all 0.3s linear;
+  transition: all 0.35s linear;
 }
 
 
@@ -957,6 +957,10 @@
   /* justify-content: center; */
   align-content: start;
   /*background: linear-gradient(45deg, rgba(32, 78, 70, 0.6) 0%, rgba(255,175,70,0.23) 35%, rgba(0,212,255,0.08) 100%); */
+}
+
+#handContainer2 .card {
+  position: sticky;
 }
 
 .card {

@@ -62,6 +62,8 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
+
           stateObj = immer.produce(state, (newState) => {      
             newState.playerMonster.encounterEnergy -= array[index].baseCost 
           })
@@ -95,6 +97,7 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = await destroyEnergy(stateObj, 1 + Math.floor(array[index].upgrades/2), false, true);
           if (array[index].upgrades > 0) {
             stateObj = gainBlock(stateObj, array[index].baseBlock + (2*array[index].upgrades), array[index].baseCost);
@@ -119,9 +122,10 @@ let cards = {
         baseBlock: 10,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*3), array[index].baseCost);
-          stateObj = energyGift(stateObj, array[index].energyGift)
+          stateObj = await energyGift(stateObj, array[index].energyGift)
           return stateObj;
         }
       },
@@ -142,9 +146,10 @@ let cards = {
         baseBlock: 15,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*4), array[index].baseCost);
-          stateObj = energyGift(stateObj, array[index].energyGift)
+          stateObj = await energyGift(stateObj, array[index].energyGift)
           return stateObj;
         }
       },
@@ -166,6 +171,7 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*3), array[index].baseCost);
           stateObj = await destroyEnergy(stateObj, array[index].energyDestroy)
           return stateObj;
@@ -189,7 +195,8 @@ let cards = {
         baseBlock: 8,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, array[index].baseBlock + (3*array[index].upgrades), array[index].baseCost);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.fightDex += 2;
@@ -216,6 +223,7 @@ let cards = {
         baseBlock: 6,
         upgrades: 0,
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*3), array[index].baseCost)
           stateObj = await destroyEnergy(stateObj, array[index].energyDrain)
           
@@ -436,6 +444,7 @@ let cards = {
         elementType: "fire",
         energyDrain: 1,
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           let energyDrain =  (array[index].energyDrain + array[index].upgrades)
           if (stateObj.opponentMonster[stateObj.targetedMonster].encounterEnergy >= energyDrain) {
             stateObj = await destroyEnergy(stateObj, energyDrain); 
@@ -475,7 +484,8 @@ let cards = {
         baseBlock: 4,
         cardType: "ability",
         elementType: "water",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, array[index].baseBlock, array[index].baseCost)
           for (let i=0; i < 1+array[index].upgrades; i++) {
             stateObj = addBackstepsToHand(stateObj)
@@ -542,7 +552,8 @@ let cards = {
         },
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+            await cardAnimationDiscard(index);
             stateObj = addBackstepsToHand(state, (2+array[index].upgrades))
             stateObj = immer.produce(stateObj, (newState) => {
               newState.playerMonster.encounterEnergy -= array[index].baseCost;
@@ -577,7 +588,7 @@ let cards = {
                 return `Double your energy. Gain ${(array[index].baseBlock * array[index].upgrades) + state.playerMonster.dex} block. Remove`
             }
         },
-        action: (state, index, array) => {
+        action: async (state, index, array) => {
           let toChangeState = immer.produce(state, (newState) => {
             if (array[index].upgrades < array[index].baseCost) {
                 newState.playerMonster.encounterEnergy -= array[index].baseCost-array[index].upgrades;
@@ -587,6 +598,9 @@ let cards = {
                 newState.playerMonster.encounterBlock += (array[index].baseBlock * array[index].upgrades) + state.playerMonster.dex;
             } 
           })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
           return toChangeState;
         }
       },
@@ -613,7 +627,8 @@ let cards = {
         baseBlock: 0,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, stateObj.playerDeck.length + array[index].baseBlock + (array[index].upgrades*4), array[index].baseCost)
           return stateObj;
         }
@@ -672,7 +687,8 @@ let cards = {
         },
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.encounterEnergy -= array[index].baseCost;
             newState.opponentMonster[newState.targetedMonster].strength -= 4+array[index].upgrades;
@@ -737,7 +753,8 @@ let cards = {
         baseBlock: 13,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           let block = array[index].baseBlock + (array[index].upgrades*4) + state.fightEnergyGiftTotal + state.fightEnergyDrainTotal;
           stateObj = gainBlock(stateObj, block, array[index].baseCost)
           return stateObj;
@@ -765,7 +782,8 @@ let cards = {
         baseBlock: 5,
         cardType: "ability",
         elementType: "fire",
-        action: async (stateObj, index, array) => {    
+        action: async (stateObj, index, array) => {   
+          await cardAnimationDiscard(index); 
           stateObj = await gainBlock(stateObj, (array[index].baseBlock + (2*array[index].upgrades)), array[index].baseCost);
           for (i = 0; i < (1+array[index].upgrades); i++) {
             stateObj = returnCard(stateObj);
@@ -791,6 +809,7 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {    
+          await cardAnimationDiscard(index);
           for (i = 0; i < (1+array[index].upgrades); i++) {
             stateObj = await returnCard(stateObj);
           }
@@ -911,6 +930,7 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.encounterHand[index].playCount += 1;
           })
@@ -959,6 +979,8 @@ let cards = {
             document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
             await pause(500);
             document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
+          } else {
+            await cardAnimationDiscard(index);
           }
           return stateObj;
         }
@@ -1014,7 +1036,8 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         energyGift: 1,
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.tempStrength += 4 + array[index].upgrades;
             newState.playerMonster.strength += 4 + array[index].upgrades;
@@ -1101,6 +1124,7 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.tempStrength += 3 + array[index].upgrades;
             newState.playerMonster.strength += 3 + array[index].upgrades;
@@ -1203,6 +1227,7 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*4), array[index].baseCost)
           stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*3), array[index].baseHits, energyCost=false, all=true)
           return stateObj;
@@ -1227,7 +1252,8 @@ let cards = {
         baseBlock: 3,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, array[index].baseBlock + (2*array[index].upgrades), array[index].baseCost);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.blockKeep = true;
@@ -1254,12 +1280,16 @@ let cards = {
         },
         cardType: "ability",
         elementType: "water",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
           stateObj = immer.produce(stateObj, (newState) => {
             newState.backstepDamage = true;
           })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
           return stateObj;
         }
+
       },
 
       expand: {
@@ -1343,7 +1373,8 @@ let cards = {
         upgrades: 0,
         cardType: "fireEnergy",
         elementType: "fire",
-        action: (state, index, array) => {
+        action: async (state, index, array) => {
+          await cardAnimationDiscard(index);
           let toChangeState = immer.produce(state, (newState) => {
             newState.playerMonster.encounterEnergy += 1 + Math.floor(array[index].upgrades/2);
     
@@ -1362,7 +1393,8 @@ let cards = {
         upgrades: 0,
         cardType: "waterEnergy",
         elementType: "water",
-        action: (state, index, array) => {
+        action: async (state, index, array) => {
+          await cardAnimationDiscard(index);
           let toChangeState = immer.produce(state, (newState) => {
             newState.playerMonster.encounterEnergy += 1 + Math.floor(array[index].upgrades/2);
           })
@@ -1388,6 +1420,7 @@ let cards = {
         cardType: "fireEnergy",
         elementType: "fire",
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = await energyGift(stateObj, 2)
           let toChangeState = immer.produce(stateObj, (newState) => {
             newState.playerMonster.encounterEnergy += (2 + array[index].upgrades);
@@ -1415,7 +1448,8 @@ let cards = {
         text: (state, index, array) => {
             return `Gain ${7 + array[index].upgrades} energy`
         },
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
             stateObj = immer.produce(stateObj, (newState) => {
               newState.playerMonster.encounterEnergy -= array[index].baseCost;
               newState.playerMonster.encounterEnergy += 7 + array[index].upgrades;
@@ -1435,7 +1469,8 @@ let cards = {
         upgrades: 0,
         cardType: "fireEnergy",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = immer.produce(state, (newState) => {
             newState.playerMonster.encounterEnergy += 1 + array[index].upgrades;
           })
@@ -1571,7 +1606,8 @@ let cards = {
         baseBlock: 5,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, array[index].baseBlock + (3*array[index].upgrades), array[index].baseCost)
           return stateObj;
         }
@@ -2175,6 +2211,7 @@ let cards = {
         cardType: "ability",
         elementType: "water",
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = immer.produce(state, (newState) => {
             newState.playerMonster.tempStrength += array[index].upgrades+3;
             newState.playerMonster.strength += array[index].upgrades+3;
@@ -2207,6 +2244,7 @@ let cards = {
         baseBlock: 6,
         timeValue: upgradeAnimationTiming,
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           upgradeAnimation(stateObj, 0, stateObj.encounterHand, 1+Math.floor(array[index].upgrades/2), divIDName="handContainer2")       
           
           await pause(array[index].timeValue)
@@ -2245,7 +2283,8 @@ let cards = {
         baseBlock: 5,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           let cardBlock = (array[index].baseBlock + (2*array[index].upgrades));
           cardBlock += (stateObj.playerMonster.encounterBlock >= 5) ? (cardBlock+stateObj.playerMonster.dex) : 0; 
   
@@ -2269,7 +2308,8 @@ let cards = {
         baseBlock: 8,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           let block = array[index].baseBlock + stateObj.playerMonster.strength + (3*array[index].upgrades)
           stateObj = gainBlock(stateObj, block, array[index].baseCost)
           return stateObj;
@@ -2292,7 +2332,8 @@ let cards = {
         upgrades: 0,
         baseBlock: 8,
         timeValue: upgradeAnimationTiming,
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, (array[index].baseBlock + (array[index].upgrades*3)), array[index].baseCost )
           stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.fightStrength += 1+Math.floor(array[index].upgrades/2);
@@ -2319,6 +2360,7 @@ let cards = {
         baseBlock: 8,
         timeValue: upgradeAnimationTiming,
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           upgradeAnimation(stateObj, 0, stateObj.encounterHand, 2, divIDName="handContainer2")       
           
           await pause(array[index].timeValue)
@@ -2396,7 +2438,8 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         energyDrain: 1,
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           const allCardsArray = state.encounterHand.concat(state.encounterDraw, state.encounterDiscard);
           let totalEncounterUpgrades = allCardsArray.reduce(function(acc, obj) {
               return acc + obj["upgrades"];
@@ -2603,6 +2646,7 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           upgradeAnimation(stateObj, 0, stateObj.encounterHand, 2 + Math.floor(array[index].upgrades/2), divIDName="handContainer2")       
           
           await pause(array[index].timeValue)
@@ -2633,7 +2677,8 @@ let cards = {
         baseHeal: 5,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = healPlayer(stateObj, array[index].baseHeal+(array[index].upgrades * 2), 1)
           return stateObj;
         }
@@ -2654,7 +2699,8 @@ let cards = {
         baseHeal: 2,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           let opponentHeal = array[index].baseHeal + array[index].upgrades;
           let opponentHealthDiff = stateObj.opponentMonster[stateObj.targetedMonster].maxHP - stateObj.opponentMonster[stateObj.targetedMonster].currentHP
           let playerHealthDiff  = stateObj.playerMonster.maxHP - stateObj.playerMonster.currentHP;
@@ -2751,6 +2797,7 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = immer.produce(state, (newState) => {      
             newState.playerMonster.encounterEnergy -= array[index].baseCost 
           })
@@ -2781,7 +2828,8 @@ let cards = {
         energyGift: 2,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = immer.produce(stateObj, (newState) => {
            newState.playerMonster.fightStrength += 1 + array[index].upgrades;
             newState.playerMonster.strength += 1 + array[index].upgrades;
@@ -2838,7 +2886,8 @@ let cards = {
         baseSelfDamage: 2,
         cardType: "ability",
         elementType: "fire",
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.fightStrength += (3+array[index].upgrades);
             newState.playerMonster.strength += (3+array[index].upgrades);
@@ -2867,6 +2916,7 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.fightStrength += (1+array[index].upgrades);
             newState.playerMonster.strength += (1+array[index].upgrades);
@@ -2892,6 +2942,7 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*3), array[index].baseCost)
           stateObj = immer.produce(stateObj, (newState) => {
             newState.cantSelfDamage = true;
@@ -3022,7 +3073,8 @@ let cards = {
           }
           return textString
         },
-        action: (stateObj, index, array) => {
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           let strengthToGain = stateObj.playerMonster.strength + array[index].upgrades
           stateObj = immer.produce(stateObj, (newState) => {
             newState.playerMonster.encounterEnergy -= array[index].baseCost;
@@ -3088,6 +3140,7 @@ let cards = {
         cardType: "ability",
         elementType: "water",
         action: async(stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = await applyPoison(stateObj, array[index].basePoison + array[index].upgrades, array[index].baseCost)
           return stateObj;
         }
@@ -3110,6 +3163,7 @@ let cards = {
         cardType: "ability",
         elementType: "water",
         action: async(stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = await applyPoison(stateObj, array[index].basePoison + array[index].upgrades, array[index].baseCost)
           return stateObj;
         }
@@ -3133,6 +3187,7 @@ let cards = {
         elementType: "water",
         baseBlock: 6,
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*2), array[index].baseCost)
           stateObj = await applyPoison(stateObj, array[index].basePoison + array[index].upgrades, array[index].baseCost, 1, true)
           return stateObj;
@@ -3154,6 +3209,7 @@ let cards = {
         upgrades: 0,
         basePoison: 1,
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = await applyPoison(stateObj, array[index].basePoison + array[index].upgrades, array[index].baseCost)
           stateObj = await drawACard(stateObj);
           return stateObj;
@@ -3179,6 +3235,7 @@ let cards = {
           return array[index].baseCost;
         },
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = await applyPoison(stateObj, array[index].basePoison + array[index].upgrades, array[index].baseCost)
           stateObj = await destroyEnergy(stateObj, array[index].destroyEnergy)
           return stateObj;
@@ -3292,6 +3349,7 @@ let cards = {
           return array[index].baseCost;
         },
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = gainBlock(stateObj, array[index].baseBlock + (4*array[index].upgrades), array[index].baseCost)
           stateObj = addBackstepsToHand(stateObj, 3+array[index].upgrades)
           return stateObj;
@@ -3391,6 +3449,7 @@ let cards = {
         //takes the state object, declares a toChangeState which takes immer.produce
         //and returns a new state reflecting the changes
         action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[newState.targetedMonster].hunted += 1 + Math.floor(array[index].upgrades/2);
           })
@@ -3447,6 +3506,7 @@ let cards = {
         cardType: "ability",
         elementType: "special",
         action: async(stateObj, index, array) => {
+          await cardAnimationDiscard(index);
           stateObj = await applyPoison(stateObj, array[index].basePoison + (array[index].upgrades*3), array[index].baseCost)
           return stateObj;
         }

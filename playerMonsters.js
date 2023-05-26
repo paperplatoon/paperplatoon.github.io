@@ -167,14 +167,14 @@ let playerMonsters = {
       avatar: "img/playerturtle.png",
       startingDeck: [
         //draw
-        cards.icyfreeze,
+        cards.dampen,
         cards.sabotage,
         cards.rareFireEnergy,
         cards.rareFireEnergy,
         cards.fierymissiles,
 
         //block
-        cards.decimate2,
+        cards.wellspring,
         cards.decimate,
         //attack
       ],

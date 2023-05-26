@@ -847,24 +847,9 @@ function addBackstepsToHand(stateObj, numberToAdd=1) {
   return stateObj
 }
 
-// async function energyLoseAnimation(stateObj, energyToLose=1, targetIndex=0, playerTriggered=false) {
-//   let monsterObj = stateObj.opponentMonster[targetIndex]
-//   let monsterDivs = document.querySelectorAll("#opponents .monster")
-//     let startingEnergy = monsterObj.encounterEnergy;
-//     for (let i=0; i < energyToLose; i++) {
-//       if ( ((startingEnergy - i) > 0) && ((startingEnergy - i) < monsterObj.moves.length)) {
-//         console.log("removing energy at index " + (startingEnergy-1))
-//         monsterDivs[targetIndex].querySelectorAll(".move")[startingEnergy-i].classList.remove("energy-filled")
-//         if (playerTriggered === false) {
-//           await pause(250);
-//         }
-//       }
-//     }  
-// }
-
 async function opponentLoseEnergy(stateObj, energyToLose, targetIndex=0, playerTriggered=false) {
   //logic
-  if (energyToLose <= 0) {
+  if (energyToLose <= 0 || stateObj.opponentMonster[targetIndex].encounterEnergy === 0) {
     return stateObj
   } 
   if (energyToLose > 0 && stateObj.opponentMonster[targetIndex].encounterEnergy < energyToLose) {
