@@ -1141,11 +1141,70 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   margin: 2vmax;
 }
 
-/*.hunted {
+/* .hunted {
   background-image: url(img/crosshair.PNG);
   height: 1.6vmin;
   width: 1.6vmin;
 } */
+
+.extraheal {
+  background-image: url(img/icons/status/extraheal.png);
+  background-size: contain;
+  height: 3vw;
+  width: 3vw;
+  filter: invert(11%) sepia(98%) saturate(6164%) hue-rotate(353deg) brightness(81%) contrast(100%);
+  -webkit-text-stroke: 1px solid white;
+}
+
+
+.healafterfight {
+  background-image: url(img/icons/status/healafterfight.png);
+  background-size: contain;
+  height: 3vw;
+  width: 3vw;
+  filter: invert(11%) sepia(98%) saturate(6164%) hue-rotate(353deg) brightness(81%) contrast(100%);
+}
+
+.doubleendofturn {
+  background-image: url(img/icons/status/doubleendofturn.png);
+  background-size: contain;
+  height: 3vw;
+  width: 3vw;
+  filter: invert(92%) sepia(0%) saturate(933%) hue-rotate(350deg) brightness(98%) contrast(88%);
+}
+
+#playerstatus {
+  width: 5vw;
+  height: 12vmax;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+#backstepdamage {
+  background-image: url(img/icons/status/backstepdamage.png);
+  background-size: contain;
+  height: 2.2vw;
+  width: 2.2vw;
+  /* filter: invert(92%) sepia(0%) saturate(933%) hue-rotate(350deg) brightness(98%) contrast(88%); */
+}
+
+#cantselfdamage {
+  background-image: url(img/icons/status/cantselfdamage.png);
+  background-size: contain;
+  height: 2.2vw;
+  width: 2.2vw;
+  /* filter: invert(92%) sepia(0%) saturate(933%) hue-rotate(350deg) brightness(98%) contrast(88%); */
+}
+
+#blockkeep {
+  background-image: url(img/icons/status/doubleendofturn.png);
+  background-size: contain;
+  height: 3vw;
+  width: 3vw;
+  filter: invert(92%) sepia(0%) saturate(933%) hue-rotate(350deg) brightness(98%) contrast(88%);
+}
+
 
 .hunted {
 	width: 5vmin;
@@ -1728,6 +1787,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   left: 2vw;
   top: 35vh;
 }
+
 
 
 

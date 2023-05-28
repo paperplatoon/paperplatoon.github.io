@@ -163,19 +163,18 @@ let playerMonsters = {
       fightStrength: 0,
       fightDex: 0,
       turnEnergy: 3,
-      turnCards: 8,
+      turnCards: 6,
       avatar: "img/playerturtle.png",
       startingDeck: [
         //draw
-        cards.dampen,
         cards.sabotage,
         cards.rareFireEnergy,
-        cards.rareFireEnergy,
-        cards.fierymissiles,
+        cards.enlightened,
 
         //block
-        cards.wellspring,
-        cards.decimate,
+        specialCardPool.testkill,
+        cards.unwaveringdefense,
+        cards.whirlwind,
         //attack
       ],
     },

@@ -413,12 +413,12 @@ let easySoloEncounters = {
         name: "Petal Strike",
         cost: "2",
         text: (state, index, array) => {
-          return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage`
+          return `Deal ${(array[index].baseDamage*2) + 2 + array[index].strength} damage`
         },
         minReq: 2,
         energyChange: "-2",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*2), index, -2);
+          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*2) + 2, index, -2);
           return stateObj;
         }
       },

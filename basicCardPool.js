@@ -220,7 +220,7 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         energyDrain: 1,
-        baseBlock: 6,
+        baseBlock: 4,
         upgrades: 0,
         action: async (stateObj, index, array) => {
           await cardAnimationDiscard(index);
@@ -2931,7 +2931,7 @@ let cards = {
       enlightened: {
         cardID: "noselfdamage",
         name: "Enlightened",
-        text: (state, index, array) => { return `Gain ${array[index].baseSelfDamage + array[index].upgrades} block. You can't damage yourself.` },
+        text: (state, index, array) => { return `Gain ${array[index].baseBlock + array[index].upgrades} block. You can't damage yourself.` },
         minReq: 0,
         upgrades: 0,
         baseCost: 1,

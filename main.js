@@ -80,7 +80,7 @@ let gameStartState = {
   gymFightCount: 0,
   gold: 10,
   testingMode: false,
-  doubleEndOfTurnEnergy: false,
+  doubleEndOfTurnEnergy: true,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,
@@ -288,7 +288,7 @@ function fillMapWithArray(stateObj) {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
       if (stateObj.testingMode === true) {
-        newState.townMapSquares[4] = "Fight"
+        newState.townMapSquares[4] = "?1"
       } else {
       newState.townMapSquares[4] =  "Fight";
       }
@@ -441,7 +441,7 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
         let shuffledEventsArray = fisherYatesShuffle(eventsArray);
         stateObj = immer.produce(stateObj, (newState) => {
           if (stateObj.testingMode === true) {
-            newState.status = eventsArray[14].newStatus
+            newState.status = eventsArray[10].newStatus
           } else {
             if (stateObj.townMapSquares[indexToMoveTo] === "?1") {
               newState.status = shuffledEventsArray[1].newStatus;
@@ -1430,6 +1430,30 @@ async function renderPlayerMonster(stateObj) {
   hugeFireballDiv.classList.add("fireball-class")
   topRowDiv.append(fireballDiv, mediumFireballDiv, hugeFireballDiv);
 
+  let playerStatusDiv = document.createElement("Div");
+  playerStatusDiv.setAttribute("id", "playerstatus");
+  
+
+  if (stateObj.blockKeep === true) {
+      let blockKeepDiv = document.createElement("Div");
+      blockKeepDiv.setAttribute("id", "blockkeep");
+      playerStatusDiv.appendChild(blockKeepDiv);
+  }
+
+  if (stateObj.backstepDamage === true) {
+    let blockKeepDiv = document.createElement("Div");
+    blockKeepDiv.setAttribute("id", "backstepdamage");
+    playerStatusDiv.appendChild(blockKeepDiv);
+  }
+
+  if (stateObj.cantSelfDamage === true) {
+    let blockKeepDiv = document.createElement("Div");
+    blockKeepDiv.setAttribute("id", "cantselfdamage");
+    playerStatusDiv.appendChild(blockKeepDiv);
+  }
+
+  topRowDiv.append(playerStatusDiv)
+
   
 
   let playerHP = document.createElement("H3");
@@ -2058,8 +2082,6 @@ function topRowDiv(stateObj, divName) {
   monsterCurrentXPBar.setAttribute("style", barText);
   monsterXPBar.append(monsterCurrentXPBar);
   topRowDiv.appendChild(monsterXPBar)
-  
-
 
   let gymCountText = document.createElement("H3");
   gymCountText.textContent = `Gym ${stateObj.gymCount+1}`;
@@ -2070,6 +2092,36 @@ function topRowDiv(stateObj, divName) {
   monsterHP.textContent = stateObj.playerMonster.currentHP + "/" + stateObj.playerMonster.maxHP;
   monsterHP.classList.add("monster-hp-town");
   topRowDiv.appendChild(monsterHP);
+
+  if (stateObj.extraHeal > 0) {
+    let extraHealDiv = document.createElement("Div");
+    extraHealDiv.classList.add('extraheal');
+    extraHealNumber = document.createElement("P")
+    extraHealNumber.classList.add('extrahealnumber');
+    extraHealNumber.textContent = stateObj.extraHeal;
+    extraHealDiv.append(extraHealNumber)
+
+    topRowDiv.append(extraHealDiv)
+  }
+
+  if (stateObj.healAfterFight > 0) {
+    let extraHealDiv = document.createElement("Div");
+    extraHealDiv.classList.add('healafterfight');
+    extraHealNumber = document.createElement("P")
+    extraHealNumber.classList.add('healafterfightnumber');
+    extraHealNumber.textContent = stateObj.healAfterFight;
+    extraHealDiv.append(extraHealNumber)
+
+    topRowDiv.append(extraHealDiv)
+  }
+
+  if (stateObj.doubleEndOfTurnEnergy === true) {
+    let extraHealDiv = document.createElement("Div");
+    extraHealDiv.classList.add('doubleendofturn');
+
+    topRowDiv.append(extraHealDiv)
+  }
+
 
   let deckPileDiv = document.createElement("Div");
   deckPileDiv.setAttribute("id", "playerDeckPile");
@@ -3677,6 +3729,7 @@ async function startEncounter(stateObj) {
 
 async function endTurnIncrement(stateObj) {
   stateObj = immer.produce(stateObj, async (newState) => {
+    
     newState.playerMonster.strength -= newState.playerMonster.tempStrength;
     newState.playerMonster.dex -= newState.playerMonster.tempDex;
     newState.playerMonster.tempStrength = 0;
