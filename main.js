@@ -80,7 +80,7 @@ let gameStartState = {
   gymFightCount: 0,
   gold: 10,
   testingMode: false,
-  doubleEndOfTurnEnergy: true,
+  doubleEndOfTurnEnergy: false,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
   healCost: healStartCost,
@@ -3729,7 +3729,7 @@ async function startEncounter(stateObj) {
 
 async function endTurnIncrement(stateObj) {
   stateObj = immer.produce(stateObj, async (newState) => {
-    
+
     newState.playerMonster.strength -= newState.playerMonster.tempStrength;
     newState.playerMonster.dex -= newState.playerMonster.tempDex;
     newState.playerMonster.tempStrength = 0;
