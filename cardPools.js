@@ -61,7 +61,7 @@ let fireCardPool = {
     //scale - 5
     kindle: {...cards.kindle},
     honeclaws: {...cards.honeclaws},
-    redirect: {...cards.redirect},
+    banish: {...cards.banish},
     clarity: {...cards.clarity},
     generosity: {...cards.generosity},
     //strength-scalers -3 
@@ -185,7 +185,7 @@ let fireCardPool = {
     clawback: {...cards.clawback},
     //self-scaling
     ascension: {...cards.ascension},
-    redirect: {...cards.redirect},
+    banish: {...cards.banish},
     clarity: {...cards.clarity},
     
     //2 +

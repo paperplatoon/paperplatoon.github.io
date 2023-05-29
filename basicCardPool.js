@@ -1,5 +1,7 @@
 let upgradeAnimationTiming = 1500;
 
+//return animation
+
 let cards = {
     icyfreeze: {
         cardID: 8,
@@ -261,6 +263,7 @@ let cards = {
           await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
           
           stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits, array[index].baseCost)
+          stateObj = await energyGift(stateObj, array[index].energyGift)
           return stateObj;
          }
       },
@@ -269,7 +272,7 @@ let cards = {
         cardID: 23,
         name: "Pirouette Spin",
         text: (stateObj, index, array) => { 
-          let totalDamage = (array[index].baseDamage + (array[index].upgrades*2) + stateObj.playerMonster.strength);
+          let totalDamage = (array[index].baseDamage + array[index].upgrades + stateObj.playerMonster.strength);
           let textString = `Deal ${totalDamage} damage for each card played this turn`
           if (state.status === Status.InEncounter) {
             textString += ` (${(state.cardsPerTurn + array[index].baseHits) * totalDamage} total)`; 
@@ -289,10 +292,11 @@ let cards = {
         cardType: "attack",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          let calculatedDamage = (array[index].baseDamage + stateObj.playerMonster.strength + (array[index].upgrades*2)) * (state.cardsPerTurn + array[index].baseHits);
+          let totalBaseDamage = array[index].baseDamage + array[index].upgrades
+          let calculatedDamage = (totalBaseDamage + stateObj.playerMonster.strength ) * (state.cardsPerTurn + array[index].baseHits);
           await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
 
-          stateObj = await dealOpponentDamage(stateObj, (array[index].baseDamage + (array[index].upgrades*2)), (state.cardsPerTurn + array[index].baseHits), array[index].baseCost)
+          stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, (state.cardsPerTurn + array[index].baseHits), array[index].baseCost)
           return stateObj;
         }
       },
@@ -360,42 +364,7 @@ let cards = {
           let calculatedDamage = (totalBaseDamage + stateObj.playerMonster.strength) * (array[index].baseHits)
           await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
           
-          stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*6), array[index].baseHits, array[index].baseCost)
-          stateObj = await destroyEnergy(stateObj, array[index].energyDrain + array[index].upgrades)
-          //await pause(250)
-          return stateObj;
-        }
-      },
-
-      decimate2: {
-        cardID: 26,
-        name: "Decimate without await",
-        text: (state, index, array) => { 
-          if (array[index].baseHits === 1) {
-            return `Deal ${array[index].baseDamage + (array[index].upgrades*6) + state.playerMonster.strength} damage. Enemy loses ${array[index].energyDrain + array[index].upgrades} energy`;
-          } else { 
-            return `Deal ${array[index].baseDamage + (array[index].upgrades*6) + state.playerMonster.strength} damage ${array[index].baseHits} times. Enemy loses ${array[index].energyDrain + array[index].upgrades} energy`
-          }
-      },
-      minReq: (state, index, array) => {
-        return array[index].baseCost;
-      },
-        baseCost: 3,
-        cost:  (state, index, array) => {
-          return array[index].baseCost;
-        },
-        upgrades: 0,
-        baseDamage: 24,
-        baseHits: 1,
-        energyDrain: 1,
-        cardType: "attack",
-        elementType: "fire",
-        action: async (stateObj, index, array) => {
-          let totalBaseDamage = array[index].baseDamage + (array[index].upgrades*6);
-          let calculatedDamage = (totalBaseDamage + stateObj.playerMonster.strength) * (array[index].baseHits)
-          await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
-          
-          //stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*6), array[index].baseHits, array[index].baseCost)
+          stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits, array[index].baseCost)
           stateObj = await destroyEnergy(stateObj, array[index].energyDrain + array[index].upgrades)
           return stateObj;
         }
@@ -524,7 +493,12 @@ let cards = {
         cardType: "attack",
         elementType: "water",
         action: async (stateObj, index, array) => {
-          stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + array[index].upgrades, array[index].baseHits, array[index].baseCost);
+
+          let totalBaseDamage = array[index].baseDamage + array[index].upgrades;
+          let calculatedDamage = (totalBaseDamage + stateObj.playerMonster.strength) * (array[index].baseHits)
+          await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
+          
+          stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits, array[index].baseCost)
           for (let i=0; i < 1+array[index].upgrades; i++) {
             stateObj = addBackstepsToHand(stateObj)
           }
@@ -638,7 +612,7 @@ let cards = {
         name: "Disabling Blow",
         text: (state, index, array) => { 
           if (array[index].baseHits === 1) {
-            return `Deal ${array[index].baseDamage + array[index].upgrades + state.playerMonster.strength} damage. Opponent loses ${2 + Math.floor(array[index].upgrades/2)} strength`;
+            return `Deal ${array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength} damage. Opponent loses ${2 + Math.floor(array[index].upgrades/2)} strength`;
           } else {
             return `Deal ${array[index].baseDamage + array[index].upgrades + state.playerMonster.strength} damage ${array[index].baseHits} times. Opponent loses ${Math.floor(array[index].upgrades/2)} strength`
           }
@@ -656,7 +630,12 @@ let cards = {
         cardType: "attack",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          stateObj = await dealOpponentDamage(stateObj, (array[index].baseDamage + array[index].upgrades), array[index].baseHits, array[index].baseCost);
+          let totalBaseDamage = array[index].baseDamage + (array[index].upgrades*2);
+          let calculatedDamage = (totalBaseDamage + stateObj.playerMonster.strength) * (array[index].baseHits)
+          await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
+          
+          stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits, array[index].baseCost)
+
           stateObj = immer.produce(stateObj, (newState) => {
             newState.opponentMonster[newState.targetedMonster].strength -= 2 + Math.floor(array[index].upgrades/2)
           })
@@ -703,9 +682,9 @@ let cards = {
         name: "Precision Strike",
         text: (state, index, array) => { 
           if (array[index].baseHits === 1) {
-            return `Deal ${array[index].baseDamage + (array[index].upgrades) + state.playerMonster.strength} damage. Gain ${2+array[index].upgrades} dexterity`;
+            return `Deal ${array[index].baseDamage + (array[index].upgrades) + state.playerMonster.strength} damage. Gain ${1+array[index].upgrades} dexterity`;
           } else {
-            return `Deal ${array[index].baseDamage + (array[index].upgrades) + state.playerMonster.strength} damage ${array[index].baseHits} times. Gain ${2+array[index].upgrades} dexterity`
+            return `Deal ${array[index].baseDamage + (array[index].upgrades) + state.playerMonster.strength} damage ${array[index].baseHits} times. Gain ${1+array[index].upgrades} dexterity`
           }
       },
       minReq: (state, index, array) => {
@@ -716,15 +695,19 @@ let cards = {
           return array[index].baseCost;
         },
         upgrades: 0,
-        baseDamage: 14,
+        baseDamage: 12,
         baseHits: 1,
         cardType: "attack",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          stateObj = await dealOpponentDamage(stateObj, (array[index].baseDamage + (array[index].upgrades)), array[index].baseHits, array[index].baseCost)
+          let totalBaseDamage = array[index].baseDamage + array[index].upgrades;
+          let calculatedDamage = (totalBaseDamage + stateObj.playerMonster.strength) * (array[index].baseHits)
+          await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
+          
+          stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits, array[index].baseCost)
           stateObj = immer.produce(stateObj, (newState) => {
-            newState.playerMonster.fightDex += 2+array[index].upgrades;
-            newState.playerMonster.dex += 2+array[index].upgrades;
+            newState.playerMonster.fightDex += 1+array[index].upgrades;
+            newState.playerMonster.dex += 1+array[index].upgrades;
           })
           return stateObj;
         }
@@ -736,9 +719,9 @@ let cards = {
         text: (state, index, array) => {
             let blockNum = array[index].baseBlock + (array[index].upgrades*4) + state.playerMonster.dex;
             let energyNum = state.fightEnergyGiftTotal + state.fightEnergyDrainTotal;
-            let textString = `Gain ${blockNum} block. Gets stronger when you make opponent gain or lose energy.`
+            let textString = `Gain ${blockNum+energyNum} block. Gets stronger when you make opponents gain or lose energy.`
             if (state.status === Status.InEncounter) {
-              textString += ` (${blockNum+energyNum} total)`
+              textString += ` (${energyNum} total)`
             }
             return textString;
         },
@@ -817,22 +800,26 @@ let cards = {
         }
       },
 
-      redirect: {
-        rare: true,
+      banish: {
         cardID: 55,
-        name: "Redirect",
-        text: (state, index, array) => {
-          if (state.status === Status.InEncounter) {
-            let attackValue = array[index].baseDamage + (array[index].upgrades*3) + state.playerMonster.strength;
-            let energyChange = state.fightEnergyDrainTotal + state.fightEnergyGiftTotal;
-            if (array[index].baseHits === 1) {
-                return `Deal ${attackValue} damage. Gets stronger when you make an opponent gain or lose energy (${attackValue+energyChange} total)`;
-            } else {
-                return `Deal ${attackValue} damage. Gets stronger when you make an opponent gain or lose energy (${attackValue+energyChange} total) ${array[index].baseHits} times`;
-            }
-          } else {
-            return `Deal ${array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength} damage. Gets stronger when you make an opponent gain or lose energy`;
+        name: "Banish",
+        trigger:  (stateObj, index, array) => { 
+          if (stateObj.status !== Status.InEncounter) {
+            return false
           }
+          return (stateObj.playerMonster.encounterEnergy === array[index].baseCost);
+        },
+        text: (state, index, array) => {
+            let damageValue = array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength;
+            attackValue = (state.playerMonster.encounterEnergy === array[index].baseCost) ? (damageValue*2)  : damageValue; 
+            let textString = `Deal ${attackValue} damage`
+            if (array[index].baseHits > 1) {
+                textString += ` ${array[index].baseHits} times`;
+            } 
+            if (state.playerMonster.encounterEnergy !== array[index].baseCost) {
+              textString += `. Finale: deal ${attackValue} more`
+            }
+             return textString;
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -843,15 +830,70 @@ let cards = {
         },
         upgrades: 0,
         baseHits: 1,
-        baseDamage: 5,
+        baseDamage: 6,
         cardType: "attack",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-            let damageTotal = array[index].baseDamage + (array[index].upgrades*3) + stateObj.fightEnergyDrainTotal + stateObj.fightEnergyGiftTotal
-          stateObj = await dealOpponentDamage(stateObj, damageTotal, array[index].baseHits, array[index].baseCost);
+          let damageValue = array[index].baseDamage + (array[index].upgrades*2) + stateObj.playerMonster.strength;
+          let attackValue = (stateObj.playerMonster.encounterEnergy === array[index].baseCost) ? (damageValue*2)  : damageValue;
+          let calculatedDamage = (attackValue + stateObj.playerMonster.strength) * (array[index].baseHits)
+          await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
+          
+          stateObj = await dealOpponentDamage(stateObj, attackValue-stateObj.playerMonster.strength, array[index].baseHits, array[index].baseCost)
           return stateObj;
-        }
+        },
       },
+
+      insight: {
+        cardID: 55,
+        name: "Insight",
+        trigger:  (stateObj, index, array) => { 
+          if (stateObj.status !== Status.InEncounter) {
+            return false
+          }
+          return (stateObj.playerMonster.encounterEnergy === array[index].baseCost);
+        },
+        text: (state, index, array) => {
+            let damageValue = array[index].baseDamage + (array[index].upgrades*2) + state.playerMonster.strength;
+            let textString = `Deal ${damageValue} damage`
+            if (array[index].baseHits > 1) {
+                textString += ` ${array[index].baseHits} times`;
+            } 
+            if (state.playerMonster.encounterEnergy !== array[index].baseCost) {
+              textString += `. Finale: `
+            } else {
+              textString += `. `
+            }
+            textString += `Draw ${2 + Math.floor(array[index].upgrades/2)} cards`
+             return textString;
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseCost: 1,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseHits: 1,
+        baseDamage: 6,
+        cardType: "attack",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {
+          let damageValue = array[index].baseDamage + (array[index].upgrades*2);
+          let calculatedDamage = (damageValue + stateObj.playerMonster.strength) * (array[index].baseHits)
+          await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
+          
+          stateObj = await dealOpponentDamage(stateObj, damageValue, array[index].baseHits, array[index].baseCost)
+          if (state.playerMonster.encounterEnergy !== array[index].baseCost) {
+            for (let i=0; i < 2+Math.floor(array[index].upgrades/2); i++) {
+              stateObj = await drawACard(stateObj);
+            }
+          }
+          return stateObj;
+        },
+      },
+      
 
       followupslap: {
         cardID: 58,
@@ -886,7 +928,9 @@ let cards = {
         action: async (stateObj, index, array) => {
           let cardDamage = array[index].baseDamage + (array[index].upgrades*3)
           cardDamage = (stateObj.cardsPerTurn === 2) ? cardDamage + (5+(array[index].upgrades)) : cardDamage;
-          stateObj = await dealOpponentDamage(stateObj, cardDamage, array[index].baseHits, array[index].baseCost);
+          let calculatedDamage = (cardDamage + stateObj.playerMonster.strength) * (array[index].baseHits)
+          await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
+          stateObj = await dealOpponentDamage(stateObj, cardDamage, array[index].baseHits, array[index].baseCost)
           return stateObj;
         }
       },
@@ -936,7 +980,10 @@ let cards = {
           })
           stateObj = gainBlock(stateObj, array[index].baseBlock+array[index].upgrades, array[index].baseCost)
           if (array[index].playCount >= 2) {
-            stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*10), array[index].baseHits, false, all=true);
+            let totalBaseDamage = array[index].baseDamage + (10*array[index].upgrades);
+            let calculatedDamage = (totalBaseDamage + stateObj.playerMonster.strength) * (array[index].baseHits)
+            await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)        
+            stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits, array[index].baseCost)
           }
           return stateObj;
         }
@@ -986,6 +1033,7 @@ let cards = {
         }
       },
 
+      //not currently in use
       pickoff: {
         cardID: 63,
         name: "Pick Off",
@@ -1007,7 +1055,7 @@ let cards = {
           }
         },
         upgrades: 0,
-        baseCost: 4,
+        baseCost: 2,
         baseDamage: 40,
         baseHits: 1,
         cost:  (stateObj, index, array) => {
@@ -1017,6 +1065,11 @@ let cards = {
         elementType: "special",
         action: async (stateObj, index, array) => {
           if (stateObj.opponentMonster.length > 1) {
+            let totalBaseDamage = array[index].baseDamage + array[index].upgrades;
+            let calculatedDamage = (totalBaseDamage + stateObj.playerMonster.strength) * (array[index].baseHits)
+            await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
+          
+          stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits, array[index].baseCost)
             stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage, array[index].baseHits, array[index].baseCost-array[index].upgrades)
           return stateObj;
         }
@@ -1052,9 +1105,9 @@ let cards = {
         name: "Annihilation",
         text: (state, index, array) => {
           if (array[index].baseHits===1) {
-            return `Gain ${array[index].baseBlock + (array[index].upgrades*2) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*5) + state.playerMonster.strength} damage`;
+            return `Gain ${array[index].baseBlock + (array[index].upgrades*3) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*5) + state.playerMonster.strength} damage`;
           } else {
-            return `Gain ${array[index].baseBlock + (array[index].upgrades*2) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*5) + state.playerMonster.strength} damage ${array[index].baseHits} times`;
+            return `Gain ${array[index].baseBlock + (array[index].upgrades*3) + state.playerMonster.dex} block. Deal ${array[index].baseDamage + (array[index].upgrades*5) + state.playerMonster.strength} damage ${array[index].baseHits} times`;
           }
             
         },
@@ -1072,8 +1125,12 @@ let cards = {
         cardType: "attack",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*5), array[index].baseCost);
-          stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*5), array[index].baseHits, energyCost=false, all=false)
+          stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*3), array[index].baseCost);
+          let totalBaseDamage = array[index].baseDamage + (array[index].upgrades*5);
+          let calculatedDamage = (totalBaseDamage + stateObj.playerMonster.strength) * (array[index].baseHits)
+          await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
+          
+          stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits)
           return stateObj;
         }
       },
@@ -1101,9 +1158,14 @@ let cards = {
         cardType: "attack",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*6), array[index].baseHits, array[index].baseCost, false, 0);
+          let totalBaseDamage = array[index].baseDamage + (6*array[index].upgrades);
+          let calculatedDamage = (totalBaseDamage + stateObj.playerMonster.strength) * (array[index].baseHits)
+          await cardAnimationDamageDiscard(stateObj, 0, calculatedDamage)
+          
+          stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits, array[index].baseCost, false, 0);
           if (stateObj.opponentMonster.length > 1) {
-            stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*6), array[index].baseHits, false, false, 1);
+            await cardAnimationDamageDiscard(stateObj, 1, calculatedDamage)
+            stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits, false, false, 1);
           }
           return stateObj;
         }
@@ -1202,6 +1264,7 @@ let cards = {
         }
       },
 
+      //fix later
       flamedome: {
         cardID: 68,
         name: "Flame Dome",
@@ -1480,6 +1543,7 @@ let cards = {
         }
       },
   
+      //not in use
       energyconversion: {
         rare: true,
         cardID: 52,
@@ -1612,6 +1676,21 @@ let cards = {
           return stateObj;
         }
       },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      //here here
 
       kindle: {
         cardID: 2,

@@ -156,7 +156,7 @@ let playerMonsters = {
       cardPool: simpleCardPool,
       maxHP: 50,
       currentHP: 50,
-      strength: 2,
+      strength: 0,
       dex: 0,
       tempStrength: 0,
       tempDex: 0,
@@ -167,7 +167,7 @@ let playerMonsters = {
       avatar: "img/playerturtle.png",
       startingDeck: [
         //draw
-        cards.sabotage,
+        cards.energyburst,
         cards.rareFireEnergy,
         cards.enlightened,
 
