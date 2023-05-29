@@ -62,6 +62,7 @@ let fireCardPool = {
     kindle: {...cards.kindle},
     honeclaws: {...cards.honeclaws},
     banish: {...cards.banish},
+    insight: {...cards.insight},
     clarity: {...cards.clarity},
     generosity: {...cards.generosity},
     //strength-scalers -3 
@@ -187,6 +188,8 @@ let fireCardPool = {
     ascension: {...cards.ascension},
     banish: {...cards.banish},
     clarity: {...cards.clarity},
+    insight: {...cards.insight},
+    endingfeint: {...cards.endingfeint},
     
     //2 +
     // ------------------------------------------  10
