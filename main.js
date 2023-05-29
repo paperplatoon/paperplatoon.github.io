@@ -128,13 +128,13 @@ let gameStartState = {
 };
 
 const eventsArray = [
-  // {
-  //   divID: "TownEvent",
-  //   imgSrc: "img/wizardshop.png",
-  //   divText: "ShowCardPool",
-  //   newStatus: Status.ShowCardPool,
-  //   eventID: 100
-  // },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.png",
+    divText: "ShowCardPool",
+    newStatus: Status.ShowCardPool,
+    eventID: 100
+  },
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
@@ -441,7 +441,7 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
         let shuffledEventsArray = fisherYatesShuffle(eventsArray);
         stateObj = immer.produce(stateObj, (newState) => {
           if (stateObj.testingMode === true) {
-            newState.status = eventsArray[10].newStatus
+            newState.status = eventsArray[0].newStatus
           } else {
             if (stateObj.townMapSquares[indexToMoveTo] === "?1") {
               newState.status = shuffledEventsArray[1].newStatus;
@@ -2237,7 +2237,7 @@ function renderCardPool(stateObj, cardPool) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app");
-  renderClickableCardList(stateObj, Object.values(fireCardPool), "remove-div");
+  renderClickableCardList(stateObj, Object.values(stateObj.playerMonster.cardPool), "remove-div");
   skipToTownButton(stateObj, "I don't want to remove any of these cards from my deck", ".remove-div");
   renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };

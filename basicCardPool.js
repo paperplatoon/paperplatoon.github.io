@@ -338,7 +338,7 @@ let cards = {
 
       decimate: {
         cardID: 26,
-        name: "Decimate + await",
+        name: "Decimate",
         text: (state, index, array) => { 
           if (array[index].baseHits === 1) {
             return `Deal ${array[index].baseDamage + (array[index].upgrades*6) + state.playerMonster.strength} damage. Enemy loses ${array[index].energyDrain + array[index].upgrades} energy`;
@@ -3034,7 +3034,7 @@ let cards = {
       brandingiron: {
         cardID: "strength3",
         name: "Branding Iron",
-        text: (state, index, array) => { 
+        text: (stateObj, index, array) => { 
           selfDamage = (stateObj.cantSelfDamage === true) ? 0  : array[index].baseSelfDamage; 
           return `Deal ${selfDamage + array[index].upgrades} damage to yourself. Gain ${3+array[index].upgrades} strength`; 
         },
@@ -3063,7 +3063,7 @@ let cards = {
       flagellate: {
         cardID: "brand2",
         name: "Flagellate",
-        text: (state, index, array) => {
+        text: (stateObj, index, array) => {
           selfDamage = (stateObj.cantSelfDamage === true) ? 0  : array[index].baseSelfDamage; 
           return `Deal ${selfDamage + array[index].upgrades} damage to yourself. Gain ${1+array[index].upgrades} strength`;
           },
@@ -3099,7 +3099,7 @@ let cards = {
         cost:  (state, index, array) => {
           return array[index].baseCost;
         },
-        baseBlock: 1,
+        baseBlock: 7,
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {

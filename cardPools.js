@@ -64,7 +64,6 @@ let fireCardPool = {
     banish: {...cards.banish},
     insight: {...cards.insight},
     clarity: {...cards.clarity},
-    generosity: {...cards.generosity},
     //strength-scalers -3 
     finisher: {...cards.flurryfinisher},
     explode: {...cards.explode},
@@ -199,7 +198,7 @@ let fireCardPool = {
     disablingblow: {...cards.disablingblow},
     //retain and scale
     chargedblast: {...cards.chargedblast},
-    eighthdimension: {...cards.eighthdimension},
+    //eighthdimension: {...cards.eighthdimension},
     weightythoughts: {...cards.weightythoughts},
 
     //3+
