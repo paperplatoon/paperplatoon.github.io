@@ -79,7 +79,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 10,
-  testingMode: false,
+  testingMode: true,
   doubleEndOfTurnEnergy: false,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
@@ -288,7 +288,7 @@ function fillMapWithArray(stateObj) {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
       if (stateObj.testingMode === true) {
-        newState.townMapSquares[4] = "?1"
+        newState.townMapSquares[4] = "Fight"
       } else {
       newState.townMapSquares[4] =  "Fight";
       }
@@ -998,39 +998,32 @@ async function healOpponent(stateObj, HPToGain, index=0, energyChange=false, all
 
 
 async function destroyEnergy(stateObj, energyToDestroy, energyCost=false, all=false) {
-  stateObj = await opponentLoseEnergy(stateObj, energyToDestroy, stateObj.targetedMonster, playerTriggered=true)
-  stateObj = immer.produce(stateObj, (newState) => {
     if (all === true) {
-      newState.opponentMonster.forEach(function (monsterObj, monsterIndex) {
+      stateObj.opponentMonster.forEach(async function (monsterObj, monsterIndex) {
         if (monsterObj.encounterEnergy > 0 && monsterObj.encounterEnergy > energyToDestroy)  {
-          monsterObj.encounterEnergy -= energyToDestroy;
-          newState.fightEnergyDrainCount += 1
-          newState.fightEnergyDrainTotal += energyToDestroy
+          stateObj = await opponentLoseEnergy(stateObj, energyToDestroy, monsterIndex, playerTriggered=true)
         } else if (monsterObj.encounterEnergy > 0) {
-          newState.fightEnergyDrainCount += 1
-          newState.fightEnergyDrainTotal += monsterObj.encounterEnergy; 
-          monsterObj.encounterEnergy = 0; 
+          energyToDestroy = monsterObj.encounterEnergy
+          stateObj = await opponentLoseEnergy(stateObj, energyToDestroy, monsterIndex, playerTriggered=true)
         } else {}
       }) 
     } else {
-      let monsterObj = newState.opponentMonster[newState.targetedMonster];
+      let monsterObj = stateObj.opponentMonster[stateObj.targetedMonster];
       if (monsterObj.encounterEnergy > 0 && monsterObj.encounterEnergy > energyToDestroy)  {
-        monsterObj.encounterEnergy -= energyToDestroy;
-        newState.fightEnergyDrainCount += 1
-        newState.fightEnergyDrainTotal += energyToDestroy
+        stateObj = await opponentLoseEnergy(stateObj, energyToDestroy, stateObj.targetedMonster, playerTriggered=true)
       } else if (monsterObj.encounterEnergy > 0) {
-        newState.fightEnergyDrainCount += 1
-        newState.fightEnergyDrainTotal += monsterObj.encounterEnergy; 
-        monsterObj.encounterEnergy = 0; 
+        energyToDestroy = monsterObj.encounterEnergy
+        stateObj = await opponentLoseEnergy(stateObj, energyToDestroy, stateObj.targetedMonster, playerTriggered=true)
       } else {}
     }
-    if (energyCost) {
-      newState.playerMonster.encounterEnergy -= energyCost
-    }
-    if (newState.gainStrengthEnergyChange > 0) {
-      newState.playerMonster.strength += newState.gainStrengthEnergyChange;
-      newState.playerMonster.fightStrength += newState.gainStrengthEnergyChange;
-    }
+    stateObj = immer.produce(stateObj, async (newState) => {
+      if (energyCost) {
+        newState.playerMonster.encounterEnergy -= energyCost
+      }
+      if (newState.gainStrengthEnergyChange > 0) {
+        newState.playerMonster.strength += newState.gainStrengthEnergyChange;
+        newState.playerMonster.fightStrength += newState.gainStrengthEnergyChange;
+      }
   })
   return stateObj
 }

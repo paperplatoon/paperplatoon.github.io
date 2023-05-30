@@ -1260,6 +1260,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   color: white;
   height: 3vmin;
   width: 3vmin;
+  margin-top: 3vh;
   line-height: 3vmin;
   display: inline-block;
   text-align: center;
