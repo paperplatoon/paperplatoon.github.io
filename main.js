@@ -444,8 +444,10 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
             newState.status = eventsArray[0].newStatus
           } else {
             if (stateObj.townMapSquares[indexToMoveTo] === "?1") {
+              console.log("clicked on ?1 event: " + shuffledEventsArray[1].divText)
               newState.status = shuffledEventsArray[1].newStatus;
             } else {
+              console.log("clicked on ?2 event: " + shuffledEventsArray[2].divText)
               newState.status = shuffledEventsArray[2].newStatus;
             }
         }
@@ -2368,7 +2370,6 @@ async function renderPaidRemovalEvent(stateObj) {
   let paidRemovalDiv = await renderTownDiv(stateObj, "binaryChoice", "Choose a card to remove in exchange for 50 gold (100 gold for a rare)", true, changeStatus, Status.PaidRemovalCardList, altText=false);
   let recycleDiv = await renderTownDiv(stateObj, "binaryChoice", "Gain 1 Recycler spell that exhausts all other cards in hand", true, addRecycler, Status.OverworldMap, altText=false);
   document.getElementById("remove-div").append(paidRemovalDiv, recycleDiv);
-  skipToTownButton(stateObj, "Not right now", ".remove-div", cardSkip=false, isEventUsedForSkipButton=false);
   renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
 };
 

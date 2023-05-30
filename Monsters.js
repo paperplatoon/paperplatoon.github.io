@@ -1,7 +1,7 @@
 //return `Deal ${5 + array[index].strength} damage. Restore 5 health`
 //randomize some stuff like strength and dex (maybe starting energy) to change stuff up a bit
 
-let opponentBaseDamage = 5;
+let opponentBaseDamage = 6;
 let opponentBaseBlock = 6;
 let opponentBaseHeal = 6;
 let opponentBaseScale = 3;
