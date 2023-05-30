@@ -440,6 +440,13 @@
   background-color: black;
 }
 
+.removetext {
+  width: 98vw;
+  color: white;
+  text-align: center;
+  font-size: 3vw;
+}
+
 .bg-image {
   height: 100%;
   width: auto;

@@ -79,7 +79,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 10,
-  testingMode: true,
+  testingMode: false,
   doubleEndOfTurnEnergy: false,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
@@ -128,13 +128,13 @@ let gameStartState = {
 };
 
 const eventsArray = [
-  {
-    divID: "TownEvent",
-    imgSrc: "img/wizardshop.png",
-    divText: "ShowCardPool",
-    newStatus: Status.ShowCardPool,
-    eventID: 100
-  },
+  // {
+  //   divID: "TownEvent",
+  //   imgSrc: "img/wizardshop.png",
+  //   divText: "ShowCardPool",
+  //   newStatus: Status.ShowCardPool,
+  //   eventID: 100
+  // },
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
@@ -2204,6 +2204,10 @@ function renderRemoveCard(stateObj) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app");
+  let removeTextDiv = document.createElement("Div")
+  removeTextDiv.classList.add("removetext")
+  removeTextDiv.textContent = "Choose a card to remove from your deck"
+  document.getElementById("remove-div").append(removeTextDiv)
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", removeCard, goldCost="remove");
   skipToTownButton(stateObj, "Not right now", ".remove-div");
   renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
@@ -2942,6 +2946,10 @@ function renderUpgradeCard(stateObj) {
   document.getElementById("app").innerHTML = ""
   topRowDiv(stateObj, "app");
   divContainer("app");
+  let removeTextDiv = document.createElement("Div")
+  removeTextDiv.classList.add("removetext")
+  removeTextDiv.textContent = "Choose a card to upgrade"
+  document.getElementById("remove-div").append(removeTextDiv)
   renderClickableCardList(stateObj, stateObj.playerDeck, "remove-div", encounterUpgradeCard, goldCost="upgrade");
   skipToTownButton(stateObj, "I don't want to upgrade any of these cards", ".remove-div");
   renderCardPile(stateObj, stateObj.playerDeck, "deckDiv")
