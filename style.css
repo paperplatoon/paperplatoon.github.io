@@ -448,23 +448,7 @@
   font-size: 3vw;
 }
 
-#backstepdamage, #blockkeep {
-  position: relative;
-}
 
-#backstepdamagepopup, #blockkeeppopup {
-    display: none;
-    position: absolute;
-    top: 6%;
-    left: 22%;
-    z-index: 5;
-    width: 20vw;
-    height: 5vh;
-    font-size: 2vmin;
-    background-color: #f9f9f9;
-    color: black;
-    border: 1px solid #ccc;
-}
 
 
 
@@ -1210,7 +1194,8 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 }
 
 #backstepdamage {
-  background-image: url(img/icons/status/backstepdamage.png);
+  background-image: url(img/icons/status/backstepdamage2.png);
+  position: relative;
   background-size: contain;
   height: 2.5vw;
   width: 2.5vw;
@@ -1218,18 +1203,69 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
 }
 
 #cantselfdamage {
-  background-image: url(img/icons/status/cantselfdamage.png);
+  background-image: url(img/icons/status/cantselfdamage2.png);
+  position: relative;
   background-size: contain;
   height: 2.5vw;
   width: 2.5vw;
-  filter: invert(58%) sepia(60%) saturate(69%) hue-rotate(185deg) brightness(104%) contrast(105%);
+  filter: invert(88%) sepia(60%) hue-rotate(185deg) brightness(104%) contrast(105%);
 }
 
 #blockkeep {
   background-image: url(img/icons/status/blockkeep.png);
+  position: relative;
   background-size: contain;
   height: 2.5vw;
   width: 2.5vw;
+}
+
+#reformingshield {
+  background-image: url(img/icons/status/reformingshield.png);
+  filter: invert(92%) sepia(0%) saturate(933%) hue-rotate(350deg) brightness(98%) contrast(88%);
+  position: relative;
+  background-size: contain;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2.5vw;
+  width: 2.5vw;
+}
+
+.shieldnumber {
+  color: blue;
+  text-align: center;
+  font-size: 1.5vmin;
+}
+
+#gainstrengthenergy {
+  background-image: url(img/icons/status/energychange.png);
+  filter: invert(92%) sepia(0%) saturate(933%) hue-rotate(350deg) brightness(98%) contrast(88%);
+  position: relative;
+  background-size: contain;
+  justify-content: top;
+  height: 2.5vw;
+  width: 2.5vw;
+}
+
+.gainstrengthenergynumber {
+  color: blue;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  font-size: 2vmin;
+}
+
+#backstepdamagepopup, #blockkeeppopup, #cantselfdamagepopup, #reformingshieldpopup, #gainstrengthenergypopup {
+    display: none;
+    position: absolute;
+    top: 6%;
+    left: 22%;
+    z-index: 5;
+    width: 20vw;
+    height: 5vh;
+    font-size: 2vmin;
+    background-color: #f9f9f9;
+    color: black;
+    border: 1px solid #ccc;
 }
 
 

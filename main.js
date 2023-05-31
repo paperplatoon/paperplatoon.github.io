@@ -79,7 +79,7 @@ let gameStartState = {
   gymCount: 0,
   gymFightCount: 0,
   gold: 10,
-  testingMode: false,
+  testingMode: true,
   doubleEndOfTurnEnergy: false,
   cardRemoveCost: cardRemoveStartCost,
   cardUpgradeCost: cardUpgradeStartCost,
@@ -128,13 +128,13 @@ let gameStartState = {
 };
 
 const eventsArray = [
-  // {
-  //   divID: "TownEvent",
-  //   imgSrc: "img/wizardshop.png",
-  //   divText: "ShowCardPool",
-  //   newStatus: Status.ShowCardPool,
-  //   eventID: 100
-  // },
+  {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.png",
+    divText: "ShowCardPool",
+    newStatus: Status.ShowCardPool,
+    eventID: 100
+  },
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
@@ -269,7 +269,7 @@ function fillMapWithArray(stateObj) {
 
   let townMonsterEncounters = []
   if (stateObj.testingMode === true) {
-    townMonsterEncounters = [ [easySoloEncounters.e8], [easyMultiEncounters.em3, easyMultiEncounters.em4],[easySoloEncounters.e5],[easySoloEncounters.e6], [easySoloEncounters.e7],[easySoloEncounters.e8]]  
+    townMonsterEncounters = [ [easyMultiEncounters.em3, easyMultiEncounters.em4], [easySoloEncounters.e8], [easyMultiEncounters.em3, easyMultiEncounters.em4],[easySoloEncounters.e5],[easySoloEncounters.e6], [easySoloEncounters.e7],[easySoloEncounters.e8]]  
   } else {
     let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
     let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
@@ -288,7 +288,7 @@ function fillMapWithArray(stateObj) {
       newState.townMapSquares[3] = shuffledMap[0]
       newState.townMapSquares[5] = shuffledMap[1]
       if (stateObj.testingMode === true) {
-        newState.townMapSquares[4] = "Fight"
+        newState.townMapSquares[4] = "?1"
       } else {
       newState.townMapSquares[4] =  "Fight";
       }
@@ -1475,10 +1475,80 @@ async function renderPlayerMonster(stateObj) {
   }
 
   if (stateObj.cantSelfDamage === true) {
-    let blockKeepDiv = document.createElement("Div");
-    blockKeepDiv.setAttribute("id", "cantselfdamage");
-    playerStatusDiv.appendChild(blockKeepDiv);
+    let statusDiv = document.createElement("Div");
+      statusDiv.setAttribute("id", "cantselfdamage");
+      statusDiv.addEventListener('mouseover', function() {
+        const statusText = document.querySelector("#cantselfdamagepopup");
+        statusText.style.display = 'block'
+      });
+      
+      statusDiv.addEventListener('mouseout', function() {
+        const statusText = document.querySelector("#cantselfdamagepopup");
+        statusText.style.display = 'none'
+      });
+
+
+      let statusTextDiv = document.createElement("Div");
+      statusTextDiv.setAttribute("id", "cantselfdamagepopup")
+      statusTextDiv.textContent = "Your cards cannot damage you"
+
+      playerStatusDiv.appendChild(statusTextDiv);
+      playerStatusDiv.appendChild(statusDiv);
   }
+
+  if (stateObj.blockPerTurn > 0) {
+    let statusDiv = document.createElement("Div");
+    statusDiv.setAttribute("id", "reformingshield");
+    shieldNumber = document.createElement("P");
+    shieldNumber.classList.add("shieldnumber")
+    shieldNumber.textContent = stateObj.blockPerTurn;
+    statusDiv.append(shieldNumber);
+    statusDiv.addEventListener('mouseover', function() {
+      const statusText = document.querySelector("#reformingshieldpopup");
+      statusText.style.display = 'block'
+    });
+    
+    statusDiv.addEventListener('mouseout', function() {
+      const statusText = document.querySelector("#reformingshieldpopup");
+      statusText.style.display = 'none'
+    });
+
+
+    let statusTextDiv = document.createElement("Div");
+    statusTextDiv.setAttribute("id", "reformingshieldpopup")
+    statusTextDiv.textContent = `Gain ${stateObj.blockPerTurn} block at end of turn`
+
+    playerStatusDiv.appendChild(statusTextDiv);
+    playerStatusDiv.appendChild(statusDiv);
+}
+
+if (stateObj.gainStrengthEnergyChange > 0) {
+  let statusDiv = document.createElement("Div");
+  statusDiv.setAttribute("id", "gainstrengthenergy");
+  shieldNumber = document.createElement("P");
+  shieldNumber.classList.add("gainstrengthenergynumber")
+  shieldNumber.textContent = stateObj.gainStrengthEnergyChange;
+  statusDiv.append(shieldNumber);
+  statusDiv.addEventListener('mouseover', function() {
+    const statusText = document.querySelector("#gainstrengthenergypopup");
+    statusText.style.display = 'block'
+  });
+  
+  statusDiv.addEventListener('mouseout', function() {
+    const statusText = document.querySelector("#gainstrengthenergypopup");
+    statusText.style.display = 'none'
+  });
+
+
+  let statusTextDiv = document.createElement("Div");
+  statusTextDiv.setAttribute("id", "gainstrengthenergypopup")
+  statusTextDiv.textContent = `Gain ${stateObj.gainStrengthEnergyChange} strength whenever you make an opponent gain or lose energy`
+
+  playerStatusDiv.appendChild(statusTextDiv);
+  playerStatusDiv.appendChild(statusDiv);
+}
+
+
 
   topRowDiv.append(playerStatusDiv)
 
@@ -3823,6 +3893,7 @@ async function endTurn(stateObj) {
   stateObj = await pickOpponentMove(stateObj);
   stateObj = immer.produce(stateObj, (draft) => {
     if (stateObj.blockKeep === false) {
+      console.log("endturn blockkeep = false")
       draft.playerMonster.encounterBlock = 0;
     }
     draft.playerMonster.encounterEnergy += draft.playerMonster.turnEnergy;

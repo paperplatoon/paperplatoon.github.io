@@ -299,11 +299,11 @@ let cards = {
         name: "Weighty Thoughts",
         text: (stateObj, index, array) => { 
           let totalDamage = (array[index].baseDamage + (array[index].upgrades*4) + stateObj.playerMonster.strength);
-          let textString = `Deal ${totalDamage + stateObj.playerDeck.length} damage`;
+          let textString = `Deal ${totalDamage} damage`;
           if (array[index].baseHits > 1) {
             textString += ` ${array[index].baseHits} times`; 
           }
-          textString += `. Deals extra damage for each card in your deck (${totalDamage+stateObj.playerDeck.length})`; 
+          textString += `. +1 for each card in your deck (${totalDamage+stateObj.playerDeck.length} total)`; 
           return textString; 
         },
       minReq: (state, index, array) => {
@@ -851,7 +851,7 @@ let cards = {
             if (array[index].baseHits > 1) {
                 textString += ` ${array[index].baseHits} times`;
             } 
-            if (state.playerMonster.encounterEnergy !== array[index].baseCost) {
+            if (state.playerMonster.encounterEnergy !== array[index].baseCost || state.status !== Status.InEncounter) {
               textString += `. Finale: `
             } else {
               textString += `. `
@@ -1283,9 +1283,12 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          await cardAnimationDiscard(index);
-          stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*4), array[index].baseCost)
-          stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*3), array[index].baseHits, energyCost=false, all=true)
+          stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades*3), array[index].baseCost)
+
+          let totalBaseDamage = array[index].baseDamage + (array[index].upgrades*2);
+          let calculatedDamage = (totalBaseDamage + stateObj.playerMonster.strength) * (array[index].baseHits)
+          await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
+          stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits, false, true)
           return stateObj;
         }
       },
@@ -1322,7 +1325,7 @@ let cards = {
         cardID: 73,
         rare: true,
         exhaust: true,
-        name: "Whirlwind",
+        name: "Shield Spikes",
         text: (state, index, array) => { 
           return `Backsteps also damage enemies. Remove` 
         },
@@ -1683,7 +1686,7 @@ let cards = {
 
 
 
-      //here here
+      
 
       kindle: {
         cardID: 2,
@@ -2051,7 +2054,7 @@ let cards = {
         text: (stateObj, index, array) => {
           let cardDamage = array[index].baseDamage + (array[index].upgrades) + stateObj.playerMonster.strength;
           cardDamage = (stateObj.playerMonster.encounterEnergy === array[index].baseCost) ? cardDamage*2 : cardDamage;
-          textString = `Deal ${cardDamage} damage` 
+          let textString = `Deal ${cardDamage} damage` 
           if (array[index].baseHits > 1) {
             textString += ` ${array[index].baseHits} times`
           } 
@@ -2277,6 +2280,7 @@ let cards = {
             if (state.status === Status.InEncounter) {
               textString += ` (${(array[index].baseHeal+array[index].upgrades + state.extraHeal) * state.cardsPerTurn}) total`
             }
+            return textString
       },
       minReq: (state, index, array) => {
         return array[index].baseCost;
@@ -2333,11 +2337,8 @@ let cards = {
         action: async (stateObj, index, array) => {
           let calculatedDamage = array[index].baseDamage + (array[index].upgrades*2) + stateObj.playerMonster.strength
           await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
-          console.log("called animation")
           stateObj = await dealOpponentDamage(stateObj, array[index].baseDamage + (array[index].upgrades*2), array[index].baseHits, array[index].baseCost, all=true)
-          console.log("triggered damage")
           stateObj = await energyGift(stateObj, array[index].energyGift, 0, all=true)
-          console.log("gifted energy")
           return stateObj;
         }
       },
@@ -2522,43 +2523,43 @@ let cards = {
       },
   
 
-      religiousfervor: {
-        rare: true,
-        exhaust: true,
-        cardID: 62,
-        name: "Divine Favor",
-        text: (state, index, array) => { 
-          if (array[index].upgrades === 0) {
-            return `Gain ${4+(array[index].upgrades*2)} block whenever you make opponent gain energy. Remove`;
-          } else {
-            return `Gain ${4+(array[index].upgrades*2)} block whenever you make energy`;
-          }
-        },
-        minReq: (stateObj, index, array) => {
-          return array[index].baseCost;
-        },
-        upgrades: 0,
-        baseCost: 1,
-        cost:  (stateObj, index, array) => {
-          return array[index].baseCost;
-        },
-        cardType: "ability",
-        elementType: "fire",
-        action: async (stateObj, index, array) => {
-          stateObj = immer.produce(stateObj, (newState) => {
-            newState.playerMonster.encounterEnergy -= array[index].baseCost;
-            newState.energyGiftBlock += 4+(array[index].upgrades*2);
-            if (array[index].upgrades > 0) {
-                let thisCard = {...array[index]};
-                newState.encounterDiscard.push(thisCard);
-            }
-          })
-          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
-          await pause(500);
-          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
-          return stateObj;
-        }
-      },
+      // religiousfervor: {
+      //   rare: true,
+      //   exhaust: true,
+      //   cardID: 62,
+      //   name: "Divine Favor",
+      //   text: (state, index, array) => { 
+      //     if (array[index].upgrades === 0) {
+      //       return `Gain ${4+(array[index].upgrades*2)} block whenever you make opponent gain energy. Remove`;
+      //     } else {
+      //       return `Gain ${4+(array[index].upgrades*2)} block whenever you make energy`;
+      //     }
+      //   },
+      //   minReq: (stateObj, index, array) => {
+      //     return array[index].baseCost;
+      //   },
+      //   upgrades: 0,
+      //   baseCost: 1,
+      //   cost:  (stateObj, index, array) => {
+      //     return array[index].baseCost;
+      //   },
+      //   cardType: "ability",
+      //   elementType: "fire",
+      //   action: async (stateObj, index, array) => {
+      //     stateObj = immer.produce(stateObj, (newState) => {
+      //       newState.playerMonster.encounterEnergy -= array[index].baseCost;
+      //       newState.energyGiftBlock += 4+(array[index].upgrades*2);
+      //       if (array[index].upgrades > 0) {
+      //           let thisCard = {...array[index]};
+      //           newState.encounterDiscard.push(thisCard);
+      //       }
+      //     })
+      //     document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+      //     await pause(500);
+      //     document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
+      //     return stateObj;
+      //   }
+      // },
   
       forgeshield: {
         rare: true,
@@ -2690,6 +2691,10 @@ let cards = {
             textString += ` ${1+array[index].upgrades} times`;
           }
           textString += `. Purge`
+
+          if (state.status !== Status.InEncounter) {
+            textString += ` \n (Purge cards are removed from your deck forever after you play them once)`
+          }
           return textString;
         },
         minReq: (state, index, array) => {

@@ -65,7 +65,7 @@ let fireCardPool = {
     insight: {...cards.insight},
     clarity: {...cards.clarity},
     //strength-scalers -3 
-    finisher: {...cards.flurryfinisher},
+    // finisher: {...cards.flurryfinisher},
     explode: {...cards.explode},
     fireball: {...cards.fireball},
     //energy effects - 3
@@ -97,7 +97,7 @@ let fireCardPool = {
     // ------------------------------------------  14
     reformingshield: {...cards.reformingshield},
     unwaveringdefense: {...cards.unwaveringdefense},
-    religiousfervor: {...cards.religiousfervor},
+    // religiousfervor: {...cards.religiousfervor},
     enlightened: {...cards.enlightened},
 
     flamingcloak: {...cards.flamingcloak},
@@ -299,7 +299,7 @@ let simpleCardPool = {
     kindle: {...cards.kindle},
     honeclaws: {...cards.honeclaws},
     clarity: {...cards.clarity},
-    generosity: {...cards.generosity},
+    // generosity: {...cards.generosity},
     //strength-scalers -3 
     explode: {...cards.explode},
     fireball: {...cards.fireball},
@@ -330,7 +330,7 @@ let simpleCardPool = {
     // ------------------------------------------  14
     reformingshield: {...cards.reformingshield},
     unwaveringdefense: {...cards.unwaveringdefense},
-    religiousfervor: {...cards.religiousfervor},
+    // religiousfervor: {...cards.religiousfervor},
 
     flamingcloak: {...cards.flamingcloak},
     fortify: {...cards.fortify},
