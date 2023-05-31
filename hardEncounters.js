@@ -24,7 +24,7 @@ let hardSoloEncounters = {
         avatar: "img/hard/hugeair.png",
         moves: [
           {
-            name: "Shielded Strike",
+            name: "Puff Up",
             cost: "0",
             energyChange: "+2",
             text: (state, index, array) => {
@@ -57,7 +57,7 @@ let hardSoloEncounters = {
             name: false,
           },
           {
-            name: "Dive Bomb",
+            name: "Smoke Bomb",
             cost: "6",
             text: (state, index, array) => {
               return `Deal ${(array[index].baseDamage * 5) + array[index].strength} damage`
@@ -261,7 +261,7 @@ let hardSoloEncounters = {
             name: "Laser Beam",
             cost: "0",
             text: (state, index, array) => {
-              return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage. `
+              return `Deal ${(array[index].baseDamage*3) + array[index].strength} damage. `
             },
             minReq: 0,
             energyChange: "+2",
@@ -277,7 +277,7 @@ let hardSoloEncounters = {
             name: "Bombard",
             cost: "2",
             text: (state, index, array) => {
-              return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage. `
+              return `Deal ${(array[index].baseDamage*4) + array[index].strength} damage. `
             },
             minReq: 2,
             energyChange: "+2",

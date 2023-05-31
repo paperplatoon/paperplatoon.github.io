@@ -127,12 +127,12 @@ let mediumSoloEncounters = {
             name: "Strangle",
             cost: "3",
             text: (state, index, array) => {
-              return `Deal ${(array[index].baseDamage*2) + array[index].dex + array[index].strength} damage. Gain ${array[index].baseScale} dexterity. Increases off Dexterity`
+              return `Deal ${(array[index].baseDamage*3) + array[index].dex + array[index].strength} damage. Gain ${array[index].baseScale} dexterity. Increases off Dexterity`
             },
             minReq: 3,
             energyChange: "-3",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, ((array[index].baseDamage*2) + array[index].dex), index, -3);
+              stateObj = await dealPlayerDamage(stateObj, ((array[index].baseDamage*3) + array[index].dex), index, -3);
               stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].dex += array[index].baseScale;
               })
@@ -172,12 +172,12 @@ let mediumSoloEncounters = {
             name: "Bite",
             cost: "0",
             text: (state, index, array) => {
-              return `Deal ${array[index].baseDamage+1 + array[index].strength} damage`
+              return `Deal ${array[index].baseDamage+3 + array[index].strength} damage`
             },
             minReq: 0,
             energyChange: "+5",
             action: async (stateObj, index, array) => {
-              stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage+1, index, 5)
+              stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage+3, index, 5)
               return stateObj;
             }
           },
@@ -317,7 +317,7 @@ let mediumSoloEncounters = {
           name: false,
         },
         {
-          name: "Enrage",
+          name: "Fire Up",
           cost: "3",
           text: (state, index, array) => {
             return `Gain ${(array[index].baseBlock*2) + array[index].dex} block. Gain ${array[index].baseScale} strength`
@@ -382,7 +382,7 @@ let mediumSoloEncounters = {
           name: "Sea Wall",
           cost: "3",
           text: (state, index, array) => {
-            return `Gain ${array[index].baseBlock + array[index].dex} block. Deal ${array[index].baseDamage + 1 + array[index].strength} damage. `
+            return `Gain ${array[index].baseBlock + array[index].dex} block. Deal ${(array[index].baseDamage*2) + array[index].strength} damage. `
           },
           minReq: 3,
           energyChange: "-3",
@@ -462,12 +462,12 @@ let mediumSoloEncounters = {
           name: "Tail Swipe",
           cost: "4",
           text: (state, index, array) => {
-            return `Deal ${(array[index].baseDamage*2) + array[index].strength} damage`
+            return `Deal ${(array[index].baseDamage*3) + array[index].strength} damage`
           },
           minReq: 4,
           energyChange: "-4",
           action: async (stateObj, index, array) => {
-            stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage*2, index, -4);
+            stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage*3, index, -4);
             return stateObj;
           }
         }    
@@ -504,13 +504,13 @@ let mediumSoloEncounters = {
           name: "Turtle Up",
           cost: "0",
           text: (state, index, array) => {
-              return `Gain ${array[index].baseBlock+1 + array[index].dex} block`
+              return `Gain ${array[index].baseBlock+4 + array[index].dex} block`
           },
           minReq: 0,
           energyChange: "+1",
           action: async (stateObj, index, array) => {
             stateObj = immer.produce(stateObj, (newState) => {
-              let blockToGain = array[index].baseBlock + 1 + array[index].dex
+              let blockToGain = array[index].baseBlock + 4 + array[index].dex
               if (blockToGain > 0) {
                 newState.opponentMonster[index].encounterBlock += blockToGain;
               }
@@ -529,12 +529,12 @@ let mediumSoloEncounters = {
           name: "Shell Smack",
           cost: "3",
           text: (state, index, array) => {
-              return `Deal ${Math.floor(array[index].baseDamage+3) + array[index].strength} damage`
+              return `Deal ${Math.floor(array[index].baseDamage*33) + array[index].strength} damage`
           },
           minReq: 3,
           energyChange: "-3",
           action: async (stateObj, index, array) => {
-            stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage+3), index, -3);
+            stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage*3), index, -3);
             return stateObj;
           }
         }
@@ -668,6 +668,9 @@ let mediumSoloEncounters = {
           name: false,
         },
         {
+          name: false,
+        },
+        {
           name: "Payback",
           cost: "2",
           text: (state, index, array) => {
@@ -677,22 +680,6 @@ let mediumSoloEncounters = {
           energyChange: "+1",
           action: async (stateObj, index, array) => {
             stateObj = await dealPlayerDamage(stateObj, Math.floor(array[index].baseDamage-2) - array[index].strength, index, 1, stateObj.fightDamageCount);
-            return stateObj;
-          }
-        },
-        {
-          name: false,
-        },
-        {
-          name: "Unleash",
-          cost: "4",
-          text: (state, index, array) => {
-              return `Deal damage equal to total HP lost (${state.fightDamageTotal}). Unaffected by strength`
-          },
-          minReq: 4,
-          energyChange: "-4",
-          action: async (stateObj, index, array) => {
-            stateObj = await dealPlayerDamage(stateObj, stateObj.fightDamageTotal-array[index].strength, index, -4);
             return stateObj;
           }
         },
@@ -928,7 +915,7 @@ let mediumMultiEncounters = {
             name: "Left Claw",
             cost: "0",
             text: (state, index, array) => {
-                return `Deal ${Math.floor(array[index].baseDamage-2) + array[index].strength} damage`
+                return `Deal ${Math.floor(array[index].baseDamage) + array[index].strength} damage`
             },
             minReq: 0,
             energyChange: "+2",
@@ -944,7 +931,7 @@ let mediumMultiEncounters = {
             name: "Right Claw",
             cost: "2",
             text: (state, index, array) => {
-                return `Deal ${Math.floor(array[index].baseDamage+1) + array[index].strength} damage`
+                return `Deal ${Math.floor(array[index].baseDamage*2) + 1 + array[index].strength} damage`
             },
             minReq: 2,
             energyChange: "-2",

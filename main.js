@@ -1430,15 +1430,48 @@ async function renderPlayerMonster(stateObj) {
   
 
   if (stateObj.blockKeep === true) {
-      let blockKeepDiv = document.createElement("Div");
-      blockKeepDiv.setAttribute("id", "blockkeep");
-      playerStatusDiv.appendChild(blockKeepDiv);
+      let statusDiv = document.createElement("Div");
+      statusDiv.setAttribute("id", "blockkeep");
+      statusDiv.addEventListener('mouseover', function() {
+        const statusText = document.querySelector("#blockkeeppopup");
+        statusText.style.display = 'block'
+      });
+      
+      statusDiv.addEventListener('mouseout', function() {
+        const statusText = document.querySelector("#blockkeeppopup");
+        statusText.style.display = 'none'
+      });
+
+
+      let statusTextDiv = document.createElement("Div");
+      statusTextDiv.setAttribute("id", "blockkeeppopup")
+      statusTextDiv.textContent = "You do not lose block at end of turn"
+
+      playerStatusDiv.appendChild(statusTextDiv);
+      playerStatusDiv.appendChild(statusDiv);
   }
 
   if (stateObj.backstepDamage === true) {
-    let blockKeepDiv = document.createElement("Div");
-    blockKeepDiv.setAttribute("id", "backstepdamage");
-    playerStatusDiv.appendChild(blockKeepDiv);
+    let backstepDamageDiv = document.createElement("Div");
+    backstepDamageDiv.setAttribute("id", "backstepdamage");
+    
+    
+    let backstepDamageTextDiv = document.createElement("Div");
+    backstepDamageTextDiv.setAttribute("id", "backstepdamagepopup")
+    backstepDamageTextDiv.textContent = "Deal 4 damage to all enemies whenever you play a Backstep card"
+    playerStatusDiv.appendChild(backstepDamageTextDiv);
+
+    backstepDamageDiv.addEventListener('mouseover', function() {
+      const backstepDiv = document.querySelector("#backstepdamagepopup");
+      backstepDiv.style.display = 'block'
+      console.log("mouseover")
+    });
+    
+    backstepDamageDiv.addEventListener('mouseout', function() {
+      const backstepDiv = document.querySelector("#backstepdamagepopup");
+      backstepDiv.style.display = 'none'
+    });
+    playerStatusDiv.appendChild(backstepDamageDiv);
   }
 
   if (stateObj.cantSelfDamage === true) {
