@@ -128,13 +128,13 @@ let gameStartState = {
 };
 
 const eventsArray = [
-  {
-    divID: "TownEvent",
-    imgSrc: "img/wizardshop.png",
-    divText: "ShowCardPool",
-    newStatus: Status.ShowCardPool,
-    eventID: 100
-  },
+  // {
+  //   divID: "TownEvent",
+  //   imgSrc: "img/wizardshop.png",
+  //   divText: "ShowCardPool",
+  //   newStatus: Status.ShowCardPool,
+  //   eventID: 100
+  // },
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
