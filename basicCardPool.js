@@ -895,7 +895,7 @@ let cards = {
         name: "Follow-Up Slap",
         text: (stateObj, index, array) => {
           let cardDamage = array[index].baseDamage + (array[index].upgrades*3) + stateObj.playerMonster.strength;
-          cardDamage = (stateObj.cardsPerTurn === 2) ? (cardDamage+5+(array[index].upgrades))  : cardDamage; 
+          cardDamage = (stateObj.cardsPerTurn === 2 && stateObj.status === Status.InEncounter) ? (cardDamage+5+(array[index].upgrades))  : cardDamage; 
           let textString = `Deal ${cardDamage + stateObj.playerMonster.strength} damage`;
           if (array[index].baseHits > 1) {
             textString += ` ${array[index].baseHits} times`
@@ -2377,8 +2377,8 @@ let cards = {
         name: "Bide",
         text: (state, index, array) => { 
           let textString = `Gain ${array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades*2)} block. Upgrade your top left card`
-          if (array[index].upgrades > Math.floor(array[index].upgrades/2)) {
-            textString += ` ${Math.floor(array[index].upgrades/2)} times.`
+          if (array[index].upgrades > 0) {
+            textString += ` ${1 + Math.floor(array[index].upgrades/2)} times.`
           }
           return textString;
         },
@@ -2846,7 +2846,7 @@ let cards = {
       enjoin: {
         cardID: 38,
         name: "Shared Joy",
-        text: (state, index, array) => { return `Heal enemy for ${array[index].baseHeal + array[index].upgrades + state.extraHeal}. You heal triple that amount` },
+        text: (state, index, array) => { return `Heal enemy for ${array[index].baseHeal + array[index].upgrades + state.extraHeal}. You heal triple that amount.` },
         minReq: (state, index, array) => {
           return array[index].baseCost;
         },
@@ -3256,6 +3256,7 @@ let cards = {
             textString += ` ${array[index].baseHits} times`;
           } 
           textString += `. Doesn't discard. Deals +10 each turn held`;
+          return textString;
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -3606,7 +3607,7 @@ let cards = {
           if (array[index].upgrades > 0) {
             textString += `. Gain ${4 + (array[index].upgrades*2)} block`
           }
-          return ;
+          return textString;
         },
         minReq: (state, index, array) => {
             return array[index].baseCost
