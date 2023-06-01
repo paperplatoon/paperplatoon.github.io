@@ -126,15 +126,16 @@ let playerMonsters = {
       turnCards: 6,
       avatar: "img/easy/adorablefire.png",
       startingDeck: [
-        //2 energy
+        //1 energy
         waterCardPool.waterenergy,
-        //5 attack
+        //6 attack
         waterCardPool.recall,
         waterCardPool.ascension,
         waterCardPool.meditate,
         cards.tackle,
         cards.tackle,
-        //5 block
+        cards.tackle,
+        //7 block
         cards.withdraw,
         cards.withdraw,
         cards.withdraw,

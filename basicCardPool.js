@@ -946,7 +946,7 @@ let cards = {
           } else if (array[index].playCount===1) {
             textString += `Play once more: `
           }
-          textString += `Deal ${cardDamage} damage`
+          textString += `Deal ${cardDamage} damage to all enemies`
           if (array[index].baseHits > 1) {
             textString += ` ${array[index].baseHits} times`
           }
@@ -976,7 +976,7 @@ let cards = {
             let totalBaseDamage = array[index].baseDamage + (10*array[index].upgrades);
             let calculatedDamage = (totalBaseDamage + stateObj.playerMonster.strength) * (array[index].baseHits)
             await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)        
-            stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits, array[index].baseCost)
+            stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits, array[index].baseCost, true)
           }
           return stateObj;
         }

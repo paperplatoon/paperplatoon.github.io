@@ -1798,9 +1798,7 @@ function resetAfterFight(stateObj) {
     newState.townMapSquares[newState.playerHere] = "completed";
 
     console.log("gym count is " + newState.gymCount);
-    if (newState.playerHere === 19 && newState.gymCount === 2) {
-      newState.status = Status.VictoryScreen;
-    } else if (newState.fightingBoss === true) {
+    if (newState.fightingBoss === true) {
       //newState.playerXP += newState.townBossEncounter.XP
       newState.gymFightCount = 0;
       newState.gymCount += 1;

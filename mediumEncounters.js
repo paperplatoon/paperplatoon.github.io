@@ -367,7 +367,7 @@ let mediumSoloEncounters = {
           action: async (stateObj, index, array) => {
             stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage+3, index, 1);
             stateObj = immer.produce(stateObj, (newState) => {
-              newState.opponentMonster[index].strength += array[index].baseScale;
+              newState.opponentMonster[index].dex += array[index].baseScale;
             })
             return stateObj;
           }
@@ -529,7 +529,7 @@ let mediumSoloEncounters = {
           name: "Shell Smack",
           cost: "3",
           text: (state, index, array) => {
-              return `Deal ${Math.floor(array[index].baseDamage*33) + array[index].strength} damage`
+              return `Deal ${Math.floor(array[index].baseDamage*3) + array[index].strength} damage`
           },
           minReq: 3,
           energyChange: "-3",
