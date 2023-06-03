@@ -264,7 +264,7 @@ const eventsArray = [
 //takes a stateObject and fills its map with events
 function fillMapWithArray(stateObj) {
   console.log("fill Mpa with Array is being called")
-  let mapFillArray = ["?1", "?2", "Fight", "Fight", "Fight", "Fight", "path", "path", "path","path", "path", "path", "Fight", "Shop", "Healer", "Upgrade", "Remove"];
+  let mapFillArray = ["?1", "path", "Fight", "Fight", "Fight", "path", "path", "path", "path","path", "path", "path", "path", "Shop", "Healer", "Upgrade", "Remove"];
   let shuffledMap = fisherYatesShuffle(mapFillArray);
 
   let townMonsterEncounters = []
