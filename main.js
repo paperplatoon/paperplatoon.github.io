@@ -271,15 +271,11 @@ function fillMapWithArray(stateObj) {
   if (stateObj.testingMode === true) {
     townMonsterEncounters = [ [easyMultiEncounters.em3, easyMultiEncounters.em4], [easySoloEncounters.e8], [easyMultiEncounters.em3, easyMultiEncounters.em4],[easySoloEncounters.e5],[easySoloEncounters.e6], [easySoloEncounters.e7],[easySoloEncounters.e8]]  
   } else {
-    let easyShuffledEncounters = fisherYatesShuffle(easyEncounters);
-    let mediumShuffledEncounters = fisherYatesShuffle(mediumEncounters);
-    let hardShuffledEncounters = fisherYatesShuffle(hardEncounters);
-    townMonsterEncounters[0] = easyShuffledEncounters[0];
-    townMonsterEncounters[1] = easyShuffledEncounters[1];
-    townMonsterEncounters[2] = mediumShuffledEncounters[0];
-    townMonsterEncounters[3] = mediumShuffledEncounters[1];
-    townMonsterEncounters[4] = mediumShuffledEncounters[2];
-    townMonsterEncounters[5] = hardShuffledEncounters[0];
+    let shuffledEncounterArray = fisherYatesShuffle(towns[stateObj.gymCount])
+    townMonsterEncounters[0] = shuffledEncounterArray[0];
+    townMonsterEncounters[1] = shuffledEncounterArray[1];
+    townMonsterEncounters[2] = shuffledEncounterArray[2];
+    townMonsterEncounters[3] = shuffledEncounterArray[3];
     console.log(townMonsterEncounters);
   }
 
@@ -1924,13 +1920,13 @@ function setUpEncounter(stateObj, isBoss=false) {
     newState.opponentMonster.forEach(function (monster, index) {
       newState.opponentMonster[index].encounterEnergy = 0;
       newState.opponentMonster[index].encounterBlock = 0;
-      newState.opponentMonster[index].maxHP += (newState.gymCount*20);
-      newState.opponentMonster[index].currentHP += (newState.gymCount*20);
-      newState.opponentMonster[index].baseDamage += (newState.gymCount*4);
-      newState.opponentMonster[index].baseBlock += (newState.gymCount*4);
-      newState.opponentMonster[index].baseHeal += (newState.gymCount*4);
-      newState.opponentMonster[index].baseScale += (newState.gymCount*1);
-      newState.opponentMonster[index].XPGain += (newState.gymCount*5);
+      // newState.opponentMonster[index].maxHP += (newState.gymCount*20);
+      // newState.opponentMonster[index].currentHP += (newState.gymCount*20);
+      // newState.opponentMonster[index].baseDamage += (newState.gymCount*4);
+      // newState.opponentMonster[index].baseBlock += (newState.gymCount*4);
+      // newState.opponentMonster[index].baseHeal += (newState.gymCount*4);
+      // newState.opponentMonster[index].baseScale += (newState.gymCount*1);
+      // newState.opponentMonster[index].XPGain += (newState.gymCount*5);
 
       newState.status = Status.InEncounter
     })

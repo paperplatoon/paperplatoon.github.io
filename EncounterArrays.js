@@ -1,33 +1,31 @@
-let mediumEncountersMjs = [
-  [opponentMonsters.blockgym1],
-  [opponentMonsters.strengthgym1],
-  [opponentMonsters.balancegym1],
-  [opponentMonsters.healgym1],
-  [easyMultiEncounters.e4, easyMultiEncounters.e5, easyMultiEncounters.e4],
-  [opponentMonsters.strengthgym1, opponentMonsters.strengthgymguard],
-
-  // {
-  //   opponents: [opponentMonsters.healgymguard2, opponentMonsters.blockgym1],
-  //   goldReward: 35,
-  //   XP: 20
-  // },
-  // {
-  //   opponents: [opponentMonsters.strengthgymguard, opponentMonsters.blockgym1],
-  //   goldReward: 35,
-  //   XP: 20
-  // },
-  // {
-  //   opponents: [opponentMonsters.strengthgymguard, opponentMonsters.healgym1],
-  //   goldReward: 35,
-  //   XP: 20
-  // },
-
-  // {
-  //   opponents: [opponentMonsters.healgymguard2, opponentMonsters.strengthgym1],
-  //   goldReward: 35,
-  //   XP: 20
-  // },
+let town1 = [
+  [easySoloEncounters.e2],
+  [easySoloEncounters.e3],
+  [easySoloEncounters.e4],
+  [easySoloEncounters.e5],
+  [easySoloEncounters.e6],
+  [easySoloEncounters.e7],
 ]
+
+let town2 = [
+  [easySoloEncounters.e1],
+  [easySoloEncounters.e8],
+  [mediumSoloEncounters.m2],
+  [mediumSoloEncounters.m3],
+  [mediumSoloEncounters.m5],
+
+  [mediumSoloEncounters.m6],
+  [mediumSoloEncounters.m8],
+  [easyMultiEncounters.em1, easyMultiEncounters.em2],
+  [easyMultiEncounters.em4, easyMultiEncounters.em1],
+  [easyMultiEncounters.em3, easyMultiEncounters.em4],
+]
+
+let town3 = []
+
+let towns = [town1, town2]
+
+
 
 let easyEncounters = [
   [easySoloEncounters.e1],
