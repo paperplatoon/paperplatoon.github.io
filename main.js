@@ -1804,7 +1804,7 @@ function resetAfterFight(stateObj) {
       newState.gymFightCount = 0;
       newState.gymCount += 1;
       newState.playerMonster.maxHP += 10
-      newState.playerMonster.currentHP += 10
+      newState.playerMonster.currentHP = newState.playerMonster.maxHP;
       newState.cardRemoveCost = cardRemoveStartCost;
       newState.cardUpgradeCost = cardUpgradeStartCost;
       newState.healCost =  healStartCost;
