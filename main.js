@@ -686,6 +686,7 @@ async function dealOpponentDamage(stateObj, damageNumber, attackNumber = 1, ener
 }
 
 async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energyChange=false, attackNumber = 1, animation=true) {
+  let monsterObj = stateObj.opponentMonster[monsterIndex]
 
   if (animation === true) {
     document.querySelectorAll("#opponents .avatar")[monsterIndex].classList.add("opponent-windup");
@@ -697,8 +698,12 @@ async function dealPlayerDamage(stateObj, damageNumber, monsterIndex = 0, energy
 
   if (energyChange && energyChange > 0) {
     stateObj = await opponentGainEnergy(stateObj, energyChange, monsterIndex)
+    console.log(monsterObj.name + " gained energy")
+    console.log("current energy is " + monsterObj.encounterEnergy)
   } else if (energyChange && energyChange < 0) {
     stateObj = await opponentLoseEnergy(stateObj, -energyChange, monsterIndex)
+    console.log("current energy is " + monsterObj.encounterEnergy)
+    console.log(monsterObj.name + " lost energy")
   }
   
   

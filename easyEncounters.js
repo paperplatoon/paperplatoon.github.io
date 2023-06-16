@@ -107,7 +107,7 @@ let easySoloEncounters = {
               return `Deal ${(array[index].baseDamage+4) + array[index].strength} damage.`
             },
             minReq: 0,
-            energyChange: "+2",
+            energyChange: "+1",
             action: async (stateObj, index, array) => {
               stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage+4, index, 2);
               return stateObj;
@@ -117,21 +117,15 @@ let easySoloEncounters = {
             name: false,
           },
           {
-            name: false,
-          },
-          {
-            name: false,
-          },
-          {
             name: "Rising Flames",
-            cost: "4",
+            cost: "2",
             text: (state, index, array) => {
               return `Gain ${(array[index].baseBlock) + array[index].dex} block. Gain ${array[index].baseScale} Strength & Dexterity`
             },
-            minReq: 4,
-            energyChange: "-4",
+            minReq: 2,
+            energyChange: "-2",
             action: async (stateObj, index, array) => {
-              stateObj = await opponentLoseEnergy(stateObj, 4, index);
+              stateObj = await opponentLoseEnergy(stateObj, 2, index);
               stateObj = immer.produce(stateObj, (newState) => {
                 newState.opponentMonster[index].encounterBlock += ((array[index].baseBlock)  + array[index].dex);
                 newState.opponentMonster[index].strength += array[index].baseScale;
@@ -183,7 +177,6 @@ let easySoloEncounters = {
           {
             name: false,
           },
-    
           {
             name: "Seed Eruption",
             cost: "2",
@@ -338,13 +331,13 @@ let easySoloEncounters = {
         name: "Reef Camouflage",
         cost: "",
         text: (state, index, array) => {
-          return `Gain ${array[index].baseBlock + 3 + array[index].dex} block.`
+          return `Gain ${array[index].baseBlock + 2 + array[index].dex} block.`
         },
         minReq: 0,
         energyChange: "+1",
         action: async (stateObj, index, array) => {
           stateObj = immer.produce(stateObj, (newState) => {
-            newState.opponentMonster[index].encounterBlock += array[index].baseBlock + 3 + array[index].dex;
+            newState.opponentMonster[index].encounterBlock += array[index].baseBlock + 2 + array[index].dex;
           })
           stateObj = await opponentGainEnergy(stateObj, 1, index);
           return stateObj;
@@ -401,7 +394,6 @@ let easySoloEncounters = {
         minReq: 0,
         energyChange: "+1",
         action: async (stateObj, index, array) => {
-          stateObj = await opponentGainEnergy(stateObj, 1, index)
           stateObj = await dealPlayerDamage(stateObj, array[index].baseDamage, index, 1);
           stateObj = await healOpponent(stateObj, 5, index)
           return stateObj;
@@ -415,12 +407,12 @@ let easySoloEncounters = {
         name: "Petal Strike",
         cost: "2",
         text: (state, index, array) => {
-          return `Deal ${(array[index].baseDamage*2) + 2 + array[index].strength} damage`
+          return `Deal ${(array[index].baseDamage*3) + array[index].strength} damage`
         },
         minReq: 2,
         energyChange: "-2",
         action: async (stateObj, index, array) => {
-          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*2) + 2, index, -2);
+          stateObj = await dealPlayerDamage(stateObj, (array[index].baseDamage*3), index, -2);
           return stateObj;
         }
       },

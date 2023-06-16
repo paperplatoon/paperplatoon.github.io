@@ -3,14 +3,15 @@ let town1 = [
   [easySoloEncounters.e3],
   [easySoloEncounters.e4],
   [easySoloEncounters.e5],
+
   [easySoloEncounters.e6],
   [easySoloEncounters.e7],
+  [mediumSoloEncounters.m2],
 ]
 
 let town2 = [
   [easySoloEncounters.e1],
   [easySoloEncounters.e8],
-  [mediumSoloEncounters.m2],
   [mediumSoloEncounters.m3],
   [mediumSoloEncounters.m5],
 
@@ -21,9 +22,34 @@ let town2 = [
   [easyMultiEncounters.em3, easyMultiEncounters.em4],
 ]
 
-let town3 = []
+let town3 = [
+  [mediumSoloEncounters.m1],
+  [mediumSoloEncounters.m4],
+  [mediumSoloEncounters.m7],
+  [mediumSoloEncounters.m9],
+  [mediumSoloEncounters.m10],
 
-let towns = [town1, town2]
+  [mediumMultiEncounters.mm1, mediumMultiEncounters.mm2],
+  [mediumMultiEncounters.mm1, mediumMultiEncounters.mm3],
+  [mediumMultiEncounters.mm2, mediumMultiEncounters.mm3],
+  [mediumMultiEncounters.mm1, mediumMultiEncounters.mm4],
+  [mediumMultiEncounters.mm3, mediumMultiEncounters.mm4],
+]
+
+let town4 = [
+  [hardSoloEncounters.h1],
+  [hardSoloEncounters.h2],
+  [hardSoloEncounters.h3],
+  [hardSoloEncounters.h4],
+  [hardSoloEncounters.h5],
+
+  [hardSoloEncounters.h6],
+  [hardSoloEncounters.h7],
+  [hardSoloEncounters.h8],
+  [hardSoloEncounters.h9],
+]
+
+let towns = [town1, town2, town3, town4]
 
 
 

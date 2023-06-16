@@ -1,3 +1,22 @@
+let improvedCardPool = {
+  //energy cards
+  fireenergy: {...cards.fireenergy},
+  rarefireenergy: {...cards.rareFireEnergy},
+  accelerate: {...cards.accelerate},
+  powerup: {...cards.powerup},
+
+
+  //cards that remove
+  //powerup, 
+
+  //Max HP and health gain
+
+
+
+  //cards per turn
+}
+
+
 let fireCardPool = {
 
 // -------------------------------------------------------------  22
@@ -8,17 +27,25 @@ let fireCardPool = {
     accelerate: {...cards.accelerate},
     fireblockenergy: {...cards.fireBlockEnergy},
     powerup: {...cards.powerup},
-    //REMOVABLE ABILITIES - 5
+    //REMOVABLE ABILITIES - 6
     feast: {...cards.feast},
     hammerandtongs: {...cards.hammerandtongs},
     expertsforge: {...cards.expertsforge},
     sunlight: {...cards.sunlight},
-    gainstrength: {...cards.gainstrength},
-    expand: {...cards.expand},
+    
 
+    //temporary removables - 3
     makeshiftforge: {...cards.makeshiftforge},
     gainstrengthtemp: {...cards.gainstrengthtemp},
     gaindextemp: {...cards.gaindextemp},
+
+    //GAIN STRENGTH PACKAGE
+    //GAIN
+    gainstrength: {...cards.gainstrength},
+    expand: {...cards.expand},
+
+
+
 //MISC ABILITIES
 // ------------------------------------------  12
     //strength scaling - 4
@@ -42,6 +69,9 @@ let fireCardPool = {
     //self-scaling
     ascension: {...cards.ascension},
     buildingflame: {...cards.buildingflame},
+
+
+    //self-damage package
   
   
 //ATTACKS
