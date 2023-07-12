@@ -454,6 +454,8 @@ let cards = {
           return stateObj;
         }
       },
+
+
   
       retreatingslash: {
         cardID: 42,
@@ -1673,6 +1675,40 @@ let cards = {
         }
       },
 
+      //BOMBS
+
+      laytrap: {
+        cardID: 40,
+        name: "Lay Trap",
+        text: (state, index, array) => { 
+          let textString = `Gain ${(array[index].baseBlock + state.playerMonster.dex + (array[index].upgrades * 3))} block. Gain ${(1)} Bomb card`;
+          if (state.status === Status.ChooseEncounterCardReward || state.status === Status.cardShop) {
+            textString += "<br></br><br> (Bombs cost 0 and deal 7 damage to EVERYONE, including you. They're removed from your deck when played)</br>"
+          }
+          return textString
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseCost: 2,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseBlock: 12,
+        cardType: "ability",
+        elementType: "water",
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
+          stateObj = gainBlock(stateObj, array[index].baseBlock, array[index].baseCost)
+          for (let i=0; i < 1+array[index].upgrades; i++) {
+            stateObj = addBombsToHand(stateObj)
+          }
+          return stateObj;
+        }
+      },
+
+      
 
 
 
@@ -3102,7 +3138,7 @@ let cards = {
         cost:  (state, index, array) => {
           return array[index].baseCost;
         },
-        baseBlock: 7,
+        baseBlock: 5,
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
@@ -3734,6 +3770,7 @@ let specialCardPool = {
         return stateObj;
       }
     },
+
   
     pickoff: {
       rare: true,
@@ -3881,6 +3918,35 @@ let specialCardPool = {
             if (element !== cards[index])
             element.classList.remove("remove");
           })
+        return stateObj;
+      }
+    },
+
+    bomb: {
+      cardID: 006,
+      name: "Bomb",
+      text: (state, index, array) => {
+          return `Deal ${array[index].baseDamage + (3*array[index].upgrades)} damage to EVERYONE. Remove`
+         },
+      minReq: -99,
+      upgrades: 0,
+      baseCost: 0,
+      cost:  (state, index, array) => {
+        return array[index].baseCost;
+      },
+      baseDamage: 7,
+      exhaust: true,
+      cardType: "ability",
+      elementType: "fire",
+      action: async (stateObj, index, array) => {
+        bombDamage = array[index].baseDamage + (array[index].upgrades*3);
+        await addDealOpponentDamageAnimation(stateObj, bombDamage)
+        stateObj = await dealOpponentDamage(stateObj, bombDamage, 1, false, true)
+        stateObj = await dealSelfDamage(stateObj, bombDamage, true)
+        
+        document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+        await pause(500);
+        document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
         return stateObj;
       }
     },

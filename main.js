@@ -850,6 +850,18 @@ function addBackstepsToHand(stateObj, numberToAdd=1) {
   return stateObj
 }
 
+function addBombsToHand(stateObj, numberToAdd=1) {
+  stateObj = immer.produce(stateObj, (newState) => {
+    for (let i=0; i < numberToAdd; i++) {
+      if (newState.encounterHand.length > 8) {
+        console.log("hand was full, bomb was not added")
+      } else
+      newState.encounterHand.push(specialCardPool.bomb)
+    }
+  })
+  return stateObj
+}
+
 async function opponentLoseEnergy(stateObj, energyToLose, targetIndex=0, playerTriggered=false) {
   //logic
   if (energyToLose <= 0 || stateObj.opponentMonster[targetIndex].encounterEnergy === 0) {
@@ -1084,13 +1096,33 @@ async function applyGreenFilter(elementArray, duration) {
 
 
 
-async function dealSelfDamage(stateObj, damageToDo) {
+async function dealSelfDamage(stateObj, calculatedDamage, countBlock = false) {
 
   if (stateObj.cantSelfDamage === false) {
-    stateObj = immer.produce(stateObj, async (newState) => {
-      newState.playerMonster.currentHP -= damageToDo
-      newState.fightSelfDamageCount += 1;
-      newState.fightSelfDamageTotal += damageToDo;
+    stateObj = await immer.produce(stateObj, async (newState) => {
+      if (countBlock) {
+            if (newState.playerMonster.encounterBlock == 0) {
+              console.log("you took " + calculatedDamage + " damage")
+              newState.playerMonster.currentHP -= calculatedDamage;              
+            } else if (newState.playerMonster.encounterBlock >= calculatedDamage) {
+              newState.playerMonster.encounterBlock -= calculatedDamage;
+              console.log("you blocked " + calculatedDamage + " damage")
+              // if (stateObj.offbalance) {
+              //   reflectDamage = calculatedDamage;
+              // }
+            } else {
+              console.log("you blocked " + newState.playerMonster.encounterBlock + " damage and took " + (calculatedDamage - newState.playerMonster.encounterBlock) + " damage" )
+              newState.playerMonster.currentHP -= (calculatedDamage - newState.playerMonster.encounterBlock);
+              newState.playerMonster.encounterBlock = 0;
+            }
+            // if (energyChange) {
+            //   monsterObj.encounterEnergy += energyChange
+            // }
+      } else {
+        newState.playerMonster.currentHP -= calculatedDamage
+        newState.fightSelfDamageCount += 1;
+        newState.fightSelfDamageTotal += calculatedDamage;
+      }
 
       if (newState.selfDamageBlock > 0) {
         newState.playerMonster.encounterBlock += newState.selfDamageBlock;

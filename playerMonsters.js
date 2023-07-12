@@ -170,7 +170,7 @@ let playerMonsters = {
         //draw
         cards.makeshiftforge,
         cards.rareFireEnergy,
-        cards.reformingshield,
+        cards.laytrap,
 
         //block
         specialCardPool.testkill,
