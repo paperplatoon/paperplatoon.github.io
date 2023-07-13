@@ -96,6 +96,7 @@ let gameStartState = {
   fightEnergyDrainCount: 0,
   fightEnergyDrainTotal: 0,
   selfDamageBlock: 0,
+  extraBombDamage: 0,
   energyGiftBlock: 0,
   energyGiftAttack: 0,
   selfDamageAttack: 0,
@@ -1816,6 +1817,7 @@ function resetAfterFight(stateObj) {
     newState.gainLifePerCard = 0;
     newState.selfDamageAttack = 0;
     newState.selfDamageBlock = 0;
+    newState.extraBombDamage = 0;
     newState.energyGiftBlock = 0;
     newState.energyGiftAttack = 0;
     newState.blockPerTurn = 0;
@@ -1923,6 +1925,7 @@ function setUpEncounter(stateObj, isBoss=false) {
     newState.fightDamageTotal = 0;
     newState.selfDamageAttack = 0;
     newState.selfDamageBlock = 0;
+    newState.extraBombDamage = 0;
     newState.energyGiftBlock = 0;
     newState.energyGiftAttack = 0;
     newState.fightEnergyDrainCount = 0;

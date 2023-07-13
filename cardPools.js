@@ -32,6 +32,7 @@ let fireCardPool = {
     hammerandtongs: {...cards.hammerandtongs},
     expertsforge: {...cards.expertsforge},
     sunlight: {...cards.sunlight},
+    tnt: {...cards.tnt},
     
 
     //temporary removables - 3
@@ -80,6 +81,7 @@ let fireCardPool = {
     // ------------------------------------------  17
     //-6
     followupslap: {...cards.followupslap},
+    pickoff: {...cards.pickoff},
     //eighthdimension: {...cards.eighthdimension},
     //heal
     vampiricstrike: {...cards.vampiricstrike},
@@ -128,7 +130,6 @@ let fireCardPool = {
     reformingshield: {...cards.reformingshield},
     unwaveringdefense: {...cards.unwaveringdefense},
     // religiousfervor: {...cards.religiousfervor},
-    enlightened: {...cards.enlightened},
 
     flamingcloak: {...cards.flamingcloak},
     fortify: {...cards.fortify},
@@ -146,6 +147,9 @@ let fireCardPool = {
     //multi cards - 2
     puffofsmoke: {...cards.puffofsmoke},
     skipaway: {...cards.skipaway},
+
+    //bomb
+    laytrap: {...cards.laytrap},
   
     //2+ energy
     // ------------------------------------------  7
@@ -178,6 +182,9 @@ let fireCardPool = {
     makeshiftforge: {...cards.makeshiftforge},
     gainstrengthtemp: {...cards.gainstrengthtemp},
     gaindextemp: {...cards.gaindextemp},
+    enlightened: {...cards.enlightened},
+    tnt: {...cards.tnt},
+    
     
     //draw and recall - 4
     darkknowledge: {...cards.darkknowledge},
@@ -209,6 +216,7 @@ let fireCardPool = {
     bodyslam: {...cards.bodyslam},
     cautiousblow: {...cards.cautiousblow},
     followupslap: {...cards.followupslap},
+    pickoff: {...cards.pickoff},
     //multi-card
     pirouettespin: {...cards.pirouettespin},
     retreatingslash: {...cards.retreatingslash},
@@ -253,6 +261,7 @@ let fireCardPool = {
     //multi-hit
     puffofsmoke: {...cards.puffofsmoke},
     skipaway: {...cards.skipaway},
+    laytrap: {...cards.laytrap},
 
     //2
     // ------------------------------------------  12
