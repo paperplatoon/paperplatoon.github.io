@@ -40,6 +40,7 @@ let fireCardPool = {
     //powers - 4
     sunlight: {...cards.sunlight}, //MULTI-CARD PAYOFF
     tnt: {...cards.tnt},  // BOMBS PAYOFF
+    shapedcharges: {...cards.shapedcharges},  // BOMBS PAYOFF
     expand: {...cards.expand}, // CHANGE ENERGY PAYOFF
     enlightened: {...cards.enlightened}, //SELF DAMAGE PAYOFF
     //removal attack
@@ -191,6 +192,7 @@ let fireCardPool = {
     gaindextemp: {...cards.gaindextemp},
     enlightened: {...cards.enlightened},
     tnt: {...cards.tnt},
+    shapedcharges: {...cards.shapedcharges},
     
     
     //draw and recall - 4

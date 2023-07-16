@@ -1326,13 +1326,14 @@ let cards = {
         exhaust: true,
         name: "Shield Spikes",
         text: (state, index, array) => { 
-          return `Backsteps also deal 4 extra damage to all enemies. Remove` 
+          return `Backsteps also deal ${array[index].baseDamage} extra damage to all enemies. Remove` 
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
         },
         upgrades: 0,
         baseCost: 1,
+        baseDamage: 5,
         cost:  (state, index, array) => {
           return array[index].baseCost;
         },
@@ -1340,7 +1341,7 @@ let cards = {
         elementType: "water",
         action: async (stateObj, index, array) => {
           stateObj = immer.produce(stateObj, (newState) => {
-            newState.backstepDamage += 4;
+            newState.backstepDamage += array[index].baseDamage;
           })
           document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
           await pause(500);
