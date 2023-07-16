@@ -1347,7 +1347,35 @@ let cards = {
           document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
           return stateObj;
         }
+      },
 
+      longlegs: {
+        cardID: 73,
+        rare: true,
+        exhaust: true,
+        name: "Long Legs",
+        text: (state, index, array) => { 
+          return `Your backsteps block for 4 extra block. Remove` 
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseCost: 1,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        cardType: "ability",
+        elementType: "water",
+        action: async (stateObj, index, array) => {
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.backstepExtraBlock += 4;
+          })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
+          return stateObj;
+        }
       },
 
       expand: {
@@ -3943,12 +3971,13 @@ let specialCardPool = {
       cardID: 004,
       name: "Backstep",
       text: (state, index, array) => {
-        if (state.backstepDamage === false ) {
-          return `Gain ${array[index].baseBlock + state.playerMonster.dex + (2*array[index].upgrades)} block. Remove`
-        } else {
-          return `Gain ${array[index].baseBlock + state.playerMonster.dex + (2*array[index].upgrades)} block. Deal ${array[index].baseBlock + state.playerMonster.dex + (2*array[index].upgrades)} damage to all enemies. Remove`
-        }
-         },
+        let textString = `Gain ${array[index].baseBlock + state.playerMonster.dex + (2*array[index].upgrades)+ state.backstepExtraBlock} block. `
+        if (state.backstepDamage > 0 ) {
+          textString += `Deal ${state.backstepDamage} damage to all enemies. `
+        } 
+        textString += `Remove`
+        return textString
+      },
       minReq: -99,
       upgrades: 0,
       baseCost: 0,
@@ -3960,7 +3989,7 @@ let specialCardPool = {
       cardType: "ability",
       elementType: "fire",
       action: async (stateObj, index, array) => {
-        stateObj = await gainBlock(stateObj, array[index].baseBlock+(array[index].upgrades*2), array[index].baseCost);
+        stateObj = await gainBlock(stateObj, array[index].baseBlock+(array[index].upgrades*2) + stateObj.backstepExtraBlock, array[index].baseCost);
         if (stateObj.backstepDamage > 0 ) {
           await addDealOpponentDamageAnimation(stateObj, stateObj.backstepDamage)
           stateObj = await dealOpponentDamage(stateObj, stateObj.backstepDamage)

@@ -44,6 +44,8 @@ let fireCardPool = {
     enlightened: {...cards.enlightened}, //SELF DAMAGE PAYOFF
     //removal attack
     //removal block
+    whirlwind: {...cards.whirlwind},
+    longlegs: {...cards.longlegs},
 
     
 
@@ -181,6 +183,7 @@ let fireCardPool = {
     expertsforge: {...cards.expertsforge},
     sunlight: {...cards.sunlight},
     whirlwind: {...cards.whirlwind},
+    longlegs: {...cards.longlegs},
     expand: {...cards.expand},
     buildingflame: {...cards.buildingflame},
     makeshiftforge: {...cards.makeshiftforge},

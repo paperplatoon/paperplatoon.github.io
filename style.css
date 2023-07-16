@@ -1202,6 +1202,14 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   /* filter: invert(92%) sepia(0%) saturate(933%) hue-rotate(350deg) brightness(98%) contrast(88%); */
 }
 
+#backstep-extra-block {
+  background-image: url(img/icons/status/legs.png);
+  position: relative;
+  background-size: contain;
+  height: 2.5vw;
+  width: 2.5vw;
+}
+
 #cantselfdamage {
   background-image: url(img/icons/status/cantselfdamage2.png);
   position: relative;
@@ -1254,7 +1262,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   font-size: 2vmin;
 }
 
-#backstepdamagepopup, #blockkeeppopup, #cantselfdamagepopup, #reformingshieldpopup, #gainstrengthenergypopup {
+#backstepdamagepopup, #blockkeeppopup, #cantselfdamagepopup, #reformingshieldpopup, #gainstrengthenergypopup, #backstep-extra-block-popup {
     display: none;
     position: absolute;
     top: 6%;

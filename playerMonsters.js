@@ -168,7 +168,7 @@ let playerMonsters = {
       avatar: "img/playerturtle.png",
       startingDeck: [
         //draw
-        cards.makeshiftforge,
+        cards.longlegs,
         cards.rareFireEnergy,
         cards.laytrap,
 

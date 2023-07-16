@@ -108,6 +108,7 @@ let gameStartState = {
   cantSelfDamage: false,
   gainStrengthEnergyChange: 0,
   backstepDamage: 0,
+  backstepExtraBlock: 0,
   healOpponentBlocked: false,
   gainLifePerCard: 0,
   townEventChosen: false,
@@ -1508,6 +1509,31 @@ async function renderPlayerMonster(stateObj) {
     playerStatusDiv.appendChild(backstepDamageDiv);
   }
 
+  if (stateObj.backstepExtraBlock > 0) {
+    let backstepExtraBlockDiv = document.createElement("Div");
+    backstepExtraBlockDiv.setAttribute("id", "backstep-extra-block");
+    
+    
+    let backstepExtraBlockTextDiv = document.createElement("Div");
+    backstepExtraBlockTextDiv.setAttribute("id", "backstep-extra-block-popup")
+    backstepExtraBlockTextDiv.textContent = "Gain " + stateObj.backstepExtraBlock + " more block whenever you play a Backstep card"
+    playerStatusDiv.appendChild(backstepExtraBlockTextDiv);
+
+    backstepExtraBlockDiv.addEventListener('mouseover', function() {
+      console.log("mouseover")
+      const backstepDiv = document.querySelector("#backstep-extra-block-popup");
+      backstepDiv.style.display = 'block'
+      
+    });
+    
+    backstepExtraBlockDiv.addEventListener('mouseout', function() {
+      console.log("mouseout")
+      const backstepDiv = document.querySelector("#backstep-extra-block-popup");
+      backstepDiv.style.display = 'none'
+    });
+    playerStatusDiv.appendChild(backstepExtraBlockDiv);
+  }
+
   if (stateObj.cantSelfDamage === true) {
     let statusDiv = document.createElement("Div");
       statusDiv.setAttribute("id", "cantselfdamage");
@@ -1824,6 +1850,7 @@ function resetAfterFight(stateObj) {
     newState.blockKeep = false;
     newState.cantSelfDamage = false;
     newState.backstepDamage = 0;
+    newState.backstepExtraBlock = 0,
     newState.gainStrengthEnergyChange = 0;
     newState.cardsPerTurn = 0;
     newState.combatTurnNumber = 0;
@@ -1935,6 +1962,7 @@ function setUpEncounter(stateObj, isBoss=false) {
     newState.blockKeep = false;
     newState.cantSelfDamage = false;
     newState.backstepDamage = 0;
+    newState.backstepExtraBlock = 0;
     newState.gainStrengthEnergyChange = 0;
     newState.comboPerTurn = 0;
     newState.combatTurnNumber = 1;
