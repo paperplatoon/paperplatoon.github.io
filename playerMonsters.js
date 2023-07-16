@@ -174,8 +174,8 @@ let playerMonsters = {
 
         //block
         specialCardPool.testkill,
-        cards.enlightened,
-        cards.tnt,
+        cards.whirlwind,
+        cards.skipaway,
         //attack
       ],
     },

@@ -107,7 +107,7 @@ let gameStartState = {
   blockKeep: false,
   cantSelfDamage: false,
   gainStrengthEnergyChange: 0,
-  backstepDamage: false,
+  backstepDamage: 0,
   healOpponentBlocked: false,
   gainLifePerCard: 0,
   townEventChosen: false,
@@ -1485,14 +1485,14 @@ async function renderPlayerMonster(stateObj) {
       playerStatusDiv.appendChild(statusDiv);
   }
 
-  if (stateObj.backstepDamage === true) {
+  if (stateObj.backstepDamage > 0) {
     let backstepDamageDiv = document.createElement("Div");
     backstepDamageDiv.setAttribute("id", "backstepdamage");
     
     
     let backstepDamageTextDiv = document.createElement("Div");
     backstepDamageTextDiv.setAttribute("id", "backstepdamagepopup")
-    backstepDamageTextDiv.textContent = "Deal 4 damage to all enemies whenever you play a Backstep card"
+    backstepDamageTextDiv.textContent = "Deal " + stateObj.backstepDamage + " damage to all enemies whenever you play a Backstep card"
     playerStatusDiv.appendChild(backstepDamageTextDiv);
 
     backstepDamageDiv.addEventListener('mouseover', function() {
@@ -1823,7 +1823,7 @@ function resetAfterFight(stateObj) {
     newState.blockPerTurn = 0;
     newState.blockKeep = false;
     newState.cantSelfDamage = false;
-    newState.backstepDamage = false;
+    newState.backstepDamage = 0;
     newState.gainStrengthEnergyChange = 0;
     newState.cardsPerTurn = 0;
     newState.combatTurnNumber = 0;
@@ -1934,7 +1934,7 @@ function setUpEncounter(stateObj, isBoss=false) {
     newState.blockPerTurn = 0;
     newState.blockKeep = false;
     newState.cantSelfDamage = false;
-    newState.backstepDamage = false;
+    newState.backstepDamage = 0;
     newState.gainStrengthEnergyChange = 0;
     newState.comboPerTurn = 0;
     newState.combatTurnNumber = 1;

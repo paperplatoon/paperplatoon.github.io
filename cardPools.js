@@ -19,70 +19,75 @@ let improvedCardPool = {
 
 let fireCardPool = {
 
-// -------------------------------------------------------------  22
-    // ------------------------------------------  10
+// -------------------------------------------------------------  23
+    
     //energy - 5
     fireenergy: {...cards.fireenergy},
     rarefireenergy: {...cards.rareFireEnergy},
     accelerate: {...cards.accelerate},
-    fireblockenergy: {...cards.fireBlockEnergy},
+    energize: {...cards.energize},
     powerup: {...cards.powerup},
-    //REMOVABLE ABILITIES - 6
-    feast: {...cards.feast},
-    hammerandtongs: {...cards.hammerandtongs},
-    expertsforge: {...cards.expertsforge},
-    sunlight: {...cards.sunlight},
-    tnt: {...cards.tnt},
-    
 
-    //temporary removables - 3
-    makeshiftforge: {...cards.makeshiftforge},
+    //permanent upgrades - 6
+    gainstrength: {...cards.gainstrength},
     gainstrengthtemp: {...cards.gainstrengthtemp},
     gaindextemp: {...cards.gaindextemp},
+    
+    feast: {...cards.feast},
+    hammerandtongs: {...cards.hammerandtongs},
+    makeshiftforge: {...cards.makeshiftforge},
+    
+    //powers - 4
+    sunlight: {...cards.sunlight}, //MULTI-CARD PAYOFF
+    tnt: {...cards.tnt},  // BOMBS PAYOFF
+    expand: {...cards.expand}, // CHANGE ENERGY PAYOFF
+    enlightened: {...cards.enlightened}, //SELF DAMAGE PAYOFF
+    //removal attack
+    //removal block
 
-    //GAIN STRENGTH PACKAGE
-    //GAIN
-    gainstrength: {...cards.gainstrength},
-    expand: {...cards.expand},
+    
 
-
-
-//MISC ABILITIES
-// ------------------------------------------  12
-    //strength scaling - 4
+    //strength scaling - 5
     cursedritual: {...cards.cursedritual},
     ritual: {...cards.ritual},
     brandingiron: {...cards.brandingiron},
     flagellate: {...cards.flagellate},
-    enlightened: {...cards.enlightened},
     hypertrain: {...cards.hypertrain},
-    //healing - 3 
-    siphon: {...cards.siphon},
+  
+    //Removable Skills - 3
+    expertsforge: {...cards.expertsforge},
     simpleheal: {...cards.simpleheal},
     enjoin: {...cards.enjoin},
+
+
+
+//MISC ABILITIES
+// ------------------------------------------  8
+    
+    
+    
     //draw - 3
     darkknowledge: {...cards.darkknowledge},
     recall: {...cards.recall},
     wellspring: {...cards.wellspring},
     //destroy energy - 2
     dampen: {...cards.dampen},
-    ignite: {...cards.ignite},
+    siphon: {...cards.siphon},
     //self-scaling
     ascension: {...cards.ascension},
     buildingflame: {...cards.buildingflame},
 
+    ignite: {...cards.ignite},
 
-    //self-damage package
   
   
 //ATTACKS
 // -------------------------------------------------------------  25
     //1
-    // ------------------------------------------  17
+    // ------------------------------------------  15
     //-6
     followupslap: {...cards.followupslap},
     pickoff: {...cards.pickoff},
-    //eighthdimension: {...cards.eighthdimension},
     //heal
     vampiricstrike: {...cards.vampiricstrike},
     //return
@@ -104,7 +109,7 @@ let fireCardPool = {
     fierymissiles: {...cards.fierymissiles},
     flamewhip: {...cards.flamewhip},
 
-    // ------------------------------------------  8
+    // ------------------------------------------  10
     //2+ energy 
     disablingblow: {...cards.disablingblow},
     chargedblast: {...cards.chargedblast},
@@ -129,7 +134,7 @@ let fireCardPool = {
     // ------------------------------------------  14
     reformingshield: {...cards.reformingshield},
     unwaveringdefense: {...cards.unwaveringdefense},
-    // religiousfervor: {...cards.religiousfervor},
+    religiousfervor: {...cards.religiousfervor},
 
     flamingcloak: {...cards.flamingcloak},
     fortify: {...cards.fortify},
@@ -137,8 +142,7 @@ let fireCardPool = {
     sanguineshield: {...cards.sanguineshield},
     essencedrain: {...cards.essencedrain},
     //upgrade
-    forgeshield: {...cards.forgeshield},
-    rareupgrade: {...cards.rareupgrade},
+    bide: {...cards.bide},
     //scale
     coatofarms: {...cards.coatofarms},
     invigorate: {...cards.invigorate},
@@ -171,7 +175,7 @@ let fireCardPool = {
     //energy - 3
     waterenergy: {...cards.waterenergy},
     rarefireenergy: {...cards.rareFireEnergy},
-    fireblockenergy: {...cards.fireBlockEnergy},
+    energize: {...cards.energize},
     //REMOVABLE ABILITIES - 3
     hammerandtongs: {...cards.hammerandtongs},
     expertsforge: {...cards.expertsforge},
@@ -253,7 +257,7 @@ let fireCardPool = {
     // ------------------------------------------  9
     essencedrain: {...cards.essencedrain},
     flamingcloak: {...cards.flamingcloak},
-    rareupgrade: {...cards.rareupgrade},
+    bide: {...cards.bide},
     fortify: {...cards.fortify},
     forgeshield: {...cards.forgeshield},
     meditate: {...cards.meditate},
@@ -298,18 +302,23 @@ let fireCardPool = {
 
 
 let simpleCardPool = {
-    //energy
+    //energy - 5
     fireenergy: {...cards.fireenergy},
     rarefireenergy: {...cards.rareFireEnergy},
     accelerate: {...cards.accelerate},
-    fireblockenergy: {...cards.fireBlockEnergy},
+    energize: {...cards.energize},
     powerup: {...cards.powerup},
-    //removable powers
+
+    //Permanent Upgrades
     hammerandtongs: {...cards.hammerandtongs},
-    expertsforge: {...cards.expertsforge},
-    sunlight: {...cards.sunlight},
     gainstrength: {...cards.gainstrength},
+
+    
+    sunlight: {...cards.sunlight},
+    
     expand: {...cards.expand},
+
+    expertsforge: {...cards.expertsforge},
 
     //strength
     ritual: {...cards.ritual},
@@ -378,7 +387,7 @@ let simpleCardPool = {
     essencedrain: {...cards.essencedrain},
     //upgrade
     forgeshield: {...cards.forgeshield},
-    rareupgrade: {...cards.rareupgrade},
+    bide: {...cards.bide},
     //scale
     coatofarms: {...cards.coatofarms},
     invigorate: {...cards.invigorate},
