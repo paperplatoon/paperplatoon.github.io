@@ -1210,6 +1210,22 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   width: 2.5vw;
 }
 
+#bomb-extra-damage {
+  background-image: url(img/icons/status/tnt.png);
+  position: relative;
+  background-size: contain;
+  height: 2.5vw;
+  width: 2.5vw;
+}
+
+#bomb-extra-block {
+  background-image: url(img/icons/status/bombblock.png);
+  position: relative;
+  background-size: contain;
+  height: 2.5vw;
+  width: 2.5vw;
+}
+
 #cantselfdamage {
   background-image: url(img/icons/status/cantselfdamage2.png);
   position: relative;
@@ -1262,7 +1278,7 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   font-size: 2vmin;
 }
 
-#backstepdamagepopup, #blockkeeppopup, #cantselfdamagepopup, #reformingshieldpopup, #gainstrengthenergypopup, #backstep-extra-block-popup {
+#backstepdamagepopup, #blockkeeppopup, #cantselfdamagepopup, #reformingshieldpopup, #gainstrengthenergypopup, #backstep-extra-block-popup, #bomb-extra-damage-popup, #bomb-extra-block-popup {
     display: none;
     position: absolute;
     top: 6%;

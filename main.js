@@ -97,6 +97,7 @@ let gameStartState = {
   fightEnergyDrainTotal: 0,
   selfDamageBlock: 0,
   extraBombDamage: 0,
+  bombBlock: 0,
   energyGiftBlock: 0,
   energyGiftAttack: 0,
   selfDamageAttack: 0,
@@ -1534,6 +1535,56 @@ async function renderPlayerMonster(stateObj) {
     playerStatusDiv.appendChild(backstepExtraBlockDiv);
   }
 
+  if (stateObj.extraBombDamage > 0) {
+    let bombExtraDamageDiv = document.createElement("Div");
+    bombExtraDamageDiv.setAttribute("id", "bomb-extra-damage");
+    
+    
+    let bombExtraDamageTextDiv = document.createElement("Div");
+    bombExtraDamageTextDiv.setAttribute("id", "bomb-extra-damage-popup")
+    bombExtraDamageTextDiv.textContent = "Bombs deal " + stateObj.extraBombDamage + " more damage to enemies"
+    playerStatusDiv.appendChild(bombExtraDamageTextDiv);
+
+    bombExtraDamageDiv.addEventListener('mouseover', function() {
+      console.log("mouseover")
+      const backstepDiv = document.querySelector("#bomb-extra-damage-popup");
+      backstepDiv.style.display = 'block'
+      
+    });
+    
+    bombExtraDamageDiv.addEventListener('mouseout', function() {
+      console.log("mouseout")
+      const backstepDiv = document.querySelector("#bomb-extra-damage-popup");
+      backstepDiv.style.display = 'none'
+    });
+    playerStatusDiv.appendChild(bombExtraDamageDiv);
+  }
+
+  if (stateObj.bombBlock > 0) {
+    let bombBlockDiv = document.createElement("Div");
+    bombBlockDiv.setAttribute("id", "bomb-extra-block");
+    
+    
+    let bombBlockTextDiv = document.createElement("Div");
+    bombBlockTextDiv.setAttribute("id", "bomb-extra-block-popup")
+    bombBlockTextDiv.textContent = "Gain " + stateObj.bombBlock + " block whenever you play a bomb"
+    playerStatusDiv.appendChild(bombBlockTextDiv);
+
+    bombBlockDiv.addEventListener('mouseover', function() {
+      console.log("mouseover")
+      const backstepDiv = document.querySelector("#bomb-extra-block-popup");
+      backstepDiv.style.display = 'block'
+      
+    });
+    
+    bombBlockDiv.addEventListener('mouseout', function() {
+      console.log("mouseout")
+      const backstepDiv = document.querySelector("#bomb-extra-block-popup");
+      backstepDiv.style.display = 'none'
+    });
+    playerStatusDiv.appendChild(bombBlockDiv);
+  }
+
   if (stateObj.cantSelfDamage === true) {
     let statusDiv = document.createElement("Div");
       statusDiv.setAttribute("id", "cantselfdamage");
@@ -1844,6 +1895,7 @@ function resetAfterFight(stateObj) {
     newState.selfDamageAttack = 0;
     newState.selfDamageBlock = 0;
     newState.extraBombDamage = 0;
+    newState.bombBlock = 0,
     newState.energyGiftBlock = 0;
     newState.energyGiftAttack = 0;
     newState.blockPerTurn = 0;
@@ -1953,6 +2005,7 @@ function setUpEncounter(stateObj, isBoss=false) {
     newState.selfDamageAttack = 0;
     newState.selfDamageBlock = 0;
     newState.extraBombDamage = 0;
+    newState.bombBlock = 0,
     newState.energyGiftBlock = 0;
     newState.energyGiftAttack = 0;
     newState.fightEnergyDrainCount = 0;

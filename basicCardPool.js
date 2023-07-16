@@ -3826,6 +3826,7 @@ let cards = {
         minReq: 0,
         upgrades: 0,
         baseCost: 1,
+        exhaust: true,
         cost:  (state, index, array) => {
           return array[index].baseCost;
         },
@@ -3835,11 +3836,38 @@ let cards = {
         action: async (stateObj, index, array) => {
           await cardAnimationDiscard(index);
           if (array[index].upgrades > 0) {
-            stateObj = gainBlock(stateObj, array[index].baseBlock * array[index].upgrades, array[index].baseCost)
+            stateObj = gainBlock(stateObj, array[index].baseBlock * array[index].upgrades)
           }
           
           stateObj = immer.produce(stateObj, (newState) => {
             newState.extraBombDamage += 7 + (array[index].upgrades*3);
+            newState.encounterEnergy -= 1;
+          })
+          return stateObj;
+        }
+      },
+
+      shapedcharges: {
+        exhaust: true,
+        name: "Shaped Charges",
+        cardID: "Shaped Charges",
+        text: (state, index, array) => { 
+          textString =  `Gain ${array[index].baseBlock + (array[index].upgrades*2)} block whenever you play a bomb. Remove`
+          return textString},
+        minReq: 0,
+        upgrades: 0,
+        baseCost: 1,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseBlock: 5,
+        cardType: "ability",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.bombBlock += array[index].baseBlock + (array[index].upgrades*2);
+            newState.encounterEnergy -= 1;
           })
           return stateObj;
         }
@@ -4047,11 +4075,15 @@ let specialCardPool = {
       name: "Bomb",
       text: (state, index, array) => {
           bombDamage = array[index].baseDamage + (3*array[index].upgrades);
-          if (state.extraBombDamage === 0) {
-            textString = `Deal ${bombDamage} damage to EVERYONE. Remove`
-          } else {
-            textString = `Deal ${bombDamage + state.extraBombDamage} damage to all enemies and ${bombDamage} to yourself. Remove`
+          let textString = ``;
+          if (state.bombBlock > 0) {
+            textString += `Gain ${state.bombBlock} block. `
           }
+          textString += `Deal ${bombDamage + state.extraBombDamage} damage to all enemies`
+          if (state.cantSelfDamage === false) {
+            textString += ` and ${array[index].baseDamage} to yourself`
+          }
+          textString += `. Remove`
         return textString;
       },
       minReq: -99,
@@ -4065,6 +4097,9 @@ let specialCardPool = {
       cardType: "ability",
       elementType: "fire",
       action: async (stateObj, index, array) => {
+        if (stateObj.bombBlock > 0) {
+          stateObj = await gainBlock(stateObj, stateObj.bombBlock, array[index].baseCost);
+        }
         bombDamage = array[index].baseDamage + (array[index].upgrades*3);
         await addDealOpponentDamageAnimation(stateObj, bombDamage)
         stateObj = await dealOpponentDamage(stateObj, bombDamage+stateObj.extraBombDamage, 1, false, true)
