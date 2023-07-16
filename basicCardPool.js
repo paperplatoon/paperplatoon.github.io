@@ -2745,7 +2745,7 @@ let cards = {
           if (array[index].upgrades < array[index].baseCost) {
             return `Upgrade a random card in your deck permanently. Remove`;
           } else {
-            return `Upgrade a random card in your deck permanently ${array[index].upgrades - array[index].baseCost + 1} times. Remove from your deck for rest of combat`;
+            return `Upgrade a random card in your deck permanently ${array[index].upgrades - array[index].baseCost + 1} times. Remove`;
           }
             ;
         },
@@ -3819,10 +3819,10 @@ let cards = {
       },
 
       tnt: {
-        cardID: "noselfdamage",
+        cardID: "tnt",
         name: "TNT",
         text: (state, index, array) => { 
-          textString =  `Bombs deal ${7 + (array[index].upgrades*3)} more damage to enemies`
+          textString =  `Bombs deal ${7 + (array[index].upgrades*3)} more damage to enemies. Remove`
           return textString},
         minReq: 0,
         upgrades: 0,
@@ -3835,15 +3835,18 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          await cardAnimationDiscard(index);
           if (array[index].upgrades > 0) {
             stateObj = gainBlock(stateObj, array[index].baseBlock * array[index].upgrades)
           }
           
           stateObj = immer.produce(stateObj, (newState) => {
             newState.extraBombDamage += 7 + (array[index].upgrades*3);
-            newState.encounterEnergy -= 1;
+            newState.playerMonster.encounterEnergy -= 1;
           })
+
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
           return stateObj;
         }
       },
@@ -3865,11 +3868,71 @@ let cards = {
         cardType: "ability",
         elementType: "fire",
         action: async (stateObj, index, array) => {
-          await cardAnimationDiscard(index);
           stateObj = immer.produce(stateObj, (newState) => {
             newState.bombBlock += array[index].baseBlock + (array[index].upgrades*2);
-            newState.encounterEnergy -= 1;
+            newState.playerMonster.encounterEnergy -= 1;
           })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
+          return stateObj;
+        }
+      },
+
+      lastflourish: {
+        cardID: "tnt",
+        name: "Last Flourish",
+        text: (state, index, array) => { 
+          textString =  `Whenever you remove a card, deal ${array[index].baseDamage + (array[index].upgrades*2)} damage to all enemies. Remove`
+          return textString},
+        minReq: 0,
+        upgrades: 0,
+        baseCost: 1,
+        baseDamage: 4,
+        exhaust: true,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        cardType: "ability",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {
+          
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.removalAttack += array[index].baseDamage + (array[index].upgrades*2);
+            newState.playerMonster.encounterEnergy -= 1;
+          })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
+          return stateObj;
+        }
+      },
+
+      smokescreen: {
+        cardID: "Smokescreen",
+        name: "Smokescreen",
+        text: (state, index, array) => { 
+          textString =  `Whenever you remove a card, gain ${array[index].baseBlock + (array[index].upgrades*2)} block. Remove`
+          return textString},
+        minReq: 0,
+        upgrades: 0,
+        baseCost: 1,
+        baseBlock: 3,
+        exhaust: true,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        cardType: "ability",
+        elementType: "fire",
+        action: async (stateObj, index, array) => {
+          
+          stateObj = immer.produce(stateObj, (newState) => {
+            newState.removalBlock += array[index].baseBlock + (array[index].upgrades*2);
+            newState.playerMonster.encounterEnergy -= 1;
+          })
+          document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
+          await pause(500);
+          document.querySelectorAll("#handContainer2 .card")[index].classList.remove("remove");
           return stateObj;
         }
       },

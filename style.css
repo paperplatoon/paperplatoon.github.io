@@ -1226,6 +1226,23 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   width: 2.5vw;
 }
 
+#removal-extra-block {
+  background-image: url(img/icons/status/removalblock2.png);
+  position: relative;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 2.5vw;
+  width: 2.5vw;
+}
+
+#removal-extra-damage {
+  background-image: url(img/icons/status/removedamage.png);
+  position: relative;
+  background-size: contain;
+  height: 2.5vw;
+  width: 2.5vw;
+}
+
 #cantselfdamage {
   background-image: url(img/icons/status/cantselfdamage2.png);
   position: relative;
@@ -1278,7 +1295,8 @@ https://blog.logrocket.com/css-style-button-accessibility/*/
   font-size: 2vmin;
 }
 
-#backstepdamagepopup, #blockkeeppopup, #cantselfdamagepopup, #reformingshieldpopup, #gainstrengthenergypopup, #backstep-extra-block-popup, #bomb-extra-damage-popup, #bomb-extra-block-popup {
+#backstepdamagepopup, #blockkeeppopup, #cantselfdamagepopup, #reformingshieldpopup, #gainstrengthenergypopup, 
+#backstep-extra-block-popup, #bomb-extra-damage-popup, #bomb-extra-block-popup, #removal-extra-block-popup, #removal-extra-damage-popup {
     display: none;
     position: absolute;
     top: 6%;

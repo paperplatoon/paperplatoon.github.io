@@ -119,6 +119,8 @@ let gameStartState = {
   backstepDamage: 0,
   backstepExtraBlock: 0,
   gainLifePerCard: 0,
+  removalBlock: 0,
+  removalAttack: 0,
 
   //out of combat stuff
   townEventChosen: false,
@@ -1591,6 +1593,56 @@ async function renderPlayerMonster(stateObj) {
     playerStatusDiv.appendChild(bombBlockDiv);
   }
 
+  if (stateObj.removalBlock > 0) {
+    let removalBlockDiv = document.createElement("Div");
+    removalBlockDiv.setAttribute("id", "removal-extra-block");
+    
+    
+    let removalBlockTextDiv = document.createElement("Div");
+    removalBlockTextDiv.setAttribute("id", "removal-extra-block-popup")
+    removalBlockTextDiv.textContent = "Gain " + stateObj.removalBlock + " block whenever you remove a card"
+    playerStatusDiv.appendChild(removalBlockTextDiv);
+
+    removalBlockDiv.addEventListener('mouseover', function() {
+      console.log("mouseover")
+      const backstepDiv = document.querySelector("#removal-extra-block-popup");
+      backstepDiv.style.display = 'block'
+      
+    });
+    
+    removalBlockDiv.addEventListener('mouseout', function() {
+      console.log("mouseout")
+      const backstepDiv = document.querySelector("#removal-extra-block-popup");
+      backstepDiv.style.display = 'none'
+    });
+    playerStatusDiv.appendChild(removalBlockDiv);
+  }
+
+  if (stateObj.removalAttack > 0) {
+    let removalDamageDiv = document.createElement("Div");
+    removalDamageDiv.setAttribute("id", "removal-extra-damage");
+    
+    
+    let removalDamageTextDiv = document.createElement("Div");
+    removalDamageTextDiv.setAttribute("id", "removal-extra-damage-popup")
+    removalDamageTextDiv.textContent = "Deal " + stateObj.removalAttack + " damage to all enemies whenever you remove a card"
+    playerStatusDiv.appendChild(removalDamageTextDiv);
+
+    removalDamageDiv.addEventListener('mouseover', function() {
+      console.log("mouseover")
+      const backstepDiv = document.querySelector("#removal-extra-damage-popup");
+      backstepDiv.style.display = 'block'
+      
+    });
+    
+    removalDamageDiv.addEventListener('mouseout', function() {
+      console.log("mouseout")
+      const backstepDiv = document.querySelector("#removal-extra-damage-popup");
+      backstepDiv.style.display = 'none'
+    });
+    playerStatusDiv.appendChild(removalDamageDiv);
+  }
+
   if (stateObj.cantSelfDamage === true) {
     let statusDiv = document.createElement("Div");
       statusDiv.setAttribute("id", "cantselfdamage");
@@ -1902,6 +1954,8 @@ function resetAfterFight(stateObj) {
     newState.selfDamageBlock = 0;
     newState.extraBombDamage = 0;
     newState.bombBlock = 0,
+    newState.removalBlock = 0;
+    newState.removalAttack = 0;
     newState.energyGiftBlock = 0;
     newState.energyGiftAttack = 0;
     newState.blockPerTurn = 0;
@@ -2012,6 +2066,8 @@ function setUpEncounter(stateObj, isBoss=false) {
     newState.selfDamageBlock = 0;
     newState.extraBombDamage = 0;
     newState.bombBlock = 0,
+    newState.removalBlock = 0;
+    newState.removalAttack = 0;
     newState.energyGiftBlock = 0;
     newState.energyGiftAttack = 0;
     newState.fightEnergyDrainCount = 0;
@@ -2193,9 +2249,23 @@ async function monsterLevelUp(stateObj) {
   return stateObj;
 }
 
-function PlayACardImmer(stateObj, cardIndexInHand) {
+async function PlayACardImmer(stateObj, cardIndexInHand) {
+  let playedCard = stateObj.encounterHand[cardIndexInHand]
+
+  if (playedCard.exhaust === true) {
+    if (stateObj.removalBlock > 0) {
+      stateObj = await gainBlock(stateObj, stateObj.removalBlock)
+    }
+
+    if (stateObj.removalAttack > 0) {
+      stateObj = await dealOpponentDamage(stateObj, stateObj.removalAttack, 1, 0, true)
+      await addDealOpponentDamageAnimation(stateObj, stateObj.removalAttack, true)
+      await pause(350)
+      await removeDealOpponentDamageAnimation(stateObj, stateObj.removalAttack, true)
+    }
+  }
+
   stateObj = immer.produce(stateObj, (newState) => {
-    let playedCard = stateObj.encounterHand[cardIndexInHand]
     newState.cardsPerTurn += 1;
     if (playedCard) {
       if (playedCard.exhaust === true) {
