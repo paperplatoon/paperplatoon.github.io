@@ -348,7 +348,7 @@ let cards = {
         upgrades: 0,
         baseDamage: 24,
         baseHits: 1,
-        energyDrain: 1,
+        energyDrain: 2,
         cardType: "attack",
         elementType: "fire",
         action: async (stateObj, index, array) => {
@@ -789,7 +789,7 @@ let cards = {
         }
       },
 
-      banish: {
+      finalblow: {
         cardID: 55,
         name: "Final Blow",
         trigger:  (stateObj, index, array) => { 
@@ -1029,7 +1029,7 @@ let cards = {
         name: "Pick Off",
         text: (state, index, array) => {
           let textString = `Deal ${array[index].baseDamage + (3*array[index].upgrades)}`
-          if (array[index].baseHits === 1) {
+          if (array[index].baseHits > 1) {
             textString += ` ${array[index].baseHits} times`
           }
           textString += `. If there is more than 1 opponent, deal ${25 + (5 * (1+array[index].upgrades))} more.`;

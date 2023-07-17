@@ -138,14 +138,17 @@ let gameStartState = {
   //townMapSquares: [...Array(15).keys()],
 };
 
+const testArray = [
+ {
+    divID: "TownEvent",
+    imgSrc: "img/wizardshop.png",
+    divText: "ShowCardPool",
+    newStatus: Status.ShowCardPool,
+    eventID: 100
+  },
+]
+
 const eventsArray = [
-  // {
-  //   divID: "TownEvent",
-  //   imgSrc: "img/wizardshop.png",
-  //   divText: "ShowCardPool",
-  //   newStatus: Status.ShowCardPool,
-  //   eventID: 100
-  // },
   {
     divID: "TownEvent",
     imgSrc: "img/wizardshop.PNG",
@@ -279,16 +282,12 @@ function fillMapWithArray(stateObj) {
   let shuffledMap = fisherYatesShuffle(mapFillArray);
 
   let townMonsterEncounters = []
-  if (stateObj.testingMode === true) {
-    townMonsterEncounters = [ [easyMultiEncounters.em3, easyMultiEncounters.em4], [easySoloEncounters.e8], [easyMultiEncounters.em3, easyMultiEncounters.em4],[easySoloEncounters.e5],[easySoloEncounters.e6], [easySoloEncounters.e7],[easySoloEncounters.e8]]  
-  } else {
     let shuffledEncounterArray = fisherYatesShuffle(towns[stateObj.gymCount])
     townMonsterEncounters[0] = shuffledEncounterArray[0];
     townMonsterEncounters[1] = shuffledEncounterArray[1];
     townMonsterEncounters[2] = shuffledEncounterArray[2];
     townMonsterEncounters[3] = shuffledEncounterArray[3];
     console.log(townMonsterEncounters);
-  }
 
     //fill the actual map
     stateObj = immer.produce(stateObj, (newState) => {
@@ -448,7 +447,7 @@ async function changeMapSquare(stateObj, indexToMoveTo) {
         let shuffledEventsArray = fisherYatesShuffle(eventsArray);
         stateObj = immer.produce(stateObj, (newState) => {
           if (stateObj.testingMode === true) {
-            newState.status = eventsArray[0].newStatus
+            newState.status = testArray[0].newStatus
           } else {
             if (stateObj.townMapSquares[indexToMoveTo] === "?1") {
               console.log("clicked on ?1 event: " + shuffledEventsArray[1].divText)
@@ -1197,10 +1196,12 @@ function renderChooseMonster(stateObj) {
 };
 
 function chooseThisMonster(stateObj, index) {
+  let playerMonster = potentialMonsterChoices[index]
+  let cardPool = Object.values(playerMonster.cardPool)
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerMonster = potentialMonsterChoices[index];
-    newState.playerDeck = potentialMonsterChoices[index].startingDeck;
-    newState.status = Status.OverworldMap;
+    newState.playerMonster = playerMonster;
+    newState.playerDeck = [...playerMonster.startingDeck];
+    newState.status = Status.ChooseEncounterCardReward;
 
   })
   changeState(stateObj);
@@ -3225,7 +3226,7 @@ function renderIncreaseCardBlock(stateObj) {
 
 function increaseCardBlock(stateObj, index, array) {
   stateObj = immer.produce(stateObj, (newState) => {
-    newState.playerDeck[index].baseBlock += 7;
+    newState.playerDeck[index].baseBlock += 5;
     newState.eventUsed = true;
     newState.status = Status.OverworldMap
     newState.townMapSquares[newState.playerHere] = "completed"
@@ -3372,7 +3373,7 @@ function renderCard(stateObj, cardArray, index, divName=false, functionToAdd=fal
         } else if (goldCost === "increaseblock") {
           cardDiv.classList.add("card-change-text");
           let altUpgradeText =  document.createElement("P");
-          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseBlock", 7)
+          altUpgradeText.textContent = showChangedUpgradeText(stateObj, index, cardArray, cardObj, "baseBlock", 5)
           altUpgradeText.classList.add("alt-card-text");
           cardDiv.append(altUpgradeText);
         } else if (goldCost === "increaseattack") {

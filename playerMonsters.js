@@ -25,7 +25,7 @@ let playerMonsters = {
     cards.withdraw,
     cards.withdraw,
     cards.withdraw,
-    cards.withdraw,
+    
     // 5 attack
     cards.tackle,
     fireCardPool.fierymissiles,
@@ -63,7 +63,7 @@ let playerMonsters = {
       cards.withdraw,
       cards.shieldspikes,
 
-      cards.tackle,
+      
       cards.tackle,
       cards.tackle,
       cards.tackle,
@@ -99,7 +99,7 @@ let playerMonsters = {
         cards.tackle,
         fireCardPool.gainstrength,
         //5 block
-        cards.withdraw,
+        
         cards.withdraw,
         cards.withdraw,
         cards.withdraw,
@@ -131,12 +131,12 @@ let playerMonsters = {
         //6 attack
         waterCardPool.recall,
         waterCardPool.ascension,
-        waterCardPool.meditate,
+        cards.tackle,
         cards.tackle,
         cards.tackle,
         cards.tackle,
         //7 block
-        cards.withdraw,
+        
         cards.withdraw,
         cards.withdraw,
         cards.withdraw,

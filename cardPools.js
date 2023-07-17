@@ -79,7 +79,6 @@ let fireCardPool = {
     //self-scaling
     ascension: {...cards.ascension},
     buildingflame: {...cards.buildingflame},
-
     ignite: {...cards.ignite},
 
   
@@ -89,7 +88,6 @@ let fireCardPool = {
     //1
     // ------------------------------------------  15
     //-6
-    followupslap: {...cards.followupslap},
     pickoff: {...cards.pickoff},
     //heal
     vampiricstrike: {...cards.vampiricstrike},
@@ -101,7 +99,7 @@ let fireCardPool = {
     //scale - 5
     kindle: {...cards.kindle},
     honeclaws: {...cards.honeclaws},
-    banish: {...cards.banish},
+    finalblow: {...cards.finalblow},
     insight: {...cards.insight},
     clarity: {...cards.clarity},
     //strength-scalers -3 
@@ -137,7 +135,7 @@ let fireCardPool = {
     // ------------------------------------------  14
     reformingshield: {...cards.reformingshield},
     unwaveringdefense: {...cards.unwaveringdefense},
-    religiousfervor: {...cards.religiousfervor},
+    divinefavor: {...cards.divinefavor},
 
     flamingcloak: {...cards.flamingcloak},
     fortify: {...cards.fortify},
@@ -154,6 +152,7 @@ let fireCardPool = {
     //multi cards - 2
     puffofsmoke: {...cards.puffofsmoke},
     skipaway: {...cards.skipaway},
+    //need more backstep
 
     //bomb
     laytrap: {...cards.laytrap},
@@ -228,7 +227,6 @@ let fireCardPool = {
     // ------------------------------------------  10
     bodyslam: {...cards.bodyslam},
     cautiousblow: {...cards.cautiousblow},
-    followupslap: {...cards.followupslap},
     pickoff: {...cards.pickoff},
     //multi-card
     pirouettespin: {...cards.pirouettespin},
@@ -236,7 +234,7 @@ let fireCardPool = {
     clawback: {...cards.clawback},
     //self-scaling
     ascension: {...cards.ascension},
-    banish: {...cards.banish},
+    finalblow: {...cards.finalblow},
     clarity: {...cards.clarity},
     insight: {...cards.insight},
     endingfeint: {...cards.endingfeint},
@@ -345,8 +343,6 @@ let simpleCardPool = {
     //destroy energy - 2
     dampen: {...cards.dampen},
     ignite: {...cards.ignite},
-
-    followupslap: {...cards.followupslap},
     //heal
     vampiricstrike: {...cards.vampiricstrike},
     //return
@@ -389,7 +385,7 @@ let simpleCardPool = {
     // ------------------------------------------  14
     reformingshield: {...cards.reformingshield},
     unwaveringdefense: {...cards.unwaveringdefense},
-    // religiousfervor: {...cards.religiousfervor},
+    // divinefavor: {...cards.divinefavor},
 
     flamingcloak: {...cards.flamingcloak},
     fortify: {...cards.fortify},
