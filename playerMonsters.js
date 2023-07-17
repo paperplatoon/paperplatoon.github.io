@@ -170,7 +170,7 @@ let playerMonsters = {
         //draw
         cards.smokescreen,
         cards.rareFireEnergy,
-        cards.laytrap,
+        cards.spinaway,
 
         //block
         cards.lastflourish,

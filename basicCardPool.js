@@ -522,7 +522,7 @@ let cards = {
         elementType: "fire",
         action: async (stateObj, index, array) => {
             await cardAnimationDiscard(index);
-            stateObj = addBackstepsToHand(state, (2+array[index].upgrades))
+            stateObj = await addBackstepsToHand(state, (2+array[index].upgrades))
             stateObj = immer.produce(stateObj, (newState) => {
               newState.playerMonster.encounterEnergy -= array[index].baseCost;
             })
@@ -1725,10 +1725,8 @@ let cards = {
         elementType: "water",
         action: async (stateObj, index, array) => {
           await cardAnimationDiscard(index);
-          stateObj = gainBlock(stateObj, array[index].baseBlock, array[index].baseCost)
-          for (let i=0; i < 1+array[index].upgrades; i++) {
-            stateObj = addBombsToHand(stateObj)
-          }
+          stateObj = await gainBlock(stateObj, array[index].baseBlock, array[index].baseCost)
+          stateObj = await addBombsToHand(stateObj)
           return stateObj;
         }
       },
@@ -1751,15 +1749,43 @@ let cards = {
         cost:  (state, index, array) => {
           return array[index].baseCost;
         },
-        baseBlock: 7,
+        baseBlock: 11,
         cardType: "ability",
         elementType: "water",
         action: async (stateObj, index, array) => {
           await cardAnimationDiscard(index);
-          stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades * 3), array[index].baseCost)
-          for (let i=0; i < 2+(array[index].upgrades/2); i++) {
-            stateObj = addBombsToHand(stateObj)
+          stateObj = await gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades * 3), array[index].baseCost)
+          stateObj = await addBombsToHand(stateObj, 2 + (array[index].upgrades/2))
+          return stateObj;
+        }
+      },
+
+      spinaway: {
+        cardID: 40,
+        name: "Spin Away",
+        text: (state, index, array) => { 
+          let textString = `Gain ${3 + array[index].upgrades} backsteps. Gain ${(1 + (array[index].upgrades/2))} Bomb`;
+          if (state.status === Status.ChooseEncounterCardReward || state.status === Status.cardShop) {
+            textString += "<br></br><br> (Bombs cost 0 and deal 7 damage to EVERYONE, including you. They're removed from your deck when played)</br>"
+            textString += "<br></br><br> (Backstabs cost 0 and gain 4 block. They're removed from your deck when played)</br>"
           }
+          return textString
+        },
+        minReq: (state, index, array) => {
+          return array[index].baseCost;
+        },
+        upgrades: 0,
+        baseCost: 1,
+        cost:  (state, index, array) => {
+          return array[index].baseCost;
+        },
+        baseBlock: 11,
+        cardType: "ability",
+        elementType: "water",
+        action: async (stateObj, index, array) => {
+          await cardAnimationDiscard(index);
+          stateObj = await addBackstepsToHand(stateObj, 3 + array[index].upgrades)
+          stateObj = await addBombsToHand(stateObj, 1 + (array[index].upgrades/2))
           return stateObj;
         }
       },
@@ -1782,15 +1808,13 @@ let cards = {
         cost:  (state, index, array) => {
           return array[index].baseCost;
         },
-        baseBlock: 21,
+        baseBlock: 25,
         cardType: "ability",
         elementType: "water",
         action: async (stateObj, index, array) => {
           await cardAnimationDiscard(index);
-          stateObj = gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades * 4), array[index].baseCost)
-          for (let i=0; i < 3+(array[index].upgrades/2); i++) {
-            stateObj = addBombsToHand(stateObj)
-          }
+          stateObj = await gainBlock(stateObj, array[index].baseBlock + (array[index].upgrades * 4), array[index].baseCost)
+          stateObj = await addBombsToHand(stateObj, 3 + (array[index].upgrades/2))
           return stateObj;
         }
       },

@@ -43,8 +43,8 @@ let fireCardPool = {
     shapedcharges: {...cards.shapedcharges},  // BOMBS PAYOFF
     expand: {...cards.expand}, // CHANGE ENERGY PAYOFF
     enlightened: {...cards.enlightened}, //SELF DAMAGE PAYOFF
-    //removal attack
-    //removal block
+    lastflourish: {...cards.lastflourish},
+    smokescreen: {...cards.smokescreen},
     whirlwind: {...cards.whirlwind},
     longlegs: {...cards.longlegs},
 
@@ -157,6 +157,7 @@ let fireCardPool = {
 
     //bomb
     laytrap: {...cards.laytrap},
+    selfimmolate: {...cards.selfimmolate},
   
     //2+ energy
     // ------------------------------------------  7
@@ -193,6 +194,8 @@ let fireCardPool = {
     enlightened: {...cards.enlightened},
     tnt: {...cards.tnt},
     shapedcharges: {...cards.shapedcharges},
+    lastflourish: {...cards.lastflourish},
+    smokescreen: {...cards.smokescreen},
     
     
     //draw and recall - 4
@@ -271,6 +274,7 @@ let fireCardPool = {
     puffofsmoke: {...cards.puffofsmoke},
     skipaway: {...cards.skipaway},
     laytrap: {...cards.laytrap},
+    selfimmolate: {...cards.selfimmolate},
 
     //2
     // ------------------------------------------  12

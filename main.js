@@ -849,7 +849,7 @@ function shuffleArray(array) {
     .map(({ value }) => value);
 }
 
-function addBackstepsToHand(stateObj, numberToAdd=1) {
+async function addBackstepsToHand(stateObj, numberToAdd=1) {
   stateObj = immer.produce(stateObj, (newState) => {
     for (let i=0; i < numberToAdd; i++) {
       if (newState.encounterHand.length > 8) {
@@ -861,7 +861,7 @@ function addBackstepsToHand(stateObj, numberToAdd=1) {
   return stateObj
 }
 
-function addBombsToHand(stateObj, numberToAdd=1) {
+async function addBombsToHand(stateObj, numberToAdd=1) {
   stateObj = immer.produce(stateObj, (newState) => {
     for (let i=0; i < numberToAdd; i++) {
       if (newState.encounterHand.length > 8) {
