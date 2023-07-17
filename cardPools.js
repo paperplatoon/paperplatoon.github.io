@@ -45,7 +45,7 @@ let fireCardPool = {
     enlightened: {...cards.enlightened}, //SELF DAMAGE PAYOFF
     lastflourish: {...cards.lastflourish},
     smokescreen: {...cards.smokescreen},
-    whirlwind: {...cards.whirlwind},
+    shieldspikes: {...cards.shieldspikes},
     longlegs: {...cards.longlegs},
 
     
@@ -158,6 +158,7 @@ let fireCardPool = {
     //bomb
     laytrap: {...cards.laytrap},
     selfimmolate: {...cards.selfimmolate},
+    spinaway: {...cards.spinaway},
   
     //2+ energy
     // ------------------------------------------  7
@@ -184,7 +185,7 @@ let fireCardPool = {
     hammerandtongs: {...cards.hammerandtongs},
     expertsforge: {...cards.expertsforge},
     sunlight: {...cards.sunlight},
-    whirlwind: {...cards.whirlwind},
+    shieldspikes: {...cards.shieldspikes},
     longlegs: {...cards.longlegs},
     expand: {...cards.expand},
     buildingflame: {...cards.buildingflame},
@@ -275,6 +276,7 @@ let fireCardPool = {
     skipaway: {...cards.skipaway},
     laytrap: {...cards.laytrap},
     selfimmolate: {...cards.selfimmolate},
+    spinaway: {...cards.spinaway},
 
     //2
     // ------------------------------------------  12

@@ -493,9 +493,7 @@ let cards = {
           await cardAnimationDamageDiscard(stateObj, index, calculatedDamage)
           
           stateObj = await dealOpponentDamage(stateObj, totalBaseDamage, array[index].baseHits, array[index].baseCost)
-          for (let i=0; i < 1+array[index].upgrades; i++) {
-            stateObj = addBackstepsToHand(stateObj)
-          }
+          stateObj = await addBackstepsToHand(stateObj, 1+array[index].upgrades)
           return stateObj;
         }
       },
@@ -1320,13 +1318,13 @@ let cards = {
         }
       },
 
-      whirlwind: {
+      shieldspikes: {
         cardID: 73,
         rare: true,
         exhaust: true,
         name: "Shield Spikes",
         text: (state, index, array) => { 
-          return `Backsteps also deal ${array[index].baseDamage} extra damage to all enemies. Remove` 
+          return `Backsteps also deal ${array[index].baseDamage + (array[index].upgrades*3)} extra damage to all enemies. Remove` 
         },
         minReq: (state, index, array) => {
           return array[index].baseCost;
@@ -1341,7 +1339,10 @@ let cards = {
         elementType: "water",
         action: async (stateObj, index, array) => {
           stateObj = immer.produce(stateObj, (newState) => {
-            newState.backstepDamage += array[index].baseDamage;
+            if (newState.playerMonster.encounterEnergy >= array[index].baseCost) {
+              newState.backstepDamage += array[index].baseDamage + (array[index].upgrades*3);
+              newState.playerMonster.encounterEnergy -= array[index].baseCost
+            }
           })
           document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
           await pause(500);
@@ -1370,7 +1371,10 @@ let cards = {
         elementType: "water",
         action: async (stateObj, index, array) => {
           stateObj = immer.produce(stateObj, (newState) => {
-            newState.backstepExtraBlock += 4;
+            if (newState.playerMonster.encounterEnergy >= array[index].baseCost) {
+              newState.playerMonster.encounterEnergy -= array[index].baseCost
+              newState.backstepExtraBlock += 4;
+            }
           })
           document.querySelectorAll("#handContainer2 .card")[index].classList.add("remove");
           await pause(500);

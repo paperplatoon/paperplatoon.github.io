@@ -61,13 +61,13 @@ let playerMonsters = {
       cards.withdraw,
       cards.withdraw,
       cards.withdraw,
-      waterCardPool.sabotage,
+      cards.shieldspikes,
 
       cards.tackle,
       cards.tackle,
       cards.tackle,
       cards.tackle,
-      waterCardPool.bodyslam,  
+      cards.retreatingslash,  
     ]
   },
 
