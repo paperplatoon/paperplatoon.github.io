@@ -20,8 +20,8 @@ let gameStartState = {
     
     numberLasers: 0,
     laserCapacity: 1,
-    laserCost: 200,
-    laserUpgradeCost: 1000,
+    laserCost: 150,
+    laserUpgradeCost: 750,
     laserDistance: 2,
 
     drillTime: 850,
@@ -35,7 +35,7 @@ let gameStartState = {
     
     currentHullIntegrity: 100,
     maxHullIntegrity: 100,
-    hullUpgradeCost: 1000,
+    hullUpgradeCost: 500,
 
     dirtReserves: 0,
     dirtThresholdNeeded: 25,
@@ -47,16 +47,16 @@ let gameStartState = {
     bombTimer: false,
     bombCapacity: 1,
     bombCurrentTotal: 1,
-    bombUpgradeCost: 1000,
+    bombUpgradeCost: 750,
     bombDistance: 2,
-    bombCost: 200,
+    bombCost: 150,
 
 
     currentLevel: 0,
     floorValues: [
         {
             barVals: [1, 1, 1, 0.997, 0.99, 0.9, 0.65],
-            enemyValue: 0.965,
+            enemyValue: 0.97,
             bottomRowEnemies: [1, 5, 9],
             numberRows: 20,
             hasRelic: true,
@@ -64,8 +64,8 @@ let gameStartState = {
         },
         {
             barVals: [1, 0.999, 0.997, 0.99, 0.95, 0.80, 0.65],
-            enemyValue: 0.94,
-            numberRows: 40,
+            enemyValue: 0.95,
+            numberRows: 30,
             bottomRowEnemies: [0, 3, 7, 9],
             hasRelic: true,
             floorNumber: 1
@@ -73,23 +73,23 @@ let gameStartState = {
         {
             barVals: [1, 0.997, 0.99, 0.95, 0.85, 0.75, 0.7],
             enemyValue: 0.93,
-            numberRows: 60,
+            numberRows: 40,
             bottomRowEnemies: [1, 3, 5, 7],
             hasRelic: true,
             floorNumber: 2
         },
         {
             barVals: [0.999, 0.99, 0.96, 0.9, 0.8, 0.72, 0.7],
-            enemyValue: 0.9,
-            numberRows: 80,
+            enemyValue: 0.91,
+            numberRows: 50,
             bottomRowEnemies: [1, 2, 4, 5, 7],
             hasRelic: true,
             floorNumber: 3
         },
         {
             barVals: [0.99, 0.97, 0.91, 0.85, 0.77, 0.73, 0.7],
-            enemyValue: 0.87,
-            numberRows: 100,
+            enemyValue: 0.88,
+            numberRows: 70,
             bottomRowEnemies: [1, 2, 4, 5, 7],
             hasRelic: true,
             floorNumber: 4
@@ -761,7 +761,7 @@ async function laserUpgrade(stateObj) {
         newState.laserCapacity += 1;
         newState.numberLasers += 1;
         newState.bankedCash -= stateObj.laserUpgradeCost
-        newState.laserUpgradeCost += 1000;
+        newState.laserUpgradeCost += 500;
     })
     await changeState(stateObj);
 }
@@ -771,7 +771,7 @@ async function bombUpgrade(stateObj) {
         newState.bombCapacity += 1;
         newState.bombCurrentTotal += 1;
         newState.bankedCash -= stateObj.bombUpgradeCost
-        newState.bombUpgradeCost += 1000;
+        newState.bombUpgradeCost += 500;
     })
     await changeState(stateObj);
 }
