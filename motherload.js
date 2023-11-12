@@ -345,61 +345,63 @@ async function moveEnemies() {
     await updateState(stateObj)
     // console.log("number of enemies is " + stateObj.enemyMovementArray.length)
     // console.log("enemy positions are " + stateObj.enemyArray)
-    for (let i=0; i < stateObj.enemyArray.length; i++) {
-        let k = stateObj.enemyArray[i]
-        if (stateObj.enemyMovementArray[i] === "left") {
-                if (k % screenwidthBlocks !== 0 && stateObj.gameMap[k-1] === "empty") {
-                    //console.log("enemy  " + i + " moving left at position " + k + ", now " + k-1)
-                    stateObj = await immer.produce(stateObj, (newState) => {
-                        newState.gameMap[k-1] = "enemy";
-                        newState.gameMap[k] = "empty";
-                        newState.enemyArray[i] -= 1
-                    })
+    if (stateObj.inStore === false && stateObj.choosingNextLevel === false) {
+        for (let i=0; i < stateObj.enemyArray.length; i++) {
+            let k = stateObj.enemyArray[i]
+            if (stateObj.enemyMovementArray[i] === "left") {
+                    if (k % screenwidthBlocks !== 0 && stateObj.gameMap[k-1] === "empty") {
+                        //console.log("enemy  " + i + " moving left at position " + k + ", now " + k-1)
+                        stateObj = await immer.produce(stateObj, (newState) => {
+                            newState.gameMap[k-1] = "enemy";
+                            newState.gameMap[k] = "empty";
+                            newState.enemyArray[i] -= 1
+                        })
 
-                    
-                } else {
-                    stateObj = await immer.produce(stateObj, (newState) => {
-                        newState.enemyMovementArray[i] = "right";
-                    })
-                    //console.log("enemy  " + i + " switching to right at position " + k)
-                }
-        } else {
-                if ((k+1) % screenwidthBlocks !== 0 && stateObj.gameMap[k+1] === "empty") {
-                    //console.log("enemy  " + i + " moving right at position " + k + ", now " + k+1)
-                    stateObj = await immer.produce(stateObj, (newState) => {
-                        newState.gameMap[k+1] = "enemy";
-                        newState.gameMap[k] = "empty";
-                        newState.enemyArray[i] += 1
-                    })
-                } else {
-                    stateObj = await immer.produce(stateObj, (newState) => {
-                        newState.enemyMovementArray[i] = "left";
-                    })
-                    //console.log("enemy  " + i + " switching to left at position " + k)
-                }   
-            }
-        }
-
-
-        if (stateObj.bombLocation) {
-            if (stateObj.bombTimer > 0) {
-                console.log('counting down bomb timer from ' + stateObj.bombTimer)
-                stateObj = await immer.produce(stateObj, (newState) => {
-                    newState.bombTimer -= 1
-                })
+                        
+                    } else {
+                        stateObj = await immer.produce(stateObj, (newState) => {
+                            newState.enemyMovementArray[i] = "right";
+                        })
+                        //console.log("enemy  " + i + " switching to right at position " + k)
+                    }
             } else {
-                stateObj = await fireLaser(stateObj, stateObj.bombLocation, isLaser=false)
-                stateObj = await immer.produce(stateObj, (newState) => {
-                    newState.gameMap[newState.bombLocation] = "empty"
-                    newState.bombTimer = false;
-                    newState.bombLocation = false;
-                    
-                })
+                    if ((k+1) % screenwidthBlocks !== 0 && stateObj.gameMap[k+1] === "empty") {
+                        //console.log("enemy  " + i + " moving right at position " + k + ", now " + k+1)
+                        stateObj = await immer.produce(stateObj, (newState) => {
+                            newState.gameMap[k+1] = "enemy";
+                            newState.gameMap[k] = "empty";
+                            newState.enemyArray[i] += 1
+                        })
+                    } else {
+                        stateObj = await immer.produce(stateObj, (newState) => {
+                            newState.enemyMovementArray[i] = "left";
+                        })
+                        //console.log("enemy  " + i + " switching to left at position " + k)
+                    }   
+                }
             }
-        }
 
-    await changeState(stateObj)
-    await checkForDeath(stateObj)
+
+            if (stateObj.bombLocation) {
+                if (stateObj.bombTimer > 0) {
+                    console.log('counting down bomb timer from ' + stateObj.bombTimer)
+                    stateObj = await immer.produce(stateObj, (newState) => {
+                        newState.bombTimer -= 1
+                    })
+                } else {
+                    stateObj = await fireLaser(stateObj, stateObj.bombLocation, isLaser=false)
+                    stateObj = await immer.produce(stateObj, (newState) => {
+                        newState.gameMap[newState.bombLocation] = "empty"
+                        newState.bombTimer = false;
+                        newState.bombLocation = false;
+                        
+                    })
+                }
+            }
+
+        await changeState(stateObj)
+        await checkForDeath(stateObj)
+    }
 }
 
 
@@ -1043,7 +1045,7 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "empty") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 1, 0)
     } else if (targetSquare === "enemy") {
-        await loseTheGame("You crashed into an enemy and both of you exploded! ")
+        stateObj = await doDamage(stateObj, 75)
         stateObj = await handleSquare(stateObj, targetSquareNum, 1, 0)
     } else if (targetSquare === "STORE") {
         stateObj = await seeStore(stateObj)
@@ -1141,11 +1143,13 @@ async function handleSquare(stateObj, squareIndexToMoveTo, fuelToLose, goldToGai
 }
 
 async function loseTheGame(textString) {
-    let confirmText = textString + ` Click OK to try again`
+    let confirmText = textString + ` Reload the page to try again`
     var confirmation = confirm(confirmText);
 
   if (confirmation) {
-    location.reload();
+    setTimeout(function(){
+        location.reload(true);
+      }, 100);
   }
 }
 
