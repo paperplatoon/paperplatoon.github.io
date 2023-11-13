@@ -15,14 +15,15 @@ let gameStartState = {
     inventoryUpgradeCost: 500,
     
 
-    bankedCash: 100,
+    bankedCash: 10000,
     inventoryCash: 0, 
     
     numberLasers: 0,
     laserCapacity: 1,
     laserCost: 150,
-    laserUpgradeCost: 750,
+    laserCapacityUpgradeCost: 750,
     laserDistance: 2,
+    laserDistanceUpgradeCost: 1000,
 
     drillTime: 850,
     timeCounter: 0,
@@ -47,8 +48,9 @@ let gameStartState = {
     bombTimer: false,
     bombCapacity: 1,
     bombCurrentTotal: 1,
-    bombUpgradeCost: 750,
+    bombCapacityUpgradeCost: 750,
     bombDistance: 2,
+    bombDistanceUpgradeCost: 1000,
     bombCost: 150,
 
 
@@ -562,8 +564,13 @@ async function renderScreen(stateObj) {
 
         let fuelUpgradeDiv = document.createElement("Div")
         fuelUpgradeDiv.classList.add("store-option")
-        fuelUpgradeDiv.classList.add("fuel-store")
-        fuelUpgradeDiv.textContent = "Fuel Capacity Upgrade: " + stateObj.fuelUpgradeCost + " gold"
+        let fuelText1 = document.createElement("Div")
+        fuelText1.classList.add("store-option-text")
+        let fuelText2 = document.createElement("Div")
+        fuelText2.classList.add("store-option-text")
+        fuelText1.textContent = "Fuel Capacity Upgrade" 
+        fuelText2.textContent = stateObj.fuelUpgradeCost + " gold"
+        fuelUpgradeDiv.append(fuelText1, fuelText2)
         if (stateObj.bankedCash >= stateObj.fuelUpgradeCost) {
             fuelUpgradeDiv.classList.add("store-clickable")
             fuelUpgradeDiv.onclick = function () {
@@ -573,9 +580,14 @@ async function renderScreen(stateObj) {
 
         let laserUpgradeDiv = document.createElement("Div")
         laserUpgradeDiv.classList.add("store-option")
-        laserUpgradeDiv.classList.add("laser-upgrade-store")
-        laserUpgradeDiv.textContent = "Laser Capacity Upgrade: " + stateObj.laserUpgradeCost + " gold"
-        if (stateObj.bankedCash >= stateObj.laserUpgradeCost) {
+        let laserText1 = document.createElement("Div")
+        laserText1.classList.add("store-option-text")
+        let laserText2 = document.createElement("Div")
+        laserText2.classList.add("store-option-text")
+        laserText1.textContent = "Laser Capacity Upgrade" 
+        laserText2.textContent = stateObj.laserCapacityUpgradeCost + " gold"
+        laserUpgradeDiv.append(laserText1, laserText2)
+        if (stateObj.bankedCash >= stateObj.laserCapacityUpgradeCost) {
             laserUpgradeDiv.classList.add("store-clickable")
             laserUpgradeDiv.onclick = function () {
                 laserUpgrade(stateObj)
@@ -584,9 +596,14 @@ async function renderScreen(stateObj) {
 
           let bombUpgradeDiv = document.createElement("Div")
           bombUpgradeDiv.classList.add("store-option")
-          bombUpgradeDiv.classList.add("bomb-upgrade-store")
-          bombUpgradeDiv.textContent = "Bomb Capacity Upgrade: " + stateObj.bombUpgradeCost + " gold"
-        if (stateObj.bankedCash >= stateObj.bombUpgradeCost) {
+          let bombText1 = document.createElement("Div")
+          bombText1.classList.add("store-option-text")
+          let bombText2 = document.createElement("Div")
+          bombText2.classList.add("store-option-text")
+          bombText1.textContent = "Bomb Capacity Upgrade" 
+          bombText2.textContent = stateObj.bombCapacityUpgradeCost + " gold"
+          bombUpgradeDiv.append(bombText1, bombText2)
+        if (stateObj.bankedCash >= stateObj.bombCapacityUpgradeCost) {
             bombUpgradeDiv.classList.add("store-clickable")
             bombUpgradeDiv.onclick = function () {
                 bombUpgrade(stateObj)
@@ -597,15 +614,22 @@ async function renderScreen(stateObj) {
         let missingFuel = Math.floor((stateObj.fuelCapacity-stateObj.currentFuel)/2)
         if (missingFuel > 0) {
             fillFuelDiv.classList.add("store-option")
-            fillFuelDiv.classList.add("fill-fuel")
+            let fillText1 = document.createElement("Div")
+            fillText1.classList.add("store-option-text")
+            let fillText2 = document.createElement("Div")
+            fillText2.classList.add("store-option-text")
+            
             
             if (Math.floor(missingFuel/2) > stateObj.bankedCash) {
-                fillFuelDiv.textContent = "Spend all gold on fuel: " + Math.ceil(stateObj.bankedCash) + " gold"
+                fillText1.textContent = "Spend all gold on fuel" 
+                fillText2.textContent = Math.ceil(stateObj.bankedCash) + " gold"
             } else {
-                fillFuelDiv.textContent = "Refill fuel: " + Math.ceil(missingFuel) + " gold"
+                fillText1.textContent = "Refill fuel" 
+                fillText2.textContent = Math.ceil(missingFuel) + " gold"
             }
+
+            fillFuelDiv.append(fillText1, fillText2)
             fillFuelDiv.classList.add("store-clickable")
-            
             fillFuelDiv.onclick = function () {
                     fillFuel(stateObj)
             }
@@ -616,12 +640,19 @@ async function renderScreen(stateObj) {
         let missingHull = stateObj.maxHullIntegrity-stateObj.currentHullIntegrity
         if (missingHull > 0) {
             repairDiv.classList.add("store-option")
-            repairDiv.classList.add("repair-hull")
+            let repairText1 = document.createElement("Div")
+            repairText1.classList.add("store-option-text")
+            let repairText2 = document.createElement("Div")
+            repairText1.classList.add("store-option-text")
+            
             if ((missingHull*5) > stateObj.bankedCash) {
-                repairDiv.textContent = "Spend all gold on repair: " + Math.ceil(stateObj.bankedCash) + " gold"
+                repairText1.textContent = "Spend all gold on repairs" 
+                repairText2.textContent = Math.ceil(stateObj.bankedCash) + " gold"
             } else {
-                repairDiv.textContent = "Repair hull fully: " + Math.ceil(missingHull*5) + " gold"
+                repairText1.textContent = "Repair hull fully " 
+                repairText2.textContent = Math.ceil(missingHull*5) + " gold"
             }
+            repairDiv.append(repairText1, repairText2)
             repairDiv.classList.add("store-clickable")
             
             repairDiv.onclick = function () {
@@ -633,7 +664,13 @@ async function renderScreen(stateObj) {
 
         let inventoryUpgradeDiv = document.createElement("Div")
         inventoryUpgradeDiv.classList.add("store-option")
-        inventoryUpgradeDiv.textContent = "Inventory Size Upgrade: " + stateObj.inventoryUpgradeCost + " gold"
+        let invText1 = document.createElement("Div")
+        invText1.classList.add("store-option-text")
+        let invText2 = document.createElement("Div")
+        invText2.classList.add("store-option-text")
+        invText1.textContent = "Inventory Size Upgrade" 
+        invText2.textContent = stateObj.inventoryUpgradeCost + " gold"
+        inventoryUpgradeDiv.append(invText1, invText2)
         if (stateObj.bankedCash >= stateObj.inventoryUpgradeCost) {
             inventoryUpgradeDiv.classList.add("store-clickable")
             inventoryUpgradeDiv.onclick = function () {
@@ -643,7 +680,13 @@ async function renderScreen(stateObj) {
 
         let hullUpgradeDiv = document.createElement("Div")
         hullUpgradeDiv.classList.add("store-option")
-        hullUpgradeDiv.textContent = "Upgrade Hull Integrity: " + stateObj.hullUpgradeCost + " gold"
+        let hullText1 = document.createElement("Div")
+        hullText1.classList.add("store-option-text")
+        let hullText2 = document.createElement("Div")
+        hullText2.classList.add("store-option-text")
+        hullText1.textContent = "Hull Integrity Upgrade" 
+        hullText2.textContent = stateObj.hullUpgradeCost + " gold"
+        hullUpgradeDiv.append(hullText1, hullText2)
         if (stateObj.bankedCash >= stateObj.hullUpgradeCost) {
             hullUpgradeDiv.classList.add("store-clickable")
             hullUpgradeDiv.onclick = function () {
@@ -654,7 +697,13 @@ async function renderScreen(stateObj) {
         let buyLaserDiv = document.createElement("Div")
         if (stateObj.numberLasers < stateObj.laserCapacity) {
             buyLaserDiv.classList.add("store-option")
-            buyLaserDiv.textContent = "Buy 1 laser: " + stateObj.laserCost + " gold"
+            let laserText1 = document.createElement("Div")
+            laserText1.classList.add("store-option-text")
+            let laserText2 = document.createElement("Div")
+            laserText2.classList.add("store-option-text")
+            laserText1.textContent = "Buy a laser" 
+            laserText2.textContent = stateObj.laserCost + " gold"
+            buyLaserDiv.append(laserText1, laserText2)
             buyLaserDiv.onclick = function () {
             }
             if (stateObj.bankedCash >= stateObj.laserCost) {
@@ -668,7 +717,13 @@ async function renderScreen(stateObj) {
         let buyBombDiv = document.createElement("Div")
         if (stateObj.bombCurrentTotal < stateObj.bombCapacity) {
             buyBombDiv.classList.add("store-option")
-            buyBombDiv.textContent = "Buy 1 bomb: " + stateObj.bombCost + " gold"
+            let bombText1 = document.createElement("Div")
+            bombText1.classList.add("store-option-text")
+            let bombText2 = document.createElement("Div")
+            bombText2.classList.add("store-option-text")
+            bombText1.textContent = "Buy a bomb" 
+            bombText2.textContent = stateObj.bombCost + " gold"
+            buyBombDiv.append(bombText1, bombText2)
             buyBombDiv.onclick = function () {
             }
             if (stateObj.bankedCash >= stateObj.bombCost) {
@@ -676,6 +731,38 @@ async function renderScreen(stateObj) {
                 buyBombDiv.onclick = function () {
                     buyBomb(stateObj)
                 }
+            }
+        }
+
+        let upgradeBombDistanceDiv = document.createElement("Div")
+        upgradeBombDistanceDiv.classList.add("store-option")
+        let bombDistText1 = document.createElement("Div")
+        bombDistText1.classList.add("store-option-text")
+        let bombDistText2 = document.createElement("Div")
+        bombDistText2.classList.add("store-option-text")
+        bombDistText1.textContent = "Bomb Distance Upgrade" 
+        bombDistText2.textContent = stateObj.bombDistanceUpgradeCost + " gold"
+        upgradeBombDistanceDiv.append(bombDistText1, bombDistText2)
+        if (stateObj.bankedCash >= stateObj.bombDistanceUpgradeCost) {
+            upgradeBombDistanceDiv.classList.add("store-clickable")
+            upgradeBombDistanceDiv.onclick = function () {
+                buyBombDistanceUpgrade(stateObj)
+            }
+        }
+
+        let upgradeLaserDistanceDiv = document.createElement("Div")
+        upgradeLaserDistanceDiv.classList.add("store-option")
+        let laserDistText1 = document.createElement("Div")
+        laserDistText1.classList.add("store-option-text")
+        let laserDistText2 = document.createElement("Div")
+        laserDistText2.classList.add("store-option-text")
+        laserDistText1.textContent = "Laser Distance Upgrade " 
+        laserDistText2.textContent = stateObj.laserDistanceUpgradeCost + " gold"
+        upgradeLaserDistanceDiv.append(laserDistText1, laserDistText2)
+        if (stateObj.bankedCash >= stateObj.laserDistanceUpgradeCost) {
+            upgradeLaserDistanceDiv.classList.add("store-clickable")
+            upgradeLaserDistanceDiv.onclick = function () {
+                buyLaserDistanceUpgrade(stateObj)
             }
         }
         
@@ -689,7 +776,7 @@ async function renderScreen(stateObj) {
             leaveStore(stateObj)
           }
 
-        storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, buyBombDiv, fuelUpgradeDiv, inventoryUpgradeDiv, hullUpgradeDiv, laserUpgradeDiv, bombUpgradeDiv, buyNothingDiv)
+        storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, laserUpgradeDiv, upgradeLaserDistanceDiv, buyBombDiv,  bombUpgradeDiv, upgradeBombDistanceDiv, fuelUpgradeDiv, inventoryUpgradeDiv, hullUpgradeDiv, buyNothingDiv)
 
 
         let testDiv = document.createElement("Div")
@@ -760,8 +847,8 @@ async function laserUpgrade(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.laserCapacity += 1;
         newState.numberLasers += 1;
-        newState.bankedCash -= stateObj.laserUpgradeCost
-        newState.laserUpgradeCost += 500;
+        newState.bankedCash -= stateObj.laserCapacityUpgradeCost
+        newState.laserCapacityUpgradeCost += 750;
     })
     await changeState(stateObj);
 }
@@ -770,8 +857,8 @@ async function bombUpgrade(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.bombCapacity += 1;
         newState.bombCurrentTotal += 1;
-        newState.bankedCash -= stateObj.bombUpgradeCost
-        newState.bombUpgradeCost += 500;
+        newState.bankedCash -= stateObj.bombCapacityUpgradeCost
+        newState.bombCapacityUpgradeCost += 750;
     })
     await changeState(stateObj);
 }
@@ -858,10 +945,30 @@ async function upgradeHull(stateObj) {
     await changeState(stateObj);
 }
 
+async function buyBombDistanceUpgrade(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.bombDistance += 1;
+        newState.bankedCash -= stateObj.bombDistanceUpgradeCost
+        newState.bombDistanceUpgradeCost += 1000;
+
+    })
+    await changeState(stateObj);
+}
+
 async function buyLaser(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.numberLasers += 1;
         newState.bankedCash -= stateObj.laserCost
+    })
+    await changeState(stateObj);
+}
+
+async function buyLaserDistanceUpgrade(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.laserDistance += 1;
+        newState.bankedCash -= stateObj.laserDistanceUpgradeCost
+        newState.laserDistanceUpgradeCost += 1000;
+
     })
     await changeState(stateObj);
 }
