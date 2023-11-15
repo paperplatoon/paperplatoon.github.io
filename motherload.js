@@ -1237,6 +1237,8 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, 300, stateObj.drillTime)
     } else if (targetSquare === "5") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, 750, stateObj.drillTime)
+    } else if (targetSquare === "6") {
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2, 1500, stateObj.drillTime)
     } else if (targetSquare === "empty") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 1, 0)
     } else if (targetSquare === "enemy") {
