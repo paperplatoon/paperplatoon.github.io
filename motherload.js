@@ -28,6 +28,9 @@ let gameStartState = {
     drillTime: 850,
     timeCounter: 0,
 
+    isLevelPacifist: false,
+    isScrapMetal: false,
+
     //states
     currentPosition: false,
     inStore: false,
@@ -225,7 +228,7 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     for (let j=screenwidthBlocks; j < middleLength; j++) {
         if (j === chosenSquare) {
             let relicArray = ["fuelRelic", "bombDistanceRelic", "laserDistanceRelic", "dirtRelic", "stopRelic", "halfDamageRelic", "bombsExplodeFasterRelic", "moneyForDirtRelic"]
-            //let relicArray = ["moneyForDirtRelic"] // 8 current relics
+            //let relicArray = ["stopRelic"] // 8 current relics
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -265,7 +268,6 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     }
     let tempDirection = "left";
     for (let j=0; j < (screenwidthBlocks); j++) {
-        console.log("calling inner loop for j " + j + " and BRE are " + stateObj.floorValues[stateObj.currentLevel].bottomRowEnemies)
         if (stateObj.floorValues[stateObj.currentLevel].bottomRowEnemies.includes(j)) {
             console.log("pushing enemy to square " + j)
             arrayObj.push("enemy")
@@ -283,9 +285,6 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
             arrayObj.push("stone")
         }
     }
-    console.log("produce squares array enemy length is " + state.enemyMovementArray.length)
-    console.log("some last values " + arrayObj[arrayObj.length-1] + " " + arrayObj[arrayObj.length-2]+ " " + arrayObj[arrayObj.length-3])
-
     return arrayObj
 }
 
@@ -319,8 +318,11 @@ async function fillMapWithArray(stateObj) {
         if (stateObj.gameMap[i] === "enemy") {
             let direction = (Math.random() > 0.5) ? "left" : "right";
             console.log("found an enemy at square " + i + " pushing direction " + direction)
-            tempEnemyArray.push(i)
-            tempEnemyMovementArray.push(direction)
+            if (stateObj.isLevelPacifist === false) {
+                tempEnemyArray.push(i)
+                tempEnemyMovementArray.push(direction)
+            }
+            
         }
     }
     stateObj = await immer.produce(stateObj, (newState) => {
@@ -565,7 +567,31 @@ async function renderScreen(stateObj) {
             moreGold(stateObj)
         }
 
-        storeDiv.append(fewerEnemiesDiv, moreGoldDiv)
+        let pacifistDiv = document.createElement("Div")
+        pacifistDiv.classList.add("store-option")
+        pacifistDiv.textContent = "Pacifist - Pause enemies, but less silver and bronze ore"
+        pacifistDiv.classList.add("store-clickable")
+        pacifistDiv.onclick = function () {
+            pacifistChoice(stateObj)
+        }
+
+        let dirtEfficiencyDiv = document.createElement("Div")
+        dirtEfficiencyDiv.classList.add("store-option")
+        dirtEfficiencyDiv.textContent = "Lower threshold to drop dirt"
+        dirtEfficiencyDiv.classList.add("store-clickable")
+        dirtEfficiencyDiv.onclick = function () {
+            dirtEfficiencyChoice(stateObj)
+        }
+
+        let scrapMetalDiv = document.createElement("Div")
+        scrapMetalDiv.classList.add("store-option")
+        scrapMetalDiv.textContent = "Gain 200 gold for each enemy left alive"
+        scrapMetalDiv.classList.add("store-clickable")
+        scrapMetalDiv.onclick = function () {
+            scrapMetalChoice(stateObj)
+        }
+
+        storeDiv.append(fewerEnemiesDiv, moreGoldDiv, pacifistDiv, dirtEfficiencyDiv, scrapMetalDiv)
 
         document.getElementById("app").append(storeDiv)
 
@@ -803,23 +829,47 @@ async function leaveStore(stateObj) {
 }
 
 async function fewerEnemiesChoice(stateObj) {
-    console.log("current enemy value is  " + stateObj.floorValues[stateObj.currentLevel].enemyValue)
     stateObj = immer.produce(stateObj, (newState) => {
         newState.floorValues[newState.currentLevel].enemyValue += 0.015
         newState.choosingNextLevel = false;
     })
     await changeState(stateObj);
-    console.log("current enemy value after is  " + stateObj.floorValues[stateObj.currentLevel].enemyValue)
 }
 
 async function moreGold(stateObj) {
-    console.log("current gold value is  " + stateObj.floorValues[stateObj.currentLevel].barVals[4])
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.floorValues[newState.currentLevel].barVals[4] -= 0.06
+        newState.floorValues[newState.currentLevel].barVals[4] -= 0.6
         newState.choosingNextLevel = false;
     })
     await changeState(stateObj);
-    console.log("current gold value is  " + stateObj.floorValues[stateObj.currentLevel].barVals[4])
+}
+
+async function pacifistChoice(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.floorValues[newState.currentLevel].barVals[5] += 0.05
+        newState.floorValues[newState.currentLevel].barVals[6] += 0.1
+        newState.choosingNextLevel = false;
+        newState.isLevelPacifist = true;
+    })
+    await changeState(stateObj);
+}
+
+async function scrapMetalChoice(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.choosingNextLevel = false;
+        newState.isScrapMetal = true;
+    })
+    await changeState(stateObj);
+}
+
+async function dirtEfficiencyChoice(stateObj) {
+    if (stateObj.dirtThresholdNeeded > 10) {
+        stateObj = immer.produce(stateObj, (newState) => {
+            newState.dirtThresholdNeeded -= 4;
+            newState.choosingNextLevel = false;
+        })
+    }
+    await changeState(stateObj);
 }
 
 async function fillFuel(stateObj) {
@@ -1254,8 +1304,19 @@ async function goToNextLevel(stateObj) {
     stateObj = await immer.produce(stateObj, async (newState) => {
         newState.currentLevel += 1;
         newState.timeCounter = 0;
+        newState.isLevelPacifist = false;
+
+        if (stateObj.isScrapMetal === true) {
+            const countEnemyOccurrences = newState.gameMap.reduce((acc, currentValue) => {
+                if (currentValue === 'enemy') {
+                  return acc + 1;
+                }
+                return acc;
+              }, 0);
+
+            newState.bankedCash += (200*countEnemyOccurrences)
+        }
     })
-    stateObj = await fillMapWithArray(stateObj)
     stateObj = await immer.produce(stateObj, async (newState) => {
         newState.currentPosition = 5;
         newState.choosingNextLevel = true;
