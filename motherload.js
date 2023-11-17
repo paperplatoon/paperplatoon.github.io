@@ -37,7 +37,7 @@ let gameStartState = {
     choosingNextLevel: false,
     inTransition: false,  
     
-    currentHullIntegrity: 10000,
+    currentHullIntegrity: 100,
     maxHullIntegrity: 100,
     hullUpgradeCost: 500,
 
