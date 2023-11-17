@@ -27,6 +27,7 @@ let gameStartState = {
 
     drillTime: 850,
     timeCounter: 0,
+    moveToSquare: false,
 
     isLevelPacifist: false,
     isScrapMetal: false,
@@ -227,7 +228,7 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     let middleLength = (screenwidthBlocks*floorObj.numberRows) + (screenwidthBlocks);
     for (let j=screenwidthBlocks; j < middleLength; j++) {
         if (j === chosenSquare) {
-            let relicArray = ["fuelRelic", "bombDistanceRelic", "laserDistanceRelic", "dirtRelic", "stopRelic", "halfDamageRelic", "bombsExplodeFasterRelic", "moneyForDirtRelic"]
+            let relicArray = ["fuelRelic", "bombDistanceRelic", "laserDistanceRelic", "dirtRelic", "stopRelic", "halfDamageRelic", "moneyForDirtRelic"] //"bombsExplodeFasterRelic",
             //let relicArray = ["stopRelic"] // 8 current relics
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
@@ -405,6 +406,11 @@ async function moveEnemies() {
                     })
                 }
             }
+        await updateState(stateObj)
+
+        if (stateObj.moveToSquare) {
+            stateObj = await calculateMoveChange(stateObj, (stateObj.moveToSquare - stateObj.currentPosition))
+        }
 
         await changeState(stateObj)
         await checkForDeath(stateObj)
@@ -838,7 +844,7 @@ async function fewerEnemiesChoice(stateObj) {
 
 async function moreGold(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.floorValues[newState.currentLevel].barVals[4] -= 0.6
+        newState.floorValues[newState.currentLevel].barVals[4] -= 0.06
         newState.choosingNextLevel = false;
     })
     await changeState(stateObj);
@@ -1166,13 +1172,17 @@ async function LeftArrow(stateObj, currentHeight, currentWidth, scrollHeight, sc
     }
     if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty" && stateObj.gameMap[stateObj.currentPosition - 1] !== "empty") {
         return stateObj
-    } 
+    }  else if (stateObj.gameMap[stateObj.currentPosition - 1] === "empty") {
+        stateObj = await calculateMoveChange(stateObj, -1)
+        return stateObj
+    }
 
     //make sure not on left side 
-    
     if (stateObj.currentPosition % screenwidthBlocks !== 0 ) {
         window.scrollTo(currentWidth*scrollWidth- (scrollWidth*4), currentHeight*scrollHeight - (scrollHeight*2))
-        stateObj = await calculateMoveChange(stateObj, -1)
+        stateObj = immer.produce(stateObj, (newState) => {
+            newState.moveToSquare = stateObj.currentPosition - 1
+        })
     }
 
     return stateObj
@@ -1186,9 +1196,14 @@ async function RightArrow(stateObj, currentHeight, currentWidth, scrollHeight, s
     } else {
         //only execute if not already on right side
         if ((stateObj.currentPosition+1) % screenwidthBlocks !== 0) {
-            stateObj = await calculateMoveChange(stateObj, 1)
-            window.scrollTo(currentWidth*scrollWidth- (scrollWidth*2), currentHeight*scrollHeight - (scrollHeight*2))
-            //stateObj.currentPosition += 1;
+            if (stateObj.gameMap[stateObj.currentPosition + 1] === "empty") {
+                stateObj = await calculateMoveChange(stateObj, 1)
+                window.scrollTo(currentWidth*scrollWidth- (scrollWidth*2), currentHeight*scrollHeight - (scrollHeight*2))
+            } else {
+                stateObj = immer.produce(stateObj, (newState) => {
+                    newState.moveToSquare = stateObj.currentPosition + 1
+                })
+            }
         }
     }
     return stateObj
@@ -1248,6 +1263,7 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         stateObj = await doDamage(stateObj, 75)
         stateObj = await handleSquare(stateObj, targetSquareNum, 1, 0)
     } else if (targetSquare === "STORE") {
+        console.log("should see store calulate")
         stateObj = await seeStore(stateObj)
     } else if (targetSquare === "EXIT") {
         stateObj = await goToNextLevel(stateObj)
@@ -1279,6 +1295,7 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         console.log("target square hasn't been handled yet")
     }
 
+
     if (targetSquare !== "empty" && targetSquare !== "STORE") {
         stateObj = await immer.produce(stateObj, async (newState) => {
             newState.gameMap[targetSquareNum] = "empty"
@@ -1295,6 +1312,7 @@ function pause(timeValue) {
 }
 
 async function seeStore(stateObj) {
+    console.log("inside seeStore")
     stateObj = await immer.produce(stateObj, async (newState) => {
         newState.bankedCash += newState.inventoryCash;
         newState.inventoryCash = 0;
@@ -1331,11 +1349,20 @@ async function goToNextLevel(stateObj) {
     return stateObj
 }
 
+async function triggerHandleSquare(stateObj, squareIndexToMoveTo, fuelToLose, goldToGain, pauseDuration=0) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.movementSquare = squareIndexToMoveTo 
+    })
+    await changeState(stateObj)
+    return stateObj;
+}
+
 async function handleSquare(stateObj, squareIndexToMoveTo, fuelToLose, goldToGain, pauseDuration=0) {
     let oldPosition = stateObj.currentPosition
     stateObj = immer.produce(stateObj, (newState) => {
         newState.currentFuel -= fuelToLose;
         newState.currentPosition = squareIndexToMoveTo;
+        newState.moveToSquare = false;
 
         if (newState.dirtReserves < (stateObj.dirtThresholdNeeded) && newState.gameMap[squareIndexToMoveTo] !== "empty") {
             newState.dirtReserves += 1;
@@ -1352,6 +1379,7 @@ async function handleSquare(stateObj, squareIndexToMoveTo, fuelToLose, goldToGai
     }) 
     if (pauseDuration > 0) {
         state.inTransition = true;
+
         // document.querySelectorAll(".map-square")[stateObj.currentPosition].classList.add("change-empty")
         // await pause(pauseDuration)   
         // document.querySelectorAll(".map-square")[stateObj.currentPosition].classList.remove("change-empty")
