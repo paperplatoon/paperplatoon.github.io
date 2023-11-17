@@ -37,7 +37,7 @@ let gameStartState = {
     choosingNextLevel: false,
     inTransition: false,  
     
-    currentHullIntegrity: 100,
+    currentHullIntegrity: 10000,
     maxHullIntegrity: 100,
     hullUpgradeCost: 500,
 
@@ -560,7 +560,7 @@ async function renderScreen(stateObj) {
         }
 
         let moreGoldDiv = document.createElement("Div")
-        moreGoldDiv.classList.add("store-option")
+        moreGoldDiv.classList.add("next-level-option")
         moreGoldDiv.textContent = "Next level has more gold ore"
         moreGoldDiv.classList.add("store-clickable")
         moreGoldDiv.onclick = function () {
@@ -568,24 +568,24 @@ async function renderScreen(stateObj) {
         }
 
         let pacifistDiv = document.createElement("Div")
-        pacifistDiv.classList.add("store-option")
-        pacifistDiv.textContent = "Pacifist - Pause enemies, but less silver and bronze ore"
+        pacifistDiv.classList.add("next-level-option")
+        pacifistDiv.textContent = "Coward - Enemies in the next level do not move, but the level only contains bronze and silver ore"
         pacifistDiv.classList.add("store-clickable")
         pacifistDiv.onclick = function () {
-            pacifistChoice(stateObj)
+            cowardChoice(stateObj)
         }
 
         let dirtEfficiencyDiv = document.createElement("Div")
-        dirtEfficiencyDiv.classList.add("store-option")
-        dirtEfficiencyDiv.textContent = "Lower threshold to drop dirt"
+        dirtEfficiencyDiv.classList.add("next-level-option")
+        dirtEfficiencyDiv.textContent = "Miner - process dirt more efficiently, letting you drop dirt blocks more often"
         dirtEfficiencyDiv.classList.add("store-clickable")
         dirtEfficiencyDiv.onclick = function () {
             dirtEfficiencyChoice(stateObj)
         }
 
         let scrapMetalDiv = document.createElement("Div")
-        scrapMetalDiv.classList.add("store-option")
-        scrapMetalDiv.textContent = "Gain 200 gold for each enemy left alive"
+        scrapMetalDiv.classList.add("next-level-option")
+        scrapMetalDiv.textContent = "Pacifist - After completing the level, gain 200 gold for every enemy that is still alive"
         scrapMetalDiv.classList.add("store-clickable")
         scrapMetalDiv.onclick = function () {
             scrapMetalChoice(stateObj)
@@ -844,10 +844,13 @@ async function moreGold(stateObj) {
     await changeState(stateObj);
 }
 
-async function pacifistChoice(stateObj) {
+async function cowardChoice(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.floorValues[newState.currentLevel].barVals[5] += 0.05
-        newState.floorValues[newState.currentLevel].barVals[6] += 0.1
+        newState.floorValues[newState.currentLevel].barVals[0] = 1
+        newState.floorValues[newState.currentLevel].barVals[1] = 1
+        newState.floorValues[newState.currentLevel].barVals[2] = 1
+        newState.floorValues[newState.currentLevel].barVals[3] = 1
+        newState.floorValues[newState.currentLevel].barVals[4] = 1
         newState.choosingNextLevel = false;
         newState.isLevelPacifist = true;
     })
@@ -977,7 +980,7 @@ async function bombsExplodeFasterRelic(stateObj) {
 
 async function moneyForDirtRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.moneyForDirt += 200;
+        newState.moneyForDirt += 300;
     })
     await changeState(stateObj);
     return stateObj
