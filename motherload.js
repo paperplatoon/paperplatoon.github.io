@@ -24,7 +24,10 @@ let gameStartState = {
     laserCapacityUpgradeCost: 750,
     laserDistance: 2,
     laserDistanceUpgradeCost: 1000,
+    
     weaponsPriceModifier: 1,
+    enemyDamageModifier: 1,
+    halfDamageFullFuel: false,
 
     drillTime: 850,
     timeCounter: 0,
@@ -50,7 +53,7 @@ let gameStartState = {
 
     enemyArray: [],
     enemyMovementArray:[],
-    enemyDamageModifier: 1,
+    
 
     bombLocation: false,
     bombTimer: false,
@@ -230,8 +233,8 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     let middleLength = (screenwidthBlocks*floorObj.numberRows) + (screenwidthBlocks);
     for (let j=screenwidthBlocks; j < middleLength; j++) {
         if (j === chosenSquare) {
-            let relicArray = ["fuelRelic", "bombDistanceRelic", "laserDistanceRelic", "dirtRelic", "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", "weaponsPriceRelic"]
-            //let relicArray = ["weaponsPriceRelic"] // 8 current relics
+            let relicArray = ["fuelRelic", "bombDistanceRelic", "laserDistanceRelic", "dirtRelic", "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", "weaponsPriceRelic", "halfDamageFullFuelRelic"]
+            //let relicArray = ["halfDamageFullFuelRelic"] // 8 current relics
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -551,6 +554,9 @@ async function renderScreen(stateObj) {
             } else if (mapSquare === "bombsExplodeFasterRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Bombs Explode Faster"
+            } else if (mapSquare === "halfDamageFullFuelRelic") {
+                mapSquareDiv.classList.add("relic")
+                mapSquareDiv.textContent = "1/2 damage when fuel above 50%"
             } else if (mapSquare === "weaponsPriceRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Cheaper Lasers/Bombs"
@@ -996,6 +1002,14 @@ async function bombsExplodeFasterRelic(stateObj) {
     return stateObj
 }
 
+async function halfDamageFullFuel(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.halfDamageFullFuel = true;
+    })
+    await changeState(stateObj);
+    return stateObj
+}
+
 async function weaponsPriceRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         if (newState.weaponsPriceModifier > 0.2) {
@@ -1183,7 +1197,12 @@ async function checkForDeath(stateObj) {
 async function doDamage(stateObj, damageAmount) {
     if (stateObj.inStore === false) {
         stateObj = immer.produce(stateObj, (newState) => {
-            newState.currentHullIntegrity -= (damageAmount * newState.enemyDamageModifier);
+            if (newState.halfDamageFullFuel === true) {
+                newState.currentHullIntegrity -= Math.floor(((damageAmount * newState.enemyDamageModifier) * 0.5));
+            } else {
+                newState.currentHullIntegrity -= (damageAmount * newState.enemyDamageModifier);
+            } 
+
         })
     }
     return stateObj
@@ -1309,6 +1328,9 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "bombsExplodeFasterRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, 0, stateObj.drillTime)
         stateObj = await bombsExplodeFasterRelic(stateObj)  
+    } else if (targetSquare === "halfDamageFullFuelRelic") {
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2, 0, stateObj.drillTime)
+        stateObj = await halfDamageFullFuel(stateObj)  
     } else if (targetSquare === "weaponsPriceRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, 0, stateObj.drillTime)
         stateObj = await weaponsPriceRelic(stateObj)  
