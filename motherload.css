@@ -100,11 +100,36 @@
     color: rgb(0, 5, 27)
   }
 
+.player-here {
+  position: relative;
+  width: 9.5vw;
+  height: 10vh;
 
+}
   .player-img {
-    width: 9.5vw;
-    height: 10vh;
-    object-fit: contain;
+    position: absolute;
+    height: 100%;
+    width: auto;
+    left: 20%;
+    transition: all 0.3s ease-out;
+  }
+
+  .move-left-animation {
+    animation: moveleft 1s linear 1;
+  }
+  
+.black-change {
+  height: 30vh;
+}
+
+  @keyframes moveleft {
+    0% {
+      left: 20%;
+    }
+  
+    100% {
+      left: 0%;
+    }
   }
 
   .bronze-img, .enemy-img, .dirt-img, .stone-img,  .silver-img, .gold-img, .ruby-img, .amethyst-img, .diamond-img, .blkdiamond-img {

@@ -24,10 +24,12 @@ let gameStartState = {
     laserCapacityUpgradeCost: 750,
     laserDistance: 2,
     laserDistanceUpgradeCost: 1000,
+    weaponsPriceModifier: 1,
 
     drillTime: 850,
     timeCounter: 0,
     moveToSquare: false,
+    moveTimer: 0,
 
     isLevelPacifist: false,
     isScrapMetal: false,
@@ -228,8 +230,8 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     let middleLength = (screenwidthBlocks*floorObj.numberRows) + (screenwidthBlocks);
     for (let j=screenwidthBlocks; j < middleLength; j++) {
         if (j === chosenSquare) {
-            let relicArray = ["fuelRelic", "bombDistanceRelic", "laserDistanceRelic", "dirtRelic", "stopRelic", "halfDamageRelic", "moneyForDirtRelic"] //"bombsExplodeFasterRelic",
-            //let relicArray = ["stopRelic"] // 8 current relics
+            let relicArray = ["fuelRelic", "bombDistanceRelic", "laserDistanceRelic", "dirtRelic", "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", "weaponsPriceRelic"]
+            //let relicArray = ["weaponsPriceRelic"] // 8 current relics
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -337,6 +339,7 @@ async function fillMapWithArray(stateObj) {
 
 
 var enemyMovementTimer = setInterval(moveEnemies, 350); // 500 milliseconds (half a second)
+//var enemyMovementTimer = setInterval(moveEnemies, 1000); // 500 milliseconds (half a second)
 
 
 
@@ -408,8 +411,12 @@ async function moveEnemies() {
             }
         await updateState(stateObj)
 
-        if (stateObj.moveToSquare) {
+        if (stateObj.moveToSquare && stateObj.moveTimer === 0) {
             stateObj = await calculateMoveChange(stateObj, (stateObj.moveToSquare - stateObj.currentPosition))
+        } else if (stateObj.moveTimer > 0) {
+            stateObj = await immer.produce(stateObj, (newState) => {
+                newState.moveTimer -= 1;
+            })
         }
 
         await changeState(stateObj)
@@ -544,6 +551,9 @@ async function renderScreen(stateObj) {
             } else if (mapSquare === "bombsExplodeFasterRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Bombs Explode Faster"
+            } else if (mapSquare === "weaponsPriceRelic") {
+                mapSquareDiv.classList.add("relic")
+                mapSquareDiv.textContent = "Cheaper Lasers/Bombs"
             } else if (mapSquare === "moneyForDirtRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Earn Money When Dropping Dirt"
@@ -746,7 +756,7 @@ async function renderScreen(stateObj) {
             let laserText2 = document.createElement("Div")
             laserText2.classList.add("store-option-text")
             laserText1.textContent = "Buy a laser" 
-            laserText2.textContent = stateObj.laserCost + " gold"
+            laserText2.textContent = (stateObj.laserCost * stateObj.weaponsPriceModifier) + " gold"
             buyLaserDiv.append(laserText1, laserText2)
             buyLaserDiv.onclick = function () {
             }
@@ -766,7 +776,7 @@ async function renderScreen(stateObj) {
             let bombText2 = document.createElement("Div")
             bombText2.classList.add("store-option-text")
             bombText1.textContent = "Buy a bomb" 
-            bombText2.textContent = stateObj.bombCost + " gold"
+            bombText2.textContent = (stateObj.bombCost * stateObj.weaponsPriceModifier) + " gold"
             buyBombDiv.append(bombText1, bombText2)
             buyBombDiv.onclick = function () {
             }
@@ -976,8 +986,22 @@ async function halfDamageEnemiesRelic(stateObj) {
 
 async function bombsExplodeFasterRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        if (newState.bombTimerMax > 2) {
-            newState.bombTimerMax -= 1;
+        if (newState.bombTimerMax > 4) {
+            newState.bombTimerMax -= 3;
+        } else {
+            newState.bombTimerMax = 1
+        }
+    })
+    await changeState(stateObj);
+    return stateObj
+}
+
+async function weaponsPriceRelic(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        if (newState.weaponsPriceModifier > 0.2) {
+            newState.weaponsPriceModifier -= 0.2;
+        } else {
+            newState.weaponsPriceModifier = 0.2
         }
     })
     await changeState(stateObj);
@@ -1055,7 +1079,7 @@ async function buyBombDistanceUpgrade(stateObj) {
 async function buyLaser(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.numberLasers += 1;
-        newState.bankedCash -= stateObj.laserCost
+        newState.bankedCash -= (stateObj.laserCost * newState.weaponsPriceModifier)
     })
     await changeState(stateObj);
 }
@@ -1073,7 +1097,7 @@ async function buyLaserDistanceUpgrade(stateObj) {
 async function buyBomb(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.bombCurrentTotal += 1;
-        newState.bankedCash -= stateObj.bombCost
+        newState.bankedCash -= (stateObj.bombCost * newState.weaponsPriceModifier)
     })
     await changeState(stateObj);
 }
@@ -1180,9 +1204,12 @@ async function LeftArrow(stateObj, currentHeight, currentWidth, scrollHeight, sc
     //make sure not on left side 
     if (stateObj.currentPosition % screenwidthBlocks !== 0 ) {
         window.scrollTo(currentWidth*scrollWidth- (scrollWidth*4), currentHeight*scrollHeight - (scrollHeight*2))
-        stateObj = immer.produce(stateObj, (newState) => {
-            newState.moveToSquare = stateObj.currentPosition - 1
-        })
+        stateObj = await calculateMoveChange(stateObj, -1)
+        // stateObj = immer.produce(stateObj, (newState) => {
+        //     newState.inTransition === true
+        //     newState.moveToSquare = stateObj.currentPosition - 1
+        //     newState.moveTimer += 1;
+        // })
     }
 
     return stateObj
@@ -1196,14 +1223,17 @@ async function RightArrow(stateObj, currentHeight, currentWidth, scrollHeight, s
     } else {
         //only execute if not already on right side
         if ((stateObj.currentPosition+1) % screenwidthBlocks !== 0) {
-            if (stateObj.gameMap[stateObj.currentPosition + 1] === "empty") {
-                stateObj = await calculateMoveChange(stateObj, 1)
-                window.scrollTo(currentWidth*scrollWidth- (scrollWidth*2), currentHeight*scrollHeight - (scrollHeight*2))
-            } else {
-                stateObj = immer.produce(stateObj, (newState) => {
-                    newState.moveToSquare = stateObj.currentPosition + 1
-                })
-            }
+            stateObj = await calculateMoveChange(stateObj, 1)
+            // if (stateObj.gameMap[stateObj.currentPosition + 1] === "empty") {
+            //     stateObj = await calculateMoveChange(stateObj, 1)
+            //     window.scrollTo(currentWidth*scrollWidth- (scrollWidth*2), currentHeight*scrollHeight - (scrollHeight*2))
+            // } else {
+            //     stateObj = immer.produce(stateObj, (newState) => {
+            //         newState.inTransition === true
+            //         newState.moveToSquare = stateObj.currentPosition - 1
+            //         newState.moveTimer += 1;
+            //     })
+            // }
         }
     }
     return stateObj
@@ -1215,7 +1245,7 @@ async function RightArrow(stateObj, currentHeight, currentWidth, scrollHeight, s
 
 async function UpArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth) {
     let newSquare = stateObj.gameMap[stateObj.currentPosition - screenwidthBlocks]
-    if (stateObj.currentPosition > 7) {
+    if (stateObj.currentPosition > 7 && stateObj.inTransition === false) {
         if (newSquare=== "empty" || newSquare === "STORE") {
             window.scrollTo(currentWidth*scrollWidth- (scrollWidth*3), currentHeight*scrollHeight - (scrollHeight*2))
             stateObj = await calculateMoveChange(stateObj, -screenwidthBlocks)
@@ -1279,6 +1309,9 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "bombsExplodeFasterRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, 0, stateObj.drillTime)
         stateObj = await bombsExplodeFasterRelic(stateObj)  
+    } else if (targetSquare === "weaponsPriceRelic") {
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2, 0, stateObj.drillTime)
+        stateObj = await weaponsPriceRelic(stateObj)  
     } else if (targetSquare === "bombDistanceRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, 0, stateObj.drillTime)
         stateObj = await upgradeBombDistanceRelic(stateObj)  
@@ -1302,7 +1335,7 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         })
         
     }
-
+    console.log("fuel at " + stateObj.currentFuel)
 
     return stateObj
 }
@@ -1363,6 +1396,7 @@ async function handleSquare(stateObj, squareIndexToMoveTo, fuelToLose, goldToGai
         newState.currentFuel -= fuelToLose;
         newState.currentPosition = squareIndexToMoveTo;
         newState.moveToSquare = false;
+        newState.inTransition = false;
 
         if (newState.dirtReserves < (stateObj.dirtThresholdNeeded) && newState.gameMap[squareIndexToMoveTo] !== "empty") {
             newState.dirtReserves += 1;
