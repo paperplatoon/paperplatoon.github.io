@@ -78,11 +78,18 @@
   }
   
   .current-fuel-bar {
-    background-color: blue;
+    
     position: absolute;
     top:-1px;
     left: -1px;
     height: 2.2vh;
+  }
+
+  .full-fuel-bar {
+    background-color: blue;
+  }
+  .low-fuel-bar {
+    background-color: rgb(249, 170, 1);
   }
 
   .empty {
@@ -107,6 +114,15 @@
 
 }
   .player-img {
+    position: absolute;
+    height: 100%;
+    width: auto;
+    left: 20%;
+    transition: all 0.3s ease-out;
+  }
+
+  .player-img-full {
+    filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(359deg) brightness(126%) contrast(63%);
     position: absolute;
     height: 100%;
     width: auto;

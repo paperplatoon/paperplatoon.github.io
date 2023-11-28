@@ -40,6 +40,7 @@ let gameStartState = {
     //states
     currentPosition: false,
     inStore: false,
+    sellingItems: false,
     choosingNextLevel: false,
     inTransition: false,  
     
@@ -48,7 +49,7 @@ let gameStartState = {
     hullUpgradeCost: 500,
 
     dirtReserves: 0,
-    dirtThresholdNeeded: 25,
+    dirtThresholdNeeded: 50,
     moneyForDirt: 0,
 
     enemyArray: [],
@@ -155,6 +156,12 @@ async function renderTopBarStats(stateObj) {
     emptyFuelBarDiv.classList.add("empty-fuel-bar");
     let currentFuelBarDiv = document.createElement("Div");
     currentFuelBarDiv.classList.add("current-fuel-bar");
+    if (stateObj.currentFuel >= stateObj.fuelCapacity/4) {
+        currentFuelBarDiv.classList.add("full-fuel-bar");
+    } else {
+        currentFuelBarDiv.classList.add("low-fuel-bar");
+    }
+    
     
     
     let barLength = 10*(stateObj.currentFuel/stateObj.fuelCapacity)
@@ -234,7 +241,7 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     for (let j=screenwidthBlocks; j < middleLength; j++) {
         if (j === chosenSquare) {
             let relicArray = ["fuelRelic", "bombDistanceRelic", "laserDistanceRelic", "dirtRelic", "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", "weaponsPriceRelic", "halfDamageFullFuelRelic"]
-            //let relicArray = ["halfDamageFullFuelRelic"] // 8 current relics
+            //let relicArray = ["stopRelic"] // 8 current relics
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -359,7 +366,7 @@ async function moveEnemies() {
     await updateState(stateObj)
     // console.log("number of enemies is " + stateObj.enemyMovementArray.length)
     // console.log("enemy positions are " + stateObj.enemyArray)
-    if (stateObj.inStore === false && stateObj.choosingNextLevel === false) {
+    if (stateObj.inStore === false && stateObj.choosingNextLevel === false && stateObj.sellingItems === false) {
         for (let i=0; i < stateObj.enemyArray.length; i++) {
             let k = stateObj.enemyArray[i]
             if (stateObj.enemyMovementArray[i] === "left") {
@@ -438,8 +445,25 @@ async function renderScreen(stateObj) {
     //create a mapDiv to append all your new squares to
     topBar = await renderTopBarStats(stateObj);
     document.getElementById("app").append(topBar)
+    if (stateObj.sellingItems === true) {
+        console.log("selling items is true")
+        let storeDiv = document.createElement("Div")
+        storeDiv.classList.add("store-div")
 
-    if (stateObj.inStore === false && stateObj.choosingNextLevel === false) {
+        let sellDiv = document.createElement("Div")
+        sellDiv.classList.add("store-option")
+        sellDiv.classList.add("return-to-map")
+        sellDiv.textContent = "Sell Items (" + stateObj.inventoryCash + ")"
+        sellDiv.onclick = async function () {
+            console.log("selling items")
+            await seeStore(stateObj)
+        }
+
+        storeDiv.append(sellDiv)
+        document.getElementById("app").append(storeDiv)
+
+    } else if (stateObj.inStore === false && stateObj.choosingNextLevel === false) {
+
         let mapDiv = document.createElement("Div");
         mapDiv.classList.add("map-div");
 
@@ -450,7 +474,11 @@ async function renderScreen(stateObj) {
             if (stateObj.currentPosition === squareIndex) {
                 mapSquareDiv.classList.add("player-here")
                 let mapSquareImg = document.createElement("Img");
-                mapSquareImg.classList.add("player-img")
+                if (stateObj.currentInventory === stateObj.inventoryMax) {
+                    mapSquareImg.classList.add("player-img-full")
+                } else {
+                    mapSquareImg.classList.add("player-img")
+                }
                 mapSquareImg.src = "img/miner1.png"
                 mapSquareDiv.append(mapSquareImg)
             }
@@ -583,7 +611,7 @@ async function renderScreen(stateObj) {
 
         let moreGoldDiv = document.createElement("Div")
         moreGoldDiv.classList.add("next-level-option")
-        moreGoldDiv.textContent = "Next level has more gold ore"
+        moreGoldDiv.textContent = "PROSPECTOR - Next level has more gold ore"
         moreGoldDiv.classList.add("store-clickable")
         moreGoldDiv.onclick = function () {
             moreGold(stateObj)
@@ -591,7 +619,7 @@ async function renderScreen(stateObj) {
 
         let pacifistDiv = document.createElement("Div")
         pacifistDiv.classList.add("next-level-option")
-        pacifistDiv.textContent = "Coward - Enemies in the next level do not move, but the level only contains bronze and silver ore"
+        pacifistDiv.textContent = "COWARD - Enemies in the next level do not move, but the level only contains bronze and silver ore"
         pacifistDiv.classList.add("store-clickable")
         pacifistDiv.onclick = function () {
             cowardChoice(stateObj)
@@ -599,7 +627,7 @@ async function renderScreen(stateObj) {
 
         let dirtEfficiencyDiv = document.createElement("Div")
         dirtEfficiencyDiv.classList.add("next-level-option")
-        dirtEfficiencyDiv.textContent = "Miner - process dirt more efficiently, letting you drop dirt blocks more often"
+        dirtEfficiencyDiv.textContent = "MINER - process dirt more efficiently, letting you drop dirt blocks more often"
         dirtEfficiencyDiv.classList.add("store-clickable")
         dirtEfficiencyDiv.onclick = function () {
             dirtEfficiencyChoice(stateObj)
@@ -607,18 +635,26 @@ async function renderScreen(stateObj) {
 
         let scrapMetalDiv = document.createElement("Div")
         scrapMetalDiv.classList.add("next-level-option")
-        scrapMetalDiv.textContent = "Pacifist - After completing the level, gain 200 gold for every enemy that is still alive"
+        scrapMetalDiv.textContent = "PACIFIST - After completing the level, gain 200 gold for every enemy that is still alive"
         scrapMetalDiv.classList.add("store-clickable")
         scrapMetalDiv.onclick = function () {
             scrapMetalChoice(stateObj)
         }
 
-        storeDiv.append(fewerEnemiesDiv, moreGoldDiv, pacifistDiv, dirtEfficiencyDiv, scrapMetalDiv)
+        let shorterDiv = document.createElement("Div")
+        shorterDiv.classList.add("next-level-option")
+        shorterDiv.textContent = "SPEEDY - Next level is smaller"
+        shorterDiv.classList.add("store-clickable")
+        shorterDiv.onclick = function () {
+            shorterLevelChoice(stateObj)
+        }
+
+        storeDiv.append(fewerEnemiesDiv, moreGoldDiv, pacifistDiv, dirtEfficiencyDiv, scrapMetalDiv, shorterDiv)
 
         document.getElementById("app").append(storeDiv)
 
 
-    } else {
+    } else if (stateObj.inStore === true) {
         let storeDiv = document.createElement("Div")
         storeDiv.classList.add("store-div")
 
@@ -883,6 +919,14 @@ async function scrapMetalChoice(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.choosingNextLevel = false;
         newState.isScrapMetal = true;
+    })
+    await changeState(stateObj);
+}
+
+async function shorterLevelChoice(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.choosingNextLevel = false;
+        newState.floorValues[newState.currentLevel].numberRows -= 10
     })
     await changeState(stateObj);
 }
@@ -1311,9 +1355,11 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "enemy") {
         stateObj = await doDamage(stateObj, 75)
         stateObj = await handleSquare(stateObj, targetSquareNum, 1, 0)
-    } else if (targetSquare === "STORE") {
+    } else if (targetSquare === "STORE" && stateObj.currentInventory === 0) {
         console.log("should see store calulate")
         stateObj = await seeStore(stateObj)
+    } else if (targetSquare === "STORE" && stateObj.currentInventory > 0) {
+        stateObj = await sellItemsScreen(stateObj)
     } else if (targetSquare === "EXIT") {
         stateObj = await goToNextLevel(stateObj)
     } else if (targetSquare === "fuelRelic") {
@@ -1366,15 +1412,23 @@ function pause(timeValue) {
     return new Promise(res => setTimeout(res, timeValue))
 }
 
+async function sellItemsScreen(stateObj) {
+    stateObj = await immer.produce(stateObj, async (newState) => {
+        newState.sellingItems = true;
+    })
+    return stateObj
+}
+
 async function seeStore(stateObj) {
     console.log("inside seeStore")
     stateObj = await immer.produce(stateObj, async (newState) => {
         newState.bankedCash += newState.inventoryCash;
         newState.inventoryCash = 0;
         newState.currentInventory = 0;
-
+        newState.sellingItems = false
         newState.inStore = true;
     })
+    stateObj = await changeState(stateObj)
     return stateObj
 }
 
@@ -1433,6 +1487,7 @@ async function handleSquare(stateObj, squareIndexToMoveTo, fuelToLose, goldToGai
             }
         }    
     }) 
+
     if (pauseDuration > 0) {
         state.inTransition = true;
 
