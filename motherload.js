@@ -154,6 +154,7 @@ async function renderTopBarStats(stateObj) {
 
     let emptyFuelBarDiv = document.createElement("Div");
     emptyFuelBarDiv.classList.add("empty-fuel-bar");
+    emptyFuelBarDiv.setAttribute("id", "empty-fuel-bar");
     let currentFuelBarDiv = document.createElement("Div");
     currentFuelBarDiv.classList.add("current-fuel-bar");
     if (stateObj.currentFuel >= stateObj.fuelCapacity/4) {
@@ -1133,6 +1134,8 @@ async function upgradeFuel(stateObj) {
 
     })
     document.getElementById("store-fuel-upgrade-div").classList.add("store-clicked")
+    await pause(500)
+    document.getElementById("empty-fuel-bar").classList.add("emphasis")
     await pause(500)
     await changeState(stateObj);
 }
