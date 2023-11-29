@@ -229,11 +229,37 @@
 
 
   .store-clicked {
-    animation: storeClicked 0.5s linear
+    animation: storeClicked 0.3s linear
   }
 
   .emphasis {
     animation: emphasis 0.5s linear
+  }
+
+  .fill-fuel-animation {
+    animation: fillfuel 0.5s linear;
+  }
+
+  .enemy-death {
+    animation: enemydeath 0.1s;
+  }
+
+  @keyframes enemydeath {
+    0% {
+      scale: 1;
+    }
+    100% {
+      scale: 0.3;
+    }
+  }
+
+  @keyframes fillfuel {
+    0% {
+      width: 0vw;
+    }
+    100% {
+      width: 10vw;
+    }
   }
 
   @keyframes storeClicked {
@@ -241,14 +267,12 @@
       scale: 1;
       background-color: rgb(122, 253, 253);
     }
-
-    50% {
-      scale: 1.2;
+    30% {
+      scale: 1.5;
       background-color: rgb(213, 253, 253);
     }
-  
     100% {
-      scale: 0.1;
+      scale: 1;
       background-color: rgb(122, 253, 253);
     }
   }
@@ -257,15 +281,14 @@
     0% {
       scale: 1;
     }
-
     50% {
       scale: 1.5;
     }
-  
     100% {
       scale: 1;
     }
   }
+
 
   .store-clickable:hover {
     background-color: rgb(2, 196, 196);
