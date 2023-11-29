@@ -605,6 +605,15 @@ async function renderScreen(stateObj) {
                 mapSquareDiv.textContent = "Earn Money When Dropping Dirt"
             }
 
+            mapSquareDiv.onclick = async function() {
+                if (stateObj.currentPosition === squareIndex - 1) {
+                    stateObj = await calculateMoveChange(stateObj, 1)
+                } else if (stateObj.currentPosition === squareIndex + 1) {
+                    stateObj = await calculateMoveChange(stateObj, -1)
+                }
+                await changeState(stateObj)
+            }
+
             mapDiv.append(mapSquareDiv)
         })
         document.getElementById("app").append(mapDiv)
