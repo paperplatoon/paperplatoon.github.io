@@ -221,10 +221,31 @@
     text-align: center;
   }
 
+  .store-clicked {
+    animation: storeClicked 0.5s linear
+  }
+
+  @keyframes storeClicked {
+    0% {
+      scale: 1;
+      background-color: rgb(122, 253, 253);
+    }
+
+    50% {
+      scale: 1.2;
+      background-color: rgb(213, 253, 253);
+    }
+  
+    100% {
+      scale: 0.1;
+      background-color: rgb(122, 253, 253);
+    }
+  }
+
   .store-clickable:hover {
-    background-color: rgb(78, 238, 238);
-    border: 1px dashed rgb(0, 147, 147);
-    
+    background-color: rgb(2, 196, 196);
+    border: 4px solid rgb(0, 147, 147);
+    height: 9vh;
     cursor: pointer;
   }
 

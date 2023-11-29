@@ -707,6 +707,7 @@ async function renderScreen(stateObj) {
           }
 
         let fillFuelDiv = document.createElement("Div")
+        fillFuelDiv.setAttribute("id", "store-fuel-div")
         let missingFuel = Math.floor((stateObj.fuelCapacity-stateObj.currentFuel)/2)
         if (missingFuel > 0) {
             fillFuelDiv.classList.add("store-option")
@@ -955,6 +956,8 @@ async function fillFuel(stateObj) {
             }
         }
     })
+    document.getElementById("store-fuel-div").classList.add("store-clicked")
+    await pause(500)
     await changeState(stateObj);
 }
 
