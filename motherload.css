@@ -198,7 +198,6 @@
   }
 
   .store-option, .next-level-option {
-    color: rgb(0, 105, 105);
     width: 10vw;
     height: 10vh;
     background-color: rgb(122, 253, 253);
@@ -211,18 +210,30 @@
   }
 
   .next-level-option {
+    color: rgb(0, 105, 105);
     height: 20vh;
     width: 15vw;
   }
 
   .store-option-text {
+    color: rgb(200, 200, 200);
     display: flex;
     justify-content: center;
     text-align: center;
   }
 
+  .store-clickable .store-option-text {
+    color: rgb(0, 105, 105);
+    size: 10vh;
+  }
+
+
   .store-clicked {
     animation: storeClicked 0.5s linear
+  }
+
+  .emphasis {
+    animation: emphasis 0.5s linear
   }
 
   @keyframes storeClicked {
@@ -239,6 +250,20 @@
     100% {
       scale: 0.1;
       background-color: rgb(122, 253, 253);
+    }
+  }
+
+  @keyframes emphasis {
+    0% {
+      scale: 1;
+    }
+
+    50% {
+      scale: 1.2;
+    }
+  
+    100% {
+      scale: 0.1;
     }
   }
 

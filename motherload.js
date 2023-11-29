@@ -16,7 +16,7 @@ let gameStartState = {
     
 
     bankedCash: 100,
-    inventoryCash: 0, 
+    inventoryCash: 10000, 
     
     numberLasers: 0,
     laserCapacity: 1,
@@ -659,6 +659,7 @@ async function renderScreen(stateObj) {
         storeDiv.classList.add("store-div")
 
         let fuelUpgradeDiv = document.createElement("Div")
+        fuelUpgradeDiv.setAttribute("id", "store-fuel-upgrade-div")
         fuelUpgradeDiv.classList.add("store-option")
         let fuelText1 = document.createElement("Div")
         fuelText1.classList.add("store-option-text")
@@ -676,6 +677,7 @@ async function renderScreen(stateObj) {
 
         let laserUpgradeDiv = document.createElement("Div")
         laserUpgradeDiv.classList.add("store-option")
+        laserUpgradeDiv.setAttribute("id", "store-laser-capacity-upgrade-div")
         let laserText1 = document.createElement("Div")
         laserText1.classList.add("store-option-text")
         let laserText2 = document.createElement("Div")
@@ -692,6 +694,7 @@ async function renderScreen(stateObj) {
 
           let bombUpgradeDiv = document.createElement("Div")
           bombUpgradeDiv.classList.add("store-option")
+          bombUpgradeDiv.setAttribute("id", "store-bomb-capacity-upgrade-div")
           let bombText1 = document.createElement("Div")
           bombText1.classList.add("store-option-text")
           let bombText2 = document.createElement("Div")
@@ -734,6 +737,7 @@ async function renderScreen(stateObj) {
         
 
         let repairDiv = document.createElement("Div")
+        repairDiv.setAttribute("id", "store-repair-div")
         let missingHull = stateObj.maxHullIntegrity-stateObj.currentHullIntegrity
         if (missingHull > 0) {
             repairDiv.classList.add("store-option")
@@ -761,6 +765,7 @@ async function renderScreen(stateObj) {
 
         let inventoryUpgradeDiv = document.createElement("Div")
         inventoryUpgradeDiv.classList.add("store-option")
+        inventoryUpgradeDiv.setAttribute("id", "store-inventory-upgrade-div")
         let invText1 = document.createElement("Div")
         invText1.classList.add("store-option-text")
         let invText2 = document.createElement("Div")
@@ -776,6 +781,7 @@ async function renderScreen(stateObj) {
         }
 
         let hullUpgradeDiv = document.createElement("Div")
+        hullUpgradeDiv.setAttribute("id", "store-hull-upgrade-div")
         hullUpgradeDiv.classList.add("store-option")
         let hullText1 = document.createElement("Div")
         hullText1.classList.add("store-option-text")
@@ -792,6 +798,7 @@ async function renderScreen(stateObj) {
         }
 
         let buyLaserDiv = document.createElement("Div")
+        buyLaserDiv.setAttribute("id", "store-buy-laser-div")
         if (stateObj.numberLasers < stateObj.laserCapacity) {
             buyLaserDiv.classList.add("store-option")
             let laserText1 = document.createElement("Div")
@@ -812,6 +819,7 @@ async function renderScreen(stateObj) {
         }
 
         let buyBombDiv = document.createElement("Div")
+        buyBombDiv.setAttribute("id", "store-buy-bomb-div")
         if (stateObj.bombCurrentTotal < stateObj.bombCapacity) {
             buyBombDiv.classList.add("store-option")
             let bombText1 = document.createElement("Div")
@@ -832,6 +840,7 @@ async function renderScreen(stateObj) {
         }
 
         let upgradeBombDistanceDiv = document.createElement("Div")
+        upgradeBombDistanceDiv.setAttribute("id", "store-upgrade-bomb-distance-div")
         upgradeBombDistanceDiv.classList.add("store-option")
         let bombDistText1 = document.createElement("Div")
         bombDistText1.classList.add("store-option-text")
@@ -848,6 +857,7 @@ async function renderScreen(stateObj) {
         }
 
         let upgradeLaserDistanceDiv = document.createElement("Div")
+        upgradeLaserDistanceDiv.setAttribute("id", "store-upgrade-laser-div")
         upgradeLaserDistanceDiv.classList.add("store-option")
         let laserDistText1 = document.createElement("Div")
         laserDistText1.classList.add("store-option-text")
@@ -866,6 +876,7 @@ async function renderScreen(stateObj) {
     
         let buyNothingDiv = document.createElement("Div")
         buyNothingDiv.classList.add("store-option")
+        buyNothingDiv.setAttribute("id", "store-return-map-div")
         buyNothingDiv.classList.add("return-to-map")
         buyNothingDiv.textContent = "Return to Map"
         buyNothingDiv.onclick = function () {
@@ -883,9 +894,17 @@ async function renderScreen(stateObj) {
 }
 
 async function leaveStore(stateObj) {
+    document.getElementById("store-return-map-div").classList.add("emphasis")
+    await pause(500)
     stateObj.inStore = false;
     await changeState(stateObj);
 }
+
+
+
+//------------------------------------------------------------------------------------
+//BETWEEN LEVEL CHOICES
+//------------------------------------------------------------------------------------
 
 async function fewerEnemiesChoice(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
@@ -942,74 +961,9 @@ async function dirtEfficiencyChoice(stateObj) {
     await changeState(stateObj);
 }
 
-async function fillFuel(stateObj) {
-    let missingFuel = stateObj.fuelCapacity - stateObj.currentFuel
-    let missingFuelValue = Math.floor((stateObj.fuelCapacity - stateObj.currentFuel)/2)
-    stateObj = immer.produce(stateObj, (newState) => {
-        if (missingFuel > 0) {
-            if (newState.bankedCash > missingFuelValue) {
-                newState.currentFuel += missingFuel;
-                newState.bankedCash -= missingFuelValue
-            } else {
-                newState.currentFuel += Math.ceil(newState.bankedCash*2);
-                newState.bankedCash = 0;    
-            }
-        }
-    })
-    document.getElementById("store-fuel-div").classList.add("store-clicked")
-    await pause(500)
-    await changeState(stateObj);
-}
-
-async function repairHull(stateObj) {
-    let missingHull = stateObj.maxHullIntegrity - stateObj.currentHullIntegrity
-    stateObj = immer.produce(stateObj, (newState) => {
-        if (missingHull > 0) {
-            if (newState.bankedCash > (missingHull*5)) {
-                newState.currentHullIntegrity = newState.maxHullIntegrity ;
-                newState.bankedCash -= Math.ceil(missingHull*5)
-            } else {
-                newState.currentHull += Math.ceil(newState.bankedCash/5);
-                newState.bankedCash = 0;    
-            }
-        }
-    })
-    await changeState(stateObj);
-}
-
-async function laserUpgrade(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.laserCapacity += 1;
-        newState.numberLasers += 1;
-        newState.bankedCash -= stateObj.laserCapacityUpgradeCost
-        newState.laserCapacityUpgradeCost += 750;
-    })
-    await changeState(stateObj);
-}
-
-async function bombUpgrade(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.bombCapacity += 1;
-        newState.bombCurrentTotal += 1;
-        newState.bankedCash -= stateObj.bombCapacityUpgradeCost
-        newState.bombCapacityUpgradeCost += 750;
-    })
-    await changeState(stateObj);
-}
-
-async function upgradeFuel(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.fuelCapacity += 50;
-        newState.currentFuel += 50;
-        newState.fuelUpgrades +=1;
-        newState.bankedCash -= stateObj.fuelUpgradeCost
-        newState.fuelUpgradeCost += 500;
-
-    })
-    await changeState(stateObj);
-}
-
-//upgrade bomb distance, laser distance, and hull integrity relics
+//------------------------------------------------------------------------------------
+//UPGRADE RELICS
+//------------------------------------------------------------------------------------
 async function upgradeFuelRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.fuelCapacity += 80;
@@ -1103,7 +1057,85 @@ async function upgradeDirtBlockRelic(stateObj) {
     return stateObj
 }
 
+//------------------------------------------------------------------------------------
+//STORE FUNCTIONS
+//------------------------------------------------------------------------------------
 
+async function fillFuel(stateObj) {
+    let missingFuel = stateObj.fuelCapacity - stateObj.currentFuel
+    let missingFuelValue = Math.floor((stateObj.fuelCapacity - stateObj.currentFuel)/2)
+    stateObj = immer.produce(stateObj, (newState) => {
+        if (missingFuel > 0) {
+            if (newState.bankedCash > missingFuelValue) {
+                newState.currentFuel += missingFuel;
+                newState.bankedCash -= missingFuelValue
+            } else {
+                newState.currentFuel += Math.ceil(newState.bankedCash*2);
+                newState.bankedCash = 0;    
+            }
+        }
+    })
+    document.getElementById("store-fuel-div").classList.add("store-clicked")
+    await pause(500)
+    await changeState(stateObj);
+}
+
+async function repairHull(stateObj) {
+    let missingHull = stateObj.maxHullIntegrity - stateObj.currentHullIntegrity
+    stateObj = immer.produce(stateObj, (newState) => {
+        if (missingHull > 0) {
+            if (newState.bankedCash > (missingHull*5)) {
+                newState.currentHullIntegrity = newState.maxHullIntegrity ;
+                newState.bankedCash -= Math.ceil(missingHull*5)
+            } else {
+                newState.currentHull += Math.ceil(newState.bankedCash/5);
+                newState.bankedCash = 0;    
+            }
+        }
+    })
+    document.getElementById("store-repair-div").classList.add("store-clicked")
+    await pause(500)
+    await changeState(stateObj);
+}
+
+async function laserUpgrade(stateObj) {
+    console.log("triggering laser upgrade")
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.laserCapacity += 1;
+        newState.numberLasers += 1;
+        newState.bankedCash -= stateObj.laserCapacityUpgradeCost
+        newState.laserCapacityUpgradeCost += 750;
+    })
+    document.getElementById("store-laser-capacity-upgrade-div").classList.add("store-clicked")
+    await pause(500)
+    await changeState(stateObj);
+}
+
+async function bombUpgrade(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.bombCapacity += 1;
+        newState.bombCurrentTotal += 1;
+        newState.bankedCash -= stateObj.bombCapacityUpgradeCost
+        newState.bombCapacityUpgradeCost += 750;
+    })
+    document.getElementById("store-bomb-capacity-upgrade-div").classList.add("store-clicked")
+    await pause(500)
+    await changeState(stateObj);
+}
+
+async function upgradeFuel(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.fuelCapacity += 50;
+        newState.currentFuel += 50;
+        newState.fuelUpgrades +=1;
+        newState.bankedCash -= stateObj.fuelUpgradeCost
+        newState.fuelUpgradeCost += 500;
+
+    })
+    document.getElementById("store-fuel-upgrade-div").classList.add("store-clicked")
+    await pause(500)
+    await changeState(stateObj);
+}
 
 async function upgradeInventory(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
@@ -1113,6 +1145,8 @@ async function upgradeInventory(stateObj) {
         newState.inventoryUpgradeCost += 500;
 
     })
+    document.getElementById("store-inventory-upgrade-div").classList.add("store-clicked")
+    await pause(500)
     await changeState(stateObj);
 }
 
@@ -1124,6 +1158,8 @@ async function upgradeHull(stateObj) {
         newState.hullUpgradeCost += 1000;
 
     })
+    document.getElementById("store-hull-upgrade-div").classList.add("store-clicked")
+    await pause(500)
     await changeState(stateObj);
 }
 
@@ -1134,6 +1170,8 @@ async function buyBombDistanceUpgrade(stateObj) {
         newState.bombDistanceUpgradeCost += 1000;
 
     })
+    document.getElementById("store-upgrade-bomb-distance-div").classList.add("store-clicked")
+    await pause(500)
     await changeState(stateObj);
 }
 
@@ -1142,6 +1180,8 @@ async function buyLaser(stateObj) {
         newState.numberLasers += 1;
         newState.bankedCash -= (stateObj.laserCost * newState.weaponsPriceModifier)
     })
+    document.getElementById("store-buy-laser-div").classList.add("store-clicked")
+    await pause(500)
     await changeState(stateObj);
 }
 
@@ -1152,6 +1192,8 @@ async function buyLaserDistanceUpgrade(stateObj) {
         newState.laserDistanceUpgradeCost += 1000;
 
     })
+    document.getElementById("store-upgrade-laser-div").classList.add("store-clicked")
+    await pause(500)
     await changeState(stateObj);
 }
 
@@ -1160,15 +1202,10 @@ async function buyBomb(stateObj) {
         newState.bombCurrentTotal += 1;
         newState.bankedCash -= (stateObj.bombCost * newState.weaponsPriceModifier)
     })
+    document.getElementById("store-fuel-div").classList.add("store-clicked")
+    await pause(500)
     await changeState(stateObj);
 }
-
-
-async function startGame(state) {
-    
-}
-
-
 
 //listen for key presses
 document.addEventListener('keydown', async function(event) {
@@ -1179,7 +1216,7 @@ document.addEventListener('keydown', async function(event) {
     let currentWidth = Math.floor(stateObj.currentPosition % screenwidthBlocks)
     let scrollHeight = Math.floor(viewportHeight * 0.1);
     let scrollWidth = Math.floor(viewportWidth * 0.1);
-    if (stateObj.inTransition === false) {
+    if (stateObj.inTransition === false && stateObj.inStore === false) {
         if (event.key === 'ArrowUp' || event.key ==="w") {
             // Execute your function for the up arrow key
             stateObj = await UpArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth);
