@@ -298,6 +298,14 @@
     cursor: pointer;
   }
 
+  .next-level-clickable:hover {
+    background-color: rgb(2, 196, 196);
+    border: 6px solid rgb(0, 147, 147);
+    height: 19vh;
+    width: 14vw;
+    cursor: pointer;
+  }
+
   .return-to-map {
     background-color: rgb(211, 121, 121);
   }
