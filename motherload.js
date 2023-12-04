@@ -18,7 +18,7 @@ let gameStartState = {
     bankedCash: 10000,
     inventoryCash: 0, 
     
-    numberLasers: 0,
+    numberLasers: 3,
     laserCapacity: 1,
     laserCost: 150,
     laserCapacityUpgradeCost: 750,
@@ -64,6 +64,7 @@ let gameStartState = {
 
     bombLocation: false,
     bombTimer: false,
+    bombExploding: false,
     bombTimerMax: 5,
     bombCapacity: 1,
     bombCurrentTotal: 1,
@@ -253,6 +254,9 @@ async function renderTopBarStats(stateObj) {
     if (stateObj.dirtReserves >= (stateObj.dirtThresholdNeeded)) {
         dirtString = dirtString + " (press P to drop dirt)"
     }
+    if (stateObj.dirtThresholdNeeded < 50) {
+        dirtDiv.classList.add("upgraded-stat")
+    }
     dirtDiv.textContent = dirtString
 
     topBarDiv.append(fuelDiv, cashDiv, hullDiv, lasersDiv, bombDiv, dirtDiv, inventoryDiv)
@@ -287,7 +291,7 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
             // "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
             // "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
             // "killEnemiesHullRelic"]
-            let relicArray = ["fuelRelic"] 
+            let relicArray = ["dirtRelic"] 
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -465,6 +469,18 @@ async function moveEnemies() {
                     })
                 }
             }
+
+            if (stateObj.bombExploding === true) {
+                stateObj = await immer.produce(stateObj, (newState) => {
+                    newState.bombExploding = false
+                    for (i=0; i<stateObj.gameMap.length; i++) {
+                        if (stateObj.gameMap[i] === "exploding-1") {
+                            newState.gameMap[i] = "empty";
+                        }
+                    }
+                    
+                })
+            }
         await updateState(stateObj)
 
         if (stateObj.moveToSquare && stateObj.moveTimer === 0) {
@@ -544,6 +560,8 @@ async function renderScreen(stateObj) {
                 mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "empty") {
                 mapSquareDiv.classList.add("empty")
+            }  else if (mapSquare === "exploding-1") {
+                mapSquareDiv.classList.add("exploding-block")
             } else if (mapSquare === "enemy") {
                 mapSquareDiv.classList.add("enemy")
                 let mapSquareImg = document.createElement("Img");
@@ -1247,7 +1265,7 @@ async function upgradeLaserDistanceRelic(stateObj) {
 async function upgradeDirtBlockRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         if (newState.dirtThresholdNeeded > 10) {
-            newState.dirtThresholdNeeded -= 5;
+            newState.dirtThresholdNeeded -= 10;
         }
     })
     await changeState(stateObj);
@@ -1824,11 +1842,14 @@ async function fireLaser(stateObj, detonatePosition, isLaser=true) {
     
     for (i=1; i < leftBlocksToBlast+1; i++) {
         stateObj = await detonateBlock(stateObj, detonatePosition-i)
+        //document.querySelectorAll(".map-square")[detonatePosition-i].classList.add("exploding-block")
+        
     }
 
     for (i=1; i < rightBlocksToBlast+1; i++) {
         stateObj = await detonateBlock(stateObj, detonatePosition+i)
     }
+
 
     if (isLaser) {
         stateObj = immer.produce(stateObj, (newState) => {
@@ -1840,6 +1861,7 @@ async function fireLaser(stateObj, detonatePosition, isLaser=true) {
 
 async function detonateBlock(stateObj, blockPosition) {
     stateObj = immer.produce(stateObj, (newState) => {
+        newState.bombExploding = true;
         if (newState.enemyArray.includes(blockPosition)) {
             const enemyIndex = newState.enemyArray.indexOf(blockPosition)
             newState.enemyArray.splice(enemyIndex, 1)
@@ -1849,7 +1871,10 @@ async function detonateBlock(stateObj, blockPosition) {
                 newState.maxHullIntegrity += newState.killEnemiesHullModifier
             }
         }
-        newState.gameMap[blockPosition] = "empty"
+        if (newState.gameMap[blockPosition] !== "STORE") {
+            newState.gameMap[blockPosition] = "exploding-1"
+        }
+        
     })
     return stateObj
 }
@@ -1878,6 +1903,7 @@ async function dropBomb(stateObj) {
                 newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = "BOMB";
                 newState.bombCurrentTotal -= 1;
                 newState.bombLocation = stateObj.currentPosition+screenwidthBlocks
+                newState.bombExploding = true;
                 newState.bombTimer = newState.bombTimerMax;
             }
         })

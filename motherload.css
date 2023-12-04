@@ -26,7 +26,6 @@
   .map-square {
     width: 9.5vw;
     height: 10vh;
-    background-color: rgb(200, 115, 70);
     transition: background-color 1500ms ease-out;
     /* border: 0.5px solid rgba(97, 48, 0, 0.756); */
   }
@@ -323,4 +322,7 @@
     color: rgb(0, 192, 0)
   }
 
+  .exploding-block {
+    background-color: rgb(255, 202, 188)
+  }
  
