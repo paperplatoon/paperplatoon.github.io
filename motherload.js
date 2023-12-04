@@ -452,6 +452,18 @@ async function moveEnemies() {
                 }
             }
 
+            if (stateObj.bombExploding === true) {
+                stateObj = await immer.produce(stateObj, (newState) => {
+                    newState.bombExploding = false
+                    for (i=0; i<stateObj.gameMap.length; i++) {
+                        if (stateObj.gameMap[i] === "exploding-1") {
+                            newState.gameMap[i] = "empty";
+                        }
+                    }
+                    
+                })
+            }
+
 
             if (stateObj.bombLocation) {
                 if (stateObj.bombTimer > 0) {
@@ -470,17 +482,7 @@ async function moveEnemies() {
                 }
             }
 
-            if (stateObj.bombExploding === true) {
-                stateObj = await immer.produce(stateObj, (newState) => {
-                    newState.bombExploding = false
-                    for (i=0; i<stateObj.gameMap.length; i++) {
-                        if (stateObj.gameMap[i] === "exploding-1") {
-                            newState.gameMap[i] = "empty";
-                        }
-                    }
-                    
-                })
-            }
+            
         await updateState(stateObj)
 
         if (stateObj.moveToSquare && stateObj.moveTimer === 0) {
@@ -1903,7 +1905,6 @@ async function dropBomb(stateObj) {
                 newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = "BOMB";
                 newState.bombCurrentTotal -= 1;
                 newState.bombLocation = stateObj.currentPosition+screenwidthBlocks
-                newState.bombExploding = true;
                 newState.bombTimer = newState.bombTimerMax;
             }
         })
