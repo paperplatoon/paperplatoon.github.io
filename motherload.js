@@ -15,7 +15,7 @@ let gameStartState = {
     inventoryUpgradeCost: 500,
     
 
-    bankedCash: 100,
+    bankedCash: 10000,
     inventoryCash: 0, 
     
     numberLasers: 0,
@@ -157,6 +157,10 @@ async function renderTopBarStats(stateObj) {
 
     let fuelDiv = document.createElement("Div")
     fuelDiv.textContent = "Max Fuel: " + stateObj.fuelCapacity;
+    fuelDiv.setAttribute("id", "max-fuel-text");
+    if (stateObj.fuelCapacity > 120) {
+        fuelDiv.classList.add("upgraded-stat")
+    }
 
     let emptyFuelBarDiv = document.createElement("Div");
     emptyFuelBarDiv.classList.add("empty-fuel-bar");
@@ -169,12 +173,8 @@ async function renderTopBarStats(stateObj) {
     } else {
         currentFuelBarDiv.classList.add("low-fuel-bar");
     }
-    
-    
-    
     let barLength = 10*(stateObj.currentFuel/stateObj.fuelCapacity)
     let barText = "width:" + barLength + "vw"
-
     currentFuelBarDiv.setAttribute("style", barText);
     emptyFuelBarDiv.append(currentFuelBarDiv);
     fuelDiv.appendChild(emptyFuelBarDiv)
@@ -182,6 +182,10 @@ async function renderTopBarStats(stateObj) {
 
     let hullDiv = document.createElement("Div")
     hullDiv.textContent = "Hull: " + stateObj.currentHullIntegrity + "/" + stateObj.maxHullIntegrity
+    hullDiv.setAttribute("id", "hull-integrity-text");
+    if (stateObj.maxHullIntegrity > 100) {
+        hullDiv.classList.add("upgraded-stat")
+    }
     
 
     let cashDiv = document.createElement("Div")
@@ -194,6 +198,10 @@ async function renderTopBarStats(stateObj) {
         inventoryDiv.classList.add("inventory-full")
     } else {
         inventoryDiv.textContent = "Inventory: " + Math.round((stateObj.currentInventory / stateObj.inventoryMax)*100) + "% full    (Max: " + stateObj.inventoryMax + ")"
+    }
+    inventoryDiv.setAttribute("id", "inventory-size-text");
+    if (stateObj.inventoryMax > 12) {
+        inventoryDiv.classList.add("upgraded-stat")
     }
 
     let lasersDiv = document.createElement("Div")
@@ -263,7 +271,7 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
             // "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
             // "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
             // "killEnemiesHullRelic"]
-            let relicArray = ["killEnemiesHullRelic"] 
+            let relicArray = ["fuelRelic"] 
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -1116,6 +1124,9 @@ async function upgradeFuelRelic(stateObj) {
         newState.currentFuel += 80;
         newState.fuelUpgrades +=1;
     })
+    document.getElementById("empty-fuel-bar").classList.add("emphasis")
+    document.getElementById("max-fuel-text").classList.add("emphasis")
+    await pause(200)
     await changeState(stateObj);
     return stateObj
 }
@@ -1265,7 +1276,9 @@ async function repairHull(stateObj) {
         }
     })
     document.getElementById("store-repair-div").classList.add("store-clicked")
-    await pause(500)
+    await pause(300)
+    document.getElementById("hull-integrity-text").classList.add("emphasis")
+    await pause(300)
     await changeState(stateObj);
 }
 
@@ -1304,9 +1317,11 @@ async function upgradeFuel(stateObj) {
 
     })
     document.getElementById("store-fuel-upgrade-div").classList.add("store-clicked")
-    await pause(500)
+    await pause(300)
     document.getElementById("empty-fuel-bar").classList.add("emphasis")
-    await pause(500)
+    document.getElementById("max-fuel-text").classList.add("emphasis")
+    document.getElementById("max-fuel-text").classList.add("upgraded-stat")
+    await pause(300)
     await changeState(stateObj);
 }
 
@@ -1319,7 +1334,10 @@ async function upgradeInventory(stateObj) {
 
     })
     document.getElementById("store-inventory-upgrade-div").classList.add("store-clicked")
-    await pause(500)
+    await pause(300)
+    document.getElementById("inventory-size-text").classList.add("upgraded-stat")
+    document.getElementById("inventory-size-text").classList.add("emphasis")
+    await pause(300)
     await changeState(stateObj);
 }
 
@@ -1332,7 +1350,10 @@ async function upgradeHull(stateObj) {
 
     })
     document.getElementById("store-hull-upgrade-div").classList.add("store-clicked")
-    await pause(500)
+    await pause(300)
+    document.getElementById("hull-integrity-text").classList.add("upgraded-stat")
+    document.getElementById("hull-integrity-text").classList.add("emphasis")
+    await pause(300)
     await changeState(stateObj);
 }
 

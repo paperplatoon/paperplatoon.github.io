@@ -201,7 +201,7 @@
     width: 10vw;
     height: 10vh;
     background-color: rgb(122, 253, 253);
-    margin: 2vw;
+    margin: 1vw;
     padding: 2vh;
     justify-content: space-between;
     display: flex;
@@ -282,7 +282,7 @@
       scale: 1;
     }
     50% {
-      scale: 1.5;
+      scale: 2;
     }
     100% {
       scale: 1;
@@ -307,14 +307,20 @@
   }
 
   .return-to-map {
-    background-color: rgb(211, 121, 121);
+    background-color: rgb(206, 64, 64);
+    color: rgb(58, 0, 0)
   }
 
   .return-to-map:hover {
-    background-color: rgb(210, 81, 81);
+    background-color: rgb(210, 98, 98);
+    color: rgb(88, 14, 14);
     border: 1px dashed rgb(0, 59, 59);
     cursor: pointer;
-    font-size: 140%;
+    font-size: 110%;
+  }
+
+  .upgraded-stat {
+    color: rgb(0, 192, 0)
   }
 
  
