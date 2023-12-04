@@ -206,29 +206,45 @@ async function renderTopBarStats(stateObj) {
 
     let lasersDiv = document.createElement("Div")
     let currentLasersDiv = document.createElement("Div")
+    currentLasersDiv.setAttribute("id", "current-lasers-text");
     laserString = "Lasers: " + stateObj.numberLasers + "/" + stateObj.laserCapacity
     if (stateObj.numberLasers > 0) {
         laserString = laserString + " (press L to fire)"
     }
     currentLasersDiv.textContent = laserString
+    if (stateObj.laserCapacity > 1) {
+        currentLasersDiv.classList.add("upgraded-stat")
+    }
 
     let laserDistanceDiv = document.createElement("Div")
     laserString2 = "Laser Distance: " + stateObj.laserDistance
     laserDistanceDiv.textContent = laserString2
+    laserDistanceDiv.setAttribute("id", "laser-distance-text");
+    if (stateObj.laserDistance > 2) {
+        laserDistanceDiv.classList.add("upgraded-stat")
+    }
 
     lasersDiv.append(currentLasersDiv, laserDistanceDiv)
 
     let bombDiv = document.createElement("Div")
     let currentBombsDiv = document.createElement("Div")
+    currentBombsDiv.setAttribute("id", "current-bombs-text");
     bombString = "Bombs: " + stateObj.bombCurrentTotal + "/" + stateObj.bombCapacity
     if (stateObj.bombCurrentTotal > 0) {
         bombString = bombString + " (press B to drop)"
     }
     currentBombsDiv.textContent = bombString
+    if (stateObj.bombCapacity > 1) {
+        bombDiv.classList.add("upgraded-stat")
+    }
 
     let bombDistanceDiv = document.createElement("Div")
     bombString2 = "Bomb Distance: " + stateObj.bombDistance
     bombDistanceDiv.textContent = bombString2
+    bombDistanceDiv.setAttribute("id", "bomb-distance-text");
+    if (stateObj.bombDistance > 2) {
+        bombDistanceDiv.classList.add("upgraded-stat")
+    }
 
     bombDiv.append(currentBombsDiv, bombDistanceDiv)
 
@@ -1291,7 +1307,10 @@ async function laserUpgrade(stateObj) {
         newState.laserCapacityUpgradeCost += 750;
     })
     document.getElementById("store-laser-capacity-upgrade-div").classList.add("store-clicked")
-    await pause(500)
+    await pause(300)
+    document.getElementById("current-lasers-text").classList.add("emphasis")
+    document.getElementById("current-lasers-text").classList.add("upgraded-stat")
+    await pause(300)
     await changeState(stateObj);
 }
 
@@ -1303,7 +1322,10 @@ async function bombUpgrade(stateObj) {
         newState.bombCapacityUpgradeCost += 750;
     })
     document.getElementById("store-bomb-capacity-upgrade-div").classList.add("store-clicked")
-    await pause(500)
+    await pause(300)
+    document.getElementById("current-bombs-text").classList.add("upgraded-stat")
+    document.getElementById("current-bombs-text").classList.add("emphasis")
+    await pause(300)
     await changeState(stateObj);
 }
 
@@ -1365,7 +1387,10 @@ async function buyBombDistanceUpgrade(stateObj) {
 
     })
     document.getElementById("store-upgrade-bomb-distance-div").classList.add("store-clicked")
-    await pause(500)
+    await pause(300)
+    document.getElementById("bomb-distance-text").classList.add("upgraded-stat")
+    document.getElementById("bomb-distance-text").classList.add("emphasis")
+    await pause(300)
     await changeState(stateObj);
 }
 
@@ -1375,7 +1400,9 @@ async function buyLaser(stateObj) {
         newState.bankedCash -= (stateObj.laserCost * newState.weaponsPriceModifier) * (1-stateObj.cheaperShops)
     })
     document.getElementById("store-buy-laser-div").classList.add("store-clicked")
-    await pause(500)
+    await pause(300)
+    document.getElementById("current-lasers-text").classList.add("emphasis")
+    await pause(300)
     await changeState(stateObj);
 }
 
@@ -1387,7 +1414,10 @@ async function buyLaserDistanceUpgrade(stateObj) {
 
     })
     document.getElementById("store-upgrade-laser-div").classList.add("store-clicked")
-    await pause(500)
+    await pause(300)
+    document.getElementById("laser-distance-text").classList.add("emphasis")
+    document.getElementById("laser-distance-text").classList.add("upgraded-stat")
+    await pause(300)
     await changeState(stateObj);
 }
 
@@ -1397,7 +1427,9 @@ async function buyBomb(stateObj) {
         newState.bankedCash -= (stateObj.bombCost * newState.weaponsPriceModifier) * (1-stateObj.cheaperShops)
     })
     document.getElementById("store-buy-bomb-div").classList.add("store-clicked")
-    await pause(500)
+    await pause(300)
+    document.getElementById("current-bombs-text").classList.add("emphasis")
+    await pause(300)
     await changeState(stateObj);
 }
 
