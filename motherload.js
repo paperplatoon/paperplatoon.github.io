@@ -287,11 +287,11 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     for (let j=screenwidthBlocks; j < middleLength; j++) {
         if (chosenSquareArray.includes(j)) {
             //12 relics
-            // let relicArray = ["fuelRelic", "bombDistanceRelic", "laserDistanceRelic", "dirtRelic", 
-            // "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
-            // "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
-            // "killEnemiesHullRelic"]
-            let relicArray = ["dirtRelic"] 
+            let relicArray = ["fuelRelic", "bombDistanceRelic", "laserDistanceRelic", "dirtRelic", 
+            "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
+            "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
+            "killEnemiesHullRelic"]
+            // let relicArray = ["dirtRelic"] 
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -1555,28 +1555,18 @@ async function doDamage(stateObj, damageAmount, enemyLocation) {
 }
 
 async function LeftArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth) {   
-    //make sure not drilling while in midair
     if (stateObj.gameMap[stateObj.currentPosition - 1] === "STORE") {
         stateObj = await calculateMoveChange(stateObj, -1)
     }
+    //make sure not drilling in midair
     if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty" && stateObj.gameMap[stateObj.currentPosition - 1] !== "empty") {
         return stateObj
-    }  else if (stateObj.gameMap[stateObj.currentPosition - 1] === "empty") {
+    //make sure not on left side
+    }  else if (stateObj.currentPosition % screenwidthBlocks !== 0) {
+        window.scrollTo(currentWidth*scrollWidth- (scrollWidth*4), currentHeight*scrollHeight - (scrollHeight*2))
         stateObj = await calculateMoveChange(stateObj, -1)
         return stateObj
     }
-
-    //make sure not on left side 
-    if (stateObj.currentPosition % screenwidthBlocks !== 0 ) {
-        window.scrollTo(currentWidth*scrollWidth- (scrollWidth*4), currentHeight*scrollHeight - (scrollHeight*2))
-        stateObj = await calculateMoveChange(stateObj, -1)
-        // stateObj = immer.produce(stateObj, (newState) => {
-        //     newState.inTransition === true
-        //     newState.moveToSquare = stateObj.currentPosition - 1
-        //     newState.moveTimer += 1;
-        // })
-    }
-
     return stateObj
 }
 
