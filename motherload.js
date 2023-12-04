@@ -15,10 +15,10 @@ let gameStartState = {
     inventoryUpgradeCost: 500,
     
 
-    bankedCash: 10000,
+    bankedCash: 100,
     inventoryCash: 0, 
     
-    numberLasers: 3,
+    numberLasers: 0,
     laserCapacity: 1,
     laserCost: 150,
     laserCapacityUpgradeCost: 750,
