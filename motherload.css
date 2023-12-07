@@ -186,7 +186,9 @@
     object-fit: contain;
   }
 
-  #weapons-price-popup, #thorns-popup, #enemy-damage-popup, #enemy-damage-fuel-popup, #kill-enemies-fuel-popup, #dirt-fuel-popup  {
+  #weapons-price-popup, #thorns-popup, #enemy-damage-popup, 
+  #enemy-damage-fuel-popup, #kill-enemies-fuel-popup, #dirt-fuel-popup,
+  #bomb-timer-popup  {
     display: none;
     position: absolute;
     top: 10%;

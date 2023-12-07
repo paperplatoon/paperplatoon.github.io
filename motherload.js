@@ -65,7 +65,7 @@ let gameStartState = {
     bombLocation: false,
     bombTimer: false,
     bombExploding: false,
-    bombTimerMax: 5,
+    bombTimerMax: 3,
     bombCapacity: 1,
     bombCurrentTotal: 1,
     bombCapacityUpgradeCost: 750,
@@ -428,6 +428,32 @@ async function renderTopBarStats(stateObj) {
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "dirt-fuel-popup")
           relicTextDiv.textContent = "Gain " + Math.ceil(stateObj.dirtToMaxFuel) + " maximum fuel when dropping a dirt block"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.bombTimerMax < 5) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/artifact3.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#bomb-timer-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#bomb-timer-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "bomb-timer-popup")
+          relicTextDiv.textContent = "Bomb Timer starts at " + Math.ceil(stateObj.bombTimerMax)
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
           topBarDiv.append(weaponPriceRelicDiv)
