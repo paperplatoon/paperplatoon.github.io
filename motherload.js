@@ -28,7 +28,7 @@ let gameStartState = {
     //relicValues
     weaponsPriceModifier: 1,
     enemyDamageModifier: 1,
-    halfDamageFullFuel: false,
+    halfDamageFullFuel: 1,
     dirtToMaxFuel: 0,
     thorns: false,
     killEnemiesHullModifier: 0,
@@ -157,7 +157,7 @@ async function renderTopBarStats(stateObj) {
     topBarDiv.classList.add("top-stats-bar")
 
     let fuelDiv = document.createElement("Div")
-    fuelDiv.textContent = "Max Fuel: " + stateObj.fuelCapacity;
+    fuelDiv.textContent = "Max Fuel: " + Math.floor(stateObj.fuelCapacity);
     fuelDiv.setAttribute("id", "max-fuel-text");
     if (stateObj.fuelCapacity > 120) {
         fuelDiv.classList.add("upgraded-stat")
@@ -179,18 +179,22 @@ async function renderTopBarStats(stateObj) {
     currentFuelBarDiv.setAttribute("style", barText);
     emptyFuelBarDiv.append(currentFuelBarDiv);
     fuelDiv.appendChild(emptyFuelBarDiv)
-    topBarDiv.appendChild(fuelDiv)
+
 
     let hullDiv = document.createElement("Div")
-    hullDiv.textContent = "Hull: " + stateObj.currentHullIntegrity + "/" + stateObj.maxHullIntegrity
+    hullDiv.textContent = "Hull: " + Math.floor(stateObj.currentHullIntegrity) + "/" + Math.floor(stateObj.maxHullIntegrity)
     hullDiv.setAttribute("id", "hull-integrity-text");
     if (stateObj.maxHullIntegrity > 100) {
         hullDiv.classList.add("upgraded-stat")
     }
+
+    let fuelHullDiv = document.createElement("Div")
+    fuelHullDiv.classList.add("top-vertical-div")
+    fuelHullDiv.append(fuelDiv, hullDiv)
     
 
     let cashDiv = document.createElement("Div")
-    cashDiv.textContent = "Money: " + stateObj.bankedCash
+    cashDiv.textContent = "Money: " + Math.floor(stateObj.bankedCash)
     
     let inventoryDiv = document.createElement("Div")
     inventoryDiv.classList.add("inventory")
@@ -205,7 +209,12 @@ async function renderTopBarStats(stateObj) {
         inventoryDiv.classList.add("upgraded-stat")
     }
 
+    let cashInventoryDiv = document.createElement("Div")
+    cashInventoryDiv.classList.add("top-vertical-div")
+    cashInventoryDiv.append(cashDiv, inventoryDiv)
+
     let lasersDiv = document.createElement("Div")
+    lasersDiv.classList.add("weapons-div")
     let currentLasersDiv = document.createElement("Div")
     currentLasersDiv.setAttribute("id", "current-lasers-text");
     laserString = "Lasers: " + stateObj.numberLasers + "/" + stateObj.laserCapacity
@@ -218,7 +227,7 @@ async function renderTopBarStats(stateObj) {
     }
 
     let laserDistanceDiv = document.createElement("Div")
-    laserString2 = "Laser Distance: " + stateObj.laserDistance
+    laserString2 = " \u00A0 [Distance: " + stateObj.laserDistance + "]"
     laserDistanceDiv.textContent = laserString2
     laserDistanceDiv.setAttribute("id", "laser-distance-text");
     if (stateObj.laserDistance > 2) {
@@ -228,6 +237,7 @@ async function renderTopBarStats(stateObj) {
     lasersDiv.append(currentLasersDiv, laserDistanceDiv)
 
     let bombDiv = document.createElement("Div")
+    bombDiv.classList.add("weapons-div")
     let currentBombsDiv = document.createElement("Div")
     currentBombsDiv.setAttribute("id", "current-bombs-text");
     bombString = "Bombs: " + stateObj.bombCurrentTotal + "/" + stateObj.bombCapacity
@@ -240,7 +250,7 @@ async function renderTopBarStats(stateObj) {
     }
 
     let bombDistanceDiv = document.createElement("Div")
-    bombString2 = "Bomb Distance: " + stateObj.bombDistance
+    bombString2 = " \u00A0 [Distance: " + stateObj.bombDistance + "]"
     bombDistanceDiv.textContent = bombString2
     bombDistanceDiv.setAttribute("id", "bomb-distance-text");
     if (stateObj.bombDistance > 2) {
@@ -249,7 +259,13 @@ async function renderTopBarStats(stateObj) {
 
     bombDiv.append(currentBombsDiv, bombDistanceDiv)
 
+    let weaponsDiv = document.createElement("Div")
+    weaponsDiv.classList.add("top-vertical-div")
+    weaponsDiv.append(bombDiv, lasersDiv)
+
+
     let dirtDiv = document.createElement("Div")
+    dirtDiv.classList.add("top-vertical-div")
     dirtString = "Dirt: " + Math.round((stateObj.dirtReserves/(stateObj.dirtThresholdNeeded))*100) + "%"
     if (stateObj.dirtReserves >= (stateObj.dirtThresholdNeeded)) {
         dirtString = dirtString + " (press P to drop dirt)"
@@ -259,7 +275,165 @@ async function renderTopBarStats(stateObj) {
     }
     dirtDiv.textContent = dirtString
 
-    topBarDiv.append(fuelDiv, cashDiv, hullDiv, lasersDiv, bombDiv, dirtDiv, inventoryDiv)
+    topBarDiv.append(fuelHullDiv, weaponsDiv, cashInventoryDiv, dirtDiv)
+
+    if (stateObj.weaponsPriceModifier < 1) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/gun1.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#weapons-price-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#weapons-price-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "weapons-price-popup")
+          relicTextDiv.textContent = "Weapons are " + Math.ceil((1-stateObj.weaponsPriceModifier)*100) + "% cheaper"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.thorns === true) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/thorns.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#thorns-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#thorns-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "thorns-popup")
+          relicTextDiv.textContent = "Enemies who damage you die afterwards"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.enemyDamageModifier < 1) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/shield2.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#enemy-damage-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#enemy-damage-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "enemy-damage-popup")
+          relicTextDiv.textContent = "Enemies deal " + Math.ceil((1-stateObj.enemyDamageModifier)*100) + "% less damage"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.halfDamageFullFuel < 1) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/shield1.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#enemy-damage-fuel-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#enemy-damage-fuel-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "enemy-damage-fuel-popup")
+          relicTextDiv.textContent = "Enemies deal " + Math.ceil((1-stateObj.enemyDamageModifier)*100) + "% less damage when your fuel is at least 50% full"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.killEnemiesHullModifier > 0) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/artifact1.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#kill-enemies-fuel-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#kill-enemies-fuel-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "kill-enemies-fuel-popup")
+          relicTextDiv.textContent = "Increase Hull Integrity by " + Math.ceil(stateObj.killEnemiesHullModifier) + " whenever you kill an enemy"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.dirtToMaxFuel > 0) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/artifact2.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#dirt-fuel-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#dirt-fuel-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "dirt-fuel-popup")
+          relicTextDiv.textContent = "Gain " + Math.ceil(stateObj.dirtToMaxFuel) + " maximum fuel when dropping a dirt block"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    
 
     return topBarDiv
 }
@@ -291,7 +465,7 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
             "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
             "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
             "killEnemiesHullRelic"]
-            // let relicArray = ["dirtRelic"] 
+            // let relicArray = ["weaponsPriceRelic"] 
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -653,7 +827,7 @@ async function renderScreen(stateObj) {
                 mapSquareDiv.textContent = "Bombs Explode Faster"
             } else if (mapSquare === "halfDamageFullFuelRelic") {
                 mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "1/2 damage when fuel above 50%"
+                mapSquareDiv.textContent = "Take less damage when fuel above 50%"
             }  else if (mapSquare === "thornsRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Enemies that damage you die on impact"
@@ -1186,7 +1360,7 @@ async function dirtToMaxFuelRelic(stateObj) {
 
 async function halfDamageEnemiesRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.enemyDamageModifier *= 0.5;
+        newState.enemyDamageModifier -= 0.2;
     })
     await changeState(stateObj);
     return stateObj
@@ -1206,7 +1380,7 @@ async function bombsExplodeFasterRelic(stateObj) {
 
 async function halfDamageFullFuel(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.halfDamageFullFuel = true;
+        newState.halfDamageFullFuel *= 0.75;
     })
     await changeState(stateObj);
     return stateObj
@@ -1527,7 +1701,7 @@ async function checkForDeath(stateObj) {
 async function doDamage(stateObj, damageAmount, enemyLocation) {
     if (stateObj.inStore === false) {
         stateObj = immer.produce(stateObj, (newState) => {
-            if (newState.halfDamageFullFuel === true) {
+            if (newState.halfDamageFullFuel === true && newState.currentFuel >= (newState.fuelCapacity/2)) {
                 newState.currentHullIntegrity -= Math.floor(((damageAmount * newState.enemyDamageModifier) * 0.5));
             } else {
                 newState.currentHullIntegrity -= (damageAmount * newState.enemyDamageModifier);
@@ -1555,18 +1729,28 @@ async function doDamage(stateObj, damageAmount, enemyLocation) {
 }
 
 async function LeftArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth) {   
+    //make sure not drilling while in midair
     if (stateObj.gameMap[stateObj.currentPosition - 1] === "STORE") {
         stateObj = await calculateMoveChange(stateObj, -1)
     }
-    //make sure not drilling in midair
     if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty" && stateObj.gameMap[stateObj.currentPosition - 1] !== "empty") {
         return stateObj
-    //make sure not on left side
-    }  else if (stateObj.currentPosition % screenwidthBlocks !== 0) {
-        window.scrollTo(currentWidth*scrollWidth- (scrollWidth*4), currentHeight*scrollHeight - (scrollHeight*2))
+    }  else if (stateObj.gameMap[stateObj.currentPosition - 1] === "empty") {
         stateObj = await calculateMoveChange(stateObj, -1)
         return stateObj
     }
+
+    //make sure not on left side 
+    if (stateObj.currentPosition % screenwidthBlocks !== 0 ) {
+        window.scrollTo(currentWidth*scrollWidth- (scrollWidth*4), currentHeight*scrollHeight - (scrollHeight*2))
+        stateObj = await calculateMoveChange(stateObj, -1)
+        // stateObj = immer.produce(stateObj, (newState) => {
+        //     newState.inTransition === true
+        //     newState.moveToSquare = stateObj.currentPosition - 1
+        //     newState.moveTimer += 1;
+        // })
+    }
+
     return stateObj
 }
 

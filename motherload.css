@@ -3,7 +3,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     padding-top: 6vh;
-    padding: 2vh 0.5vw;
+    padding: 0vh 0.5vw;
     height: 100%;
     width: 100%;
     margin-top: 20vh;
@@ -13,15 +13,29 @@
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    height: 5vh;
+    height: 12vh;
     position: fixed;
-    padding: 1vh 0;
     top: 0;
     left: 0;
     width: 100%;
     background-color: white;
     z-index: 10;
   }
+
+  .top-vertical-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 11vh;
+    margin: 0.5vh 0vh;
+    background-color: white;
+    z-index: 10;
+  }
+
+.weapons-div {
+  display: flex;
+  flex-direction: row;
+}
 
   .map-square {
     width: 9.5vw;
@@ -152,6 +166,39 @@
     height: 10vh;
     object-fit: cover;
   }
+
+  .relic-div, .relics-div {
+    display: flex;
+    flex-direction: row;
+    height: 10vh;
+    width: 8vw;
+    justify-content: center;
+  }
+
+  .relics-div {
+    width: 100%;
+  }
+
+  .relic-img {
+    width: 8vw;
+    height: 8vh;
+    margin: 2vh 0.5vw;
+    object-fit: contain;
+  }
+
+  #weapons-price-popup, #thorns-popup, #enemy-damage-popup, #enemy-damage-fuel-popup, #kill-enemies-fuel-popup, #dirt-fuel-popup  {
+    display: none;
+    position: absolute;
+    top: 10%;
+    left: 70%;
+    z-index: 100;
+    width: 20vw;
+    height: 10vh;
+    font-size: 3vmin;
+    background-color: #f9f9f9;
+    color: black;
+    border: 1px solid #ccc;
+}
 
 .store-img, .exit-img {
   width: 9vw;
