@@ -65,7 +65,7 @@ let gameStartState = {
     bombLocation: false,
     bombTimer: false,
     bombExploding: false,
-    bombTimerMax: 3,
+    bombTimerMax: 5,
     bombCapacity: 1,
     bombCurrentTotal: 1,
     bombCapacityUpgradeCost: 750,
