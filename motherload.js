@@ -32,6 +32,7 @@ let gameStartState = {
     dirtToMaxFuel: 0,
     thorns: false,
     killEnemiesHullModifier: 0,
+    moneyForDirt: 0,
 
     drillTime: 850,
     timeCounter: 0,
@@ -56,7 +57,7 @@ let gameStartState = {
 
     dirtReserves: 0,
     dirtThresholdNeeded: 50,
-    moneyForDirt: 0,
+    
 
     enemyArray: [],
     enemyMovementArray:[],
@@ -459,6 +460,32 @@ async function renderTopBarStats(stateObj) {
           topBarDiv.append(weaponPriceRelicDiv)
     }
 
+    if (stateObj.moneyForDirt > 0) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/artifact4.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#money-dirt-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#money-dirt-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "money-dirt-popup")
+          relicTextDiv.textContent = "Earn " + Math.ceil(stateObj.moneyForDirt) + " gold every time you drop dirt"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
     
 
     return topBarDiv
@@ -847,7 +874,7 @@ async function renderScreen(stateObj) {
                 mapSquareDiv.textContent = "Pause Enemies"
             } else if (mapSquare === "halfDamageRelic") {
                 mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Halve Enemy Damage"
+                mapSquareDiv.textContent = "Enemies deal 25% less damage"
             } else if (mapSquare === "bombsExplodeFasterRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Bombs Explode Faster"
@@ -1248,7 +1275,8 @@ async function renderScreen(stateObj) {
             leaveStore(stateObj)
           }
 
-        storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, laserUpgradeDiv, upgradeLaserDistanceDiv, buyBombDiv,  bombUpgradeDiv, upgradeBombDistanceDiv, fuelUpgradeDiv, inventoryUpgradeDiv, hullUpgradeDiv, buyNothingDiv)
+        storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, laserUpgradeDiv, buyBombDiv,  
+            bombUpgradeDiv, fuelUpgradeDiv, inventoryUpgradeDiv, hullUpgradeDiv, buyNothingDiv) //upgradeLaserDistanceDiv, upgradeBombDistanceDiv,
 
 
         let testDiv = document.createElement("Div")
@@ -1524,7 +1552,7 @@ async function laserUpgrade(stateObj) {
         newState.laserCapacity += 1;
         newState.numberLasers += 1;
         newState.bankedCash -= stateObj.laserCapacityUpgradeCost * (1-stateObj.cheaperShops)
-        newState.laserCapacityUpgradeCost += 750;
+        newState.laserCapacityUpgradeCost += 1000;
     })
     document.getElementById("store-laser-capacity-upgrade-div").classList.add("store-clicked")
     await pause(300)
@@ -1539,7 +1567,7 @@ async function bombUpgrade(stateObj) {
         newState.bombCapacity += 1;
         newState.bombCurrentTotal += 1;
         newState.bankedCash -= stateObj.bombCapacityUpgradeCost * (1-stateObj.cheaperShops)
-        newState.bombCapacityUpgradeCost += 750;
+        newState.bombCapacityUpgradeCost += 1000;
     })
     document.getElementById("store-bomb-capacity-upgrade-div").classList.add("store-clicked")
     await pause(300)
@@ -1555,7 +1583,7 @@ async function upgradeFuel(stateObj) {
         newState.currentFuel += 50;
         newState.fuelUpgrades +=1;
         newState.bankedCash -= stateObj.fuelUpgradeCost * (1-stateObj.cheaperShops)
-        newState.fuelUpgradeCost += 500;
+        newState.fuelUpgradeCost += 1000;
 
     })
     document.getElementById("store-fuel-upgrade-div").classList.add("store-clicked")
@@ -1588,7 +1616,7 @@ async function upgradeHull(stateObj) {
         newState.maxHullIntegrity += 50;
         newState.currentHullIntegrity +=50;
         newState.bankedCash -= stateObj.hullUpgradeCost * (1-stateObj.cheaperShops)
-        newState.hullUpgradeCost += 1000;
+        newState.hullUpgradeCost += 1500;
 
     })
     document.getElementById("store-hull-upgrade-div").classList.add("store-clicked")

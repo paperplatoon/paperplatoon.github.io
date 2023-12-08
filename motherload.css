@@ -188,7 +188,7 @@
 
   #weapons-price-popup, #thorns-popup, #enemy-damage-popup, 
   #enemy-damage-fuel-popup, #kill-enemies-fuel-popup, #dirt-fuel-popup,
-  #bomb-timer-popup  {
+  #bomb-timer-popup, #money-dirt-popup  {
     display: none;
     position: absolute;
     top: 10%;
@@ -235,6 +235,8 @@
     background-size: cover;
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
   }
 
@@ -246,7 +248,7 @@
   }
 
   .store-option, .next-level-option {
-    width: 10vw;
+    width: 9vw;
     height: 10vh;
     background-color: rgb(122, 253, 253);
     margin: 1vw;
@@ -261,6 +263,7 @@
     color: rgb(0, 105, 105);
     height: 20vh;
     width: 15vw;
+    justify-content: center;
   }
 
   .store-option-text {
