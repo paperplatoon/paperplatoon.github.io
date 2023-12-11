@@ -1753,9 +1753,6 @@ document.addEventListener('keydown', async function(event) {
     let currentWidth = Math.floor(stateObj.currentPosition % screenwidthBlocks)
     let scrollHeight = Math.floor(viewportHeight * 0.1);
     let scrollWidth = Math.floor(viewportWidth * 0.1);
-    stateObj = await immer.produce(stateObj, (newState) => {
-        newState.movingUporDownCounter = 0;
-    })
     if (stateObj.inTransition === false && stateObj.inStore === false) {
         if (event.key === 'ArrowUp' || event.key ==="w") {
             // Execute your function for the up arrow key
@@ -1856,6 +1853,10 @@ async function LeftArrow(stateObj, currentHeight, currentWidth, scrollHeight, sc
             if (stateObj.gameMap[stateObj.currentPosition-1] !== "STORE") {
                 return stateObj
             }
+        } else {
+            stateObj = await immer.produce(stateObj, (newState) => {
+                newState.movingUporDownCounter = 0;
+            })
         }
         window.scrollTo(currentWidth*scrollWidth- (scrollWidth*4), currentHeight*scrollHeight - (scrollHeight*2))
         stateObj = await calculateMoveChange(stateObj, -1)
@@ -1873,6 +1874,9 @@ async function RightArrow(stateObj, currentHeight, currentWidth, scrollHeight, s
         //only execute if not already on right side
         if ((stateObj.currentPosition+1) % screenwidthBlocks !== 0) {
             stateObj = await calculateMoveChange(stateObj, 1)
+            stateObj = await immer.produce(stateObj, (newState) => {
+                newState.movingUporDownCounter = 0;
+            })
         }
     }
     return stateObj
@@ -1903,7 +1907,7 @@ async function DownArrow(stateObj, currentHeight, currentWidth, scrollHeight, sc
         window.scrollTo(currentWidth*scrollWidth- (scrollWidth*3), currentHeight*scrollHeight - (scrollHeight))
         stateObj = await calculateMoveChange(stateObj, screenwidthBlocks)
         stateObj = immer.produce(stateObj, (newState) => {
-            newState.movingUporDownCounter = 0;
+                newState.movingUporDownCounter = 0;
         })
     }
     return stateObj
