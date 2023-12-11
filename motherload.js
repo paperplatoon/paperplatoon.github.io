@@ -18,11 +18,11 @@ let gameStartState = {
     bankedCash: 100,
     inventoryCash: 0, 
     
-    numberLasers: 3,
+    numberLasers: 13,
     laserCapacity: 1,
     laserCost: 150,
     laserCapacityUpgradeCost: 750,
-    laserDistance: 2,
+    laserPiercing: true,
     laserDistanceUpgradeCost: 1000,
     firingLaserLeft: false,
     firingLaserRight: false,
@@ -516,7 +516,7 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     for (let j=screenwidthBlocks; j < middleLength; j++) {
         if (chosenSquareArray.includes(j)) {
             //12 relics
-            let relicArray = ["fuelRelic", "bombDistanceRelic", "laserDistanceRelic", "dirtRelic", 
+            let relicArray = ["fuelRelic", "bombDistanceRelic", "laserPiercingRelic", "dirtRelic", 
             "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
             "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
             "killEnemiesHullRelic"]
@@ -725,27 +725,60 @@ async function moveEnemies() {
                 } else {
                     stateObj = await detonateBlock(stateObj, stateObj.firingLaserLeft - 1 )
                     stateObj = await immer.produce(stateObj, (newState) => {
-                        newState.firingLaserLeft = false;
+                        if (stateObj.laserPiercing === false) {    
+                            newState.firingLaserLeft = false;
+                        } else {
+                            newState.gameMap[stateObj.firingLaserLeft - 1] = "exploding-1"
+                            newState.gameMap[stateObj.firingLaserLeft] = "empty"
+                            newState.firingLaserLeft -= 1
+                        }
                     })
                 }
             } else {
-                console.log("reached left side")
                 stateObj = await immer.produce(stateObj, (newState) => {
+                    newState.gameMap[stateObj.firingLaserLeft] = "empty"
                     newState.firingLaserLeft = false;
                 })
             }
         }
 
-            
-        await updateState(stateObj)
+        if (stateObj.firingLaserRight) {
+            if ((stateObj.firingLaserRight+1) % screenwidthBlocks !== 0) {
+                if (stateObj.gameMap[stateObj.firingLaserRight + 1] === "empty") {
+                    stateObj = await immer.produce(stateObj, (newState) => {
+                        newState.gameMap[stateObj.firingLaserRight + 1] = "exploding-1"
+                        newState.gameMap[stateObj.firingLaserRight] = "empty"
+                        newState.firingLaserRight += 1
+                    })
+                } else {
+                    stateObj = await detonateBlock(stateObj, stateObj.firingLaserRight + 1 )
+                    stateObj = await immer.produce(stateObj, (newState) => {
+                        if (stateObj.laserPiercing === false) { 
+                                newState.firingLaserRight = false;        
+                        } else {
+                            newState.gameMap[stateObj.firingLaserRight + 1] = "exploding-1"
+                            newState.gameMap[stateObj.firingLaserRight] = "empty"
+                            newState.firingLaserRight += 1
+                        }
+                    })
+                }
+            } else {
+                stateObj = await immer.produce(stateObj, (newState) => {
+                    newState.gameMap[stateObj.firingLaserRight] = "empty"
+                    newState.firingLaserRight = false;
+                })
+            }
+        }
 
-        // if (stateObj.moveToSquare && stateObj.moveTimer === 0) {
-        //     stateObj = await calculateMoveChange(stateObj, (stateObj.moveToSquare - stateObj.currentPosition))
-        // } else if (stateObj.moveTimer > 0) {
-        //     stateObj = await immer.produce(stateObj, (newState) => {
-        //         newState.moveTimer -= 1;
-        //     })
-        // }
+        if (stateObj.timeCounter % 10 === 0) {
+            if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
+                stateObj = await immer.produce(stateObj, (newState) => {
+                    newState.currentPosition += screenwidthBlocks
+                })
+            }
+        }
+        
+        await updateState(stateObj)
 
         await changeState(stateObj)
         await checkForDeath(stateObj)
@@ -887,9 +920,9 @@ async function renderScreen(stateObj) {
             } else if (mapSquare === "bombDistanceRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Bomb Distance ++"
-            } else if (mapSquare === "laserDistanceRelic") {
+            } else if (mapSquare === "laserPiercingRelic") {
                 mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Laser Distance ++"
+                mapSquareDiv.textContent = "Laser Pierces Through Everything"
             } else if (mapSquare === "dirtRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Dirt Efficiency ++"
@@ -1511,9 +1544,9 @@ async function upgradeBombDistanceRelic(stateObj) {
     return stateObj
 }
 
-async function upgradeLaserDistanceRelic(stateObj) {
+async function laserPiercingRelicFunc(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.laserDistance += 1;
+        newState.laserPiercing = true;
     })
     await changeState(stateObj);
     return stateObj
@@ -1929,9 +1962,9 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "bombDistanceRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, 0, stateObj.drillTime)
         stateObj = await upgradeBombDistanceRelic(stateObj)  
-    } else if (targetSquare === "laserDistanceRelic") {
+    } else if (targetSquare === "laserPiercingRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, 0, stateObj.drillTime)
-        stateObj = await upgradeLaserDistanceRelic(stateObj)  
+        stateObj = await laserPiercingRelicFunc(stateObj)  
     } else if (targetSquare === "dirtRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, 0, stateObj.drillTime)
         stateObj = await upgradeDirtBlockRelic(stateObj)  
