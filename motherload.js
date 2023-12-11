@@ -39,6 +39,8 @@ let gameStartState = {
     drillTime: 850,
     timeCounter: 0,
     moveToSquare: false,
+    movingDown: false,
+    movingUporDownCounter: 0,
     moveTimer: 0,
 
     //level modifiers
@@ -649,6 +651,7 @@ async function moveEnemies() {
     }
     stateObj = await immer.produce(stateObj, (newState) => {
         newState.timeCounter += 1;
+        newState.movingUporDownCounter += 1;
     })
     await updateState(stateObj)
     // console.log("number of enemies is " + stateObj.enemyMovementArray.length)
@@ -785,13 +788,28 @@ async function moveEnemies() {
             }
         }
 
-        // if (stateObj.timeCounter % 10 === 0) {
-        //     if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
-        //         stateObj = await immer.produce(stateObj, (newState) => {
-        //             newState.currentPosition += screenwidthBlocks
-        //         })
-        //     }
-        // }
+
+
+        if (stateObj.movingDown) {
+            if (stateObj.movingUporDownCounter % Math.ceil(8/(stateObj.movingDown+1)) === 0) {
+                console.log("downward tick for down number " + stateObj.movingDown)
+                stateObj = await immer.produce(stateObj, (newState) => {
+                    if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
+                        newState.currentPosition += screenwidthBlocks
+                        newState.movingDown = +1;
+                    } else {
+                        newState.movingDown = false;
+                    }
+                })
+            }
+        } else if (stateObj.movingUporDownCounter % 8 === 0) {
+            if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
+                stateObj = await immer.produce(stateObj, (newState) => {
+                    newState.currentPosition += screenwidthBlocks
+                    newState.movingDown = 1;
+                })
+            }
+        }
         
         await updateState(stateObj)
 
@@ -1735,6 +1753,9 @@ document.addEventListener('keydown', async function(event) {
     let currentWidth = Math.floor(stateObj.currentPosition % screenwidthBlocks)
     let scrollHeight = Math.floor(viewportHeight * 0.1);
     let scrollWidth = Math.floor(viewportWidth * 0.1);
+    stateObj = await immer.produce(stateObj, (newState) => {
+        newState.movingUporDownCounter = 0;
+    })
     if (stateObj.inTransition === false && stateObj.inStore === false) {
         if (event.key === 'ArrowUp' || event.key ==="w") {
             // Execute your function for the up arrow key
@@ -1868,7 +1889,9 @@ async function UpArrow(stateObj, currentHeight, currentWidth, scrollHeight, scro
             window.scrollTo(currentWidth*scrollWidth- (scrollWidth*3), currentHeight*scrollHeight - (scrollHeight*2))
             stateObj = await calculateMoveChange(stateObj, -screenwidthBlocks)
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.currentFuel -= 0.25;
+                newState.movingUporDownCounter = 0;
+                newState.currentFuel -= 0.5
+                newState.movingDown = false
             })
         }
     } 
@@ -1879,6 +1902,9 @@ async function DownArrow(stateObj, currentHeight, currentWidth, scrollHeight, sc
     if (stateObj.currentPosition < (stateObj.gameMap.length-screenwidthBlocks) && stateObj.gameMap[stateObj.currentPosition+screenwidthBlocks] !== "stone") {
         window.scrollTo(currentWidth*scrollWidth- (scrollWidth*3), currentHeight*scrollHeight - (scrollHeight))
         stateObj = await calculateMoveChange(stateObj, screenwidthBlocks)
+        stateObj = immer.produce(stateObj, (newState) => {
+            newState.movingUporDownCounter = 0;
+        })
     }
     return stateObj
 }
