@@ -18,14 +18,14 @@ let gameStartState = {
     bankedCash: 100,
     inventoryCash: 0, 
     
-    numberLasers: 13,
+    numberLasers: 1,
     laserCapacity: 1,
     laserCost: 150,
     laserCapacityUpgradeCost: 750,
-    laserPiercing: true,
-    laserDistanceUpgradeCost: 1000,
+    laserPiercing: false,
     firingLaserLeft: false,
     firingLaserRight: false,
+    laserExplosion: false,
     
     //relicValues
     weaponsPriceModifier: 1,
@@ -72,7 +72,7 @@ let gameStartState = {
     bombCapacity: 1,
     bombCurrentTotal: 1,
     bombCapacityUpgradeCost: 750,
-    bombDistance: 3,
+    bombDistance: 2,
     bombDistanceUpgradeCost: 1000,
     bombCost: 150,
 
@@ -220,24 +220,32 @@ async function renderTopBarStats(stateObj) {
     lasersDiv.classList.add("weapons-div")
     let currentLasersDiv = document.createElement("Div")
     currentLasersDiv.setAttribute("id", "current-lasers-text");
-    laserString = "Lasers: " + stateObj.numberLasers + "/" + stateObj.laserCapacity
+    laserString = "Lasers"
+    if (stateObj.laserPiercing === true) {
+        laserString = laserString + " (Piercing)"
+    }
+    laserString = laserString + ": " + stateObj.numberLasers + "/" + stateObj.laserCapacity
     if (stateObj.numberLasers > 0) {
         laserString = laserString + " (press L to fire)"
     }
     currentLasersDiv.textContent = laserString
-    if (stateObj.laserCapacity > 1) {
+    if (stateObj.laserCapacity > 1 || stateObj.laserPiercing === true) {
         currentLasersDiv.classList.add("upgraded-stat")
     }
 
-    let laserDistanceDiv = document.createElement("Div")
-    laserString2 = " \u00A0 [Distance: " + stateObj.laserDistance + "]"
-    laserDistanceDiv.textContent = laserString2
-    laserDistanceDiv.setAttribute("id", "laser-distance-text");
-    if (stateObj.laserDistance > 2) {
-        laserDistanceDiv.classList.add("upgraded-stat")
-    }
+    // let laserDistanceDiv = document.createElement("Div")
+    // if (stateObj.laserPiercing === true) {
+    //     laserString2 = " \u00A0 Distance: " + stateObj.laserDistance + "]"
+    //     laserDistanceDiv.textContent = laserString2
+    //     laserDistanceDiv.setAttribute("id", "laser-distance-text");
+    //     if (stateObj.laserDistance > 2) {
+    //         laserDistanceDiv.classList.add("upgraded-stat")
+    //     }
+    // }
+    
+    
 
-    lasersDiv.append(currentLasersDiv, laserDistanceDiv)
+    lasersDiv.append(currentLasersDiv)
 
     let bombDiv = document.createElement("Div")
     bombDiv.classList.add("weapons-div")
@@ -520,7 +528,7 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
             "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
             "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
             "killEnemiesHullRelic"]
-            // let relicArray = ["weaponsPriceRelic"] 
+            // let relicArray = ["laserPiercingRelic"] 
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -683,15 +691,15 @@ async function moveEnemies() {
                 }
             }
 
-            if (stateObj.bombExploding === true) {
+            if (stateObj.bombExploding === true || stateObj.laserExplosion === true) {
                 stateObj = await immer.produce(stateObj, (newState) => {
                     newState.bombExploding = false
+                    newState.laserExplosion = false
                     for (i=0; i<stateObj.gameMap.length; i++) {
-                        if (stateObj.gameMap[i] === "exploding-1") {
+                        if (stateObj.gameMap[i] === "exploding-1" || stateObj.gameMap[i] === "active-laser") {
                             newState.gameMap[i] = "empty";
                         }
                     }
-                    
                 })
             }
 
@@ -718,21 +726,28 @@ async function moveEnemies() {
             if (stateObj.firingLaserLeft % screenwidthBlocks !== 0) {
                 if (stateObj.gameMap[stateObj.firingLaserLeft - 1] === "empty") {
                     stateObj = await immer.produce(stateObj, (newState) => {
-                        newState.gameMap[stateObj.firingLaserLeft - 1] = "exploding-1"
+                        newState.gameMap[stateObj.firingLaserLeft - 1] = "active-laser"
                         newState.gameMap[stateObj.firingLaserLeft] = "empty"
                         newState.firingLaserLeft -= 1
                     })
                 } else {
-                    stateObj = await detonateBlock(stateObj, stateObj.firingLaserLeft - 1 )
-                    stateObj = await immer.produce(stateObj, (newState) => {
-                        if (stateObj.laserPiercing === false) {    
-                            newState.firingLaserLeft = false;
-                        } else {
-                            newState.gameMap[stateObj.firingLaserLeft - 1] = "exploding-1"
+                    if (stateObj.gameMap[stateObj.firingLaserLeft - 1] !== "STORE") {
+                        stateObj = await detonateBlock(stateObj, stateObj.firingLaserLeft - 1, isLaser=true )
+                        stateObj = await immer.produce(stateObj, (newState) => {
+                            if (stateObj.laserPiercing === false) {   
+                                newState.firingLaserLeft = false;
+                            } else {
+                                newState.gameMap[stateObj.firingLaserLeft - 1] = "active-laser"
+                                newState.gameMap[stateObj.firingLaserLeft] = "empty"
+                                newState.firingLaserLeft -= 1
+                            }
+                        })
+                    } else {
+                        stateObj = await immer.produce(stateObj, (newState) => {
                             newState.gameMap[stateObj.firingLaserLeft] = "empty"
-                            newState.firingLaserLeft -= 1
-                        }
-                    })
+                            newState.firingLaserLeft = false;
+                        })
+                    }
                 }
             } else {
                 stateObj = await immer.produce(stateObj, (newState) => {
@@ -746,17 +761,17 @@ async function moveEnemies() {
             if ((stateObj.firingLaserRight+1) % screenwidthBlocks !== 0) {
                 if (stateObj.gameMap[stateObj.firingLaserRight + 1] === "empty") {
                     stateObj = await immer.produce(stateObj, (newState) => {
-                        newState.gameMap[stateObj.firingLaserRight + 1] = "exploding-1"
+                        newState.gameMap[stateObj.firingLaserRight + 1] = "active-laser"
                         newState.gameMap[stateObj.firingLaserRight] = "empty"
                         newState.firingLaserRight += 1
                     })
                 } else {
-                    stateObj = await detonateBlock(stateObj, stateObj.firingLaserRight + 1 )
+                    stateObj = await detonateBlock(stateObj, stateObj.firingLaserRight + 1, isLaser=true)
                     stateObj = await immer.produce(stateObj, (newState) => {
                         if (stateObj.laserPiercing === false) { 
-                                newState.firingLaserRight = false;        
+                            newState.firingLaserRight = false;        
                         } else {
-                            newState.gameMap[stateObj.firingLaserRight + 1] = "exploding-1"
+                            newState.gameMap[stateObj.firingLaserRight + 1] = "active-laser"
                             newState.gameMap[stateObj.firingLaserRight] = "empty"
                             newState.firingLaserRight += 1
                         }
@@ -770,13 +785,13 @@ async function moveEnemies() {
             }
         }
 
-        if (stateObj.timeCounter % 10 === 0) {
-            if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
-                stateObj = await immer.produce(stateObj, (newState) => {
-                    newState.currentPosition += screenwidthBlocks
-                })
-            }
-        }
+        // if (stateObj.timeCounter % 10 === 0) {
+        //     if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
+        //         stateObj = await immer.produce(stateObj, (newState) => {
+        //             newState.currentPosition += screenwidthBlocks
+        //         })
+        //     }
+        // }
         
         await updateState(stateObj)
 
@@ -849,8 +864,10 @@ async function renderScreen(stateObj) {
                 mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "empty") {
                 mapSquareDiv.classList.add("empty")
-            }  else if (mapSquare === "exploding-1") {
-                mapSquareDiv.classList.add("exploding-block")
+            } else if (mapSquare === "active-laser") {
+                mapSquareDiv.classList.add("laser-effect")
+            } else if (mapSquare === "exploding-1") {
+                mapSquareDiv.classList.add("bomb-effect")
             } else if (mapSquare === "enemy") {
                 mapSquareDiv.classList.add("enemy")
                 let mapSquareImg = document.createElement("Img");
@@ -1306,23 +1323,6 @@ async function renderScreen(stateObj) {
                 buyBombDistanceUpgrade(stateObj)
             }
         }
-
-        let upgradeLaserDistanceDiv = document.createElement("Div")
-        upgradeLaserDistanceDiv.setAttribute("id", "store-upgrade-laser-div")
-        upgradeLaserDistanceDiv.classList.add("store-option")
-        let laserDistText1 = document.createElement("Div")
-        laserDistText1.classList.add("store-option-text")
-        let laserDistText2 = document.createElement("Div")
-        laserDistText2.classList.add("store-option-text")
-        laserDistText1.textContent = "Laser Distance Upgrade " 
-        laserDistText2.textContent = stateObj.laserDistanceUpgradeCost * (1-stateObj.cheaperShops) + " gold"
-        upgradeLaserDistanceDiv.append(laserDistText1, laserDistText2)
-        if (stateObj.bankedCash >= stateObj.laserDistanceUpgradeCost * (1-stateObj.cheaperShops)) {
-            upgradeLaserDistanceDiv.classList.add("store-clickable")
-            upgradeLaserDistanceDiv.onclick = function () {
-                buyLaserDistanceUpgrade(stateObj)
-            }
-        }
         
     
         let buyNothingDiv = document.createElement("Div")
@@ -1336,7 +1336,7 @@ async function renderScreen(stateObj) {
           }
 
         storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, laserUpgradeDiv, buyBombDiv,  
-            bombUpgradeDiv, fuelUpgradeDiv, inventoryUpgradeDiv, hullUpgradeDiv, buyNothingDiv) //upgradeLaserDistanceDiv, upgradeBombDistanceDiv,
+            bombUpgradeDiv, fuelUpgradeDiv, inventoryUpgradeDiv, hullUpgradeDiv, buyNothingDiv) //upgradeBombDistanceDiv,
 
 
         let testDiv = document.createElement("Div")
@@ -1710,21 +1710,6 @@ async function buyLaser(stateObj) {
     document.getElementById("store-buy-laser-div").classList.add("store-clicked")
     await pause(300)
     document.getElementById("current-lasers-text").classList.add("emphasis")
-    await pause(300)
-    await changeState(stateObj);
-}
-
-async function buyLaserDistanceUpgrade(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.laserDistance += 1;
-        newState.bankedCash -= stateObj.laserDistanceUpgradeCost * (1-stateObj.cheaperShops)
-        newState.laserDistanceUpgradeCost += 1000;
-
-    })
-    document.getElementById("store-upgrade-laser-div").classList.add("store-clicked")
-    await pause(300)
-    document.getElementById("laser-distance-text").classList.add("emphasis")
-    document.getElementById("laser-distance-text").classList.add("upgraded-stat")
     await pause(300)
     await changeState(stateObj);
 }
@@ -2157,9 +2142,8 @@ async function detonateBomb(stateObj, detonatePosition) {
     return stateObj
 }
 
-async function detonateBlock(stateObj, blockPosition) {
+async function detonateBlock(stateObj, blockPosition, isLaser=false) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.bombExploding = true;
         if (newState.enemyArray.includes(blockPosition)) {
             const enemyIndex = newState.enemyArray.indexOf(blockPosition)
             newState.enemyArray.splice(enemyIndex, 1)
@@ -2171,6 +2155,14 @@ async function detonateBlock(stateObj, blockPosition) {
         }
         if (newState.gameMap[blockPosition] !== "STORE" && newState.gameMap[blockPosition] !== "stone") {
             newState.gameMap[blockPosition] = "exploding-1"
+            if (isLaser) {
+                newState.laserExplosion = true
+            }
+            // if (isLaser) {
+            //     newState.gameMap[blockPosition] = "empty"
+            // } else {
+            //     newState.gameMap[blockPosition] = "exploding-1"
+            // }
         }
         
     })

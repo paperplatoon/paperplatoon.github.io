@@ -374,7 +374,11 @@
     color: rgb(0, 192, 0)
   }
 
-  .exploding-block {
+  .bomb-effect {
+    background: linear-gradient(red 20%, orange, red 80%)
+  }
+
+  .laser-effect {
     background: linear-gradient(black 40%, red, black 80%)
   }
  
