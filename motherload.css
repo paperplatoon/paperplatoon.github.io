@@ -209,6 +209,53 @@
   object-fit: contain;
 }
 
+.selling-items-div {
+  display: flex;
+  flex-direction: column;
+  width: 30vw;
+  height: 60vh;
+  justify-content: center;
+  align-items: center;
+  border: 4vw double rgba(71, 71, 71, 0.926);
+  background: linear-gradient(rgba(249, 249, 249, 0.844) 0%, rgba(228, 228, 228, 0.85) 10%, rgba(223, 223, 223, 0.85) 40%,
+  rgba(228, 228, 228, 0.85) 90%, rgba(249, 249, 249, 0.85)); 
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  
+}
+
+.sell-row {
+  width: 20vw;
+  padding: 2vh 2vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid grey
+
+  
+}
+
+.sell-button {
+  width: 10vw;
+  height: 8vh;
+  display: flex;
+  margin-top: 5vh;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to right, rgb(50, 201, 50) 0%, rgb(108, 238, 108) 20%, rgb(113, 232, 113) 40%, rgb(151, 238, 151) 70%, rgb(159, 245, 159) 75%, rgb(59, 216, 59));
+  cursor: pointer;
+  font-weight: 1000;
+  transition: 1s all;
+}
+
+.sell-button:hover {
+  width: 12vw;
+  border: 4px dashed rgb(144, 255, 144);
+  background: linear-gradient(to right, rgb(31, 125, 31) 0%, rgb(60, 133, 60) 20%, rgb(59, 122, 59) 40%, rgb(80, 126, 80) 70%, rgb(64, 100, 64) 75%, rgb(30, 111, 30));
+  cursor: pointer;
+  font-weight: 1300;
+  color: white;
+}
+
   .enemy-img {
     width: 6vw;
     height: 6vh;
