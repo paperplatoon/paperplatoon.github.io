@@ -47,6 +47,7 @@ let gameStartState = {
     isLevelPacifist: false,
     isScrapMetal: false,
     cheaperShops: 0,
+    freeFuel: false,
 
     //states
     currentPosition: false,
@@ -234,17 +235,6 @@ async function renderTopBarStats(stateObj) {
     if (stateObj.laserCapacity > 1 || stateObj.laserPiercing === true) {
         currentLasersDiv.classList.add("upgraded-stat")
     }
-
-    // let laserDistanceDiv = document.createElement("Div")
-    // if (stateObj.laserPiercing === true) {
-    //     laserString2 = " \u00A0 Distance: " + stateObj.laserDistance + "]"
-    //     laserDistanceDiv.textContent = laserString2
-    //     laserDistanceDiv.setAttribute("id", "laser-distance-text");
-    //     if (stateObj.laserDistance > 2) {
-    //         laserDistanceDiv.classList.add("upgraded-stat")
-    //     }
-    // }
-    
     
 
     lasersDiv.append(currentLasersDiv)
@@ -298,12 +288,12 @@ async function renderTopBarStats(stateObj) {
         weaponImg.src = "img/gun1.png"
         weaponPriceRelicDiv.append(weaponImg)
         
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+        weaponPriceRelicDiv.addEventListener('mouseenter', function() {
             const statusText = document.querySelector("#weapons-price-popup");
             statusText.style.display = 'block'
           });
           
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+          weaponPriceRelicDiv.addEventListener('mouseleave', function() {
             const statusText = document.querySelector("#weapons-price-popup");
             statusText.style.display = 'none'
           });
@@ -376,20 +366,23 @@ async function renderTopBarStats(stateObj) {
         weaponImg.src = "img/shield1.png"
         weaponPriceRelicDiv.append(weaponImg)
         
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+        weaponPriceRelicDiv.addEventListener('mouseenter', async function() {
             const statusText = document.querySelector("#enemy-damage-fuel-popup");
-            statusText.style.display = 'block'
+                    statusText.style.display = 'block'
           });
+
           
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#enemy-damage-fuel-popup");
-            statusText.style.display = 'none'
+          weaponPriceRelicDiv.addEventListener('mouseleave', function() {
+                const statusText = document.querySelector("#enemy-damage-fuel-popup");
+                statusText.style.display = 'none'
           });
     
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "enemy-damage-fuel-popup")
-          relicTextDiv.textContent = "Enemies deal " + Math.ceil((1-stateObj.enemyDamageModifier)*100) + "% less damage when your fuel is at least 50% full"
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+            let relicTextDiv = document.createElement("Div");
+            relicTextDiv.setAttribute("id", "enemy-damage-fuel-popup")
+            relicTextDiv.textContent = "Enemies deal " + Math.ceil((1-stateObj.halfDamageFullFuel)*100) + "% less damage when your fuel is at least 50% full"
+            weaponPriceRelicDiv.appendChild(relicTextDiv);
+          
 
           topBarDiv.append(weaponPriceRelicDiv)
     }
@@ -530,7 +523,6 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
             "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
             "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
             "killEnemiesHullRelic"]
-            // let relicArray = ["laserPiercingRelic"] 
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -1124,9 +1116,17 @@ async function renderScreen(stateObj) {
             cheaperShopsChoice(stateObj)
         }
 
+        let freeFuelDiv = document.createElement("Div")
+        freeFuelDiv.classList.add("next-level-option")
+        freeFuelDiv.textContent = "Oil Well - Fuel is free for the next level only"
+        freeFuelDiv.classList.add("next-level-clickable")
+        freeFuelDiv.onclick = function () {
+            freeFuelChoice(stateObj)
+        }
+
         //9 choices
-        let levelChoiceArray = [fewerEnemiesDiv, moreGoldDiv, pacifistDiv, dirtEfficiencyDiv, scrapMetalDiv, shorterDiv, longerDiv, moreEnemiesDiv, cheaperShopsDiv]
-        //let levelChoiceArray = [shorterDiv, cheaperShopsDiv, moreEnemiesDiv]
+        let levelChoiceArray = [freeFuelDiv, fewerEnemiesDiv, moreGoldDiv, pacifistDiv, dirtEfficiencyDiv, scrapMetalDiv, shorterDiv, longerDiv, moreEnemiesDiv, cheaperShopsDiv]
+        //let levelChoiceArray = [freeFuelDiv, cheaperShopsDiv, moreEnemiesDiv]
         let chosenLevels = []
         for (i = 0; i < 3; i++) {
             let chosenLevel = Math.floor(Math.random() * levelChoiceArray.length);
@@ -1197,7 +1197,8 @@ async function renderScreen(stateObj) {
 
         let fillFuelDiv = document.createElement("Div")
         fillFuelDiv.setAttribute("id", "store-fuel-div")
-        let missingFuel = Math.floor((stateObj.fuelCapacity-stateObj.currentFuel)/2)
+        let missingFuel = Math.floor(stateObj.fuelCapacity-stateObj.currentFuel)
+        let fuelPrice = Math.ceil((missingFuel * (1+stateObj.currentLevel) - (1-stateObj.cheaperShops))/2)
         if (missingFuel > 0) {
             fillFuelDiv.classList.add("store-option")
             let fillText1 = document.createElement("Div")
@@ -1205,13 +1206,15 @@ async function renderScreen(stateObj) {
             let fillText2 = document.createElement("Div")
             fillText2.classList.add("store-option-text")
             
-            
-            if (Math.floor(missingFuel/2) > (stateObj.bankedCash * (1-stateObj.cheaperShops))) {
+            if (stateObj.freeFuel === true) {
+                fillText1.textContent = "Refill fuel" 
+                fillText2.textContent = "Free"
+            } else if (stateObj.bankedCash < fuelPrice) {
                 fillText1.textContent = "Spend all gold on fuel" 
-                fillText2.textContent = Math.ceil(stateObj.bankedCash) * (1-stateObj.cheaperShops) + " gold"
+                fillText2.textContent = stateObj.bankedCash + " gold"
             } else {
                 fillText1.textContent = "Refill fuel" 
-                fillText2.textContent = Math.ceil(missingFuel) * (1-stateObj.cheaperShops) + " gold"
+                fillText2.textContent = fuelPrice + " gold"
             }
 
             fillFuelDiv.append(fillText1, fillText2)
@@ -1402,6 +1405,14 @@ async function cheaperShopsChoice(stateObj) {
     await changeState(stateObj);
 }
 
+async function freeFuelChoice(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.freeFuel = true;
+        newState.choosingNextLevel = false;
+    })
+    await changeState(stateObj);
+}
+
 async function moreGold(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.floorValues[newState.currentLevel].barVals[4] -= 0.06
@@ -1585,16 +1596,21 @@ async function upgradeDirtBlockRelic(stateObj) {
 //------------------------------------------------------------------------------------
 
 async function fillFuel(stateObj) {
-    let missingFuel = stateObj.fuelCapacity - stateObj.currentFuel
-    let missingFuelValue = Math.floor((stateObj.fuelCapacity - stateObj.currentFuel)/2)
+    let missingFuel = Math.floor(stateObj.fuelCapacity-stateObj.currentFuel)
+    let fuelPrice = Math.ceil((missingFuel * (1+stateObj.currentLevel) - (1-stateObj.cheaperShops))/2)
     stateObj = immer.produce(stateObj, (newState) => {
         if (missingFuel > 0) {
-            if (newState.bankedCash > missingFuelValue) {
-                newState.currentFuel += missingFuel;
-                newState.bankedCash -= missingFuelValue * (1-stateObj.cheaperShops)
+            if (newState.freeFuel === true ) {
+                newState.currentFuel = newState.fuelCapacity
             } else {
-                newState.currentFuel += Math.ceil(newState.bankedCash*2);
-                newState.bankedCash = 0;    
+                if (newState.bankedCash > fuelPrice) {
+                    newState.currentFuel += missingFuel;
+                    newState.bankedCash -= fuelPrice
+                } else {
+                    let affordableFuel = Math.ceil(newState.bankedCash/(1+stateObj.currentLevel))
+                    newState.currentFuel += affordableFuel;
+                    newState.bankedCash = 0;    
+                }
             }
         }
     })
@@ -1818,7 +1834,7 @@ async function checkForDeath(stateObj) {
 async function doDamage(stateObj, damageAmount, enemyLocation) {
     if (stateObj.inStore === false) {
         stateObj = immer.produce(stateObj, (newState) => {
-            if (newState.halfDamageFullFuel === true && newState.currentFuel >= (newState.fuelCapacity/2)) {
+            if (newState.halfDamageFullFuel < 1 && newState.currentFuel >= (newState.fuelCapacity/2)) {
                 newState.currentHullIntegrity -= Math.floor(((damageAmount * newState.enemyDamageModifier) * 0.5));
             } else {
                 newState.currentHullIntegrity -= (damageAmount * newState.enemyDamageModifier);
@@ -2031,6 +2047,7 @@ async function goToNextLevel(stateObj) {
         newState.currentLevel += 1;
         newState.timeCounter = 0;
         newState.isLevelPacifist = false;
+        newState.freeFuel = false;
 
         if (stateObj.isScrapMetal === true) {
             const countEnemyOccurrences = newState.gameMap.reduce((acc, currentValue) => {
