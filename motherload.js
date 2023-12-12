@@ -534,7 +534,7 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
             "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
             "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
             "killEnemiesHullRelic", "bronzeSilverBonusRelic", "splinterCellRelic"]
-            relicArray = ["splinterCellRelic"]
+            //relicArray = ["splinterCellRelic"]
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -908,7 +908,7 @@ async function renderScreen(stateObj) {
 
         let sellButtonDiv = document.createElement("Div")
         sellButtonDiv.classList.add("sell-button")
-        sellButtonDiv.textContent = "Sell Items (" + (sellTotal) + ")"
+        sellButtonDiv.textContent = "Sell Items (" + sellTotal + ")"
         sellButtonDiv.onclick = async function () {
             console.log("selling items")
             await seeStore(stateObj, sellTotal)
