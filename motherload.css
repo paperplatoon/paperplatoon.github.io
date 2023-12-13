@@ -188,7 +188,7 @@
 
   #weapons-price-popup, #thorns-popup, #enemy-damage-popup, 
   #enemy-damage-fuel-popup, #kill-enemies-fuel-popup, #dirt-fuel-popup,
-  #bomb-timer-popup, #money-dirt-popup  {
+  #bomb-timer-popup, #money-dirt-popup, #laser-piercing-popup, #kill-enemies-heal-popup  {
     display: none;
     position: absolute;
     top: 15vh;

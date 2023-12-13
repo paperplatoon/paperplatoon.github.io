@@ -42,6 +42,7 @@ let gameStartState = {
     killEnemiesHullModifier: 0,
     moneyForDirt: 0,
     killEnemiesForMoney: 0,
+    killEnemiesForHealing: 0,
     bronzeSilverBonus: 1,
     
 
@@ -426,6 +427,58 @@ async function renderTopBarStats(stateObj) {
           topBarDiv.append(weaponPriceRelicDiv)
     }
 
+    if (stateObj.killEnemiesForHealing > 0) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/repairkill.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#kill-enemies-heal-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#kill-enemies-heal-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "kill-enemies-heal-popup")
+          relicTextDiv.textContent = "Killing enemies heals your hull by " + Math.ceil(stateObj.killEnemiesForHealing)
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.laserPiercing === true) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/laserpiercing.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#laser-piercing-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#laser-piercing-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "laser-piercing-popup")
+          relicTextDiv.textContent = "Laser pierces through entire row"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
     if (stateObj.dirtToMaxFuel > 0) {
         let weaponPriceRelicDiv = document.createElement("Div")
         weaponPriceRelicDiv.classList.add("relic-div")
@@ -531,11 +584,11 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     let middleLength = (screenwidthBlocks*floorObj.numberRows) + (screenwidthBlocks);
     for (let j=screenwidthBlocks; j < middleLength; j++) {
         if (chosenSquareArray.includes(j)) {
-            //15 relics
+            //16 relics
             let relicArray = ["fuelRelic", "bombDistanceRelic", "laserPiercingRelic", "dirtRelic", 
             "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
             "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
-            "killEnemiesHullRelic", "bronzeSilverBonusRelic", "remoteBombsRelic"]
+            "killEnemiesHullRelic", "bronzeSilverBonusRelic", "remoteBombsRelic", "killEnemiesHealRelic"]
             //relicArray = ["remoteBombsRelic"]
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
@@ -722,12 +775,6 @@ async function moveEnemies() {
                         })
                     } else {
                         stateObj = await detonateBomb(stateObj, stateObj.bombLocation)
-                        stateObj = await immer.produce(stateObj, (newState) => {
-                            newState.gameMap[newState.bombLocation] = "empty"
-                            newState.bombTimer = false;
-                            newState.bombLocation = false;
-                            
-                        })
                     }
                 }
             }
@@ -799,22 +846,22 @@ async function moveEnemies() {
 
 
         if (stateObj.movingDown) {
-            if (stateObj.movingUporDownCounter % Math.ceil(8/(stateObj.movingDown+1)) === 0) {
+            if (stateObj.movingUporDownCounter % (16/stateObj.movingDown) === 0) {
                 console.log("downward tick for down number " + stateObj.movingDown)
                 stateObj = await immer.produce(stateObj, (newState) => {
                     if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
                         newState.currentPosition += screenwidthBlocks
-                        newState.movingDown = +1;
+                        newState.movingDown *= 2;
                     } else {
                         newState.movingDown = false;
                     }
                 })
             }
-        } else if (stateObj.movingUporDownCounter % 8 === 0) {
+        } else if (stateObj.movingUporDownCounter % 16 === 0) {
             if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
                 stateObj = await immer.produce(stateObj, (newState) => {
                     newState.currentPosition += screenwidthBlocks
-                    newState.movingDown = 1;
+                    newState.movingDown = 2;
                 })
             }
         }
@@ -1071,6 +1118,9 @@ async function renderScreen(stateObj) {
             } else if (mapSquare === "killEnemiesHullRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Killing enemies improves hull integrity"
+            } else if (mapSquare === "killEnemiesHealRelic") {
+                mapSquareDiv.classList.add("relic")
+                mapSquareDiv.textContent = "Killing enemies repairs your hull"
             } else if (mapSquare === "moneyForDirtRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Earn Money When Dropping Dirt"
@@ -1700,6 +1750,14 @@ async function killEnemiesHullRelic(stateObj) {
     return stateObj
 }
 
+async function killEnemiesHealRelic(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.killEnemiesForHealing += 20;
+    })
+    await changeState(stateObj);
+    return stateObj
+}
+
 async function moneyForDirtRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.moneyForDirt += 300;
@@ -2171,6 +2229,9 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "killEnemiesHullRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await killEnemiesHullRelic(stateObj)  
+    } else if (targetSquare === "killEnemiesHealRelic") {
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
+        stateObj = await killEnemiesHealRelic(stateObj)  
     } else if (targetSquare === "bombDistanceRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await upgradeBombDistanceRelic(stateObj)  
@@ -2325,6 +2386,7 @@ async function detonateBomb(stateObj, detonatePosition) {
         newState.bombExploding = true;
         newState.gameMap[newState.bombLocation] = "empty";
         newState.bombLocation = false;
+        newState.bombTimer = false
     })
     for (i=0; i < numberBlocks+1; i++) {
         leftBlocksToBlast = i;
@@ -2387,6 +2449,15 @@ async function detonateBlock(stateObj, blockPosition, isLaser=false) {
             if (newState.killEnemiesForMoney > 0) {
                 newState.bankedCash += newState.killEnemiesForMoney
             }
+            if (newState.killEnemiesForHealing > 0) {
+                if (newState.maxHullIntegrity - newState.currentHullIntegrity < newState.killEnemiesForHealing) {
+                    newState.currentHullIntegrity = newState.maxHullIntegrity
+                } else {
+                    newState.currentHullIntegrity += newState.killEnemiesForHealing
+                }
+            }
+
+
             if (newState.splinterCellModifier > 1) {
                 newState.splinterCellModifier = 1;
             }
