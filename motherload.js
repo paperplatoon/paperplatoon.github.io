@@ -43,8 +43,7 @@ let gameStartState = {
     moneyForDirt: 0,
     killEnemiesForMoney: 0,
     bronzeSilverBonus: 1,
-    splinterCellRelic: false,
-    splinterCellModifier: 1,
+    
 
     drillTime: 850,
     timeCounter: 0,
@@ -58,6 +57,8 @@ let gameStartState = {
     isScrapMetal: false,
     cheaperShops: 0,
     freeFuel: false,
+    splinterCellModifier: 1,
+    splinterCellOn: false,
 
     //states
     currentPosition: false,
@@ -82,6 +83,7 @@ let gameStartState = {
     bombLocation: false,
     bombTimer: false,
     bombExploding: false,
+    remoteBombs: false,
     bombTimerMax: 5,
     bombCapacity: 1,
     bombCurrentTotal: 1,
@@ -533,8 +535,8 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
             let relicArray = ["fuelRelic", "bombDistanceRelic", "laserPiercingRelic", "dirtRelic", 
             "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
             "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
-            "killEnemiesHullRelic", "bronzeSilverBonusRelic", "splinterCellRelic"]
-            //relicArray = ["splinterCellRelic"]
+            "killEnemiesHullRelic", "bronzeSilverBonusRelic", "remoteBombsRelic"]
+            //relicArray = ["remoteBombsRelic"]
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -712,19 +714,21 @@ async function moveEnemies() {
 
 
             if (stateObj.bombLocation) {
-                if (stateObj.bombTimer > 0) {
-                    console.log('counting down bomb timer from ' + stateObj.bombTimer)
-                    stateObj = await immer.produce(stateObj, (newState) => {
-                        newState.bombTimer -= 1
-                    })
-                } else {
-                    stateObj = await detonateBomb(stateObj, stateObj.bombLocation)
-                    stateObj = await immer.produce(stateObj, (newState) => {
-                        newState.gameMap[newState.bombLocation] = "empty"
-                        newState.bombTimer = false;
-                        newState.bombLocation = false;
-                        
-                    })
+                if (stateObj.remoteBombs === false) {
+                    if (stateObj.bombTimer > 0) {
+                        console.log('counting down bomb timer from ' + stateObj.bombTimer)
+                        stateObj = await immer.produce(stateObj, (newState) => {
+                            newState.bombTimer -= 1
+                        })
+                    } else {
+                        stateObj = await detonateBomb(stateObj, stateObj.bombLocation)
+                        stateObj = await immer.produce(stateObj, (newState) => {
+                            newState.gameMap[newState.bombLocation] = "empty"
+                            newState.bombTimer = false;
+                            newState.bombLocation = false;
+                            
+                        })
+                    }
                 }
             }
         }
@@ -1020,7 +1024,11 @@ async function renderScreen(stateObj) {
                 mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "BOMB") {
                 mapSquareDiv.classList.add("bomb")
-                mapSquareDiv.textContent = stateObj.bombTimer
+                if (stateObj.remoteBombs === false ){
+                    mapSquareDiv.textContent = stateObj.bombTimer
+                } else {
+                    mapSquareDiv.textContent = "press B to detonate"
+                }
             } else if (mapSquare === "fuelRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Fuel ++"
@@ -1029,7 +1037,7 @@ async function renderScreen(stateObj) {
                 mapSquareDiv.textContent = "Bomb Distance ++"
             } else if (mapSquare === "laserPiercingRelic") {
                 mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Laser Pierces Through Everything"
+                mapSquareDiv.textContent = "Laser pierces through everything"
             } else if (mapSquare === "dirtRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Dirt Efficiency ++"
@@ -1044,7 +1052,7 @@ async function renderScreen(stateObj) {
                 mapSquareDiv.textContent = "Enemies deal 25% less damage"
             } else if (mapSquare === "bombsExplodeFasterRelic") {
                 mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Bombs Explode Faster"
+                mapSquareDiv.textContent = "Bombs explode faster"
             } else if (mapSquare === "halfDamageFullFuelRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Take less damage when fuel above 50%"
@@ -1054,12 +1062,12 @@ async function renderScreen(stateObj) {
             } else if (mapSquare === "bronzeSilverBonusRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Bronze and silver ore is worth more"
-            } else if (mapSquare === "splinterCellRelic") {
+            } else if (mapSquare === "remoteBombsRelic") {
                 mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Ore is worth more before your first kill in each level"
+                mapSquareDiv.textContent = "Trigger bombs remotely"
             } else if (mapSquare === "weaponsPriceRelic") {
                 mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Cheaper Lasers/Bombs"
+                mapSquareDiv.textContent = "Cheaper Lasers & Bombs"
             } else if (mapSquare === "killEnemiesHullRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Killing enemies improves hull integrity"
@@ -1218,8 +1226,16 @@ async function renderScreen(stateObj) {
             freeFuelChoice(stateObj)
         }
 
-        //11 choices
-        let levelChoiceArray = [freeFuelDiv, fewerEnemiesDiv, moreGoldDiv, pacifistDiv, dirtEfficiencyDiv, scrapMetalDiv, shorterDiv, longerDiv, moreEnemiesDiv, cheaperShopsDiv, killEnemiesForMoneyDiv]
+        let splinterCellDiv = document.createElement("Div")
+        splinterCellDiv.classList.add("next-level-option")
+        splinterCellDiv.textContent = "COVERT OPS - Gems are worth double for the next level. Prices revert back to normal after killing an enemy"
+        splinterCellDiv.classList.add("next-level-clickable")
+        splinterCellDiv.onclick = function () {
+            splinterCellChoice(stateObj)
+        }
+
+        //12 choices
+        let levelChoiceArray = [freeFuelDiv, fewerEnemiesDiv, moreGoldDiv, pacifistDiv, dirtEfficiencyDiv, scrapMetalDiv, shorterDiv, longerDiv, moreEnemiesDiv, cheaperShopsDiv, killEnemiesForMoneyDiv, splinterCellDiv]
         //let levelChoiceArray = [freeFuelDiv, cheaperShopsDiv, moreEnemiesDiv]
         let chosenLevels = []
         for (i = 0; i < 3; i++) {
@@ -1507,6 +1523,15 @@ async function freeFuelChoice(stateObj) {
     await changeState(stateObj);
 }
 
+async function splinterCellChoice(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.splinterCellModifier += 1;
+        newState.splinterCellOn = true;
+    })
+    await changeState(stateObj);
+    return stateObj
+}
+
 async function moreGold(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.floorValues[newState.currentLevel].barVals[4] -= 0.06
@@ -1647,12 +1672,9 @@ async function bronzeSilverBonusRelic(stateObj) {
     return stateObj
 }
 
-async function splinterCellRelic(stateObj) {
+async function remoteBombsRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        if (newState.enemiesKilledPerLevel === 0) {
-            newState.splinterCellModifier += 1;
-        }
-        newState.splinterCellRelic = true;
+        newState.remoteBombs = true;
     })
     await changeState(stateObj);
     return stateObj
@@ -1921,7 +1943,7 @@ document.addEventListener('keydown', async function(event) {
                 stateObj = await dropBlock(stateObj)
                 await changeState(stateObj)
             //}
-        }else if (event.key === "b") {
+        } else if (event.key === "b") {
             //if (stateObj.numberLasers > 0) {
                 stateObj = await dropBomb(stateObj)
                 await changeState(stateObj)
@@ -2140,9 +2162,9 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "bronzeSilverBonusRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await bronzeSilverBonusRelic(stateObj)  
-    } else if (targetSquare === "splinterCellRelic") {
+    } else if (targetSquare === "remoteBombsRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await splinterCellRelic(stateObj)  
+        stateObj = await remoteBombsRelic(stateObj)  
     } else if (targetSquare === "weaponsPriceRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await weaponsPriceRelic(stateObj)  
@@ -2217,9 +2239,8 @@ async function goToNextLevel(stateObj) {
         newState.freeFuel = false;
         newState.killEnemiesForMoney = 0;
         newState.enemiesKilledPerLevel = 0;
-        if (newState.splinterCellRelic === true) {
-            newState.splinterCellModifier += 1
-        }
+        newState.splinterCellOn = false;
+        newState.splinterCellModifier = 1;
 
         if (stateObj.isScrapMetal === true) {
             const countEnemyOccurrences = newState.gameMap.reduce((acc, currentValue) => {
@@ -2302,6 +2323,8 @@ async function detonateBomb(stateObj, detonatePosition) {
     let numberBlocks = stateObj.bombDistance
     stateObj = await immer.produce(stateObj, (newState) => {
         newState.bombExploding = true;
+        newState.gameMap[newState.bombLocation] = "empty";
+        newState.bombLocation = false;
     })
     for (i=0; i < numberBlocks+1; i++) {
         leftBlocksToBlast = i;
@@ -2402,7 +2425,7 @@ async function dropBlock(stateObj) {
 
 async function dropBomb(stateObj) {
     console.log("dropping bomb")
-    if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
+    if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty" && stateObj.bombLocation === false) {
         stateObj = await immer.produce(stateObj, (newState) => {
             if (newState.bombCurrentTotal > 0) {
                 newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = "BOMB";
@@ -2411,7 +2434,8 @@ async function dropBomb(stateObj) {
                 newState.bombTimer = newState.bombTimerMax;
             }
         })
+    } else if (stateObj.bombLocation !== false && stateObj.remoteBombs === true) {
+        stateObj = await detonateBomb(stateObj, stateObj.bombLocation)
     }
-    console.log("bomb timer set to " + stateObj.bombTimer)
     return stateObj
 }
