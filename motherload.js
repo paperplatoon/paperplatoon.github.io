@@ -1416,6 +1416,7 @@ async function renderScreen(stateObj) {
                 repairText1.textContent = "Repair hull fully " 
                 repairText2.textContent = Math.ceil(missingHull*5) * (1-stateObj.cheaperShops) + " gold"
             }
+            repairText2.classList.add("store-option-text")
             repairDiv.append(repairText1, repairText2)
             repairDiv.classList.add("store-clickable")
             
@@ -1844,7 +1845,7 @@ async function repairHull(stateObj) {
                 newState.currentHullIntegrity = newState.maxHullIntegrity ;
                 newState.bankedCash -= Math.ceil(missingHull*5) * (1-stateObj.cheaperShops)
             } else {
-                newState.currentHull += Math.ceil(newState.bankedCash/5);
+                newState.currentHullIntegrity += Math.ceil(newState.bankedCash/5);
                 newState.bankedCash = 0;    
             }
         }
