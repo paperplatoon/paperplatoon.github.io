@@ -5,7 +5,7 @@
     padding-top: 6vh;
     padding: 0vh 0.5vw;
     height: 100%;
-    width: 100%;
+    width: 99%;
     margin-top: 20vh;
   }
 
@@ -134,7 +134,7 @@
     transition: all 0.3s ease-out;
   }
 
-  .player-img-full {
+  .player-img-damaged {
     filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(359deg) brightness(126%) contrast(63%);
     position: absolute;
     height: 100%;
@@ -142,6 +142,26 @@
     left: 20%;
     transition: all 0.3s ease-out;
   }
+
+  .player-img-full {
+    filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(200deg) brightness(126%) contrast(63%);
+    position: absolute;
+    height: 10vh;
+    width: auto;
+    left: 20%;
+    transition: all 0.3s ease-out;
+  }
+
+  .player-img-low-fuel {
+    filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(50deg) brightness(126%) contrast(63%);
+    position: absolute;
+    height: 10vh;
+    width: auto;
+    left: 20%;
+    transition: all 0.3s ease-out;
+  }
+
+
 
   .move-left-animation {
     animation: moveleft 1s linear 1;
