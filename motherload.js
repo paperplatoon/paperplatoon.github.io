@@ -845,26 +845,26 @@ async function moveEnemies() {
 
 
 
-        if (stateObj.movingDown) {
-            if (stateObj.movingUporDownCounter % (16/stateObj.movingDown) === 0) {
-                console.log("downward tick for down number " + stateObj.movingDown)
-                stateObj = await immer.produce(stateObj, (newState) => {
-                    if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
-                        newState.currentPosition += screenwidthBlocks
-                        newState.movingDown *= 2;
-                    } else {
-                        newState.movingDown = false;
-                    }
-                })
-            }
-        } else if (stateObj.movingUporDownCounter % 16 === 0) {
-            if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
-                stateObj = await immer.produce(stateObj, (newState) => {
-                    newState.currentPosition += screenwidthBlocks
-                    newState.movingDown = 2;
-                })
-            }
-        }
+        // if (stateObj.movingDown) {
+        //     if (stateObj.movingUporDownCounter % (16/stateObj.movingDown) === 0) {
+        //         console.log("downward tick for down number " + stateObj.movingDown)
+        //         stateObj = await immer.produce(stateObj, (newState) => {
+        //             if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
+        //                 newState.currentPosition += screenwidthBlocks
+        //                 newState.movingDown *= 2;
+        //             } else {
+        //                 newState.movingDown = false;
+        //             }
+        //         })
+        //     }
+        // } else if (stateObj.movingUporDownCounter % 16 === 0) {
+        //     if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
+        //         stateObj = await immer.produce(stateObj, (newState) => {
+        //             newState.currentPosition += screenwidthBlocks
+        //             newState.movingDown = 2;
+        //         })
+        //     }
+        // }
         
         await updateState(stateObj)
 
