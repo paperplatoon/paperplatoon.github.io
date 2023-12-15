@@ -177,6 +177,9 @@ async function renderTopBarStats(stateObj) {
     let topBarDiv = document.createElement("Div")
     topBarDiv.classList.add("top-stats-bar")
 
+    let levelDiv = document.createElement("Div")
+    levelDiv.textContent = "Level " + (stateObj.currentLevel+1);
+
     let fuelDiv = document.createElement("Div")
     fuelDiv.textContent = "Max Fuel: " + Math.floor(stateObj.fuelCapacity);
     fuelDiv.setAttribute("id", "max-fuel-text");
@@ -293,7 +296,7 @@ async function renderTopBarStats(stateObj) {
     }
     dirtDiv.textContent = dirtString
 
-    topBarDiv.append(fuelHullDiv, weaponsDiv, cashInventoryDiv, dirtDiv)
+    topBarDiv.append(levelDiv, fuelHullDiv, weaponsDiv, cashInventoryDiv, dirtDiv)
 
     if (stateObj.weaponsPriceModifier < 1) {
         let weaponPriceRelicDiv = document.createElement("Div")
