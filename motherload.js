@@ -71,6 +71,7 @@ let gameStartState = {
     currentHullIntegrity: 100,
     maxHullIntegrity: 100,
     hullUpgradeCost: 500,
+    takingDamage: false,
 
     dirtReserves: 0,
     dirtThresholdNeeded: 50,
@@ -711,6 +712,15 @@ async function moveEnemies() {
     stateObj = await immer.produce(stateObj, (newState) => {
         newState.timeCounter += 1;
         newState.movingUporDownCounter += 1;
+        if (newState.takingDamage !== false) {
+            if (newState.takingDamage > 0) {
+                newState.takingDamage -= 1
+            } else {
+                console.log("able to take damage again")
+                newState.takingDamage = false;
+            }
+            console.log('taking damage state is ' + stateObj.newState)
+        }
     })
     await updateState(stateObj)
     // console.log("number of enemies is " + stateObj.enemyMovementArray.length)
@@ -2040,11 +2050,16 @@ async function checkForDeath(stateObj) {
 async function doDamage(stateObj, damageAmount, enemyLocation) {
     if (stateObj.inStore === false) {
         stateObj = immer.produce(stateObj, (newState) => {
-            if (newState.halfDamageFullFuel < 1 && newState.currentFuel >= (newState.fuelCapacity/2)) {
-                newState.currentHullIntegrity -= Math.floor(((damageAmount * newState.enemyDamageModifier) * 0.5));
-            } else {
-                newState.currentHullIntegrity -= (damageAmount * newState.enemyDamageModifier);
-            }
+            if (newState.takingDamage === false) {
+                if (newState.halfDamageFullFuel < 1 && newState.currentFuel >= (newState.fuelCapacity/2)) {
+                    newState.currentHullIntegrity -= Math.floor(((damageAmount * newState.enemyDamageModifier) * 0.5));
+                    newState.takingDamage = 5
+                } else {
+                    newState.currentHullIntegrity -= (damageAmount * newState.enemyDamageModifier);
+                    newState.takingDamage = 5
+                }
+            } 
+            
             
             if (newState.thorns === true) {
                 console.log("is this enemy" + newState.gameMap[newState.currentPosition+enemyLocation])
