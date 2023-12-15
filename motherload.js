@@ -993,10 +993,10 @@ async function renderScreen(stateObj) {
                 let mapSquareImg = document.createElement("Img");
                 if (stateObj.currentHullIntegrity < stateObj.maxHullIntegrity) {
                     mapSquareImg.classList.add("player-img-damaged")
-                } else if ((stateObj.currentFuel/stateObj.fuelCapacity) < 0.3) {
-                    mapSquareImg.classList.add("player-img-low-fuel")
                 } else if (stateObj.currentInventory === stateObj.inventoryMax) {
                     mapSquareImg.classList.add("player-img-full")
+                } else if ((stateObj.currentFuel/stateObj.fuelCapacity) < 0.3) {
+                    mapSquareImg.classList.add("player-img-low-fuel")
                 } else {
                     mapSquareImg.classList.add("player-img")
                 }
