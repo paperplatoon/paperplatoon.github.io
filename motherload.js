@@ -22,7 +22,7 @@ let gameStartState = {
     blackDiamondInventory: 0,
     
 
-    bankedCash: 100,
+    bankedCash: 10000,
     
     numberLasers: 1,
     laserCapacity: 1,
@@ -180,12 +180,23 @@ async function renderTopBarStats(stateObj) {
     let levelDiv = document.createElement("Div")
     levelDiv.textContent = "Level " + (stateObj.currentLevel+1);
 
+    let barsDiv = document.createElement("Div")
+    barsDiv.classList.add("bars-div")
+
     let fuelDiv = document.createElement("Div")
-    fuelDiv.textContent = "Max Fuel: " + Math.floor(stateObj.fuelCapacity);
-    fuelDiv.setAttribute("id", "max-fuel-text");
+    fuelDiv.setAttribute("id", "fuel-div");
+
+    fuelText1Div = document.createElement("Div")
+    fuelText1Div.classList.add("bars-text-div")
+    fuelText1Div.textContent = "Fuel "
+
+    fuelText2Div = document.createElement("Div")
+    fuelText2Div.classList.add("bars-text-div")
+    fuelText2Div.setAttribute("id", "max-fuel-text");
     if (stateObj.fuelCapacity > 120) {
-        fuelDiv.classList.add("upgraded-stat")
+        fuelText2Div.classList.add("upgraded-stat")
     }
+    fuelText2Div.textContent = "[Max: " + stateObj.fuelCapacity + "]"
 
     let emptyFuelBarDiv = document.createElement("Div");
     emptyFuelBarDiv.classList.add("empty-fuel-bar");
@@ -202,7 +213,7 @@ async function renderTopBarStats(stateObj) {
     let barText = "width:" + barLength + "vw"
     currentFuelBarDiv.setAttribute("style", barText);
     emptyFuelBarDiv.append(currentFuelBarDiv);
-    fuelDiv.appendChild(emptyFuelBarDiv)
+    fuelDiv.append(fuelText1Div, emptyFuelBarDiv, fuelText2Div)
 
 
     let hullDiv = document.createElement("Div")
@@ -974,7 +985,8 @@ async function renderScreen(stateObj) {
         sellButtonDiv.classList.add("sell-button")
         sellButtonDiv.textContent = "Sell Items (" + sellTotal + ")"
         sellButtonDiv.onclick = async function () {
-            console.log("selling items")
+            document.querySelector(".sell-button").classList.add("emphasis")
+            await pause(450)
             await seeStore(stateObj, sellTotal)
         }
 

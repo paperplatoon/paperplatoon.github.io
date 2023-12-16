@@ -44,6 +44,22 @@
     /* border: 0.5px solid rgba(97, 48, 0, 0.756); */
   }
 
+  #fuel-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    margin-right: 2vw;
+    width: 30vw;
+  }
+
+  .bars-text-div {
+    margin-right: 1vw; 
+  }
+  .bars-div {
+    width: 30vw;
+  }
+
   .bronze, .silver, .gold, .platinum, .amethyst {
     position: relative;
   }
@@ -86,8 +102,10 @@
   .empty-fuel-bar {
     width: 10vw;
     height: 2vh;
+    margin-right: 1vw;
     background-color: grey;
     position: relative;
+    transition: 0.5s all;
   }
   
   .current-fuel-bar {
@@ -231,27 +249,56 @@
 
 .selling-items-div {
   display: flex;
+  flex-direction: column-reverse;
+  width: 30vw;
+  height: 60vh;
+  justify-content: center;
+  align-items: center;
+  
+  background: linear-gradient(rgba(249, 249, 249, 0.844) 0%, rgba(228, 228, 228, 0.85) 10%, rgba(223, 223, 223, 0.85) 40%,
+  rgba(228, 228, 228, 0.85) 90%, rgba(249, 249, 249, 0.85)); 
+  font-family:monospace
+}
+
+.sell-row {
+  width: 14vw;
+  padding: 2vh 2vw;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  transition: 1s all; 
+  border-top: 0.2vh solid grey;
+  border-bottom: 0.2vh solid grey;
+  background-color: rgba(187, 186, 186, 0.861); 
+}
+
+.selling-items-div {
+  display: flex;
   flex-direction: column;
   width: 30vw;
   height: 60vh;
   justify-content: center;
   align-items: center;
-  border: 4vw double rgba(71, 71, 71, 0.926);
+  border: 0.8vw dashed rgba(71, 71, 71, 0.726);
+  outline: 0.3vw dashed rgba(139, 137, 11, 0.526);
+  outline-offset: -0.5vw;
   background: linear-gradient(rgba(249, 249, 249, 0.844) 0%, rgba(228, 228, 228, 0.85) 10%, rgba(223, 223, 223, 0.85) 40%,
   rgba(228, 228, 228, 0.85) 90%, rgba(249, 249, 249, 0.85)); 
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  
+  font-family: monospace;
+  box-shadow: 1vw 1vw 1vw rgba(113, 113, 113, 0.619);
+  transition: 1s all;
 }
 
 .sell-row {
-  width: 20vw;
+  width: 18vw;
   padding: 2vh 2vw;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
-  border: 1px solid grey
-
-  
+  transition: 1s all; 
+  border-top: 0.2vh solid grey;
+  border-bottom: 0.2vh solid grey;
+  background-color: rgba(187, 186, 186, 0.861); 
 }
 
 .sell-button {
@@ -269,11 +316,46 @@
 
 .sell-button:hover {
   width: 12vw;
-  border: 4px dashed rgb(144, 255, 144);
+  border: 0.5vh dashed rgb(144, 255, 144);
+  height: 7.5vh;
   background: linear-gradient(to right, rgb(31, 125, 31) 0%, rgb(60, 133, 60) 20%, rgb(59, 122, 59) 40%, rgb(80, 126, 80) 70%, rgb(64, 100, 64) 75%, rgb(30, 111, 30));
   cursor: pointer;
   font-weight: 1300;
   color: white;
+}
+
+body:has(.sell-button:hover) .sell-row {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  border-bottom: 0.2vh solid white;
+  border-top: 0.2vh solid white;
+  background-color: rgb(78, 78, 78);
+  color: white;
+}
+
+body:has(.sell-button:hover) .selling-items-div {
+  box-shadow: 1vw 1vw 1vw rgba(159, 159, 159, 0.619);
+}
+
+body:has(#store-fuel-div:hover) #empty-fuel-bar {
+  background-color: rgba(0, 0, 255, 0.6);
+}
+
+#max-fuel-text {
+  transition: 0.5s all
+}
+
+body:has(#store-fuel-upgrade-div:hover) #max-fuel-text {
+  font-size: 150%;
+  color: green;
+  -webkit-animation: flash 1s;
+  animation: flash 1s infinite;
+}
+
+@keyframes flash {
+  0% {opacity: 1;}
+  100% {opacity: 0.5};
 }
 
   .enemy-img {
@@ -439,7 +521,7 @@
   }
 
   .upgraded-stat {
-    color: rgb(0, 192, 0)
+    color: rgb(4, 170, 4)
   }
 
   .bomb-effect {
