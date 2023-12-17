@@ -3,7 +3,7 @@
 let gameStartState = {
     gameMap: [],
 
-    currentFuel: 100,
+    currentFuel: 50,
     fuelCapacity: 120,
     fuelUpgrades: 0,
     fuelUpgradeCost: 500,
@@ -22,7 +22,7 @@ let gameStartState = {
     blackDiamondInventory: 0,
     
 
-    bankedCash: 10000,
+    bankedCash: 100,
     
     numberLasers: 1,
     laserCapacity: 1,
@@ -49,8 +49,6 @@ let gameStartState = {
     drillTime: 850,
     timeCounter: 0,
     moveToSquare: false,
-    movingDown: false,
-    movingUporDownCounter: 0,
     moveTimer: 0,
 
     //level modifiers
@@ -183,6 +181,8 @@ async function renderTopBarStats(stateObj) {
     let barsDiv = document.createElement("Div")
     barsDiv.classList.add("bars-div")
 
+
+    //FUEL
     let fuelDiv = document.createElement("Div")
     fuelDiv.setAttribute("id", "fuel-div");
 
@@ -204,10 +204,11 @@ async function renderTopBarStats(stateObj) {
     let currentFuelBarDiv = document.createElement("Div");
     currentFuelBarDiv.classList.add("current-fuel-bar");
     currentFuelBarDiv.setAttribute("id", "current-fuel-bar");
-    if (stateObj.currentFuel >= stateObj.fuelCapacity/4) {
+    if (stateObj.currentFuel >= stateObj.fuelCapacity/3) {
         currentFuelBarDiv.classList.add("full-fuel-bar");
     } else {
         currentFuelBarDiv.classList.add("low-fuel-bar");
+        fuelText1Div.classList.add("inventory-full-text")
     }
     let barLength = 10*(stateObj.currentFuel/stateObj.fuelCapacity)
     let barText = "width:" + barLength + "vw"
@@ -215,38 +216,93 @@ async function renderTopBarStats(stateObj) {
     emptyFuelBarDiv.append(currentFuelBarDiv);
     fuelDiv.append(fuelText1Div, emptyFuelBarDiv, fuelText2Div)
 
+    barsDiv.append(fuelDiv)
 
+
+    //HULL
     let hullDiv = document.createElement("Div")
-    hullDiv.textContent = "Hull: " + Math.floor(stateObj.currentHullIntegrity) + "/" + Math.floor(stateObj.maxHullIntegrity)
-    hullDiv.setAttribute("id", "hull-integrity-text");
+    hullDiv.setAttribute("id", "hull-div");
+    hullText1Div = document.createElement("Div")
+    hullText1Div.classList.add("bars-text-div")
+    hullText1Div.textContent = "Hull "
+
+    hullText2Div = document.createElement("Div")
+    hullText2Div.classList.add("bars-text-div")
+    hullText2Div.setAttribute("id", "hull-integrity-text");
     if (stateObj.maxHullIntegrity > 100) {
-        hullDiv.classList.add("upgraded-stat")
+        hullText2Div.classList.add("upgraded-stat")
+    }
+    hullText2Div.textContent = "[Max: " + stateObj.maxHullIntegrity + "]"
+
+    let emptyHullBarDiv = document.createElement("Div");
+    emptyHullBarDiv.classList.add("empty-hull-bar");
+    emptyHullBarDiv.setAttribute("id", "empty-hull-bar");
+
+    let currentHullBarDiv = document.createElement("Div");
+    currentHullBarDiv.classList.add("current-hull-bar");
+    currentHullBarDiv.setAttribute("id", "current-hull-bar");
+    if (stateObj.currentHullIntegrity > stateObj.maxHullIntegrity/2) {
+        currentHullBarDiv.classList.add("full-hull-bar");
+    } else {
+        currentHullBarDiv.classList.add("low-hull-bar");
+        hullText1Div.classList.add("inventory-full-text")
     }
 
-    let fuelHullDiv = document.createElement("Div")
-    fuelHullDiv.classList.add("top-vertical-div")
-    fuelHullDiv.append(fuelDiv, hullDiv)
+    let hullBarLength = 10*(stateObj.currentHullIntegrity/stateObj.maxHullIntegrity)
+    let hullBarText = "width:" + hullBarLength + "vw"
+    currentHullBarDiv.setAttribute("style", hullBarText);
+    emptyHullBarDiv.append(currentHullBarDiv);
+    hullDiv.append(hullText1Div, emptyHullBarDiv, hullText2Div)
+    barsDiv.append(hullDiv)
+
+
+    //INVENTORY
+    let inventoryDiv = document.createElement("Div")
+    inventoryDiv.classList.add("inventory")
+
+    let inventoryText1Div = document.createElement("Div")
+    inventoryText1Div = document.createElement("Div")
+    inventoryText1Div.classList.add("bars-text-div")
+    inventoryText1Div.textContent = "Inventory "
+
+    let inventoryText2Div = document.createElement("Div")
+    inventoryText2Div = document.createElement("Div")
+    inventoryText2Div.classList.add("bars-text-div")
+    inventoryText2Div.setAttribute("id", "inventory-size-text");
+    if (stateObj.inventoryMax > 12) {
+        inventoryText2Div.classList.add("upgraded-stat")
+    }
+    inventoryText2Div.textContent = "[ Max: " + stateObj.inventoryMax + " ]"
+    if (stateObj.currentInventory === stateObj.inventoryMax) {
+        inventoryText2Div.classList.add("inventory-full-text")
+        inventoryText1Div.classList.add("inventory-full-text")
+    }
+
+    let emptyInventoryBar = document.createElement("Div");
+    emptyInventoryBar.classList.add("empty-inv-bar");
+    emptyInventoryBar.setAttribute("id", "empty-inv-bar");
+
+    let currentInventoryBar = document.createElement("Div");
+    currentInventoryBar.classList.add("current-inv-bar");
+    currentInventoryBar.setAttribute("id", "current-inv-bar");
+    if (stateObj.currentInventory < stateObj.inventoryMax) {
+        currentInventoryBar.classList.add("normal-inv-bar");
+    } else {
+        currentInventoryBar.classList.add("full-inv-bar");
+    }
+    let invBarLength = 10*(stateObj.currentInventory/stateObj.inventoryMax)
+    let invBarText = "width:" + invBarLength + "vw"
+    currentInventoryBar.setAttribute("style", invBarText);
+    emptyInventoryBar.append(currentInventoryBar);
+
+    inventoryDiv.append(inventoryText1Div, emptyInventoryBar, inventoryText2Div)
+    barsDiv.append(inventoryDiv)
+
     
 
     let cashDiv = document.createElement("Div")
-    cashDiv.textContent = "Money: " + Math.floor(stateObj.bankedCash)
-    
-    let inventoryDiv = document.createElement("Div")
-    inventoryDiv.classList.add("inventory")
-    if (stateObj.currentInventory === stateObj.inventoryMax) {
-        inventoryDiv.textContent = "Inventory Full"
-        inventoryDiv.classList.add("inventory-full")
-    } else {
-        inventoryDiv.textContent = "Inventory: " + Math.round((stateObj.currentInventory / stateObj.inventoryMax)*100) + "% full    (Max: " + stateObj.inventoryMax + ")"
-    }
-    inventoryDiv.setAttribute("id", "inventory-size-text");
-    if (stateObj.inventoryMax > 12) {
-        inventoryDiv.classList.add("upgraded-stat")
-    }
-
-    let cashInventoryDiv = document.createElement("Div")
-    cashInventoryDiv.classList.add("top-vertical-div")
-    cashInventoryDiv.append(cashDiv, inventoryDiv)
+    cashDiv.textContent = "Money: $" + Math.floor(stateObj.bankedCash)
+    cashDiv.classList.add("cash-div")
 
     let lasersDiv = document.createElement("Div")
     lasersDiv.classList.add("weapons-div")
@@ -307,7 +363,7 @@ async function renderTopBarStats(stateObj) {
     }
     dirtDiv.textContent = dirtString
 
-    topBarDiv.append(levelDiv, fuelHullDiv, weaponsDiv, cashInventoryDiv, dirtDiv)
+    topBarDiv.append(cashDiv, barsDiv, levelDiv, weaponsDiv,dirtDiv)
 
     if (stateObj.weaponsPriceModifier < 1) {
         let weaponPriceRelicDiv = document.createElement("Div")
@@ -725,7 +781,6 @@ async function moveEnemies() {
     }
     stateObj = await immer.produce(stateObj, (newState) => {
         newState.timeCounter += 1;
-        newState.movingUporDownCounter += 1;
         if (newState.takingDamage !== false) {
             if (newState.takingDamage > 0) {
                 newState.takingDamage -= 1
@@ -736,7 +791,7 @@ async function moveEnemies() {
             console.log('taking damage state is ' + stateObj.newState)
         }
     })
-    await updateState(stateObj)
+    // await updateState(stateObj)
     // console.log("number of enemies is " + stateObj.enemyMovementArray.length)
     // console.log("enemy positions are " + stateObj.enemyArray)
     if (stateObj.inStore === false && stateObj.choosingNextLevel === false && stateObj.sellingItems === false) {
@@ -866,31 +921,7 @@ async function moveEnemies() {
                 })
             }
         }
-
-
-
-        // if (stateObj.movingDown) {
-        //     if (stateObj.movingUporDownCounter % (16/stateObj.movingDown) === 0) {
-        //         console.log("downward tick for down number " + stateObj.movingDown)
-        //         stateObj = await immer.produce(stateObj, (newState) => {
-        //             if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
-        //                 newState.currentPosition += screenwidthBlocks
-        //                 newState.movingDown *= 2;
-        //             } else {
-        //                 newState.movingDown = false;
-        //             }
-        //         })
-        //     }
-        // } else if (stateObj.movingUporDownCounter % 16 === 0) {
-        //     if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
-        //         stateObj = await immer.produce(stateObj, (newState) => {
-        //             newState.currentPosition += screenwidthBlocks
-        //             newState.movingDown = 2;
-        //         })
-        //     }
-        // }
         
-        await updateState(stateObj)
 
         await changeState(stateObj)
         await checkForDeath(stateObj)
@@ -901,13 +932,16 @@ async function moveEnemies() {
 //renders all the map squares. 
 //Can set this to 0 in exitDoor
 //To-DO: Need to set values for mapDiv and each map-square, including elements
-async function renderScreen(stateObj) {
+async function renderScreen(stateObj, isMove=true) {
     //console.log("rendering Screen")
 
     document.getElementById("app").innerHTML = ""
     //create a mapDiv to append all your new squares to
-    topBar = await renderTopBarStats(stateObj);
-    document.getElementById("app").append(topBar)
+    if (isMove) {
+        topBar = await renderTopBarStats(stateObj);
+        document.getElementById("app").append(topBar)
+    }
+    
     if (stateObj.sellingItems === true) {
         console.log("selling items is true")
         let storeDiv = document.createElement("Div")
@@ -1006,9 +1040,9 @@ async function renderScreen(stateObj) {
             if (stateObj.currentPosition === squareIndex) {
                 mapSquareDiv.classList.add("player-here")
                 let mapSquareImg = document.createElement("Img");
-                if ((stateObj.currentFuel/stateObj.fuelCapacity) < 0.3) {
+                if ((stateObj.currentFuel < stateObj.fuelCapacity/3)) {
                     mapSquareImg.classList.add("player-img-low-fuel")
-                } else if (stateObj.currentHullIntegrity < stateObj.maxHullIntegrity) {
+                } else if (stateObj.currentHullIntegrity <= (stateObj.maxHullIntegrity/2)) {
                     mapSquareImg.classList.add("player-img-damaged")
                 } else if (stateObj.currentInventory === stateObj.inventoryMax) {
                     mapSquareImg.classList.add("player-img-full")
@@ -1163,16 +1197,6 @@ async function renderScreen(stateObj) {
                         //only execute if not already on right side
                         if ((stateObj.currentPosition+1) % screenwidthBlocks !== 0) {
                             stateObj = await calculateMoveChange(stateObj, 1)
-                            // if (stateObj.gameMap[stateObj.currentPosition + 1] === "empty") {
-                            //     stateObj = await calculateMoveChange(stateObj, 1)
-                            //     window.scrollTo(currentWidth*scrollWidth- (scrollWidth*2), currentHeight*scrollHeight - (scrollHeight*2))
-                            // } else {
-                            //     stateObj = immer.produce(stateObj, (newState) => {
-                            //         newState.inTransition === true
-                            //         newState.moveToSquare = stateObj.currentPosition - 1
-                            //         newState.moveTimer += 1;
-                            //     })
-                            // }
                         }
                     }
                 } else if (stateObj.currentPosition === squareIndex + 1) {
@@ -1189,11 +1213,6 @@ async function renderScreen(stateObj) {
                     //make sure not on left side 
                     if (stateObj.currentPosition % screenwidthBlocks !== 0 ) {
                         stateObj = await calculateMoveChange(stateObj, -1)
-                        // stateObj = immer.produce(stateObj, (newState) => {
-                        //     newState.inTransition === true
-                        //     newState.moveToSquare = stateObj.currentPosition - 1
-                        //     newState.moveTimer += 1;
-                        // })
                     }
                 } else if (stateObj.currentPosition === squareIndex - screenwidthBlocks) {
                     let newSquare = stateObj.gameMap[stateObj.currentPosition - screenwidthBlocks]
@@ -2042,25 +2061,27 @@ document.addEventListener('keydown', async function(event) {
   });
 
 async function checkForDeath(stateObj) {
-    if (stateObj.currentFuel < 0) {
-        await loseTheGame("You've run out of fuel!");
-    }
+    if (state.sellingItems === false && state.inStore === false) {
+        if (state.currentFuel < 0) {
+            await loseTheGame("You've run out of fuel!");
+        }
 
-    if (stateObj.gameMap[stateObj.currentPosition-1] === "enemy" && stateObj.currentPosition % screenwidthBlocks !== 0) {
-        stateObj = await doDamage(stateObj, 50, -1)
-    } else if (stateObj.gameMap[stateObj.currentPosition+1] === "enemy" && (stateObj.currentPosition+1) % screenwidthBlocks !== 0) {
-        stateObj = await doDamage(stateObj, 50, 1)
-    } else if (stateObj.gameMap[stateObj.currentPosition+screenwidthBlocks] === "enemy") {
-        stateObj = await doDamage(stateObj, 50, screenwidthBlocks)
-    } else if (stateObj.gameMap[stateObj.currentPosition-screenwidthBlocks] === "enemy") {
-        stateObj = await doDamage(stateObj, 50, -screenwidthBlocks)
-    }
-
-    await changeState(stateObj)
-
-    if (stateObj.currentHullIntegrity <= 0) {
-        await loseTheGame("Your miner took too much damage and exploded!");
-    }
+        if (stateObj.gameMap[stateObj.currentPosition-1] === "enemy" && stateObj.currentPosition % screenwidthBlocks !== 0) {
+            stateObj = await doDamage(stateObj, 50, -1)
+        } else if (stateObj.gameMap[stateObj.currentPosition+1] === "enemy" && (stateObj.currentPosition+1) % screenwidthBlocks !== 0) {
+            stateObj = await doDamage(stateObj, 50, 1)
+        } else if (stateObj.gameMap[stateObj.currentPosition+screenwidthBlocks] === "enemy") {
+            stateObj = await doDamage(stateObj, 50, screenwidthBlocks)
+        } else if (stateObj.gameMap[stateObj.currentPosition-screenwidthBlocks] === "enemy") {
+            stateObj = await doDamage(stateObj, 50, -screenwidthBlocks)
+        }
+    
+        await changeState(stateObj)
+    
+        if (stateObj.currentHullIntegrity <= 0) {
+            await loseTheGame("Your miner took too much damage and exploded!");
+        }
+    } 
 }
 
 async function doDamage(stateObj, damageAmount, enemyLocation) {
@@ -2116,10 +2137,6 @@ async function LeftArrow(stateObj, currentHeight, currentWidth, scrollHeight, sc
             if (stateObj.gameMap[stateObj.currentPosition-1] !== "STORE") {
                 return stateObj
             }
-        } else {
-            stateObj = await immer.produce(stateObj, (newState) => {
-                newState.movingUporDownCounter = 0;
-            })
         }
         window.scrollTo(currentWidth*scrollWidth- (scrollWidth*4), currentHeight*scrollHeight - (scrollHeight*2))
         stateObj = await calculateMoveChange(stateObj, -1)
@@ -2137,9 +2154,6 @@ async function RightArrow(stateObj, currentHeight, currentWidth, scrollHeight, s
         //only execute if not already on right side
         if ((stateObj.currentPosition+1) % screenwidthBlocks !== 0) {
             stateObj = await calculateMoveChange(stateObj, 1)
-            stateObj = await immer.produce(stateObj, (newState) => {
-                newState.movingUporDownCounter = 0;
-            })
         }
     }
     return stateObj
@@ -2156,9 +2170,7 @@ async function UpArrow(stateObj, currentHeight, currentWidth, scrollHeight, scro
             window.scrollTo(currentWidth*scrollWidth- (scrollWidth*3), currentHeight*scrollHeight - (scrollHeight*2))
             stateObj = await calculateMoveChange(stateObj, -screenwidthBlocks)
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.movingUporDownCounter = 0;
                 newState.currentFuel -= 0.5
-                newState.movingDown = false
             })
         }
     } 
@@ -2169,9 +2181,6 @@ async function DownArrow(stateObj, currentHeight, currentWidth, scrollHeight, sc
     if (stateObj.currentPosition < (stateObj.gameMap.length-screenwidthBlocks) && stateObj.gameMap[stateObj.currentPosition+screenwidthBlocks] !== "stone") {
         window.scrollTo(currentWidth*scrollWidth- (scrollWidth*3), currentHeight*scrollHeight - (scrollHeight))
         stateObj = await calculateMoveChange(stateObj, screenwidthBlocks)
-        stateObj = immer.produce(stateObj, (newState) => {
-                newState.movingUporDownCounter = 0;
-        })
     }
     return stateObj
 }
@@ -2225,10 +2234,7 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "enemy") {
         stateObj = await doDamage(stateObj, 75)
         stateObj = await handleSquare(stateObj, targetSquareNum, 1)
-    } else if (targetSquare === "STORE" && stateObj.currentInventory === 0) {
-        console.log("should see store calulate")
-        stateObj = await seeStore(stateObj, false)
-    } else if (targetSquare === "STORE" && stateObj.currentInventory > 0) {
+    } else if (targetSquare === "STORE") {
         stateObj = await sellItemsScreen(stateObj)
     } else if (targetSquare === "EXIT") {
         stateObj = await goToNextLevel(stateObj)
@@ -2291,7 +2297,6 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         })
         
     }
-    console.log("fuel at " + stateObj.currentFuel)
 
     return stateObj
 }
@@ -2300,30 +2305,39 @@ function pause(timeValue) {
     return new Promise(res => setTimeout(res, timeValue))
 }
 
-async function sellItemsScreen(stateObj) {
+async function sellItemsScreen(stateObj, emptyInv=false) {
     stateObj = await immer.produce(stateObj, async (newState) => {
         newState.sellingItems = true;
+
+        if (newState.currentInventory === 0) {
+            newState.sellingItems = false;
+            newState.inStore = true;
+        }
     })
+
+
     return stateObj
 }
 
 async function seeStore(stateObj, sellTotal) {
     console.log("inside seeStore")
-    stateObj = await immer.produce(stateObj, async (newState) => {
-        newState.currentInventory = 0;
-        newState.bronzeInventory = 0;
-        newState.silverInventory = 0;
-        newState.goldInventory = 0;
-        newState.rubyInventory = 0;
-        newState.amethystInventory = 0;
-        newState.diamondInventory = 0;
-        newState.blackDiamondInventory = 0;
-        if (sellTotal) {
-            newState.bankedCash += sellTotal;
-        }
+    if (sellTotal) {
+        stateObj = await immer.produce(stateObj, async (newState) => {
+            newState.currentInventory = 0;
+            newState.bronzeInventory = 0;
+            newState.silverInventory = 0;
+            newState.goldInventory = 0;
+            newState.rubyInventory = 0;
+            newState.amethystInventory = 0;
+            newState.diamondInventory = 0;
+            newState.blackDiamondInventory = 0;
+            if (sellTotal) {
+                newState.bankedCash += sellTotal;
+            }
         newState.sellingItems = false
         newState.inStore = true;
-    })
+        })
+    }
     stateObj = await changeState(stateObj)
     return stateObj
 }

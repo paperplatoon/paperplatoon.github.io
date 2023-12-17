@@ -44,20 +44,36 @@
     /* border: 0.5px solid rgba(97, 48, 0, 0.756); */
   }
 
-  #fuel-div {
+  #fuel-div, #hull-div, .inventory {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: left;
-    margin-right: 2vw;
-    width: 30vw;
+    justify-content: right;
+    width: 25vw;
   }
 
   .bars-text-div {
     margin-right: 1vw; 
   }
+
   .bars-div {
-    width: 30vw;
+    width: 25vw;
+    height: 10vh;
+    margin-top: 0.5vh;
+    padding-left: 0.5vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 0.6vh dashed grey;
+    background: repeating-linear-gradient(
+    45deg,
+    #c7b21755 0%,
+    #c7b21750 5%,
+    #9f9e954e 5%,
+    #9f9e954b 10%
+  );
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   }
 
   .bronze, .silver, .gold, .platinum, .amethyst {
@@ -99,7 +115,7 @@
     z-index: 0;
   }
 
-  .empty-fuel-bar {
+  .empty-fuel-bar, .empty-hull-bar, .empty-inv-bar {
     width: 10vw;
     height: 2vh;
     margin-right: 1vw;
@@ -108,8 +124,7 @@
     transition: 0.5s all;
   }
   
-  .current-fuel-bar {
-    
+  .current-fuel-bar, .current-hull-bar, .current-inv-bar {
     position: absolute;
     top:-1px;
     left: -1px;
@@ -117,10 +132,22 @@
   }
 
   .full-fuel-bar {
-    background-color: blue;
+    background-color: rgb(249, 170, 1);
   }
   .low-fuel-bar {
-    background-color: rgb(249, 170, 1);
+    background-color: rgb(184, 112, 17);
+    animation: flash 2s infinite;
+  }
+
+  .full-hull-bar {
+    background-color: rgb(169, 4, 4);
+  }
+  .low-hull-bar {
+    background-color: rgb(232, 29, 29);
+  }
+
+  .normal-inv-bar {
+    background-color: rgb(15, 24, 195);
   }
 
   .empty {
@@ -153,7 +180,7 @@
   }
 
   .player-img-damaged {
-    filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(359deg) brightness(126%) contrast(63%);
+    filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(0deg) brightness(126%) contrast(63%);
     position: absolute;
     height: 100%;
     width: auto;
@@ -171,15 +198,25 @@
   }
 
   .player-img-low-fuel {
-    filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(50deg) brightness(126%) contrast(63%);
     position: absolute;
+    filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(50deg) brightness(126%) contrast(63%);
     height: 10vh;
     width: auto;
     left: 20%;
     transition: all 0.3s ease-out;
+    -webkit-animation: low-fuel 1s;
+    animation: low-fuel 1s infinite;
   }
 
-
+  /* @keyframes low-fuel {
+    0% {
+      filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(40deg) brightness(126%) contrast(63)
+    }
+  
+    100% {
+      filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(35deg) brightness(126%) contrast(63)
+    }
+  } */
 
   .move-left-animation {
     animation: moveleft 1s linear 1;
@@ -339,7 +376,7 @@ body:has(.sell-button:hover) .selling-items-div {
 }
 
 body:has(#store-fuel-div:hover) #empty-fuel-bar {
-  background-color: rgba(0, 0, 255, 0.6);
+  background-color: rgba(197, 185, 16, 0.6);
 }
 
 #max-fuel-text {
@@ -347,10 +384,27 @@ body:has(#store-fuel-div:hover) #empty-fuel-bar {
 }
 
 body:has(#store-fuel-upgrade-div:hover) #max-fuel-text {
-  font-size: 150%;
+  font-size: 120%;
   color: green;
   -webkit-animation: flash 1s;
   animation: flash 1s infinite;
+}
+
+.inventory-full {
+  color: red;
+  font-size: 130%;
+}
+
+.inventory-full-text {
+  color: red;
+  font-size: 115%;
+  animation: flashcolor 1.5s infinite;
+}
+
+@keyframes flashcolor {
+  0% {color: red;}
+  50% {color: black};
+  100% {color: red;}
 }
 
 @keyframes flash {
@@ -367,9 +421,7 @@ body:has(#store-fuel-upgrade-div:hover) #max-fuel-text {
     background-color: black;
   }
 
-  .inventory-full {
-    color: red;
-  }
+ 
 
   .relic {
     background-color: pink;
