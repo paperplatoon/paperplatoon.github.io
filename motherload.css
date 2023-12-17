@@ -52,6 +52,14 @@
     width: 25vw;
   }
 
+  .level-div {
+    background-color: rgb(208, 205, 205);
+    border: 0.5vh solid grey;
+    width: 6vw;
+    height: 4vh;
+    margin-top: 4vh;
+  }
+
   .bars-text-div {
     margin-right: 1vw; 
   }
@@ -80,6 +88,17 @@
     position: relative;
   }
 
+  .centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #goldText {
+    position: absolute;
+    color: black;
+    margin: 0;
+  }
 
 .bronze:after {
   background-color: rgb(136, 78, 8);
@@ -495,6 +514,18 @@ body:has(#store-fuel-upgrade-div:hover) #max-fuel-text {
 
   .enemy-death {
     animation: enemydeath 0.1s;
+  }
+
+  #cash-div {
+    height: 8vh;
+    width: 6vw;
+    background-color: green;
+    color: rgb(0, 84, 6);
+    margin-top: 1vh;
+    font-size: 3vh;
+    border: 1vh dotted white;
+    background: linear-gradient(to right, rgb(50, 201, 50) 0%, rgb(108, 238, 108) 20%, rgb(113, 232, 113) 40%, rgb(151, 238, 151) 70%, rgb(159, 245, 159) 75%, rgb(59, 216, 59));
+    font-family: Impact, Haettenschweiler, 'Arial Narrow', sans-serif;
   }
 
   @keyframes enemydeath {

@@ -176,7 +176,9 @@ async function renderTopBarStats(stateObj) {
     topBarDiv.classList.add("top-stats-bar")
 
     let levelDiv = document.createElement("Div")
+    levelDiv.classList.add("level-div")
     levelDiv.textContent = "Level " + (stateObj.currentLevel+1);
+    levelDiv.classList.add("centered")
 
     let barsDiv = document.createElement("Div")
     barsDiv.classList.add("bars-div")
@@ -301,8 +303,10 @@ async function renderTopBarStats(stateObj) {
     
 
     let cashDiv = document.createElement("Div")
-    cashDiv.textContent = "Money: $" + Math.floor(stateObj.bankedCash)
-    cashDiv.classList.add("cash-div")
+    cashDiv.setAttribute("id", "cash-div");
+    cashDiv.classList.add("centered")
+    cashDiv.textContent = "$" + stateObj.bankedCash;
+    
 
     let lasersDiv = document.createElement("Div")
     lasersDiv.classList.add("weapons-div")
@@ -363,7 +367,7 @@ async function renderTopBarStats(stateObj) {
     }
     dirtDiv.textContent = dirtString
 
-    topBarDiv.append(cashDiv, barsDiv, levelDiv, weaponsDiv,dirtDiv)
+    topBarDiv.append(levelDiv, cashDiv, barsDiv, weaponsDiv,dirtDiv)
 
     if (stateObj.weaponsPriceModifier < 1) {
         let weaponPriceRelicDiv = document.createElement("Div")
