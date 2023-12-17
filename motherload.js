@@ -287,11 +287,7 @@ async function renderTopBarStats(stateObj) {
     let currentInventoryBar = document.createElement("Div");
     currentInventoryBar.classList.add("current-inv-bar");
     currentInventoryBar.setAttribute("id", "current-inv-bar");
-    if (stateObj.currentInventory < stateObj.inventoryMax) {
-        currentInventoryBar.classList.add("normal-inv-bar");
-    } else {
-        currentInventoryBar.classList.add("full-inv-bar");
-    }
+    currentInventoryBar.classList.add("normal-inv-bar");
     let invBarLength = 10*(stateObj.currentInventory/stateObj.inventoryMax)
     let invBarText = "width:" + invBarLength + "vw"
     currentInventoryBar.setAttribute("style", invBarText);
