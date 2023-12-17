@@ -28,7 +28,7 @@ let gameStartState = {
     laserCapacity: 1,
     laserCost: 150,
     laserCapacityUpgradeCost: 750,
-    laserPiercing: false,
+    
     firingLaserLeft: false,
     firingLaserRight: false,
     laserExplosion: false,
@@ -44,6 +44,7 @@ let gameStartState = {
     killEnemiesForMoney: 0,
     killEnemiesForHealing: 0,
     bronzeSilverBonus: 1,
+    laserPiercing: false,
     
 
     drillTime: 850,
@@ -554,6 +555,32 @@ async function renderTopBarStats(stateObj) {
           topBarDiv.append(weaponPriceRelicDiv)
     }
 
+    if (stateObj.bronzeSilverBonus > 1) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/bronzesilverbonus.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#bronze-silver-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#bronze-silver-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "bronze-silver-popup")
+          relicTextDiv.textContent = "Bronze and silver ore sells for " + stateObj.bronzeSilverBonus + " as much money"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
     if (stateObj.dirtToMaxFuel > 0) {
         let weaponPriceRelicDiv = document.createElement("Div")
         weaponPriceRelicDiv.classList.add("relic-div")
@@ -626,7 +653,7 @@ async function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "money-dirt-popup")
-          relicTextDiv.textContent = "Earn " + Math.ceil(stateObj.moneyForDirt) + " gold every time you drop dirt"
+          relicTextDiv.textContent = "Earn $" + Math.ceil(stateObj.moneyForDirt) + " every time you drop dirt"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
           topBarDiv.append(weaponPriceRelicDiv)
@@ -961,7 +988,7 @@ async function renderScreen(stateObj, isMove=true) {
             let inventoryDiv = document.createElement("Div")
             inventoryDiv.classList.add("sell-row")
             let bronzeSellTotal = ((25*stateObj.bronzeSilverBonus*stateObj.splinterCellModifier)*stateObj.bronzeInventory)
-            inventoryDiv.textContent = "Bronze Ore (" + stateObj.bronzeInventory + "): " + bronzeSellTotal + " gold"
+            inventoryDiv.textContent = "Bronze Ore (" + stateObj.bronzeInventory + "): $" + bronzeSellTotal 
             sellInventoryDiv.append(inventoryDiv)
             sellTotal += bronzeSellTotal
         }
@@ -969,7 +996,7 @@ async function renderScreen(stateObj, isMove=true) {
             let inventoryDiv = document.createElement("Div")
             inventoryDiv.classList.add("sell-row")
             let silverSellTotal = ((50*stateObj.bronzeSilverBonus*stateObj.splinterCellModifier)*stateObj.silverInventory)
-            inventoryDiv.textContent = "Silver Ore (" + stateObj.silverInventory + "): " + silverSellTotal +  " gold"
+            inventoryDiv.textContent = "Silver Ore (" + stateObj.silverInventory + "): $" + silverSellTotal
             sellInventoryDiv.append(inventoryDiv)
             sellTotal += silverSellTotal
         }
@@ -978,7 +1005,7 @@ async function renderScreen(stateObj, isMove=true) {
             let inventoryDiv = document.createElement("Div")
             inventoryDiv.classList.add("sell-row")
             let tempSellTotal = ((100*stateObj.splinterCellModifier)*stateObj.goldInventory)
-            inventoryDiv.textContent = "Gold Ore (" + stateObj.goldInventory + "): " + tempSellTotal + " gold"
+            inventoryDiv.textContent = "Gold Ore (" + stateObj.goldInventory + "): $" + tempSellTotal
             sellInventoryDiv.append(inventoryDiv)
             sellTotal += tempSellTotal
         }
@@ -987,7 +1014,7 @@ async function renderScreen(stateObj, isMove=true) {
             let inventoryDiv = document.createElement("Div")
             inventoryDiv.classList.add("sell-row")
             let tempSellTotal = ((250*stateObj.splinterCellModifier)*stateObj.rubyInventory)
-            inventoryDiv.textContent = "Rubies (" + stateObj.rubyInventory + "): " + tempSellTotal + " gold"
+            inventoryDiv.textContent = "Rubies (" + stateObj.rubyInventory + "): " + tempSellTotal
             sellInventoryDiv.append(inventoryDiv)
             sellTotal += tempSellTotal
         }
@@ -995,8 +1022,7 @@ async function renderScreen(stateObj, isMove=true) {
             let inventoryDiv = document.createElement("Div")
             inventoryDiv.classList.add("sell-row")
             let tempSellTotal = ((500*stateObj.splinterCellModifier)*stateObj.amethystInventory)
-            inventoryDiv.textContent = "Amethyst (" + stateObj.amethystInventory + "): " + 
-            tempSellTotal + " gold"
+            inventoryDiv.textContent = "Amethyst (" + stateObj.amethystInventory + "): $" + tempSellTotal
             sellInventoryDiv.append(inventoryDiv)
             sellTotal += tempSellTotal
         }
@@ -1004,8 +1030,7 @@ async function renderScreen(stateObj, isMove=true) {
             let inventoryDiv = document.createElement("Div")
             inventoryDiv.classList.add("sell-row")
             let tempSellTotal = ((1000*stateObj.splinterCellModifier)*stateObj.diamondInventory)
-            inventoryDiv.textContent = "Diamonds (" + stateObj.diamondInventory + "): " + 
-            tempSellTotal + " gold"
+            inventoryDiv.textContent = "Diamonds (" + stateObj.diamondInventory + "): $" + tempSellTotal
             sellInventoryDiv.append(inventoryDiv)
             sellTotal += tempSellTotal
         }
@@ -1013,15 +1038,14 @@ async function renderScreen(stateObj, isMove=true) {
             let inventoryDiv = document.createElement("Div")
             inventoryDiv.classList.add("sell-row")
             let tempSellTotal = ((3000*stateObj.splinterCellModifier)*stateObj.blackDiamondInventory)
-            inventoryDiv.textContent = "Black Diamonds (" + stateObj.blackDiamondInventory + "): " + 
-            tempSellTotal + " gold"
+            inventoryDiv.textContent = "Black Diamonds (" + stateObj.blackDiamondInventory + "): $" + tempSellTotal
             sellInventoryDiv.append(inventoryDiv)
             sellTotal += tempSellTotal
         }
 
         let sellButtonDiv = document.createElement("Div")
         sellButtonDiv.classList.add("sell-button")
-        sellButtonDiv.textContent = "Sell Items (" + sellTotal + ")"
+        sellButtonDiv.textContent = "Sell Items ($" + sellTotal + ")"
         sellButtonDiv.onclick = async function () {
             document.querySelector(".sell-button").classList.add("emphasis")
             await pause(450)
@@ -1274,7 +1298,7 @@ async function renderScreen(stateObj, isMove=true) {
 
         let scrapMetalDiv = document.createElement("Div")
         scrapMetalDiv.classList.add("next-level-option")
-        scrapMetalDiv.textContent = "PACIFIST - After completing the level, gain 200 gold for every enemy that is still alive"
+        scrapMetalDiv.textContent = "PACIFIST - After completing the level, gain $200 for every enemy that is still alive"
         scrapMetalDiv.classList.add("next-level-clickable")
         scrapMetalDiv.onclick = function () {
             scrapMetalChoice(stateObj)
@@ -1282,7 +1306,7 @@ async function renderScreen(stateObj, isMove=true) {
 
         let killEnemiesForMoneyDiv = document.createElement("Div")
         killEnemiesForMoneyDiv.classList.add("next-level-option")
-        killEnemiesForMoneyDiv.textContent = "BOUNTY HUNTER - Gain 50 gold for each enemy killed (next level only)"
+        killEnemiesForMoneyDiv.textContent = "BOUNTY HUNTER - Gain $50 for each enemy killed (next level only)"
         killEnemiesForMoneyDiv.classList.add("next-level-clickable")
         killEnemiesForMoneyDiv.onclick = function () {
             killEnemiesForMoneyChoice(stateObj)
@@ -1364,7 +1388,7 @@ async function renderScreen(stateObj, isMove=true) {
         let fuelText2 = document.createElement("Div")
         fuelText2.classList.add("store-option-text")
         fuelText1.textContent = "Fuel Capacity Upgrade" 
-        fuelText2.textContent = stateObj.fuelUpgradeCost * (1-stateObj.cheaperShops) + " gold"
+        fuelText2.textContent = "$" + stateObj.fuelUpgradeCost * (1-stateObj.cheaperShops)
         fuelUpgradeDiv.append(fuelText1, fuelText2)
         if (stateObj.bankedCash >= stateObj.fuelUpgradeCost * (1-stateObj.cheaperShops)) {
             fuelUpgradeDiv.classList.add("store-clickable")
@@ -1381,7 +1405,7 @@ async function renderScreen(stateObj, isMove=true) {
         let laserText2 = document.createElement("Div")
         laserText2.classList.add("store-option-text")
         laserText1.textContent = "Laser Capacity Upgrade" 
-        laserText2.textContent = stateObj.laserCapacityUpgradeCost * (1-stateObj.cheaperShops) + " gold"
+        laserText2.textContent = "$" + stateObj.laserCapacityUpgradeCost * (1-stateObj.cheaperShops)
         laserUpgradeDiv.append(laserText1, laserText2)
         if (stateObj.bankedCash >= stateObj.laserCapacityUpgradeCost * (1-stateObj.cheaperShops)) {
             laserUpgradeDiv.classList.add("store-clickable")
@@ -1398,7 +1422,7 @@ async function renderScreen(stateObj, isMove=true) {
           let bombText2 = document.createElement("Div")
           bombText2.classList.add("store-option-text")
           bombText1.textContent = "Bomb Capacity Upgrade" 
-          bombText2.textContent = stateObj.bombCapacityUpgradeCost * (1-stateObj.cheaperShops) + " gold"
+          bombText2.textContent = "$" + stateObj.bombCapacityUpgradeCost * (1-stateObj.cheaperShops)
           bombUpgradeDiv.append(bombText1, bombText2)
         if (stateObj.bankedCash >= stateObj.bombCapacityUpgradeCost * (1-stateObj.cheaperShops)) {
             bombUpgradeDiv.classList.add("store-clickable")
@@ -1422,11 +1446,11 @@ async function renderScreen(stateObj, isMove=true) {
                 fillText1.textContent = "Refill fuel" 
                 fillText2.textContent = "Free"
             } else if (stateObj.bankedCash < fuelPrice) {
-                fillText1.textContent = "Spend all gold on fuel" 
-                fillText2.textContent = stateObj.bankedCash + " gold"
+                fillText1.textContent = "Spend all money on fuel" 
+                fillText2.textContent = "$" + stateObj.bankedCash
             } else {
                 fillText1.textContent = "Refill fuel" 
-                fillText2.textContent = fuelPrice + " gold"
+                fillText2.textContent = "$" + fuelPrice
             }
 
             fillFuelDiv.append(fillText1, fillText2)
@@ -1448,11 +1472,11 @@ async function renderScreen(stateObj, isMove=true) {
             repairText1.classList.add("store-option-text")
             
             if ((missingHull*5) > (stateObj.bankedCash * (1-stateObj.cheaperShops))) {
-                repairText1.textContent = "Spend all gold on repairs" 
-                repairText2.textContent = Math.ceil(stateObj.bankedCash) * (1-stateObj.cheaperShops) + " gold"
+                repairText1.textContent = "Spend all money on repairs" 
+                repairText2.textContent = "$" + Math.ceil(stateObj.bankedCash) * (1-stateObj.cheaperShops)
             } else {
                 repairText1.textContent = "Repair hull fully " 
-                repairText2.textContent = Math.ceil(missingHull*5) * (1-stateObj.cheaperShops) + " gold"
+                repairText2.textContent = "$" +  Math.ceil(missingHull*5) * (1-stateObj.cheaperShops)
             }
             repairText2.classList.add("store-option-text")
             repairDiv.append(repairText1, repairText2)
@@ -1473,7 +1497,7 @@ async function renderScreen(stateObj, isMove=true) {
         let invText2 = document.createElement("Div")
         invText2.classList.add("store-option-text")
         invText1.textContent = "Inventory Size Upgrade" 
-        invText2.textContent = stateObj.inventoryUpgradeCost * (1-stateObj.cheaperShops) + " gold"
+        invText2.textContent = "$" + stateObj.inventoryUpgradeCost * (1-stateObj.cheaperShops)
         inventoryUpgradeDiv.append(invText1, invText2)
         if (stateObj.bankedCash >= stateObj.inventoryUpgradeCost * (1-stateObj.cheaperShops)) {
             inventoryUpgradeDiv.classList.add("store-clickable")
@@ -1490,7 +1514,7 @@ async function renderScreen(stateObj, isMove=true) {
         let hullText2 = document.createElement("Div")
         hullText2.classList.add("store-option-text")
         hullText1.textContent = "Hull Integrity Upgrade" 
-        hullText2.textContent = stateObj.hullUpgradeCost * (1-stateObj.cheaperShops) + " gold"
+        hullText2.textContent = "$" + stateObj.hullUpgradeCost * (1-stateObj.cheaperShops)
         hullUpgradeDiv.append(hullText1, hullText2)
         if (stateObj.bankedCash >= stateObj.hullUpgradeCost * (1-stateObj.cheaperShops)) {
             hullUpgradeDiv.classList.add("store-clickable")
@@ -1508,7 +1532,7 @@ async function renderScreen(stateObj, isMove=true) {
             let laserText2 = document.createElement("Div")
             laserText2.classList.add("store-option-text")
             laserText1.textContent = "Buy a laser" 
-            laserText2.textContent = (stateObj.laserCost * stateObj.weaponsPriceModifier) * (1-stateObj.cheaperShops) + " gold"
+            laserText2.textContent = "$" + (stateObj.laserCost * stateObj.weaponsPriceModifier) * (1-stateObj.cheaperShops)
             buyLaserDiv.append(laserText1, laserText2)
             buyLaserDiv.onclick = function () {
             }
@@ -1529,7 +1553,7 @@ async function renderScreen(stateObj, isMove=true) {
             let bombText2 = document.createElement("Div")
             bombText2.classList.add("store-option-text")
             bombText1.textContent = "Buy a bomb" 
-            bombText2.textContent = (stateObj.bombCost * stateObj.weaponsPriceModifier) * (1-stateObj.cheaperShops) + " gold"
+            bombText2.textContent = "$" + (stateObj.bombCost * stateObj.weaponsPriceModifier) * (1-stateObj.cheaperShops)
             buyBombDiv.append(bombText1, bombText2)
             buyBombDiv.onclick = function () {
             }
@@ -1549,7 +1573,7 @@ async function renderScreen(stateObj, isMove=true) {
         let bombDistText2 = document.createElement("Div")
         bombDistText2.classList.add("store-option-text")
         bombDistText1.textContent = "Bomb Distance Upgrade" 
-        bombDistText2.textContent = stateObj.bombDistanceUpgradeCost + " gold"
+        bombDistText2.textContent = "$" + stateObj.bombDistanceUpgradeCost
         upgradeBombDistanceDiv.append(bombDistText1, bombDistText2)
         if (stateObj.bankedCash >= stateObj.bombDistanceUpgradeCost) {
             upgradeBombDistanceDiv.classList.add("store-clickable")
