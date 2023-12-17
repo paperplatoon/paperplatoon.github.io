@@ -190,6 +190,7 @@ async function renderTopBarStats(stateObj) {
 
     fuelText1Div = document.createElement("Div")
     fuelText1Div.classList.add("bars-text-div")
+    fuelText1Div.setAttribute("id", "fuel-opening-text");
     fuelText1Div.textContent = "Fuel "
 
     fuelText2Div = document.createElement("Div")
@@ -309,12 +310,12 @@ async function renderTopBarStats(stateObj) {
     let currentLasersDiv = document.createElement("Div")
     currentLasersDiv.setAttribute("id", "current-lasers-text");
     laserString = "Lasers"
-    if (stateObj.laserPiercing === true) {
-        laserString = laserString + " (Piercing)"
-    }
     laserString = laserString + ": " + stateObj.numberLasers + "/" + stateObj.laserCapacity
     if (stateObj.numberLasers > 0) {
         laserString = laserString + " (press L to fire)"
+    }
+    if (stateObj.laserPiercing === true) {
+        laserString = laserString + "\u00A0  [Piercing]"
     }
     currentLasersDiv.textContent = laserString
     if (stateObj.laserCapacity > 1 || stateObj.laserPiercing === true) {
@@ -1691,7 +1692,7 @@ async function longerLevelChoice(stateObj) {
 async function dirtEfficiencyChoice(stateObj) {
     if (stateObj.dirtThresholdNeeded > 10) {
         stateObj = immer.produce(stateObj, (newState) => {
-            newState.dirtThresholdNeeded -= 5;
+            newState.dirtThresholdNeeded -= 10;
             newState.choosingNextLevel = false;
         })
     }
@@ -1725,7 +1726,7 @@ async function stopEnemiesRelic(stateObj) {
 
 async function dirtToMaxFuelRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.dirtToMaxFuel += 3;
+        newState.dirtToMaxFuel += 5;
     })
     await changeState(stateObj);
     return stateObj
