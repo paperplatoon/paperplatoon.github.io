@@ -3,7 +3,7 @@
 let gameStartState = {
     gameMap: [],
 
-    currentFuel: 50,
+    currentFuel: 100,
     fuelCapacity: 120,
     fuelUpgrades: 0,
     fuelUpgradeCost: 500,
@@ -352,11 +352,14 @@ async function renderTopBarStats(stateObj) {
     bombDiv.append(currentBombsDiv, bombDistanceDiv)
 
     let weaponsDiv = document.createElement("Div")
+    weaponsDiv.classList.add("all-weapons-div")
     weaponsDiv.classList.add("top-vertical-div")
     weaponsDiv.append(bombDiv, lasersDiv)
 
 
     let dirtDiv = document.createElement("Div")
+    dirtDiv.classList.add("dirt-div")
+    dirtDiv.classList.add("centered")
     dirtDiv.classList.add("top-vertical-div")
     dirtString = "Dirt: " + Math.round((stateObj.dirtReserves/(stateObj.dirtThresholdNeeded))*100) + "%"
     if (stateObj.dirtReserves >= (stateObj.dirtThresholdNeeded)) {
