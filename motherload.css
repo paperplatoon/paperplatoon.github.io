@@ -440,12 +440,12 @@ body:has(#store-repair-div:hover) #empty-hull-bar {
   animation: flash 1s infinite;
 }
 
-body:has(#store-bomb-capacity-upgrade-div:hover) #current-bombs-text {
+body:has(.store-clickable#store-bomb-capacity-upgrade-div:hover) #current-bombs-text {
   color: rgb(115, 115, 115);
   animation: flash 1s infinite;
 }
 
-body:has(#store-laser-capacity-upgrade-div:hover) #current-lasers-text {
+body:has(.store-clickable#store-laser-capacity-upgrade-div:hover) #current-lasers-text {
   color: rgb(115, 115, 115);
   animation: flash 1s infinite;
 }
@@ -456,21 +456,28 @@ body:has(#store-laser-capacity-upgrade-div:hover) #current-lasers-text {
   transition: 0.5s all
 }
 
-body:has(#store-fuel-upgrade-div:hover) #max-fuel-text {
+body:has(.store-clickable#store-fuel-upgrade-div:hover) #max-fuel-text {
   font-size: 120%;
   color: green;
   -webkit-animation: flash 1s;
   animation: flash 1s infinite;
 }
 
-body:has(#store-hull-upgrade-div:hover) #hull-integrity-text {
+body:has(.store-clickable#store-fuel-upgrade-div:hover) #empty-fuel-bar,
+body:has(.store-clickable#store-hull-upgrade-div:hover) #empty-hull-bar,
+body:has(.store-clickable#store-inventory-upgrade-div:hover) #empty-inv-bar {
+  -webkit-animation: flash 1s;
+  animation: flash 1s infinite;
+}
+
+body:has(.store-clickable#store-hull-upgrade-div:hover) #hull-integrity-text {
   font-size: 120%;
   color: green;
   -webkit-animation: flash 1s;
   animation: flash 1s infinite;
 }
 
-body:has(#store-inventory-upgrade-div:hover) #inventory-size-text {
+body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-text {
   font-size: 120%;
   color: green;
   -webkit-animation: flash 1s;
