@@ -41,8 +41,8 @@ let gameStartState = {
     thorns: false,
     killEnemiesHullModifier: 0,
     moneyForDirt: 0,
-    killEnemiesForMoney: 0,
-    killEnemiesForHealing: 0,
+    killEnemiesForMoney: 0, //needs done
+    killEnemiesForHealing: 0, 
     bronzeSilverBonus: 1,
     laserPiercing: false,
     
@@ -375,7 +375,7 @@ async function renderTopBarStats(stateObj) {
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/gun1.png"
+        weaponImg.src = "img/relics/gun1.png"
         weaponPriceRelicDiv.append(weaponImg)
         
         weaponPriceRelicDiv.addEventListener('mouseenter', function() {
@@ -401,7 +401,7 @@ async function renderTopBarStats(stateObj) {
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/thorns.png"
+        weaponImg.src = "img/relics/thorns.png"
         weaponPriceRelicDiv.append(weaponImg)
         
         weaponPriceRelicDiv.addEventListener('mouseover', function() {
@@ -427,7 +427,7 @@ async function renderTopBarStats(stateObj) {
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/shield2.png"
+        weaponImg.src = "img/relics/shield2.png"
         weaponPriceRelicDiv.append(weaponImg)
         
         weaponPriceRelicDiv.addEventListener('mouseover', function() {
@@ -453,7 +453,7 @@ async function renderTopBarStats(stateObj) {
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/shield1.png"
+        weaponImg.src = "img/relics/gasshield.png"
         weaponPriceRelicDiv.append(weaponImg)
         
         weaponPriceRelicDiv.addEventListener('mouseenter', async function() {
@@ -482,7 +482,7 @@ async function renderTopBarStats(stateObj) {
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/artifact1.png"
+        weaponImg.src = "img/relics/killhull.png"
         weaponPriceRelicDiv.append(weaponImg)
         
         weaponPriceRelicDiv.addEventListener('mouseover', function() {
@@ -508,7 +508,7 @@ async function renderTopBarStats(stateObj) {
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/repairkill.png"
+        weaponImg.src = "img/relics/repairkill.png"
         weaponPriceRelicDiv.append(weaponImg)
         
         weaponPriceRelicDiv.addEventListener('mouseover', function() {
@@ -529,12 +529,38 @@ async function renderTopBarStats(stateObj) {
           topBarDiv.append(weaponPriceRelicDiv)
     }
 
+    if (stateObj.killEnemiesForMoney > 0) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/relics/killmoney.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#kill-enemies-money-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#kill-enemies-money-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "kill-enemies-money-popup")
+          relicTextDiv.textContent = "Killing an enemy gets you $" + Math.ceil(stateObj.killEnemiesForMoney)
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
     if (stateObj.laserPiercing === true) {
         let weaponPriceRelicDiv = document.createElement("Div")
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/laserpiercing.png"
+        weaponImg.src = "img/relics/laserpiercing.png"
         weaponPriceRelicDiv.append(weaponImg)
         
         weaponPriceRelicDiv.addEventListener('mouseover', function() {
@@ -560,7 +586,7 @@ async function renderTopBarStats(stateObj) {
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/bronzesilverbonus.png"
+        weaponImg.src = "img/relics/bronzesilverbonus.png"
         weaponPriceRelicDiv.append(weaponImg)
         
         weaponPriceRelicDiv.addEventListener('mouseover', function() {
@@ -575,7 +601,7 @@ async function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "bronze-silver-popup")
-          relicTextDiv.textContent = "Bronze and silver ore sells for " + stateObj.bronzeSilverBonus + " as much money"
+          relicTextDiv.textContent = "Bronze and silver ore sells for " + stateObj.bronzeSilverBonus + "x as much money"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
           topBarDiv.append(weaponPriceRelicDiv)
@@ -586,7 +612,7 @@ async function renderTopBarStats(stateObj) {
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/artifact2.png"
+        weaponImg.src = "img/relics/dirtmaxfuel.png"
         weaponPriceRelicDiv.append(weaponImg)
         
         weaponPriceRelicDiv.addEventListener('mouseover', function() {
@@ -612,7 +638,7 @@ async function renderTopBarStats(stateObj) {
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/artifact3.png"
+        weaponImg.src = "img/relics/artifact3.png"
         weaponPriceRelicDiv.append(weaponImg)
         
         weaponPriceRelicDiv.addEventListener('mouseover', function() {
@@ -638,7 +664,7 @@ async function renderTopBarStats(stateObj) {
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/artifact4.png"
+        weaponImg.src = "img/relics/moneydirt.png"
         weaponPriceRelicDiv.append(weaponImg)
         
         weaponPriceRelicDiv.addEventListener('mouseover', function() {
@@ -1077,14 +1103,14 @@ async function renderScreen(stateObj, isMove=true) {
                 } else {
                     mapSquareImg.classList.add("player-img")
                 }
-                mapSquareImg.src = "img/miner1.png"
+                mapSquareImg.src = "img/map/miner1.png"
                 mapSquareDiv.append(mapSquareImg)
             }
             if (mapSquare === "stone") {
                 mapSquareDiv.classList.add("stone")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("stone-img")
-                mapSquareImg.src = "img/stone.png"
+                mapSquareImg.src = "img/map/stone.png"
                 mapSquareDiv.append(mapSquareImg)
             }
             
@@ -1092,7 +1118,7 @@ async function renderScreen(stateObj, isMove=true) {
                 mapSquareDiv.classList.add("dirt")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("dirt-img")
-                mapSquareImg.src = "img/dirt.png"
+                mapSquareImg.src = "img/map/dirt.png"
                 mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "empty") {
                 mapSquareDiv.classList.add("empty")
@@ -1104,61 +1130,61 @@ async function renderScreen(stateObj, isMove=true) {
                 mapSquareDiv.classList.add("enemy")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("enemy-img")
-                mapSquareImg.src = "img/enemy1.png"
+                mapSquareImg.src = "img/map/enemy1.png"
                 mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "1") {
                 mapSquareDiv.classList.add("bronze")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("bronze-img")
-                mapSquareImg.src = "img/bronze.png"
+                mapSquareImg.src = "img/map/bronze.png"
                 mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "2") {
                 mapSquareDiv.classList.add("silver")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("silver-img")
-                mapSquareImg.src = "img/silver.png"
+                mapSquareImg.src = "img/map/silver.png"
                 mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "3") {
                 mapSquareDiv.classList.add("gold")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("gold-img")
-                mapSquareImg.src = "img/gold.png"
+                mapSquareImg.src = "img/map/gold.png"
                 mapSquareDiv.append(mapSquareImg)
             }  else if (mapSquare === "4") {
                 mapSquareDiv.classList.add("ruby")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("ruby-img")
-                mapSquareImg.src = "img/ruby.png"
+                mapSquareImg.src = "img/map/ruby.png"
                 mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "5") {
                 mapSquareDiv.classList.add("amethyst")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("amethyst-img")
-                mapSquareImg.src = "img/amethyst.png"
+                mapSquareImg.src = "img/map/amethyst.png"
                 mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "6") {
                 mapSquareDiv.classList.add("diamond")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("diamond-img")
-                mapSquareImg.src = "img/diamond.png"
+                mapSquareImg.src = "img/map/diamond.png"
                 mapSquareDiv.append(mapSquareImg)
             }  else if (mapSquare === "7") {
                 mapSquareDiv.classList.add("blkdiamond")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("blkdiamond-img")
-                mapSquareImg.src = "img/blkdiamond.png"
+                mapSquareImg.src = "img/map/blkdiamond.png"
                 mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "STORE") {
                 mapSquareDiv.classList.add("store")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("store-img")
-                mapSquareImg.src = "img/store.png"
+                mapSquareImg.src = "img/map/store.png"
                 mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "EXIT") {
                 mapSquareDiv.classList.add("exit")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("exit-img")
-                mapSquareImg.src = "img/exit.jpg"
+                mapSquareImg.src = "img/map/exit.jpg"
                 mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "BOMB") {
                 mapSquareDiv.classList.add("bomb")
@@ -2116,26 +2142,17 @@ async function doDamage(stateObj, damageAmount, enemyLocation) {
     if (stateObj.inStore === false) {
         stateObj = immer.produce(stateObj, (newState) => {
             if (newState.takingDamage === false) {
-                if (newState.halfDamageFullFuel < 1 && newState.currentFuel >= (newState.fuelCapacity/2)) {
-                    newState.currentHullIntegrity -= Math.floor(((damageAmount * newState.enemyDamageModifier) * 0.5));
-                    newState.takingDamage = 5
-                } else {
-                    newState.currentHullIntegrity -= (damageAmount * newState.enemyDamageModifier);
-                    newState.takingDamage = 5
+                if (newState.thorns === true) {
+                    console.log("is this enemy" + newState.gameMap[newState.currentPosition+enemyLocation])
+                    let enemyIndex = newState.enemyArray.indexOf(newState.currentPosition + enemyLocation);
+                    console.log("enemy index is" + enemyIndex)
+                    newState.enemyArray.splice(enemyIndex, 1)
+                    newState.enemyMovementArray.splice(enemyIndex, 1)
+                    newState.enemiesKilledPerLevel += 1;
+                    
+                    newState.gameMap[newState.currentPosition+enemyLocation] = "empty"
+                    document.querySelectorAll(".enemy-img")[enemyIndex].classList.add("enemy-death")
                 }
-            } 
-            
-            
-            if (newState.thorns === true) {
-                console.log("is this enemy" + newState.gameMap[newState.currentPosition+enemyLocation])
-                let enemyIndex = newState.enemyArray.indexOf(newState.currentPosition + enemyLocation);
-                console.log("enemy index is" + enemyIndex)
-                newState.enemyArray.splice(enemyIndex, 1)
-                newState.enemyMovementArray.splice(enemyIndex, 1)
-                newState.enemiesKilledPerLevel += 1;
-                
-                newState.gameMap[newState.currentPosition+enemyLocation] = "empty"
-
                 if (newState.killEnemiesHullModifier > 0) {
                     newState.currentHullIntegrity += newState.killEnemiesHullModifier
                     newState.maxHullIntegrity += newState.killEnemiesHullModifier
@@ -2145,8 +2162,14 @@ async function doDamage(stateObj, damageAmount, enemyLocation) {
                     newState.bankedCash += newState.killEnemiesForMoney
                 }
 
-                document.querySelectorAll(".enemy-img")[enemyIndex].classList.add("enemy-death")
-            }
+                if (newState.halfDamageFullFuel < 1 && newState.currentFuel >= (newState.fuelCapacity/2)) {
+                    newState.currentHullIntegrity -= Math.floor(((damageAmount * newState.enemyDamageModifier) * 0.5));
+                    newState.takingDamage = 5
+                } else {
+                    newState.currentHullIntegrity -= (damageAmount * newState.enemyDamageModifier);
+                    newState.takingDamage = 5
+                }
+            }           
 
         })
     }

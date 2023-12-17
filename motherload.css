@@ -303,7 +303,8 @@
 
   #weapons-price-popup, #thorns-popup, #enemy-damage-popup, 
   #enemy-damage-fuel-popup, #kill-enemies-fuel-popup, #dirt-fuel-popup,
-  #bomb-timer-popup, #money-dirt-popup, #laser-piercing-popup, #kill-enemies-heal-popup  {
+  #bomb-timer-popup, #money-dirt-popup, #laser-piercing-popup, #kill-enemies-heal-popup,
+  #bronze-silver-popup, #kill-enemies-money-popup {
     display: none;
     position: absolute;
     top: 15vh;
