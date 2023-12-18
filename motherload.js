@@ -7,6 +7,7 @@ let gameStartState = {
     fuelCapacity: 120,
     fuelUpgrades: 0,
     fuelUpgradeCost: 500,
+    lostTheGame: false,
     
 
     currentInventory: 0,
@@ -174,7 +175,7 @@ async function updateState(newStateObj) {
     state = {...newStateObj};
 }
 
-async function renderTopBarStats(stateObj) {
+function renderTopBarStats(stateObj) {
     let topBarDiv = document.createElement("Div")
     topBarDiv.classList.add("top-stats-bar")
 
@@ -1184,7 +1185,29 @@ async function renderScreen(stateObj, isMove=true) {
         // arrowBar = renderArrowButtons(stateObj);
         document.getElementById("app").append(topBar)
     }
-    
+    if (stateObj.lostTheGame === true) {
+        let storeDiv = document.createElement("Div")
+        storeDiv.classList.add("store-div")
+
+        let lostDiv = document.createElement("Div")
+        lostDiv.classList.add("selling-items-div")
+
+        let lostTextDiv = document.createElement("H3")
+        lostTextDiv.textContent = "You lost the game! Press OK to try again"
+
+        lostDiv.append(lostTextDiv)
+
+        let lostButtonDiv = document.createElement("Div")
+        lostButtonDiv.classList.add("sell-button")
+        lostButtonDiv.textContent = "OK"
+        lostButtonDiv.onclick = function() {
+            location.reload(true)
+        }
+        lostDiv.append(lostButtonDiv)
+        storeDiv.append(lostDiv)
+        document.getElementById("app").append(storeDiv)
+
+    }
     if (stateObj.sellingItems === true) {
         console.log("selling items is true")
         let storeDiv = document.createElement("Div")
@@ -2687,14 +2710,10 @@ async function handleSquare(stateObj, squareIndexToMoveTo, fuelToLose, isGem=fal
 }
 
 async function loseTheGame(textString) {
-    let confirmText = textString + ` Reload the page to try again`
-    var confirmation = confirm(confirmText);
-
-  if (confirmation) {
-    setTimeout(function(){
-        location.reload(true);
-      }, 100);
-  }
+    state.lostTheGame = true;
+    state.takingDamage = false;
+    clearInterval(enemyMovementTimer)
+    await changeState(state)
 }
 
 async function fireLaser(stateObj, detonatePosition) {
