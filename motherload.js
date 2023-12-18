@@ -1207,8 +1207,7 @@ async function renderScreen(stateObj, isMove=true) {
         storeDiv.append(lostDiv)
         document.getElementById("app").append(storeDiv)
 
-    }
-    if (stateObj.sellingItems === true) {
+    } else if (stateObj.sellingItems === true) {
         console.log("selling items is true")
         let storeDiv = document.createElement("Div")
         storeDiv.classList.add("store-div")
