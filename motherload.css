@@ -726,4 +726,28 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
   .laser-effect {
     background: linear-gradient(black 40%, red, black 80%)
   }
+
+  .arrow-bar {
+    width: 90vw;
+    height: 10vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: pink;
+    position: fixed;
+    top: 10vh;
+    left: 0;
+    z-index: 10000;
+  }
  
+  .arrow {
+    border: solid black;
+    height: 8vh;
+    width: 8vw;
+    padding: 3px;
+    background-color: green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

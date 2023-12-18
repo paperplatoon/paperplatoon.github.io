@@ -58,7 +58,7 @@ let gameStartState = {
     isLevelCoward: false,
     isPacifist: 0,
     cheaperShops: 0,
-    freeFuel: true,
+    freeFuel: false,
     splinterCellModifier: 1,
     splinterCellOn: false,
 
@@ -182,6 +182,9 @@ async function renderTopBarStats(stateObj) {
     levelDiv.classList.add("level-div")
     levelDiv.textContent = "Level " + (stateObj.currentLevel+1);
     levelDiv.classList.add("centered")
+    levelDiv.onclick = function() {
+        console.log("clicked level div")
+    }
 
     let barsDiv = document.createElement("Div")
     barsDiv.classList.add("bars-div")
@@ -848,6 +851,29 @@ async function renderTopBarStats(stateObj) {
     return topBarDiv
 }
 
+// function renderArrowButtons(stateObj) {
+
+//     let arrowsDiv = document.createElement("Div")
+//     arrowsDiv.classList.add("arrow-bar")
+
+//     let leftArrowDiv = document.createElement("Div")
+//     leftArrowDiv.classList.add("arrow")
+//     leftArrowDiv.setAttribute("id", "left-arrow")
+//     leftArrowDiv.classList.add("left")
+//     leftArrowDiv.textContent= "<"
+//     leftArrowDiv.onclick = function() {
+//         console.log("normal attach click")
+//     }
+
+//     arrowsDiv.onclick = function() {
+//         console.log("clicked arrows div")
+//     }
+    
+//     arrowsDiv.append(leftArrowDiv)
+
+//     return arrowsDiv
+// }
+
 function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     let chosenSquare = 50000
     let floorObj = stateObj.floorValues[stateObj.currentLevel]
@@ -1155,6 +1181,7 @@ async function renderScreen(stateObj, isMove=true) {
     //create a mapDiv to append all your new squares to
     if (isMove) {
         topBar = await renderTopBarStats(stateObj);
+        // arrowBar = renderArrowButtons(stateObj);
         document.getElementById("app").append(topBar)
     }
     
@@ -1372,7 +1399,7 @@ async function renderScreen(stateObj, isMove=true) {
                 mapSquareDiv.textContent = "Pause Enemies"
             } else if (mapSquare === "halfDamageRelic") {
                 mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Enemies deal 25% less damage"
+                mapSquareDiv.textContent = "Enemies deal less damage to you"
             } else if (mapSquare === "bombsExplodeFasterRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Bombs explode faster"
