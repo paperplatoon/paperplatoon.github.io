@@ -45,6 +45,8 @@ let gameStartState = {
     killEnemiesForHealing: 0, 
     bronzeSilverBonus: 1,
     laserPiercing: false,
+    silverHealing: 0,
+    bronzeMaxFuel: 0,
     
 
     drillTime: 850,
@@ -53,10 +55,10 @@ let gameStartState = {
     moveTimer: 0,
 
     //level modifiers
-    isLevelPacifist: false,
-    isScrapMetal: false,
+    isLevelCoward: false,
+    isPacifist: 0,
     cheaperShops: 0,
-    freeFuel: false,
+    freeFuel: true,
     splinterCellModifier: 1,
     splinterCellOn: false,
 
@@ -529,6 +531,58 @@ async function renderTopBarStats(stateObj) {
           topBarDiv.append(weaponPriceRelicDiv)
     }
 
+    if (stateObj.silverHealing > 0) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/relics/silverhealing.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#silver-heal-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#silver-heal-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "silver-heal-popup")
+          relicTextDiv.textContent = "Mining silver ore restores " + stateObj.silverHealing + " HP"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.bronzeMaxFuel > 0) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/relics/bronzemaxfuel.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#bronze-fuel-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#bronze-fuel-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "bronze-fuel-popup")
+          relicTextDiv.textContent = "Mining bronze ore adds " + stateObj.bronzeMaxFuel + " maximum fuel capacity"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
     if (stateObj.killEnemiesForMoney > 0) {
         let weaponPriceRelicDiv = document.createElement("Div")
         weaponPriceRelicDiv.classList.add("relic-div")
@@ -607,6 +661,32 @@ async function renderTopBarStats(stateObj) {
           topBarDiv.append(weaponPriceRelicDiv)
     }
 
+    if (stateObj.isPacifist > 0) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/relics/pacifist.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#pacifist-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#pacifist-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "pacifist-popup")
+          relicTextDiv.textContent = "Gain $" + stateObj.isPacifist + " at the end of the level for each enemy still alive"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
     if (stateObj.dirtToMaxFuel > 0) {
         let weaponPriceRelicDiv = document.createElement("Div")
         weaponPriceRelicDiv.classList.add("relic-div")
@@ -654,6 +734,84 @@ async function renderTopBarStats(stateObj) {
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "bomb-timer-popup")
           relicTextDiv.textContent = "Bomb Timer starts at " + Math.ceil(stateObj.bombTimerMax)
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.cheaperShops > 0) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/relics/cheapershops.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#cheaper-shops-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#cheaper-shops-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "cheaper-shops-popup")
+          relicTextDiv.textContent = "Shop prices are " + Math.ceil(100*stateObj.cheaperShops) +"% cheaper for this level"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.splinterCellModifier > 1) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/relics/splintercell.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#splinter-cell-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#splinter-cell-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "splinter-cell-popup")
+          relicTextDiv.textContent = "Gems are worth " + stateObj.splinterCellModifier +"x more. Stops working after you kill an enemy."
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.freeFuel === true) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/relics/oilwell.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#oil-well-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#oil-well-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "oil-well-popup")
+          relicTextDiv.textContent = "Fuel is free on this level"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
           topBarDiv.append(weaponPriceRelicDiv)
@@ -712,12 +870,13 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     let middleLength = (screenwidthBlocks*floorObj.numberRows) + (screenwidthBlocks);
     for (let j=screenwidthBlocks; j < middleLength; j++) {
         if (chosenSquareArray.includes(j)) {
-            //16 relics
+            //18 relics
             let relicArray = ["fuelRelic", "bombDistanceRelic", "laserPiercingRelic", "dirtRelic", 
             "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
             "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
-            "killEnemiesHullRelic", "bronzeSilverBonusRelic", "remoteBombsRelic", "killEnemiesHealRelic"]
-            //relicArray = ["remoteBombsRelic"]
+            "killEnemiesHullRelic", "bronzeSilverBonusRelic", "remoteBombsRelic", "killEnemiesHealRelic",
+            "silverHealingRelic", "bronzeMaxFuelRelic"]
+            // relicArray = ["bronzeMaxFuelRelic"]
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -807,7 +966,7 @@ async function fillMapWithArray(stateObj) {
         if (stateObj.gameMap[i] === "enemy") {
             let direction = (Math.random() > 0.5) ? "left" : "right";
             console.log("found an enemy at square " + i + " pushing direction " + direction)
-            if (stateObj.isLevelPacifist === false) {
+            if (stateObj.isLevelCoward === false) {
                 tempEnemyArray.push(i)
                 tempEnemyMovementArray.push(direction)
             }
@@ -1238,6 +1397,12 @@ async function renderScreen(stateObj, isMove=true) {
             } else if (mapSquare === "killEnemiesHealRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Killing enemies repairs your hull"
+            } else if (mapSquare === "silverHealingRelic") {
+                mapSquareDiv.classList.add("relic")
+                mapSquareDiv.textContent = "Mining silver ore heals HP"
+            } else if (mapSquare === "bronzeMaxFuelRelic") {
+                mapSquareDiv.classList.add("relic")
+                mapSquareDiv.textContent = "Mining bronze ore increases maximum fuel"
             } else if (mapSquare === "moneyForDirtRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Earn Money When Dropping Dirt"
@@ -1306,11 +1471,11 @@ async function renderScreen(stateObj, isMove=true) {
             moreGold(stateObj)
         }
 
-        let pacifistDiv = document.createElement("Div")
-        pacifistDiv.classList.add("next-level-option")
-        pacifistDiv.textContent = "COWARD - The enemies in the next level do not move, but the level only contains bronze, silver, and gold ore"
-        pacifistDiv.classList.add("next-level-clickable")
-        pacifistDiv.onclick = function () {
+        let cowardDiv = document.createElement("Div")
+        cowardDiv.classList.add("next-level-option")
+        cowardDiv.textContent = "COWARD - The enemies in the next level do not move, but the level only contains bronze, silver, and gold ore"
+        cowardDiv.classList.add("next-level-clickable")
+        cowardDiv.onclick = function () {
             cowardChoice(stateObj)
         }
 
@@ -1322,17 +1487,17 @@ async function renderScreen(stateObj, isMove=true) {
             dirtEfficiencyChoice(stateObj)
         }
 
-        let scrapMetalDiv = document.createElement("Div")
-        scrapMetalDiv.classList.add("next-level-option")
-        scrapMetalDiv.textContent = "PACIFIST - After completing the level, gain $200 for every enemy that is still alive"
-        scrapMetalDiv.classList.add("next-level-clickable")
-        scrapMetalDiv.onclick = function () {
-            scrapMetalChoice(stateObj)
+        let pacifistDiv = document.createElement("Div")
+        pacifistDiv.classList.add("next-level-option")
+        pacifistDiv.textContent = "PACIFIST - After completing the level, gain $200 for every enemy that is still alive"
+        pacifistDiv.classList.add("next-level-clickable")
+        pacifistDiv.onclick = function () {
+            pacifistChoice(stateObj)
         }
 
         let killEnemiesForMoneyDiv = document.createElement("Div")
         killEnemiesForMoneyDiv.classList.add("next-level-option")
-        killEnemiesForMoneyDiv.textContent = "BOUNTY HUNTER - Gain $50 for each enemy killed (next level only)"
+        killEnemiesForMoneyDiv.textContent = "SCRAP METAL - Gain $50 for each enemy killed (next level only)"
         killEnemiesForMoneyDiv.classList.add("next-level-clickable")
         killEnemiesForMoneyDiv.onclick = function () {
             killEnemiesForMoneyChoice(stateObj)
@@ -1387,7 +1552,7 @@ async function renderScreen(stateObj, isMove=true) {
         }
 
         //12 choices
-        let levelChoiceArray = [freeFuelDiv, fewerEnemiesDiv, moreGoldDiv, pacifistDiv, dirtEfficiencyDiv, scrapMetalDiv, shorterDiv, longerDiv, moreEnemiesDiv, cheaperShopsDiv, killEnemiesForMoneyDiv, splinterCellDiv]
+        let levelChoiceArray = [freeFuelDiv, fewerEnemiesDiv, moreGoldDiv, cowardDiv, dirtEfficiencyDiv, pacifistDiv, shorterDiv, longerDiv, moreEnemiesDiv, cheaperShopsDiv, killEnemiesForMoneyDiv, splinterCellDiv]
         //let levelChoiceArray = [freeFuelDiv, cheaperShopsDiv, moreEnemiesDiv]
         let chosenLevels = []
         for (i = 0; i < 3; i++) {
@@ -1701,15 +1866,15 @@ async function cowardChoice(stateObj) {
         newState.floorValues[newState.currentLevel].barVals[2] = 1
         newState.floorValues[newState.currentLevel].barVals[3] = 1
         newState.choosingNextLevel = false;
-        newState.isLevelPacifist = true;
+        newState.isLevelCoward = true;
     })
     await changeState(stateObj);
 }
 
-async function scrapMetalChoice(stateObj) {
+async function pacifistChoice(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.choosingNextLevel = false;
-        newState.isScrapMetal = true;
+        newState.isPacifist += 100;
     })
     await changeState(stateObj);
 }
@@ -1820,7 +1985,7 @@ async function thornsRelic(stateObj) {
 
 async function bronzeSilverBonusRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.bronzeSilverBonus += 2;
+        newState.bronzeSilverBonus += 1;
     })
     await changeState(stateObj);
     return stateObj
@@ -1857,6 +2022,22 @@ async function killEnemiesHullRelic(stateObj) {
 async function killEnemiesHealRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.killEnemiesForHealing += 20;
+    })
+    await changeState(stateObj);
+    return stateObj
+}
+
+async function silverHealingRelic(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.silverHealing += 10;
+    })
+    await changeState(stateObj);
+    return stateObj
+}
+
+async function bronzeMaxFuelRelic(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.bronzeMaxFuel += 1;
     })
     await changeState(stateObj);
     return stateObj
@@ -2248,12 +2429,27 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "1") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
         if ((stateObj.currentInventory-1) < stateObj.inventoryMax) { 
-            stateObj = await immer.produce(stateObj, (newState) => {newState.bronzeInventory += 1})
+            stateObj = await immer.produce(stateObj, (newState) => {
+                newState.bronzeInventory += 1
+                if (stateObj.bronzeMaxFuel > 0) {
+                    newState.currentFuel += stateObj.bronzeMaxFuel;
+                    newState.fuelCapacity += stateObj.bronzeMaxFuel
+                }
+            })
         } 
     } else if (targetSquare === "2") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
         if ((stateObj.currentInventory-1) < stateObj.inventoryMax) { 
-            stateObj = await immer.produce(stateObj, (newState) => {newState.silverInventory += 1})
+            stateObj = await immer.produce(stateObj, (newState) => {
+                newState.silverInventory += 1
+                if (stateObj.silverHealing > 0) {
+                    if (newState.maxHullIntegrity - newState.currentHullIntegrity < newState.silverHealing) {
+                        newState.currentHullIntegrity = newState.maxHullIntegrity
+                    } else {
+                        newState.currentHullIntegrity += newState.silverHealing
+                    }
+                }
+            })
         } 
     } else if (targetSquare === "3") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
@@ -2325,6 +2521,12 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "killEnemiesHealRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await killEnemiesHealRelic(stateObj)  
+    } else if (targetSquare === "silverHealingRelic") {
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
+        stateObj = await silverHealingRelic(stateObj)  
+    }  else if (targetSquare === "bronzeMaxFuelRelic") {
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
+        stateObj = await bronzeMaxFuelRelic(stateObj)  
     } else if (targetSquare === "bombDistanceRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await upgradeBombDistanceRelic(stateObj)  
@@ -2397,14 +2599,14 @@ async function goToNextLevel(stateObj) {
     stateObj = await immer.produce(stateObj, async (newState) => {
         newState.currentLevel += 1;
         newState.timeCounter = 0;
-        newState.isLevelPacifist = false;
+        newState.isLevelCoward = false;
         newState.freeFuel = false;
         newState.killEnemiesForMoney = 0;
         newState.enemiesKilledPerLevel = 0;
         newState.splinterCellOn = false;
         newState.splinterCellModifier = 1;
 
-        if (stateObj.isScrapMetal === true) {
+        if (stateObj.isPacifist > 0) {
             const countEnemyOccurrences = newState.gameMap.reduce((acc, currentValue) => {
                 if (currentValue === 'enemy') {
                   return acc + 1;
@@ -2412,9 +2614,9 @@ async function goToNextLevel(stateObj) {
                 return acc;
               }, 0);
 
-            newState.bankedCash += (200*countEnemyOccurrences)
+            newState.bankedCash += (stateObj.isPacifist*countEnemyOccurrences)
         }
-        newState.isScrapMetal = false;
+        newState.isPacifist = 0;
         newState.cheaperShops = 0;
     })
     stateObj = await immer.produce(stateObj, async (newState) => {
