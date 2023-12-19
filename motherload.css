@@ -719,6 +719,17 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
     color: rgb(4, 170, 4)
   }
 
+  .bomb {
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .bomb-img {
+    filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(0deg) brightness(126%) contrast(63%);
+  }
+
   .bomb-effect {
     background: linear-gradient(red 20%, orange, red 80%)
   }

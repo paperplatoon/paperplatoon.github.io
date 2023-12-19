@@ -898,11 +898,13 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     for (let j=screenwidthBlocks; j < middleLength; j++) {
         if (chosenSquareArray.includes(j)) {
             //18 relics
+            //relicArray = buildRelicArray(stateObj)
             let relicArray = ["fuelRelic", "bombDistanceRelic", "laserPiercingRelic", "dirtRelic", 
             "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
             "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
             "killEnemiesHullRelic", "bronzeSilverBonusRelic", "remoteBombsRelic", "killEnemiesHealRelic",
             "silverHealingRelic", "bronzeMaxFuelRelic"]
+
             // relicArray = ["bronzeMaxFuelRelic"]
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
@@ -1087,20 +1089,25 @@ async function moveEnemies() {
                 })
             }
 
-
+        }
             if (stateObj.bombLocation) {
-                if (stateObj.remoteBombs === false) {
-                    if (stateObj.bombTimer > 0) {
-                        console.log('counting down bomb timer from ' + stateObj.bombTimer)
-                        stateObj = await immer.produce(stateObj, (newState) => {
-                            newState.bombTimer -= 1
-                        })
-                    } else {
-                        stateObj = await detonateBomb(stateObj, stateObj.bombLocation)
-                    }
+                if (stateObj.bombExploding) {
+                    stateObj = await detonateBomb(stateObj, stateObj.bombLocation)
+                } else {
+                    stateObj = await immer.produce(stateObj, (newState) => {
+                        if (stateObj.gameMap[stateObj.bombLocation + screenwidthBlocks] !== "empty") {
+                            if (stateObj.remoteBombs === false) {
+                                newState.bombExploding = true;
+                            }
+                        } else {
+                            newState.gameMap[stateObj.bombLocation] = "empty";
+                            newState.gameMap[stateObj.bombLocation+screenwidthBlocks] = "BOMB";
+                            newState.bombLocation += screenwidthBlocks
+                        }
+                    })
                 }
             }
-        }
+        //}
 
         if (stateObj.firingLaserLeft) {
             if (stateObj.firingLaserLeft % screenwidthBlocks !== 0) {
@@ -1396,9 +1403,11 @@ async function renderScreen(stateObj, isMove=true) {
                 mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "BOMB") {
                 mapSquareDiv.classList.add("bomb")
-                if (stateObj.remoteBombs === false ){
-                    mapSquareDiv.textContent = stateObj.bombTimer
-                } else {
+                let mapSquareImg = document.createElement("Img");
+                mapSquareImg.classList.add("bomb-img")
+                mapSquareImg.src = "img/map/bomb.png"
+                mapSquareDiv.append(mapSquareImg)
+                if (stateObj.remoteBombs === true ){
                     mapSquareDiv.textContent = "press B to detonate"
                 }
             } else if (mapSquare === "fuelRelic") {
@@ -2858,3 +2867,13 @@ async function dropBomb(stateObj) {
     }
     return stateObj
 }
+
+function buildRelicArray(stateObj) {
+
+}
+
+// let relicArray = ["fuelRelic", "bombDistanceRelic", "laserPiercingRelic", "dirtRelic", 
+//             "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
+//             "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
+//             "killEnemiesHullRelic", "bronzeSilverBonusRelic", "remoteBombsRelic", "killEnemiesHealRelic",
+//             "silverHealingRelic", "bronzeMaxFuelRelic"]
