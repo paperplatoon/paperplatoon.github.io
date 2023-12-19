@@ -317,7 +317,7 @@
   #enemy-damage-fuel-popup, #kill-enemies-fuel-popup, #dirt-fuel-popup,
   #bomb-timer-popup, #money-dirt-popup, #laser-piercing-popup, #kill-enemies-heal-popup,
   #bronze-silver-popup, #kill-enemies-money-popup, #pacifist-popup, #cheaper-shops-popup,
-  #splinter-cell-popup, #oil-well-popup, #silver-heal-popup, #bronze-fuel-popup {
+  #splinter-cell-popup, #oil-well-popup, #silver-heal-popup, #bronze-fuel-popup, .none-display {
     display: none;
     position: absolute;
     top: 15vh;

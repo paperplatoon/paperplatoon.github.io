@@ -49,6 +49,7 @@ let gameStartState = {
     silverHealing: 0,
     bronzeMaxFuel: 0,
     bombRefill: 0,
+    fuelToBlocks: 0,
     
 
     drillTime: 850,
@@ -397,6 +398,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "weapons-price-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Weapons are " + Math.ceil((1-stateObj.weaponsPriceModifier)*100) + "% cheaper"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -423,6 +425,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "thorns-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Enemies who damage you die afterwards"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -449,6 +452,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "enemy-damage-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Enemies deal " + Math.ceil((1-stateObj.enemyDamageModifier)*100) + "% less damage"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -477,6 +481,7 @@ function renderTopBarStats(stateObj) {
 
             let relicTextDiv = document.createElement("Div");
             relicTextDiv.setAttribute("id", "enemy-damage-fuel-popup")
+            relicTextDiv.classList.add("none-display")
             relicTextDiv.textContent = "Enemies deal " + Math.ceil((1-stateObj.halfDamageFullFuel)*100) + "% less damage when your fuel is at least 50% full"
             weaponPriceRelicDiv.appendChild(relicTextDiv);
           
@@ -504,6 +509,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "kill-enemies-fuel-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Increase Hull Integrity by " + Math.ceil(stateObj.killEnemiesHullModifier) + " whenever you kill an enemy"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -530,6 +536,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "kill-enemies-heal-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Killing enemies heals your hull by " + Math.ceil(stateObj.killEnemiesForHealing)
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -556,6 +563,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "silver-heal-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Mining silver ore restores " + stateObj.silverHealing + " HP"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -582,7 +590,68 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "bronze-fuel-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Mining bronze ore adds " + stateObj.bronzeMaxFuel + " maximum fuel capacity"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.bombRefill > 0) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/relics/bombrefill.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#bomb-refill-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#bomb-refill-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "bomb-refill-popup")
+          relicTextDiv.classList.add("none-display")
+          relicString = "Killing an enemy with a bomb yields " + stateObj.bombRefill + " bomb"
+          if (stateObj.bombRefill > 1) {
+            relicString += "s"
+          }
+          relicTextDiv.textContent = relicString
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.fuelToBlocks > 0) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/relics/fueltoblocks.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#fuel-blocks-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#fuel-blocks-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "fuel-blocks-popup")
+          relicTextDiv.classList.add("none-display")
+          let fuelNeeded = Math.floor(((stateObj.dirtThresholdNeeded - stateObj.dirtReserves)*2)/stateObj.fuelToBlocks)
+          relicString = "Can spend " + fuelNeeded + " fuel to drop a dirt block"
+          relicTextDiv.textContent = relicString
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
           topBarDiv.append(weaponPriceRelicDiv)
@@ -608,6 +677,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "kill-enemies-money-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Killing an enemy gets you $" + Math.ceil(stateObj.killEnemiesForMoney)
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -634,6 +704,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "laser-piercing-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Laser pierces through entire row"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -660,6 +731,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "bronze-silver-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Bronze and silver ore sells for " + stateObj.bronzeSilverBonus + "x as much money"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -686,6 +758,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "pacifist-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Gain $" + stateObj.isPacifist + " at the end of the level for each enemy still alive"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -712,6 +785,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "dirt-fuel-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Gain " + Math.ceil(stateObj.dirtToMaxFuel) + " maximum fuel when dropping a dirt block"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -738,6 +812,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "bomb-timer-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Bomb Timer starts at " + Math.ceil(stateObj.bombTimerMax)
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -764,6 +839,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "cheaper-shops-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Shop prices are " + Math.ceil(100*stateObj.cheaperShops) +"% cheaper for this level"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -790,6 +866,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "splinter-cell-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Gems are worth " + stateObj.splinterCellModifier +"x more. Stops working after you kill an enemy."
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -816,6 +893,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "oil-well-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Fuel is free on this level"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -842,6 +920,7 @@ function renderTopBarStats(stateObj) {
     
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "money-dirt-popup")
+          relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Earn $" + Math.ceil(stateObj.moneyForDirt) + " every time you drop dirt"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
@@ -898,16 +977,16 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     let middleLength = (screenwidthBlocks*floorObj.numberRows) + (screenwidthBlocks);
     for (let j=screenwidthBlocks; j < middleLength; j++) {
         if (chosenSquareArray.includes(j)) {
-            //17 relics
+            //18 relics
             //relicArray = buildRelicArray(stateObj)
             let relicArray = ["bombDistanceRelic", "laserPiercingRelic", "dirtRelic", "stopRelic", 
             "halfDamageRelic", "moneyForDirtRelic", "weaponsPriceRelic", "halfDamageFullFuelRelic", 
             "thornsRelic", "dirtToMaxFuelRelic", "killEnemiesHullRelic", "bronzeSilverBonusRelic", 
             "remoteBombsRelic", "killEnemiesHealRelic", "silverHealingRelic", "bronzeMaxFuelRelic",
-            "bombRefillRelic"
+            "bombRefillRelic", "fuelToBlocksRelic"
             ] // "fuelRelic",  "bombsExplodeFasterRelic", 
 
-            //relicArray = ["bombRefillRelic"]
+            relicArray = ["fuelToBlocksRelic"]
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -1424,6 +1503,9 @@ async function renderScreen(stateObj, isMove=true) {
             } else if (mapSquare === "bombRefillRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Killing an enemy with a bomb refills it"
+            } else if (mapSquare === "fuelToBlocksRelic") {
+                mapSquareDiv.classList.add("relic")
+                mapSquareDiv.textContent = "Drop blocks with fuel. Warning: takes a lot of fuel!"
             } else if (mapSquare === "dirtRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Dirt Efficiency ++"
@@ -2138,6 +2220,14 @@ async function bombRefillRelic(stateObj) {
     return stateObj
 }
 
+async function fuelToBlocksRelic(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.fuelToBlocks += 1;
+    })
+    await changeState(stateObj);
+    return stateObj
+}
+
 async function upgradeDirtBlockRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         if (newState.dirtThresholdNeeded > 10) {
@@ -2607,6 +2697,9 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "bombRefillRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await bombRefillRelic(stateObj)  
+    } else if (targetSquare === "fuelToBlocksRelic") {
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
+        stateObj = await fuelToBlocksRelic(stateObj)  
     } else if (targetSquare === "dirtRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await upgradeDirtBlockRelic(stateObj)  
@@ -2863,6 +2956,13 @@ async function dropBlock(stateObj) {
             if (newState.dirtReserves >= (newState.dirtThresholdNeeded)) {
                 newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = "0";
                 newState.dirtReserves = 0;
+            } else if (newState.fuelToBlocks > 0) {
+                let dirtNeeded = newState.dirtThresholdNeeded - newState.dirtReserves;
+                if (newState.currentFuel > ((dirtNeeded*2)/newState.fuelToBlocks)) {
+                    newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = "0";
+                    newState.dirtReserves = 0;
+                    newState.currentFuel -= Math.floor((dirtNeeded*2)/newState.fuelToBlocks)
+                }
             }
             
         })
