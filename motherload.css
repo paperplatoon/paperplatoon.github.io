@@ -53,7 +53,7 @@
   display: flex;
   flex-direction: row;
   margin-left: 1vw;
-  font-size: 2.7vh;
+  font-size: 1.2vw;
   font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
 }
 
@@ -144,13 +144,25 @@
 
   .enemy:after {
     content: '';
-    width: 200%;
-    height: 200%;
+    width: 250%;
+    height: 150%;
     position: absolute;
     background-color: rgba(230, 97, 97, 0.651);
     border-radius: 100%;
-    left: -50%;
-    top: -50%;
+    left: -75%;
+    top: -25%;
+    z-index: 0;
+  }
+
+  .enemy:before {
+    content: '';
+    width: 100%;
+    height: 300%;
+    position: absolute;
+    background-color: rgba(230, 97, 97, 0.651);
+    border-radius: 100%;
+    left: 0;
+    top: -100%;
     z-index: 0;
   }
 
@@ -553,7 +565,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
   .store-option, .next-level-option {
     width: 9vw;
     height: 20vh;
-    font-size: 3vh;
+    font-size: 3vmin;
     background-color: rgb(122, 253, 253);
     margin: 1vw;
     padding: 1vh;

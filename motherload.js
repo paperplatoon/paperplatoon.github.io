@@ -48,6 +48,7 @@ let gameStartState = {
     laserPiercing: false,
     silverHealing: 0,
     bronzeMaxFuel: 0,
+    bombRefill: 0,
     
 
     drillTime: 850,
@@ -897,15 +898,16 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     let middleLength = (screenwidthBlocks*floorObj.numberRows) + (screenwidthBlocks);
     for (let j=screenwidthBlocks; j < middleLength; j++) {
         if (chosenSquareArray.includes(j)) {
-            //18 relics
+            //17 relics
             //relicArray = buildRelicArray(stateObj)
-            let relicArray = ["fuelRelic", "bombDistanceRelic", "laserPiercingRelic", "dirtRelic", 
-            "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
-            "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
-            "killEnemiesHullRelic", "bronzeSilverBonusRelic", "remoteBombsRelic", "killEnemiesHealRelic",
-            "silverHealingRelic", "bronzeMaxFuelRelic"]
+            let relicArray = ["bombDistanceRelic", "laserPiercingRelic", "dirtRelic", "stopRelic", 
+            "halfDamageRelic", "moneyForDirtRelic", "weaponsPriceRelic", "halfDamageFullFuelRelic", 
+            "thornsRelic", "dirtToMaxFuelRelic", "killEnemiesHullRelic", "bronzeSilverBonusRelic", 
+            "remoteBombsRelic", "killEnemiesHealRelic", "silverHealingRelic", "bronzeMaxFuelRelic",
+            "bombRefillRelic"
+            ] // "fuelRelic",  "bombsExplodeFasterRelic", 
 
-            // relicArray = ["bronzeMaxFuelRelic"]
+            //relicArray = ["bombRefillRelic"]
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -1419,6 +1421,9 @@ async function renderScreen(stateObj, isMove=true) {
             } else if (mapSquare === "laserPiercingRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Laser pierces through everything"
+            } else if (mapSquare === "bombRefillRelic") {
+                mapSquareDiv.classList.add("relic")
+                mapSquareDiv.textContent = "Killing an enemy with a bomb refills it"
             } else if (mapSquare === "dirtRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Dirt Efficiency ++"
@@ -2125,6 +2130,14 @@ async function laserPiercingRelicFunc(stateObj) {
     return stateObj
 }
 
+async function bombRefillRelic(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.bombRefill += 1;
+    })
+    await changeState(stateObj);
+    return stateObj
+}
+
 async function upgradeDirtBlockRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         if (newState.dirtThresholdNeeded > 10) {
@@ -2591,6 +2604,9 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "laserPiercingRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await laserPiercingRelicFunc(stateObj)  
+    } else if (targetSquare === "bombRefillRelic") {
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
+        stateObj = await bombRefillRelic(stateObj)  
     } else if (targetSquare === "dirtRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await upgradeDirtBlockRelic(stateObj)  
@@ -2814,6 +2830,9 @@ async function detonateBlock(stateObj, blockPosition, isLaser=false) {
                 }
             }
 
+            if (isLaser === false && stateObj.bombRefill > 0 && newState.bombCurrentTotal < newState.bombCapacity) {
+                newState.bombCurrentTotal += stateObj.bombRefill;
+            }
 
             if (newState.splinterCellModifier > 1) {
                 newState.splinterCellModifier = 1;
