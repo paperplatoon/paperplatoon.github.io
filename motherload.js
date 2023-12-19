@@ -986,7 +986,7 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
             "bombRefillRelic", "fuelToBlocksRelic"
             ] // "fuelRelic",  "bombsExplodeFasterRelic", 
 
-            relicArray = ["fuelToBlocksRelic"]
+            //relicArray = ["fuelToBlocksRelic"]
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
