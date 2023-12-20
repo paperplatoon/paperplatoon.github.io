@@ -287,7 +287,8 @@
     }
   }
 
-  .bronze-img, .enemy-img, .dirt-img, .stone-img,  .silver-img, .gold-img, .ruby-img, .amethyst-img, .diamond-img, .blkdiamond-img {
+  .bronze-img, .enemy-img, .dirt-img, .stone-img,  .silver-img, .gold-img, .ruby-img, .amethyst-img, .diamond-img, .blkdiamond-img,
+  .stone-amethyst-img, .stone-diamond-img, .stone-blkdiamond-img {
     width: 9.5vw;
     height: 10vh;
     object-fit: cover;

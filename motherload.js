@@ -102,7 +102,8 @@ let gameStartState = {
     currentLevel: 0,
     floorValues: [
         {
-            barVals: [1, 1, 1, 0.997, 0.99, 0.9, 0.65],
+            barVals: [, 1, 1, 0.997, 0.99, 0.9, 0.65],
+            //barVals: [0.99, 0.97, 0.91, 0.85, 0.77, 0.73, 0.7],
             enemyValue: 0.97,
             bottomRowEnemies: [1, 5, 9],
             numberRows: 20,
@@ -1003,11 +1004,11 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
                 nextSquareEmpty = true;
             } else {
                 if (randomNumber > floorObj.barVals[0]) {
-                    arrayObj.push("7")
+                    arrayObj.push("stone-7")
                 } else if (randomNumber > floorObj.barVals[1]) {
-                    arrayObj.push("6")
+                    arrayObj.push("stone-6")
                 } else if (randomNumber > floorObj.barVals[2]) {
-                    arrayObj.push("5")
+                    arrayObj.push("stone-5")
                 } else if (randomNumber > floorObj.barVals[3]) {
                     arrayObj.push("4")
                 } else if (randomNumber > floorObj.barVals[4]) {
@@ -1121,6 +1122,7 @@ async function moveEnemies() {
     // console.log("number of enemies is " + stateObj.enemyMovementArray.length)
     // console.log("enemy positions are " + stateObj.enemyArray)
     if (stateObj.inStore === false && stateObj.choosingNextLevel === false && stateObj.sellingItems === false) {
+        console.log("firing moveEnemies")
         if (stateObj.timeCounter % 3 ===0) {
 
         for (let i=0; i < stateObj.enemyArray.length; i++) {
@@ -1335,7 +1337,7 @@ async function renderScreen(stateObj, isMove=true) {
         if (stateObj.rubyInventory > 0) {
             let inventoryDiv = document.createElement("Div")
             inventoryDiv.classList.add("sell-row")
-            let tempSellTotal = ((250*stateObj.splinterCellModifier)*stateObj.rubyInventory)
+            let tempSellTotal = ((300*stateObj.splinterCellModifier)*stateObj.rubyInventory)
             inventoryDiv.textContent = "Rubies (" + stateObj.rubyInventory + "): " + tempSellTotal
             sellInventoryDiv.append(inventoryDiv)
             sellTotal += tempSellTotal
@@ -1343,7 +1345,7 @@ async function renderScreen(stateObj, isMove=true) {
         if (stateObj.amethystInventory > 0) {
             let inventoryDiv = document.createElement("Div")
             inventoryDiv.classList.add("sell-row")
-            let tempSellTotal = ((500*stateObj.splinterCellModifier)*stateObj.amethystInventory)
+            let tempSellTotal = ((750*stateObj.splinterCellModifier)*stateObj.amethystInventory)
             inventoryDiv.textContent = "Amethyst (" + stateObj.amethystInventory + "): $" + tempSellTotal
             sellInventoryDiv.append(inventoryDiv)
             sellTotal += tempSellTotal
@@ -1351,7 +1353,7 @@ async function renderScreen(stateObj, isMove=true) {
         if (stateObj.diamondInventory > 0) {
             let inventoryDiv = document.createElement("Div")
             inventoryDiv.classList.add("sell-row")
-            let tempSellTotal = ((1000*stateObj.splinterCellModifier)*stateObj.diamondInventory)
+            let tempSellTotal = ((1500*stateObj.splinterCellModifier)*stateObj.diamondInventory)
             inventoryDiv.textContent = "Diamonds (" + stateObj.diamondInventory + "): $" + tempSellTotal
             sellInventoryDiv.append(inventoryDiv)
             sellTotal += tempSellTotal
@@ -1458,19 +1460,34 @@ async function renderScreen(stateObj, isMove=true) {
                 mapSquareImg.classList.add("amethyst-img")
                 mapSquareImg.src = "img/map/amethyst.png"
                 mapSquareDiv.append(mapSquareImg)
+            } else if (mapSquare === "stone-5") {
+                let mapSquareImg = document.createElement("Img");
+                mapSquareImg.classList.add("stone-amethyst-img")
+                mapSquareImg.src = "img/map/stone-amethyst.png"
+                mapSquareDiv.append(mapSquareImg)
             } else if (mapSquare === "6") {
                 mapSquareDiv.classList.add("diamond")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("diamond-img")
                 mapSquareImg.src = "img/map/diamond.png"
                 mapSquareDiv.append(mapSquareImg)
-            }  else if (mapSquare === "7") {
+            } else if (mapSquare === "stone-6") {
+                let mapSquareImg = document.createElement("Img");
+                mapSquareImg.classList.add("stone-diamond-img")
+                mapSquareImg.src = "img/map/stone-diamond.png"
+                mapSquareDiv.append(mapSquareImg)
+            } else if (mapSquare === "7") {
                 mapSquareDiv.classList.add("blkdiamond")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("blkdiamond-img")
                 mapSquareImg.src = "img/map/blkdiamond.png"
                 mapSquareDiv.append(mapSquareImg)
-            } else if (mapSquare === "STORE") {
+            } else if (mapSquare === "stone-7") {
+                let mapSquareImg = document.createElement("Img");
+                mapSquareImg.classList.add("stone-blkdiamond-img")
+                mapSquareImg.src = "img/map/stone-blkdiamond.png"
+                mapSquareDiv.append(mapSquareImg)
+            }  else if (mapSquare === "STORE") {
                 mapSquareDiv.classList.add("store")
                 let mapSquareImg = document.createElement("Img");
                 mapSquareImg.classList.add("store-img")
@@ -2530,18 +2547,26 @@ async function LeftArrow(stateObj, currentHeight, currentWidth, scrollHeight, sc
             if (stateObj.gameMap[stateObj.currentPosition-1] !== "STORE") {
                 return stateObj
             }
+        } 
+        if (stateObj.gameMap[stateObj.currentPosition - 1] === "stone-5" || stateObj.gameMap[stateObj.currentPosition - 1] === "stone-6"
+        || stateObj.gameMap[stateObj.currentPosition - 1] === "stone-7") {
+            return stateObj
         }
         window.scrollTo(currentWidth*scrollWidth- (scrollWidth*4), currentHeight*scrollHeight - (scrollHeight*2))
         stateObj = await calculateMoveChange(stateObj, -1)
-    }
-
+        
     return stateObj
+    }
 }
 
 //7, 15, 23
 async function RightArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth) {
     //do nothing if you're in the air and space to your left isn't air
     if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty" && stateObj.gameMap[stateObj.currentPosition + 1] !== "empty") {
+        return stateObj
+    } 
+    if (stateObj.gameMap[stateObj.currentPosition + 1] === "stone-5" || stateObj.gameMap[stateObj.currentPosition + 1] === "stone-6"
+    || stateObj.gameMap[stateObj.currentPosition + 1] === "stone-7") {
         return stateObj
     } else {
         //only execute if not already on right side
@@ -2565,13 +2590,17 @@ async function UpArrow(stateObj, currentHeight, currentWidth, scrollHeight, scro
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.currentFuel -= 0.5
             })
-        }
+        }   
     } 
     return stateObj
 }
 
 async function DownArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth) {
     if (stateObj.currentPosition < (stateObj.gameMap.length-screenwidthBlocks) && stateObj.gameMap[stateObj.currentPosition+screenwidthBlocks] !== "stone") {
+        if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "stone-5" || stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "stone-6"
+        || stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "stone-7") {
+            return stateObj
+        }
         window.scrollTo(currentWidth*scrollWidth- (scrollWidth*3), currentHeight*scrollHeight - (scrollHeight))
         stateObj = await calculateMoveChange(stateObj, screenwidthBlocks)
     }
@@ -2717,7 +2746,6 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         })
         
     }
-
     return stateObj
 }
 
@@ -2734,7 +2762,6 @@ async function sellItemsScreen(stateObj, emptyInv=false) {
             newState.inStore = true;
         }
     })
-
 
     return stateObj
 }
@@ -2932,15 +2959,20 @@ async function detonateBlock(stateObj, blockPosition, isLaser=false) {
             }
         }
         if (newState.gameMap[blockPosition] !== "STORE" && newState.gameMap[blockPosition] !== "stone") {
-            newState.gameMap[blockPosition] = "exploding-1"
+            if (newState.gameMap[blockPosition] === "stone-5") {
+                newState.gameMap[blockPosition] = "5"
+            } else if (newState.gameMap[blockPosition] === "stone-6") {
+                newState.gameMap[blockPosition] = "6"
+            } else if (newState.gameMap[blockPosition] === "stone-7") {
+                newState.gameMap[blockPosition] = "7"
+            } else {
+                newState.gameMap[blockPosition] = "exploding-1"
+            }
+            
+
             if (isLaser) {
                 newState.laserExplosion = true
-            }
-            // if (isLaser) {
-            //     newState.gameMap[blockPosition] = "empty"
-            // } else {
-            //     newState.gameMap[blockPosition] = "exploding-1"
-            // }
+            } 
         }
         
     })
