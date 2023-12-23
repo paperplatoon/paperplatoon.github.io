@@ -614,7 +614,9 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
   }
 
   .store-clickable:hover#store-laser-capacity-upgrade-div,
-  .store-clickable:hover#store-bomb-capacity-upgrade-div {
+  .store-clickable:hover#store-bomb-capacity-upgrade-div,
+  .store-clickable:hover#store-buy-bomb-div,
+  .store-clickable:hover#store-buy-laser-div {
     border: 1vh dashed rgba(90, 0, 0, 0.737);
     background: repeating-linear-gradient(
     135deg,
