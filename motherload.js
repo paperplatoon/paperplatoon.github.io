@@ -1,4 +1,10 @@
-
+//potentialRelics = [
+//     {
+//         name: "RelicName",
+//         text: "do the thing for this relic",
+//         relicFunc: thisRelicsFunction()
+//     }
+// ]
 
 let gameStartState = {
     gameMap: [],
@@ -51,6 +57,8 @@ let gameStartState = {
     bombRefill: 0,
     fuelToBlocks: 0,
     spareFuelTank: 0,
+
+    storeRelics: [],
     
 
     drillTime: 850,
@@ -989,12 +997,12 @@ function renderTopBarStats(stateObj) {
 //     return arrowsDiv
 // }
 
-function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
+function ProduceBlockSquares(arrayObj, numberRows, stateObj) {
     let chosenSquare = 50000
     let floorObj = stateObj.floorValues[stateObj.currentLevel]
+    let chosenSquareArray = []
 
     if (floorObj.relicNumber > 0) {
-        chosenSquareArray = []
         for (let i = 0; i < floorObj.relicNumber; i++) {
             chosenSquare = Math.floor(Math.random() * screenwidthBlocks*numberRows);
             if (chosenSquare > screenwidthBlocks) {
@@ -1002,7 +1010,6 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
             } else {
                 chosenSquareArray.push(chosenSquare+screenwidthBlocks)
             }
-            console.log('psuhing chosen square ' + chosenSquare)
         }
     }
     
@@ -1013,15 +1020,18 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
         if (chosenSquareArray.includes(j)) {
             //19 relics
             //relicArray = buildRelicArray(stateObj)
-            let relicArray = ["bombDistanceRelic", "laserPiercingRelic", "dirtRelic", "stopRelic", 
-            "halfDamageRelic", "moneyForDirtRelic", "weaponsPriceRelic", "halfDamageFullFuelRelic", 
-            "thornsRelic", "dirtToMaxFuelRelic", "killEnemiesHullRelic", "bronzeSilverBonusRelic", 
-            "remoteBombsRelic", "killEnemiesHealRelic", "silverHealingRelic", "bronzeMaxFuelRelic",
-            "bombRefillRelic", "fuelToBlocksRelic", "spareTankRelic"
-            ] // "fuelRelic",  "bombsExplodeFasterRelic", 
+            // let relicArray = ["bombDistanceRelic", "laserPiercingRelic", "dirtRelic", "stopRelic", 
+            // "halfDamageRelic", "moneyForDirtRelic", "weaponsPriceRelic", "halfDamageFullFuelRelic", 
+            // "thornsRelic", "dirtToMaxFuelRelic", "killEnemiesHullRelic", "bronzeSilverBonusRelic", 
+            // "remoteBombsRelic", "killEnemiesHealRelic", "silverHealingRelic", "bronzeMaxFuelRelic",
+            // "bombRefillRelic", "fuelToBlocksRelic", "spareTankRelic"
+            // ] 
+            // "fuelRelic",  "bombsExplodeFasterRelic", 
+            let relicArray = buildRelicArray(stateObj)
+            relicArray.push("stopRelic")
 
-            relicArray = ["spareTankRelic"]
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
+
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
             arrayObj.push("empty")
@@ -1088,7 +1098,7 @@ async function returnArrayObject(stateObj) {
         tempArray.push("empty")
     };
     console.log('About to call produceblocksquares')
-    tempArray = await ProduceBlockSquares(tempArray, middleBlockSquare, stateObj, isRelic=false)
+    tempArray = await ProduceBlockSquares(tempArray, middleBlockSquare, stateObj)
     console.log('called produceblocksquares')    
     return tempArray
 }
@@ -1097,6 +1107,18 @@ async function returnArrayObject(stateObj) {
 async function fillMapWithArray(stateObj) {
     console.log("filling the Map")
         tempArray = await returnArrayObject(stateObj)
+
+        let storeRelicArray = buildRelicArray(stateObj)
+
+        let randomRelicNumber = Math.floor(Math.random() * storeRelicArray.length)
+        let RelicNumber2 = Math.floor(Math.random() * storeRelicArray.length)
+        if (randomRelicNumber === RelicNumber2) {
+            if (randomRelicNumber=== 0) {
+                RelicNumber2 +=1 
+            } else {
+                RelicNumber2 -= 1
+            }
+        }
 
         stateObj = await immer.produce(stateObj, (newState) => {
             newState.gameMap = tempArray;
@@ -1109,7 +1131,6 @@ async function fillMapWithArray(stateObj) {
     for (i = 0; i < stateObj.gameMap.length; i++) {
         if (stateObj.gameMap[i] === "enemy") {
             let direction = (Math.random() > 0.5) ? "left" : "right";
-            console.log("found an enemy at square " + i + " pushing direction " + direction)
             if (stateObj.isLevelCoward === false) {
                 tempEnemyArray.push(i)
                 tempEnemyMovementArray.push(direction)
@@ -1970,6 +1991,7 @@ async function renderScreen(stateObj, isMove=true) {
                 buyBombDistanceUpgrade(stateObj)
             }
         }
+
         
     
         let buyNothingDiv = document.createElement("Div")
@@ -1985,6 +2007,24 @@ async function renderScreen(stateObj, isMove=true) {
         storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, laserUpgradeDiv, buyBombDiv,  
             bombUpgradeDiv, fuelUpgradeDiv, inventoryUpgradeDiv, hullUpgradeDiv, buyNothingDiv) //upgradeBombDistanceDiv,
 
+        if (stateObj.storeRelicArray.length > 0) {
+            let relicDiv1 = document.createElement("Div")
+            relicDiv1.classList.add("store-option")
+            let relicText1 = document.createElement("Div")
+            relicText1.classList.add("store-option-text")
+            let relicText2 = document.createElement("Div")
+            relicText2.classList.add("store-option-text")
+            relicText1.textContent =  stateObj.storeRelicArray[0]
+            let relicText2string = 1000 
+            if (stateObj.currentLevel > 0) {
+                relicText2string *= ((stateObj.currentLevel+1)*3)
+            }
+            relicText2.textContent = relicText2string
+            relicDiv1.append(relicText1, relicText2)
+            relicDiv1.onclick = function () {
+                buyRelic1(stateObj)
+              }
+        }
 
         let testDiv = document.createElement("Div")
         document.getElementById("app").append(storeDiv)
@@ -1994,6 +2034,21 @@ async function renderScreen(stateObj, isMove=true) {
 
 async function leaveStore(stateObj) {
     stateObj.inStore = false;
+    await changeState(stateObj);
+}
+
+async function buyRelic1(stateObj) {
+    let relicCost = 1000
+    if (stateObj.currentLevel > 0) {
+        relicCost *= ((stateObj.currentLevel+1)*3)
+    }
+    if (stateObj.bankedCash > relicCost) {
+        stateObj = immer.produce(stateObj, (newState) => {
+            newState.bankedCost -= relicCost
+            newState.choosingNextLevel = false;
+        })
+    }
+        
     await changeState(stateObj);
 }
 
@@ -3080,11 +3135,21 @@ async function dropBomb(stateObj) {
 }
 
 function buildRelicArray(stateObj) {
+    let tempArray = ["bombDistanceRelic", "dirtRelic", "halfDamageRelic", "moneyForDirtRelic", 
+    "weaponsPriceRelic", "halfDamageFullFuelRelic","dirtToMaxFuelRelic", "killEnemiesHullRelic", 
+    "bronzeSilverBonusRelic", "killEnemiesHealRelic", "silverHealingRelic", "bronzeMaxFuelRelic",
+    "bombRefillRelic", "fuelToBlocksRelic", "spareTankRelic"
+    ]
 
+    if (stateObj.laserPiercing === false) {
+        tempArray.push("laserPiercingRelic")
+    }
+    if (stateObj.thorns === false) {
+        tempArray.push("thornsRelic")
+    }
+    if (stateObj.remoteBombs === false) {
+        tempArray.push("remoteBombsRelic")
+    }
+
+    return tempArray
 }
-
-// let relicArray = ["fuelRelic", "bombDistanceRelic", "laserPiercingRelic", "dirtRelic", 
-//             "stopRelic", "halfDamageRelic", "moneyForDirtRelic", "bombsExplodeFasterRelic", 
-//             "weaponsPriceRelic", "halfDamageFullFuelRelic", "thornsRelic", "dirtToMaxFuelRelic",
-//             "killEnemiesHullRelic", "bronzeSilverBonusRelic", "remoteBombsRelic", "killEnemiesHealRelic",
-//             "silverHealingRelic", "bronzeMaxFuelRelic"]
