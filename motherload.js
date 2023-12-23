@@ -50,6 +50,7 @@ let gameStartState = {
     bronzeMaxFuel: 0,
     bombRefill: 0,
     fuelToBlocks: 0,
+    spareFuelTank: 0,
     
 
     drillTime: 850,
@@ -658,6 +659,38 @@ function renderTopBarStats(stateObj) {
           topBarDiv.append(weaponPriceRelicDiv)
     }
 
+    if (stateObj.spareFuelTank > 0) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/relics/sparetank.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#spare-tank-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#spare-tank-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "spare-tank-popup")
+          relicTextDiv.classList.add("none-display")
+          let fuelNeeded = Math.floor(((stateObj.dirtThresholdNeeded - stateObj.dirtReserves)*2)/stateObj.fuelToBlocks)
+          relicString = "Refill fuel after running out " + stateObj.spareFuelTank + " time"
+          if (stateObj.spareFuelTank > 1) {
+            relicString += "s"
+          }
+          relicTextDiv.textContent = relicString
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
     if (stateObj.killEnemiesForMoney > 0) {
         let weaponPriceRelicDiv = document.createElement("Div")
         weaponPriceRelicDiv.classList.add("relic-div")
@@ -978,16 +1011,16 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj, isRelic=false) {
     let middleLength = (screenwidthBlocks*floorObj.numberRows) + (screenwidthBlocks);
     for (let j=screenwidthBlocks; j < middleLength; j++) {
         if (chosenSquareArray.includes(j)) {
-            //18 relics
+            //19 relics
             //relicArray = buildRelicArray(stateObj)
             let relicArray = ["bombDistanceRelic", "laserPiercingRelic", "dirtRelic", "stopRelic", 
             "halfDamageRelic", "moneyForDirtRelic", "weaponsPriceRelic", "halfDamageFullFuelRelic", 
             "thornsRelic", "dirtToMaxFuelRelic", "killEnemiesHullRelic", "bronzeSilverBonusRelic", 
             "remoteBombsRelic", "killEnemiesHealRelic", "silverHealingRelic", "bronzeMaxFuelRelic",
-            "bombRefillRelic", "fuelToBlocksRelic"
+            "bombRefillRelic", "fuelToBlocksRelic", "spareTankRelic"
             ] // "fuelRelic",  "bombsExplodeFasterRelic", 
 
-            //relicArray = ["fuelToBlocksRelic"]
+            relicArray = ["spareTankRelic"]
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
@@ -1115,7 +1148,7 @@ async function moveEnemies() {
                 console.log("able to take damage again")
                 newState.takingDamage = false;
             }
-            console.log('taking damage state is ' + stateObj.newState)
+            console.log('taking damage state is ' + newState.takingDamage)
         }
     })
     // await updateState(stateObj)
@@ -1565,6 +1598,9 @@ async function renderScreen(stateObj, isMove=true) {
             } else if (mapSquare === "bronzeMaxFuelRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Mining bronze ore increases maximum fuel"
+            } else if (mapSquare === "spareTankRelic") {
+                mapSquareDiv.classList.add("relic")
+                mapSquareDiv.textContent = "Spare Fuel Tank"
             } else if (mapSquare === "moneyForDirtRelic") {
                 mapSquareDiv.classList.add("relic")
                 mapSquareDiv.textContent = "Earn Money When Dropping Dirt"
@@ -2245,6 +2281,14 @@ async function fuelToBlocksRelic(stateObj) {
     return stateObj
 }
 
+async function spareTankRelic(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.spareFuelTank += 1;
+    })
+    await changeState(stateObj);
+    return stateObj
+}
+
 async function upgradeDirtBlockRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         if (newState.dirtThresholdNeeded > 10) {
@@ -2474,10 +2518,8 @@ document.addEventListener('keydown', async function(event) {
   });
 
 async function checkForDeath(stateObj) {
-    if (state.sellingItems === false && state.inStore === false) {
-        if (state.currentFuel < 0) {
-            await loseTheGame("You've run out of fuel!");
-        }
+    if (stateObj.sellingItems === false && stateObj.inStore === false) {
+        
 
         if (stateObj.gameMap[stateObj.currentPosition-1] === "enemy" && stateObj.currentPosition % screenwidthBlocks !== 0) {
             stateObj = await doDamage(stateObj, 50, -1)
@@ -2490,7 +2532,21 @@ async function checkForDeath(stateObj) {
         }
     
         await changeState(stateObj)
-    
+
+        if (stateObj.currentFuel < 0) {
+            //await loseTheGame("You've run out of fuel!");
+            if (stateObj.spareFuelTank > 0) {
+                stateObj = await immer.produce(stateObj, (newState) => {
+                    newState.spareFuelTank -= 1
+                    newState.currentFuel = newState.fuelCapacity
+                })
+                await changeState(stateObj)
+            } else {
+                await loseTheGame("You've run out of fuel!");
+            }
+            
+        }
+
         if (stateObj.currentHullIntegrity <= 0) {
             await loseTheGame("Your miner took too much damage and exploded!");
         }
@@ -2729,6 +2785,9 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "fuelToBlocksRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await fuelToBlocksRelic(stateObj)  
+    } else if (targetSquare === "spareTankRelic") {
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
+        stateObj = await spareTankRelic(stateObj)  
     } else if (targetSquare === "dirtRelic") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await upgradeDirtBlockRelic(stateObj)  
@@ -2854,6 +2913,7 @@ async function handleSquare(stateObj, squareIndexToMoveTo, fuelToLose, isGem=fal
 }
 
 async function loseTheGame(textString) {
+    console.log("firig lose the game")
     state.lostTheGame = true;
     state.takingDamage = false;
     clearInterval(enemyMovementTimer)
