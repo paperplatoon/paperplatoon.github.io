@@ -1,8 +1,9 @@
-//potentialRelics = [
+// potentialRelics = [
 //     {
-//         name: "RelicName",
-//         text: "do the thing for this relic",
-//         relicFunc: thisRelicsFunction()
+//         name: "Spare Fuel Tank",
+//         text: "Fully refills your fuel once if you run our of fuel",
+//         relicFunc: spareTankRelic(),
+//         imgPath: "img/relics/sparetank.png",
 //     }
 // ]
 
@@ -1032,6 +1033,7 @@ function ProduceBlockSquares(arrayObj, numberRows, stateObj) {
 
             let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
 
+
             arrayObj.push(chosenRelic)
         } else if (nextSquareEmpty === true){
             arrayObj.push("empty")
@@ -2007,24 +2009,24 @@ async function renderScreen(stateObj, isMove=true) {
         storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, laserUpgradeDiv, buyBombDiv,  
             bombUpgradeDiv, fuelUpgradeDiv, inventoryUpgradeDiv, hullUpgradeDiv, buyNothingDiv) //upgradeBombDistanceDiv,
 
-        if (stateObj.storeRelicArray.length > 0) {
-            let relicDiv1 = document.createElement("Div")
-            relicDiv1.classList.add("store-option")
-            let relicText1 = document.createElement("Div")
-            relicText1.classList.add("store-option-text")
-            let relicText2 = document.createElement("Div")
-            relicText2.classList.add("store-option-text")
-            relicText1.textContent =  stateObj.storeRelicArray[0]
-            let relicText2string = 1000 
-            if (stateObj.currentLevel > 0) {
-                relicText2string *= ((stateObj.currentLevel+1)*3)
-            }
-            relicText2.textContent = relicText2string
-            relicDiv1.append(relicText1, relicText2)
-            relicDiv1.onclick = function () {
-                buyRelic1(stateObj)
-              }
-        }
+        // if (stateObj.storeRelicArray.length > 0) {
+        //     let relicDiv1 = document.createElement("Div")
+        //     relicDiv1.classList.add("store-option")
+        //     let relicText1 = document.createElement("Div")
+        //     relicText1.classList.add("store-option-text")
+        //     let relicText2 = document.createElement("Div")
+        //     relicText2.classList.add("store-option-text")
+        //     relicText1.textContent =  stateObj.storeRelicArray[0]
+        //     let relicText2string = 1000 
+        //     if (stateObj.currentLevel > 0) {
+        //         relicText2string *= ((stateObj.currentLevel+1)*3)
+        //     }
+        //     relicText2.textContent = relicText2string
+        //     relicDiv1.append(relicText1, relicText2)
+        //     relicDiv1.onclick = function () {
+        //         buyRelic1(stateObj)
+        //       }
+        // }
 
         let testDiv = document.createElement("Div")
         document.getElementById("app").append(storeDiv)
@@ -2667,6 +2669,8 @@ async function LeftArrow(stateObj, currentHeight, currentWidth, scrollHeight, sc
         stateObj = await calculateMoveChange(stateObj, -1)
         
     return stateObj
+    } else {
+        return stateObj
     }
 }
 
