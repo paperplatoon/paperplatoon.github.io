@@ -60,6 +60,7 @@ let gameStartState = {
     spareFuelTank: 0,
 
     storeRelics: [],
+    currentLevelRelic: false,
     
 
     drillTime: 850,
@@ -3000,33 +3001,36 @@ async function detonateBomb(stateObj, detonatePosition) {
         newState.bombLocation = false;
         newState.bombTimer = false
     })
-    for (i=0; i < numberBlocks+1; i++) {
+    for (i=0; i < numberBlocks; i++) {
         leftBlocksToBlast = i;
         if ((detonatePosition-i) % screenwidthBlocks === 0) {
             break;
         }
     }
-    for (i=0; i < numberBlocks+1; i++) {
+    for (i=0; i < numberBlocks; i++) {
         rightBlocksToBlast = i;
         if ((detonatePosition+i+1) % screenwidthBlocks === 0) {
             break;
         }
     }
 
-    for (i=0; i < numberBlocks-1+1; i++) {
+    for (i=0; i < numberBlocks; i++) {
         upBlocksToBlast = i;
         if ((detonatePosition-(screenwidthBlocks*(i+1))) < 0) {
             break;
         }
     }
 
-    for (i=0; i < numberBlocks-1+1; i++) {
+    for (i=0; i < numberBlocks; i++) {
         downBlocksToBlast = i;
         if ((detonatePosition+(screenwidthBlocks*(i+1))) > (stateObj.gameMap.length-screenwidthBlocks) ) {
             console.log("breaking down")
             break;
         }
     }
+
+    
+    stateObj = await detonateBlock(stateObj, detonatePosition)
 
     for (i=1; i < leftBlocksToBlast+1; i++) {
         stateObj = await detonateBlock(stateObj, detonatePosition-i)
@@ -3043,6 +3047,47 @@ async function detonateBomb(stateObj, detonatePosition) {
     for (i=1; i < downBlocksToBlast+1; i++) {
         stateObj = await detonateBlock(stateObj, detonatePosition+(screenwidthBlocks*i))
     }
+
+    if (leftBlocksToBlast > 0 && upBlocksToBlast > 0) {
+        for (i=1; i < numberBlocks+1; i++) {
+            if ((leftBlocksToBlast >= i) && upBlocksToBlast>= i) {
+                stateObj = await detonateBlock(stateObj, detonatePosition - (screenwidthBlocks*i)-i)
+            }
+        }
+    }
+
+    if (rightBlocksToBlast > 0 && upBlocksToBlast > 0) {
+        for (i=1; i < numberBlocks+1; i++) {
+            if ((rightBlocksToBlast >= i) && upBlocksToBlast>= i) {
+                stateObj = await detonateBlock(stateObj, detonatePosition - (screenwidthBlocks*i)+i)
+            }
+        }
+    }
+
+    if (rightBlocksToBlast > 0 && upBlocksToBlast > 0) {
+        for (i=1; i < numberBlocks+1; i++) {
+            if ((rightBlocksToBlast >= i) && upBlocksToBlast>= i) {
+                stateObj = await detonateBlock(stateObj, detonatePosition - (screenwidthBlocks*i)+i)
+            }
+        }
+    }
+
+    if (rightBlocksToBlast > 0 && downBlocksToBlast > 0) {
+        for (i=1; i < numberBlocks+1; i++) {
+            if ((rightBlocksToBlast >= i) && downBlocksToBlast>= i) {
+                stateObj = await detonateBlock(stateObj, detonatePosition + (screenwidthBlocks*i)+i)
+            }
+        }
+    }
+
+    if (leftBlocksToBlast > 0 && downBlocksToBlast > 0) {
+        for (i=1; i < numberBlocks+1; i++) {
+            if ((leftBlocksToBlast >= i) && downBlocksToBlast>= i) {
+                stateObj = await detonateBlock(stateObj, detonatePosition + (screenwidthBlocks*i)-i)
+            }
+        }
+    }
+
     return stateObj
 }
 
