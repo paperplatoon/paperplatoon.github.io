@@ -1,12 +1,3 @@
-// potentialRelics = [
-//     {
-//         name: "Spare Fuel Tank",
-//         text: "Fully refills your fuel once if you run our of fuel",
-//         relicFunc: spareTankRelic(),
-//         imgPath: "img/relics/sparetank.png",
-//     }
-// ]
-
 let gameStartState = {
     gameMap: [],
 
@@ -48,7 +39,7 @@ let gameStartState = {
     dirtToMaxFuel: 0,
     thorns: false,
     killEnemiesHullModifier: 0,
-    moneyForDirt: 0,
+    dirtRuby: false,
     killEnemiesForMoney: 0, //needs done
     killEnemiesForHealing: 0, 
     bronzeSilverBonus: 1,
@@ -60,7 +51,10 @@ let gameStartState = {
     spareFuelTank: 0,
 
     storeRelics: [],
-    currentLevelRelic: false,
+    mapRelic1: false,
+    mapRelic2: false,
+    mapRelic3: false,
+    mapRelic4: false,
     
 
     drillTime: 850,
@@ -220,7 +214,7 @@ function renderTopBarStats(stateObj) {
     if (stateObj.fuelCapacity > 120) {
         fuelText2Div.classList.add("upgraded-stat")
     }
-    fuelText2Div.textContent = "[Max: " + stateObj.fuelCapacity + "]"
+    fuelText2Div.textContent = stateObj.currentFuel + "/" + stateObj.fuelCapacity
 
     let emptyFuelBarDiv = document.createElement("Div");
     emptyFuelBarDiv.classList.add("empty-fuel-bar");
@@ -231,8 +225,12 @@ function renderTopBarStats(stateObj) {
     if (stateObj.currentFuel >= stateObj.fuelCapacity/3) {
         currentFuelBarDiv.classList.add("full-fuel-bar");
     } else {
+        fuelText1Div.classList.add("inventory-full");
         currentFuelBarDiv.classList.add("low-fuel-bar");
-        fuelText1Div.classList.add("inventory-full-text")
+        if (stateObj.inStore === true || stateObj.sellingItems === true) {
+            fuelText1Div.classList.add("flash")
+            currentFuelBarDiv.classList.add("flash")
+        }
     }
     let barLength = 10*(stateObj.currentFuel/stateObj.fuelCapacity)
     let barText = "width:" + barLength + "vw"
@@ -256,7 +254,7 @@ function renderTopBarStats(stateObj) {
     if (stateObj.maxHullIntegrity > 100) {
         hullText2Div.classList.add("upgraded-stat")
     }
-    hullText2Div.textContent = "[Max: " + stateObj.maxHullIntegrity + "]"
+    hullText2Div.textContent = stateObj.currentHullIntegrity + "/" + stateObj.maxHullIntegrity
 
     let emptyHullBarDiv = document.createElement("Div");
     emptyHullBarDiv.classList.add("empty-hull-bar");
@@ -269,7 +267,11 @@ function renderTopBarStats(stateObj) {
         currentHullBarDiv.classList.add("full-hull-bar");
     } else {
         currentHullBarDiv.classList.add("low-hull-bar");
-        hullText1Div.classList.add("inventory-full-text")
+        hullText1Div.classList.add("inventory-full")
+        if (stateObj.inStore === true || stateObj.sellingItems === true) {
+            hullText1Div.classList.add("flash")
+            currentHullBarDiv.classList.add("flash")
+        }
     }
 
     let hullBarLength = 10*(stateObj.currentHullIntegrity/stateObj.maxHullIntegrity)
@@ -296,7 +298,7 @@ function renderTopBarStats(stateObj) {
     if (stateObj.inventoryMax > 12) {
         inventoryText2Div.classList.add("upgraded-stat")
     }
-    inventoryText2Div.textContent = "[ Max: " + stateObj.inventoryMax + " ]"
+    inventoryText2Div.textContent = stateObj.currentInventory + "/" + stateObj.inventoryMax + "    . . . "
     if (stateObj.currentInventory === stateObj.inventoryMax) {
         inventoryText2Div.classList.add("inventory-full-text")
         inventoryText1Div.classList.add("inventory-full-text")
@@ -439,6 +441,33 @@ function renderTopBarStats(stateObj) {
           relicTextDiv.setAttribute("id", "thorns-popup")
           relicTextDiv.classList.add("none-display")
           relicTextDiv.textContent = "Enemies who damage you die afterwards"
+          weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+          topBarDiv.append(weaponPriceRelicDiv)
+    }
+
+    if (stateObj.remoteBombs === true) {
+        let weaponPriceRelicDiv = document.createElement("Div")
+        weaponPriceRelicDiv.classList.add("relic-div")
+        let weaponImg = document.createElement("Img");
+        weaponImg.classList.add("relic-img")
+        weaponImg.src = "img/relics/remotebomb.png"
+        weaponPriceRelicDiv.append(weaponImg)
+        
+        weaponPriceRelicDiv.addEventListener('mouseover', function() {
+            const statusText = document.querySelector("#remote-bomb-popup");
+            statusText.style.display = 'block'
+          });
+          
+          weaponPriceRelicDiv.addEventListener('mouseout', function() {
+            const statusText = document.querySelector("#remote-bomb-popup");
+            statusText.style.display = 'none'
+          });
+    
+          let relicTextDiv = document.createElement("Div");
+          relicTextDiv.setAttribute("id", "remote-bomb-popup")
+          relicTextDiv.classList.add("none-display")
+          relicTextDiv.textContent = "Can detonate bombs remotely by pressing 'B' again after dropping them "
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
           topBarDiv.append(weaponPriceRelicDiv)
@@ -944,12 +973,12 @@ function renderTopBarStats(stateObj) {
           topBarDiv.append(weaponPriceRelicDiv)
     }
 
-    if (stateObj.moneyForDirt > 0) {
+    if (stateObj.dirtRuby === true) {
         let weaponPriceRelicDiv = document.createElement("Div")
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/moneydirt.png"
+        weaponImg.src = "img/relics/dirtruby.png"
         weaponPriceRelicDiv.append(weaponImg)
         
         weaponPriceRelicDiv.addEventListener('mouseover', function() {
@@ -965,7 +994,7 @@ function renderTopBarStats(stateObj) {
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "money-dirt-popup")
           relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Earn $" + Math.ceil(stateObj.moneyForDirt) + " every time you drop dirt"
+          relicTextDiv.textContent = "Dropped blocks contain a ruby"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
           topBarDiv.append(weaponPriceRelicDiv)
@@ -999,44 +1028,18 @@ function renderTopBarStats(stateObj) {
 //     return arrowsDiv
 // }
 
-function ProduceBlockSquares(arrayObj, numberRows, stateObj) {
+async function ProduceBlockSquares(arrayObj, stateObj) {
     let chosenSquare = 50000
     let floorObj = stateObj.floorValues[stateObj.currentLevel]
     let chosenSquareArray = []
+    let mapRelic = false 
 
-    if (floorObj.relicNumber > 0) {
-        for (let i = 0; i < floorObj.relicNumber; i++) {
-            chosenSquare = Math.floor(Math.random() * screenwidthBlocks*numberRows);
-            if (chosenSquare > screenwidthBlocks) {
-                chosenSquareArray.push(chosenSquare)
-            } else {
-                chosenSquareArray.push(chosenSquare+screenwidthBlocks)
-            }
-        }
-    }
     
     let nextSquareEmpty = false;
     //the top row is already reserved for store and empty space
     let middleLength = (screenwidthBlocks*floorObj.numberRows) + (screenwidthBlocks);
     for (let j=screenwidthBlocks; j < middleLength; j++) {
-        if (chosenSquareArray.includes(j)) {
-            //19 relics
-            //relicArray = buildRelicArray(stateObj)
-            // let relicArray = ["bombDistanceRelic", "laserPiercingRelic", "dirtRelic", "stopRelic", 
-            // "halfDamageRelic", "moneyForDirtRelic", "weaponsPriceRelic", "halfDamageFullFuelRelic", 
-            // "thornsRelic", "dirtToMaxFuelRelic", "killEnemiesHullRelic", "bronzeSilverBonusRelic", 
-            // "remoteBombsRelic", "killEnemiesHealRelic", "silverHealingRelic", "bronzeMaxFuelRelic",
-            // "bombRefillRelic", "fuelToBlocksRelic", "spareTankRelic"
-            // ] 
-            // "fuelRelic",  "bombsExplodeFasterRelic", 
-            let relicArray = buildRelicArray(stateObj)
-            relicArray.push("stopRelic")
-
-            let chosenRelic = relicArray[Math.floor(Math.random() * relicArray.length)]
-
-
-            arrayObj.push(chosenRelic)
-        } else if (nextSquareEmpty === true){
+        if (nextSquareEmpty === true){
             arrayObj.push("empty")
             nextSquareEmpty = false
         } else {
@@ -1100,32 +1103,50 @@ async function returnArrayObject(stateObj) {
     for (let i=0; i<screenwidthBlocks-1; i++ ) {
         tempArray.push("empty")
     };
-    console.log('About to call produceblocksquares')
-    tempArray = await ProduceBlockSquares(tempArray, middleBlockSquare, stateObj)
-    console.log('called produceblocksquares')    
+    tempArray = await ProduceBlockSquares(tempArray, stateObj)  
     return tempArray
+}
+
+async function produceRelicSquareArray(stateObj) {
+    let floorObj = stateObj.floorValues[stateObj.currentLevel]
+    let chosenSquare = 50000
+    let chosenSquareArray = []
+
+    for (let i = 0; i < floorObj.relicNumber; i++) {
+        chosenSquare = Math.floor(Math.random() * screenwidthBlocks*floorObj.numberRows);
+        if (chosenSquare > screenwidthBlocks) {
+            chosenSquareArray.push(chosenSquare)
+        } else {
+            chosenSquareArray.push(chosenSquare+screenwidthBlocks)
+        }
+    }
+    return chosenSquareArray
 }
 
 //takes a stateObj, and if the gameMap is not created, creates it
 async function fillMapWithArray(stateObj) {
     console.log("filling the Map")
         tempArray = await returnArrayObject(stateObj)
+        relicSquareArray = await produceRelicSquareArray(stateObj)
 
-        let storeRelicArray = buildRelicArray(stateObj)
-
-        let randomRelicNumber = Math.floor(Math.random() * storeRelicArray.length)
-        let RelicNumber2 = Math.floor(Math.random() * storeRelicArray.length)
-        if (randomRelicNumber === RelicNumber2) {
-            if (randomRelicNumber=== 0) {
-                RelicNumber2 +=1 
-            } else {
-                RelicNumber2 -= 1
-            }
-        }
 
         stateObj = await immer.produce(stateObj, (newState) => {
             newState.gameMap = tempArray;
             newState.currentPosition = 2;
+            if (relicSquareArray.length > 0) {
+                for (let i = 0; i < relicSquareArray.length; i++) {
+                    relicNum = Math.floor(Math.random() * potentialRelics.length)
+                    if (i === 0) {
+                        newState.mapRelic1 = potentialRelics[relicNum]
+                        newState.gameMap[relicSquareArray[i]] = "relic1"
+                    } else {
+                        newState.mapRelic2 = potentialRelics[relicNum]
+                        newState.gameMap[relicSquareArray[i]] = "relic2"
+                    }
+                }
+            
+            }
+
         })
 
     await updateState(stateObj)
@@ -1175,9 +1196,6 @@ async function moveEnemies() {
             console.log('taking damage state is ' + newState.takingDamage)
         }
     })
-    // await updateState(stateObj)
-    // console.log("number of enemies is " + stateObj.enemyMovementArray.length)
-    // console.log("enemy positions are " + stateObj.enemyArray)
     if (stateObj.inStore === false && stateObj.choosingNextLevel === false && stateObj.sellingItems === false) {
         console.log("firing moveEnemies")
         if (stateObj.timeCounter % 3 ===0) {
@@ -1562,73 +1580,13 @@ async function renderScreen(stateObj, isMove=true) {
                 mapSquareImg.classList.add("bomb-img")
                 mapSquareImg.src = "img/map/bomb.png"
                 mapSquareDiv.append(mapSquareImg)
-                if (stateObj.remoteBombs === true ){
-                    mapSquareDiv.textContent = "press B to detonate"
-                }
-            } else if (mapSquare === "fuelRelic") {
+            } else if (mapSquare === "relic1") {
                 mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Fuel ++"
-            } else if (mapSquare === "bombDistanceRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Bomb Distance ++"
-            } else if (mapSquare === "laserPiercingRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Laser pierces through everything"
-            } else if (mapSquare === "bombRefillRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Killing an enemy with a bomb refills it"
-            } else if (mapSquare === "fuelToBlocksRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Drop blocks with fuel. Warning: takes a lot of fuel!"
-            } else if (mapSquare === "dirtRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Dirt Efficiency ++"
-            } else if (mapSquare === "dirtToMaxFuelRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Dropping dirt slightly increases Fuel Capacity"
-            } else if (mapSquare === "stopRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Pause Enemies"
-            } else if (mapSquare === "halfDamageRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Enemies deal less damage to you"
-            } else if (mapSquare === "bombsExplodeFasterRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Bombs explode faster"
-            } else if (mapSquare === "halfDamageFullFuelRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Take less damage when fuel above 50%"
-            } else if (mapSquare === "thornsRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Enemies that damage you die on impact"
-            } else if (mapSquare === "bronzeSilverBonusRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Bronze and silver ore is worth more"
-            } else if (mapSquare === "remoteBombsRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Trigger bombs remotely"
-            } else if (mapSquare === "weaponsPriceRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Cheaper Lasers & Bombs"
-            } else if (mapSquare === "killEnemiesHullRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Killing enemies improves hull integrity"
-            } else if (mapSquare === "killEnemiesHealRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Killing enemies repairs your hull"
-            } else if (mapSquare === "silverHealingRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Mining silver ore heals HP"
-            } else if (mapSquare === "bronzeMaxFuelRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Mining bronze ore increases maximum fuel"
-            } else if (mapSquare === "spareTankRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Spare Fuel Tank"
-            } else if (mapSquare === "moneyForDirtRelic") {
-                mapSquareDiv.classList.add("relic")
-                mapSquareDiv.textContent = "Earn Money When Dropping Dirt"
-            }
+                let mapSquareImg = document.createElement("Img");
+                mapSquareImg.classList.add("relic-img")
+                mapSquareImg.src = stateObj.mapRelic1.imgPath
+                mapSquareDiv.append(mapSquareImg)
+            } 
 
             mapSquareDiv.onclick = async function() {
                 if (stateObj.currentPosition === squareIndex - 1) {
@@ -1711,7 +1669,7 @@ async function renderScreen(stateObj, isMove=true) {
 
         let pacifistDiv = document.createElement("Div")
         pacifistDiv.classList.add("next-level-option")
-        pacifistDiv.textContent = "PACIFIST - After completing the level, gain $200 for every enemy that is still alive"
+        pacifistDiv.textContent = "PACIFIST - After completing the level, gain $100 for every enemy that is still alive"
         pacifistDiv.classList.add("next-level-clickable")
         pacifistDiv.onclick = function () {
             pacifistChoice(stateObj)
@@ -2222,140 +2180,79 @@ async function bombsExplodeFasterRelic(stateObj) {
     await changeState(stateObj);
     return stateObj
 }
-
-async function halfDamageFullFuel(stateObj) {
+async function stopEnemiesRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.halfDamageFullFuel *= 0.75;
+        newState.enemyArray = []
+        newState.enemyMovementArray = [];
     })
     await changeState(stateObj);
     return stateObj
 }
 
-async function thornsRelic(stateObj) {
+async function dirtToMaxFuelRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.thorns = true;
+        newState.dirtToMaxFuel += 5;
     })
     await changeState(stateObj);
     return stateObj
 }
 
-async function bronzeSilverBonusRelic(stateObj) {
+async function halfDamageEnemiesRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.bronzeSilverBonus += 1;
+        newState.enemyDamageModifier -= 0.2;
     })
     await changeState(stateObj);
     return stateObj
 }
 
-async function remoteBombsRelic(stateObj) {
+async function bombsExplodeFasterRelic(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.remoteBombs = true;
-    })
-    await changeState(stateObj);
-    return stateObj
-}
-
-async function weaponsPriceRelic(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        if (newState.weaponsPriceModifier > 0.2) {
-            newState.weaponsPriceModifier -= 0.2;
+        if (newState.bombTimerMax > 4) {
+            newState.bombTimerMax -= 3;
         } else {
-            newState.weaponsPriceModifier = 0.2
+            newState.bombTimerMax = 1
+        }
+    })
+    await changeState(stateObj);
+    return stateObj
+}
+async function stopEnemiesRelic(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.enemyArray = []
+        newState.enemyMovementArray = [];
+    })
+    await changeState(stateObj);
+    return stateObj
+}
+
+async function dirtToMaxFuelRelic(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.dirtToMaxFuel += 5;
+    })
+    await changeState(stateObj);
+    return stateObj
+}
+
+async function halfDamageEnemiesRelic(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.enemyDamageModifier -= 0.2;
+    })
+    await changeState(stateObj);
+    return stateObj
+}
+
+async function bombsExplodeFasterRelic(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        if (newState.bombTimerMax > 4) {
+            newState.bombTimerMax -= 3;
+        } else {
+            newState.bombTimerMax = 1
         }
     })
     await changeState(stateObj);
     return stateObj
 }
 
-async function killEnemiesHullRelic(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.killEnemiesHullModifier += 10;
-    })
-    await changeState(stateObj);
-    return stateObj
-}
-
-async function killEnemiesHealRelic(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.killEnemiesForHealing += 20;
-    })
-    await changeState(stateObj);
-    return stateObj
-}
-
-async function silverHealingRelic(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.silverHealing += 10;
-    })
-    await changeState(stateObj);
-    return stateObj
-}
-
-async function bronzeMaxFuelRelic(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.bronzeMaxFuel += 1;
-    })
-    await changeState(stateObj);
-    return stateObj
-}
-
-async function moneyForDirtRelic(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.moneyForDirt += 300;
-    })
-    await changeState(stateObj);
-    return stateObj
-}
-
-async function upgradeBombDistanceRelic(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.bombDistance += 1;
-    })
-    await changeState(stateObj);
-    return stateObj
-}
-
-async function laserPiercingRelicFunc(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.laserPiercing = true;
-    })
-    await changeState(stateObj);
-    return stateObj
-}
-
-async function bombRefillRelic(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.bombRefill += 1;
-    })
-    await changeState(stateObj);
-    return stateObj
-}
-
-async function fuelToBlocksRelic(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.fuelToBlocks += 1;
-    })
-    await changeState(stateObj);
-    return stateObj
-}
-
-async function spareTankRelic(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.spareFuelTank += 1;
-    })
-    await changeState(stateObj);
-    return stateObj
-}
-
-async function upgradeDirtBlockRelic(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        if (newState.dirtThresholdNeeded > 10) {
-            newState.dirtThresholdNeeded -= 10;
-        }
-    })
-    await changeState(stateObj);
-    return stateObj
-}
 
 //------------------------------------------------------------------------------------
 //STORE FUNCTIONS
@@ -2791,69 +2688,9 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         stateObj = await sellItemsScreen(stateObj)
     } else if (targetSquare === "EXIT") {
         stateObj = await goToNextLevel(stateObj)
-    } else if (targetSquare === "fuelRelic") {
+    } else if (targetSquare === "relic1") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await upgradeFuelRelic(stateObj)  
-    } else if (targetSquare === "dirtToMaxFuelRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await dirtToMaxFuelRelic(stateObj)  
-    } else if (targetSquare === "stopRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await stopEnemiesRelic(stateObj)  
-    } else if (targetSquare === "halfDamageRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await halfDamageEnemiesRelic(stateObj)  
-    } else if (targetSquare === "bombsExplodeFasterRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await bombsExplodeFasterRelic(stateObj)  
-    } else if (targetSquare === "halfDamageFullFuelRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await halfDamageFullFuel(stateObj)  
-    } else if (targetSquare === "thornsRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await thornsRelic(stateObj)  
-    } else if (targetSquare === "bronzeSilverBonusRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await bronzeSilverBonusRelic(stateObj)  
-    } else if (targetSquare === "remoteBombsRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await remoteBombsRelic(stateObj)  
-    } else if (targetSquare === "weaponsPriceRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await weaponsPriceRelic(stateObj)  
-    } else if (targetSquare === "killEnemiesHullRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await killEnemiesHullRelic(stateObj)  
-    } else if (targetSquare === "killEnemiesHealRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await killEnemiesHealRelic(stateObj)  
-    } else if (targetSquare === "silverHealingRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await silverHealingRelic(stateObj)  
-    }  else if (targetSquare === "bronzeMaxFuelRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await bronzeMaxFuelRelic(stateObj)  
-    } else if (targetSquare === "bombDistanceRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await upgradeBombDistanceRelic(stateObj)  
-    } else if (targetSquare === "laserPiercingRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await laserPiercingRelicFunc(stateObj)  
-    } else if (targetSquare === "bombRefillRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await bombRefillRelic(stateObj)  
-    } else if (targetSquare === "fuelToBlocksRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await fuelToBlocksRelic(stateObj)  
-    } else if (targetSquare === "spareTankRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await spareTankRelic(stateObj)  
-    } else if (targetSquare === "dirtRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await upgradeDirtBlockRelic(stateObj)  
-    }  else if (targetSquare === "moneyForDirtRelic") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
-        stateObj = await moneyForDirtRelic(stateObj)  
+        stateObj = await stateObj.mapRelic1.relicFunc(stateObj)
     } else {
         console.log("target square hasn't been handled yet")
     }
@@ -3147,18 +2984,22 @@ async function dropBlock(stateObj) {
     console.log("dropping block")
     if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
         stateObj = await immer.produce(stateObj, (newState) => {
-            newState.bankedCash += newState.moneyForDirt
+            let mapText = false
             newState.fuelCapacity += newState.dirtToMaxFuel
             if (newState.dirtReserves >= (newState.dirtThresholdNeeded)) {
-                newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = "0";
+                mapText = (stateObj.dirtRuby === true) ? "4" : "0";
                 newState.dirtReserves = 0;
             } else if (newState.fuelToBlocks > 0) {
                 let dirtNeeded = newState.dirtThresholdNeeded - newState.dirtReserves;
                 if (newState.currentFuel > ((dirtNeeded*2)/newState.fuelToBlocks)) {
-                    newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = "0";
+                    mapText = (stateObj.dirtRuby === true) ? "4" : "0";
                     newState.dirtReserves = 0;
                     newState.currentFuel -= Math.floor((dirtNeeded*2)/newState.fuelToBlocks)
                 }
+            }
+
+            if (mapText) {
+                newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = mapText;
             }
             
         })
@@ -3184,7 +3025,7 @@ async function dropBomb(stateObj) {
 }
 
 function buildRelicArray(stateObj) {
-    let tempArray = ["bombDistanceRelic", "dirtRelic", "halfDamageRelic", "moneyForDirtRelic", 
+    let tempArray = ["bombDistanceRelic", "dirtRelic", "halfDamageRelic", "dropRuby", 
     "weaponsPriceRelic", "halfDamageFullFuelRelic","dirtToMaxFuelRelic", "killEnemiesHullRelic", 
     "bronzeSilverBonusRelic", "killEnemiesHealRelic", "silverHealingRelic", "bronzeMaxFuelRelic",
     "bombRefillRelic", "fuelToBlocksRelic", "spareTankRelic"

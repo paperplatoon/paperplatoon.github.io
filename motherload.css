@@ -187,7 +187,10 @@
   }
   .low-fuel-bar {
     background-color: rgb(184, 112, 17);
-    animation: flash 2s infinite;
+  }
+
+  .flash {
+    animation: flash 1s infinite;
   }
 
   .full-hull-bar {
@@ -501,7 +504,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
 
 .inventory-full {
   color: red;
-  font-size: 130%;
+  font-size: 115%;
 }
 
 .inventory-full-text {
@@ -537,7 +540,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: pink;
+    background-color: rgb(79, 38, 8);
     color: black;
   }
 
