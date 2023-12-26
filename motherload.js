@@ -21,7 +21,7 @@ let gameStartState = {
     blackDiamondInventory: 0,
     
 
-    bankedCash: 100,
+    bankedCash: 10000,
     
     numberLasers: 1,
     laserCapacity: 1,
@@ -53,8 +53,8 @@ let gameStartState = {
     storeRelics: [],
     mapRelic1: false,
     mapRelic2: false,
-    mapRelic3: false,
-    mapRelic4: false,
+    storeRelic1: false,
+    storeRelic2: false,
     
 
     drillTime: 850,
@@ -113,7 +113,8 @@ let gameStartState = {
             bottomRowEnemies: [1, 5, 9],
             numberRows: 20,
             relicNumber: 1,
-            floorNumber: 0
+            floorNumber: 0,
+            storeRelicPrice: 1500
         },
         {
             barVals: [1, 0.999, 0.997, 0.99, 0.95, 0.80, 0.65],
@@ -121,7 +122,8 @@ let gameStartState = {
             numberRows: 30,
             bottomRowEnemies: [0, 3, 7, 9],
             relicNumber: 1,
-            floorNumber: 1
+            floorNumber: 1,
+            storeRelicPrice: 3000,
         },
         {
             barVals: [1, 0.997, 0.99, 0.95, 0.85, 0.75, 0.7],
@@ -129,7 +131,8 @@ let gameStartState = {
             numberRows: 40,
             bottomRowEnemies: [1, 3, 5, 7],
             relicNumber: 1,
-            floorNumber: 2
+            floorNumber: 2,
+            storeRelicPrice: 6000
         },
         {
             barVals: [0.999, 0.99, 0.96, 0.9, 0.8, 0.72, 0.7],
@@ -137,7 +140,8 @@ let gameStartState = {
             numberRows: 50,
             bottomRowEnemies: [1, 2, 4, 5, 7],
             relicNumber: 1,
-            floorNumber: 3
+            floorNumber: 3,
+            storeRelicPrice: 10000
         },
         {
             barVals: [0.99, 0.97, 0.91, 0.85, 0.77, 0.73, 0.7],
@@ -145,7 +149,8 @@ let gameStartState = {
             numberRows: 70,
             bottomRowEnemies: [1, 2, 4, 5, 7],
             relicNumber: 1,
-            floorNumber: 4
+            floorNumber: 4,
+            storeRelicPrice: 15000
         },
         
     ],
@@ -1126,8 +1131,9 @@ async function produceRelicSquareArray(stateObj) {
 //takes a stateObj, and if the gameMap is not created, creates it
 async function fillMapWithArray(stateObj) {
     console.log("filling the Map")
-        tempArray = await returnArrayObject(stateObj)
-        relicSquareArray = await produceRelicSquareArray(stateObj)
+        let tempArray = await returnArrayObject(stateObj)
+        let relicSquareArray = await produceRelicSquareArray(stateObj)
+        let relicArray = buildRelicArray(stateObj)
 
 
         stateObj = await immer.produce(stateObj, (newState) => {
@@ -1135,16 +1141,22 @@ async function fillMapWithArray(stateObj) {
             newState.currentPosition = 2;
             if (relicSquareArray.length > 0) {
                 for (let i = 0; i < relicSquareArray.length; i++) {
-                    relicNum = Math.floor(Math.random() * potentialRelics.length)
+                    relicNum = Math.floor(Math.random() * relicArray.length)
                     if (i === 0) {
-                        newState.mapRelic1 = potentialRelics[relicNum]
+                        newState.mapRelic1 = relicArray[relicNum]
+                        //newState.mapRelic1 = relicArray[14]
                         newState.gameMap[relicSquareArray[i]] = "relic1"
                     } else {
-                        newState.mapRelic2 = potentialRelics[relicNum]
+                        newState.mapRelic2 = relicArray[relicNum]
                         newState.gameMap[relicSquareArray[i]] = "relic2"
                     }
+                    relicArray.splice(relicNum, 1)
                 }
-            
+                relicStoreNum = Math.floor(Math.random() * relicArray.length)
+                newState.storeRelic1 = relicArray[relicStoreNum]
+                relicArray.splice(relicStoreNum, 1)
+                relicStoreNum2 = Math.floor(Math.random() * relicArray.length)
+                newState.storeRelic2 = relicArray[relicStoreNum2]
             }
 
         })
@@ -1953,6 +1965,47 @@ async function renderScreen(stateObj, isMove=true) {
             }
         }
 
+        let buyRelic1Div = document.createElement("Div")
+        if (stateObj.storeRelic1 !== false) {
+            buyRelic1Div.setAttribute("id", "store-relic-1-div")
+            buyRelic1Div.classList.add("store-option")
+            buyRelic1Div.classList.add("relic-option")
+            let relicText1 = document.createElement("Div")
+            relicText1.classList.add("store-option-text")
+            let relicText2 = document.createElement("Div")
+            relicText2.classList.add("store-option-text")
+            relicText1.textContent = stateObj.storeRelic1.name + " - " + stateObj.storeRelic1.text
+            relicText2.textContent = "$" + stateObj.floorValues[stateObj.currentLevel].storeRelicPrice
+            buyRelic1Div.append(relicText1, relicText2)
+            if (stateObj.bankedCash >= stateObj.floorValues[stateObj.currentLevel].storeRelicPrice) {
+                buyRelic1Div.classList.add("store-clickable")
+                buyRelic1Div.onclick = function () {
+                    buyRelic1Func(stateObj)
+                }
+            }
+        }
+
+        let buyRelic2Div = document.createElement("Div")
+        if (stateObj.storeRelic2 !== false) {
+            buyRelic2Div.setAttribute("id", "store-relic-2-div")
+            buyRelic2Div.classList.add("store-option")
+            buyRelic2Div.classList.add("relic-option")
+            let relicText1 = document.createElement("Div")
+            relicText1.classList.add("store-option-text")
+            let relicText2 = document.createElement("Div")
+            relicText2.classList.add("store-option-text")
+            relicText1.textContent = stateObj.storeRelic2.name + " - " + stateObj.storeRelic2.text
+            relicText2.textContent = "$" + stateObj.floorValues[stateObj.currentLevel].storeRelicPrice
+            buyRelic2Div.append(relicText1, relicText2)
+            if (stateObj.bankedCash >= stateObj.floorValues[stateObj.currentLevel].storeRelicPrice) {
+                buyRelic2Div.classList.add("store-clickable")
+                buyRelic2Div.onclick = function () {
+                    buyRelic2Func(stateObj)
+                }
+            }
+        }
+        
+
         
     
         let buyNothingDiv = document.createElement("Div")
@@ -1966,7 +2019,8 @@ async function renderScreen(stateObj, isMove=true) {
           }
 
         storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, laserUpgradeDiv, buyBombDiv,  
-            bombUpgradeDiv, fuelUpgradeDiv, inventoryUpgradeDiv, hullUpgradeDiv, buyNothingDiv) //upgradeBombDistanceDiv,
+            bombUpgradeDiv, fuelUpgradeDiv, inventoryUpgradeDiv, hullUpgradeDiv, 
+            buyRelic1Div, buyRelic2Div, buyNothingDiv) //upgradeBombDistanceDiv,
 
         // if (stateObj.storeRelicArray.length > 0) {
         //     let relicDiv1 = document.createElement("Div")
@@ -2395,6 +2449,30 @@ async function buyBombDistanceUpgrade(stateObj) {
     await pause(300)
     document.getElementById("bomb-distance-text").classList.add("upgraded-stat")
     document.getElementById("bomb-distance-text").classList.add("emphasis")
+    await pause(300)
+    await changeState(stateObj);
+}
+
+async function buyRelic1Func(stateObj) {
+    stateObj = await stateObj.storeRelic1.relicFunc(stateObj)
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.bankedCash -= stateObj.floorValues[stateObj.currentLevel].storeRelicPrice * (1-stateObj.cheaperShops)
+        newState.storeRelic1 = false;
+
+    })
+    document.getElementById("store-relic-1-div").classList.add("store-clicked")
+    await pause(300)
+    await changeState(stateObj);
+}
+
+async function buyRelic2Func(stateObj) {
+    stateObj = await stateObj.storeRelic2.relicFunc(stateObj)
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.bankedCash -= stateObj.floorValues[stateObj.currentLevel].storeRelicPrice * (1-stateObj.cheaperShops)
+        newState.storeRelic2 = false;
+
+    })
+    document.getElementById("store-relic-2-div").classList.add("store-clicked")
     await pause(300)
     await changeState(stateObj);
 }
@@ -2887,40 +2965,48 @@ async function detonateBomb(stateObj, detonatePosition) {
 
     if (leftBlocksToBlast > 0 && upBlocksToBlast > 0) {
         for (i=1; i < numberBlocks+1; i++) {
-            if ((leftBlocksToBlast >= i) && upBlocksToBlast>= i) {
-                stateObj = await detonateBlock(stateObj, detonatePosition - (screenwidthBlocks*i)-i)
-            }
-        }
-    }
-
-    if (rightBlocksToBlast > 0 && upBlocksToBlast > 0) {
-        for (i=1; i < numberBlocks+1; i++) {
-            if ((rightBlocksToBlast >= i) && upBlocksToBlast>= i) {
-                stateObj = await detonateBlock(stateObj, detonatePosition - (screenwidthBlocks*i)+i)
-            }
-        }
-    }
-
-    if (rightBlocksToBlast > 0 && upBlocksToBlast > 0) {
-        for (i=1; i < numberBlocks+1; i++) {
-            if ((rightBlocksToBlast >= i) && upBlocksToBlast>= i) {
-                stateObj = await detonateBlock(stateObj, detonatePosition - (screenwidthBlocks*i)+i)
-            }
-        }
-    }
-
-    if (rightBlocksToBlast > 0 && downBlocksToBlast > 0) {
-        for (i=1; i < numberBlocks+1; i++) {
-            if ((rightBlocksToBlast >= i) && downBlocksToBlast>= i) {
-                stateObj = await detonateBlock(stateObj, detonatePosition + (screenwidthBlocks*i)+i)
+            if ((leftBlocksToBlast >= i)) {
+                for (j=1; j < numberBlocks+1; j++) {
+                    if (upBlocksToBlast >= j) {
+                        stateObj = await detonateBlock(stateObj, detonatePosition - (screenwidthBlocks*j)-i)
+                    }    
+                }
             }
         }
     }
 
     if (leftBlocksToBlast > 0 && downBlocksToBlast > 0) {
         for (i=1; i < numberBlocks+1; i++) {
-            if ((leftBlocksToBlast >= i) && downBlocksToBlast>= i) {
-                stateObj = await detonateBlock(stateObj, detonatePosition + (screenwidthBlocks*i)-i)
+            if ((leftBlocksToBlast >= i)) {
+                for (j=1; j < downBlocksToBlast+1; j++) {
+                    if (upBlocksToBlast >= j) {
+                        stateObj = await detonateBlock(stateObj, detonatePosition + (screenwidthBlocks*j)-i)
+                    }    
+                }
+            }
+        }
+    }
+
+    if (rightBlocksToBlast > 0 && upBlocksToBlast > 0) {
+        for (i=1; i < numberBlocks+1; i++) {
+            if ((rightBlocksToBlast >= i)) {
+                for (j=1; j < numberBlocks+1; j++) {
+                    if (upBlocksToBlast >= j) {
+                        stateObj = await detonateBlock(stateObj, detonatePosition - (screenwidthBlocks*j)+i)
+                    }    
+                }
+            }
+        }
+    }
+
+    if (rightBlocksToBlast > 0 && downBlocksToBlast > 0) {
+        for (i=1; i < numberBlocks+1; i++) {
+            if ((rightBlocksToBlast >= i)) {
+                for (j=1; j < numberBlocks+1; j++) {
+                    if (downBlocksToBlast >= j) {
+                        stateObj = await detonateBlock(stateObj, detonatePosition + (screenwidthBlocks*j)+i)
+                    }    
+                }
             }
         }
     }
@@ -3025,21 +3111,23 @@ async function dropBomb(stateObj) {
 }
 
 function buildRelicArray(stateObj) {
-    let tempArray = ["bombDistanceRelic", "dirtRelic", "halfDamageRelic", "dropRuby", 
-    "weaponsPriceRelic", "halfDamageFullFuelRelic","dirtToMaxFuelRelic", "killEnemiesHullRelic", 
-    "bronzeSilverBonusRelic", "killEnemiesHealRelic", "silverHealingRelic", "bronzeMaxFuelRelic",
-    "bombRefillRelic", "fuelToBlocksRelic", "spareTankRelic"
+    let tempArray = [potentialRelics[0], potentialRelics[1], potentialRelics[2], potentialRelics[3],
+    potentialRelics[4], potentialRelics[5], potentialRelics[7], potentialRelics[9], potentialRelics[10],
+    potentialRelics[11], potentialRelics[12], potentialRelics[13], potentialRelics[15], potentialRelics[17],
+    potentialRelics[18], potentialRelics[19],     
     ]
 
     if (stateObj.laserPiercing === false) {
-        tempArray.push("laserPiercingRelic")
+        tempArray.push(potentialRelics[16])
     }
     if (stateObj.thorns === false) {
-        tempArray.push("thornsRelic")
+        tempArray.push(potentialRelics[6])
     }
     if (stateObj.remoteBombs === false) {
-        tempArray.push("remoteBombsRelic")
+        tempArray.push(potentialRelics[8])
     }
-
+    if (stateObj.dirtRuby === false) {
+        tempArray.push(potentialRelics[14])
+    }
     return tempArray
 }

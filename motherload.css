@@ -579,6 +579,10 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
     transition: 0.4s all;
   }
 
+  .relic-option {
+    width: 15vw;
+  }
+
   .next-level-option {
     color: rgb(0, 105, 105);
     height: 20vh;
