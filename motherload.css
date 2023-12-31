@@ -406,7 +406,7 @@
   background-color: rgba(187, 186, 186, 0.861); 
 }
 
-.hull-gold-upgrade-div {
+.hull-gold-upgrade-div, .sell-empty {
   width: 21vw;
   height: 5vh;
   display: flex;

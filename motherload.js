@@ -543,32 +543,11 @@ async function renderScreen(stateObj, isMove=true) {
         document.getElementById("app").append(topBar)
     }
     if (stateObj.lostTheGame === true) {
-        let storeDiv = document.createElement("Div")
-        storeDiv.classList.add("store-div")
-
-        let lostDiv = document.createElement("Div")
-        lostDiv.classList.add("selling-items-div")
-
-        let lostTextDiv = document.createElement("H3")
-        lostTextDiv.textContent = "You lost the game! Press OK to try again"
-
-        lostDiv.append(lostTextDiv)
-
-        let lostButtonDiv = document.createElement("Div")
-        lostButtonDiv.classList.add("sell-button")
-        lostButtonDiv.textContent = "OK"
-        lostButtonDiv.onclick = function() {
-            location.reload(true)
-        }
-        lostDiv.append(lostButtonDiv)
-        storeDiv.append(lostDiv)
+        let storeDiv = lostTheGame()
         document.getElementById("app").append(storeDiv)
-
     } else if (stateObj.sellingItems === true) {
         let storeDiv = sellingItemsFunction(stateObj)
-        
         document.getElementById("app").append(storeDiv)
-
     } else if (stateObj.inStore === false && stateObj.choosingNextLevel === false) {
 
         let mapDiv = document.createElement("Div");
@@ -702,44 +681,6 @@ async function renderScreen(stateObj, isMove=true) {
                 mapSquareDiv.append(mapSquareImg)
             } 
 
-            mapSquareDiv.onclick = async function() {
-                if (stateObj.currentPosition === squareIndex - 1) {
-                    if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty" && stateObj.gameMap[stateObj.currentPosition + 1] !== "empty") {
-                        return stateObj
-                    } else {
-                        //only execute if not already on right side
-                        if ((stateObj.currentPosition+1) % screenwidthBlocks !== 0) {
-                            stateObj = await calculateMoveChange(stateObj, 1)
-                        }
-                    }
-                } else if (stateObj.currentPosition === squareIndex + 1) {
-                    if (stateObj.gameMap[stateObj.currentPosition - 1] === "STORE") {
-                        stateObj = await calculateMoveChange(stateObj, -1)
-                    }
-                    if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty" && stateObj.gameMap[stateObj.currentPosition - 1] !== "empty") {
-                        return stateObj
-                    }  else if (stateObj.gameMap[stateObj.currentPosition - 1] === "empty") {
-                        stateObj = await calculateMoveChange(stateObj, -1)
-                        return stateObj
-                    }
-                
-                    //make sure not on left side 
-                    if (stateObj.currentPosition % screenwidthBlocks !== 0 ) {
-                        stateObj = await calculateMoveChange(stateObj, -1)
-                    }
-                } else if (stateObj.currentPosition === squareIndex - screenwidthBlocks) {
-                    let newSquare = stateObj.gameMap[stateObj.currentPosition - screenwidthBlocks]
-                    if (stateObj.currentPosition > 7 && stateObj.inTransition === false) {
-                        if (newSquare=== "empty" || newSquare === "STORE") {
-                            stateObj = await calculateMoveChange(stateObj, screenwidthBlocks)
-                            stateObj = immer.produce(stateObj, (newState) => {
-                                newState.currentFuel -= 0.25;
-                            })
-                        }
-                    } 
-                }
-                await changeState(stateObj)
-            }
 
             mapDiv.append(mapSquareDiv)
         })
@@ -1925,7 +1866,7 @@ async function sellItemsScreen(stateObj, emptyInv=false) {
     return stateObj
 }
 
-async function seeStore(stateObj, sellTotal) {
+async function sellItems(stateObj, sellTotal) {
     console.log("inside seeStore")
     if (sellTotal) {
         stateObj = await immer.produce(stateObj, async (newState) => {
@@ -1940,8 +1881,6 @@ async function seeStore(stateObj, sellTotal) {
             if (sellTotal) {
                 newState.bankedCash += sellTotal;
             }
-        newState.sellingItems = false
-        newState.inStore = true;
         })
     }
     stateObj = await changeState(stateObj)
