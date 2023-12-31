@@ -406,26 +406,51 @@
   background-color: rgba(187, 186, 186, 0.861); 
 }
 
-.sell-button {
-  width: 10vw;
-  height: 8vh;
+.hull-gold-upgrade-div {
+  width: 21vw;
+  height: 5vh;
   display: flex;
-  margin-top: 5vh;
+  margin-top: 1vh;
+  justify-content: center;
+  align-items: center;
+  background: grey;
+  color: rgb(203, 203, 203);
+}
+
+.sell-button, .hull-gold-upgrade-hover {
+  width: 21vw;
+  height: 5vh;
+  display: flex;
+  margin-top: 1vh;
   justify-content: center;
   align-items: center;
   background: linear-gradient(to right, rgb(50, 201, 50) 0%, rgb(108, 238, 108) 20%, rgb(113, 232, 113) 40%, rgb(151, 238, 151) 70%, rgb(159, 245, 159) 75%, rgb(59, 216, 59));
   cursor: pointer;
+  color: black;
   font-weight: 1000;
   transition: 1s all;
 }
 
-.sell-button:hover {
-  width: 12vw;
+.hull-gold-upgrade-div {
+  cursor: auto;
+}
+
+.sell-button:hover, .hull-gold-upgrade-hover:hover {
   border: 0.5vh dashed rgb(144, 255, 144);
-  height: 7.5vh;
+  height: 5.5vh;
   background: linear-gradient(to right, rgb(31, 125, 31) 0%, rgb(60, 133, 60) 20%, rgb(59, 122, 59) 40%, rgb(80, 126, 80) 70%, rgb(64, 100, 64) 75%, rgb(30, 111, 30));
   cursor: pointer;
   font-weight: 1300;
+  color: white;
+}
+
+body:has(.hull-gold-upgrade-hover:hover) .gold-row {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  border-bottom: 0.2vh solid white;
+  border-top: 0.2vh solid white;
+  background-color: rgb(78, 78, 78);
   color: white;
 }
 
@@ -445,6 +470,11 @@ body:has(.sell-button:hover) .selling-items-div {
 
 body:has(#store-fuel-div:hover) #empty-fuel-bar {
   background-color: rgba(197, 185, 16, 0.6);
+  animation: flash 1s infinite;
+}
+
+body:has(.hull-gold-upgrade-hover:hover) #empty-hull-bar {
+  background-color: rgba(16, 46, 197, 0.6);
   animation: flash 1s infinite;
 }
 
@@ -735,6 +765,16 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
     border: 1px dashed rgb(0, 59, 59);
     cursor: pointer;
     font-size: 110%;
+  }
+
+  #sell-return-map-div, #sell-see-store-div {
+    width: 21vw;
+    height: 4.5vh;
+    margin-top: 1vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.4s all;
   }
 
   .upgraded-stat {
