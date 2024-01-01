@@ -371,7 +371,7 @@
 .selling-items-div {
   display: flex;
   flex-direction: column;
-  width: 30vw;
+  width: 40vw;
   height: 72vh;
   justify-content: center;
   align-items: center;
@@ -402,8 +402,8 @@
   transition: 1s all;
 }
 
-.hull-gold-upgrade-div, .sell-empty {
-  width: 21vw;
+.hull-gold-upgrade-div, .sell-empty, .ruby-relic-div {
+  width: 30vw;
   height: 5vh;
   display: flex;
   margin-top: 1vh;
@@ -413,8 +413,8 @@
   color: rgb(203, 203, 203);
 }
 
-.sell-button, .hull-gold-upgrade-hover {
-  width: 21vw;
+.sell-button, .ruby-relic-hover {
+  width: 30vw;
   height: 5vh;
   display: flex;
   margin-top: 4vh;
@@ -435,7 +435,7 @@
   cursor: auto;
 }
 
-.sell-button:hover, .hull-gold-upgrade-hover:hover {
+.sell-button:hover, .hull-gold-upgrade-hover:hover, .ruby-relic-hover:hover {
   border: 0.5vh dashed rgb(144, 255, 144);
   height: 5.5vh;
   background: linear-gradient(to right, rgb(31, 125, 31) 0%, rgb(60, 133, 60) 20%, rgb(59, 122, 59) 40%, rgb(80, 126, 80) 70%, rgb(64, 100, 64) 75%, rgb(30, 111, 30));
@@ -445,6 +445,16 @@
 }
 
 body:has(.hull-gold-upgrade-hover:hover) .gold-sell-row {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  border-bottom: 0.2vh solid white;
+  border-top: 0.2vh solid white;
+  background-color: rgb(78, 78, 78);
+  color: white;
+}
+
+body:has(.ruby-relic-hover:hover) .ruby-sell-row {
   display: flex;
   justify-content: left;
   align-items: center;
@@ -542,12 +552,11 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
 
 .inventory-full {
   color: red;
-  font-size: 115%;
+  font-size: 105%;
 }
 
 .inventory-full-text {
   color: red;
-  font-size: 115%;
   animation: flashcolor 1.5s infinite;
 }
 
@@ -808,7 +817,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
   }
 
   #sell-return-map-div, #sell-see-store-div {
-    width: 21vw;
+    width: 30vw;
     height: 4.5vh;
     margin-top: 1vh;
     display: flex;

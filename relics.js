@@ -116,7 +116,7 @@ let potentialRelics = [
     remoteBombsRelic = {
         name: "Remote Detonator",
         varName: "remoteBombsRelic",
-        text: "Bronze and silver ore is worth more",
+        text: "Explode bombs remotely",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.remoteBombs = true;

@@ -838,7 +838,7 @@ function renderSellingItems(stateObj) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("bronze-sell-row")
-      let bronzeSellTotal = ((25*stateObj.bronzeSilverBonus*stateObj.splinterCellModifier)*stateObj.bronzeInventory)
+      let bronzeSellTotal = ((20*stateObj.bronzeSilverBonus*stateObj.splinterCellModifier)*stateObj.bronzeInventory)
       inventoryDiv.textContent = "Bronze Ore (" + stateObj.bronzeInventory + "): $" + bronzeSellTotal 
       inventoryDiv.onclick = async function () {
         await sellBronze(stateObj, bronzeSellTotal)
@@ -863,7 +863,7 @@ function renderSellingItems(stateObj) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("gold-sell-row")
-      let tempSellTotal = ((100*stateObj.splinterCellModifier)*stateObj.goldInventory)
+      let tempSellTotal = ((125*stateObj.splinterCellModifier)*stateObj.goldInventory)
       inventoryDiv.textContent = "Gold Ore (" + stateObj.goldInventory + "): $" + tempSellTotal
       inventoryDiv.onclick = async function () {
         await sellGold(stateObj, tempSellTotal)
@@ -900,7 +900,7 @@ function renderSellingItems(stateObj) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("diamond-sell-row")
-      let tempSellTotal = ((1500*stateObj.splinterCellModifier)*stateObj.diamondInventory)
+      let tempSellTotal = ((1800*stateObj.splinterCellModifier)*stateObj.diamondInventory)
       inventoryDiv.textContent = "Diamonds (" + stateObj.diamondInventory + "): $" + tempSellTotal
       inventoryDiv.onclick = async function () {
         await sellDiamond(stateObj, tempSellTotal)
@@ -912,7 +912,7 @@ function renderSellingItems(stateObj) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("black-diamond-sell-row")
-      let tempSellTotal = ((3000*stateObj.splinterCellModifier)*stateObj.blackDiamondInventory)
+      let tempSellTotal = ((4500*stateObj.splinterCellModifier)*stateObj.blackDiamondInventory)
       inventoryDiv.textContent = "Black Diamonds (" + stateObj.blackDiamondInventory + "): $" + tempSellTotal
       inventoryDiv.onclick = async function () {
         await sellBlackDiamond(stateObj, tempSellTotal)
@@ -923,28 +923,40 @@ function renderSellingItems(stateObj) {
 
   let upgradeHullDiv = document.createElement("Div")
   upgradeHullDiv.classList.add("hull-gold-upgrade-div")
-  upgradeHullDiv.textContent = "Upgrade Hull (" + (5 * ((stateObj.currentLevel*2) +1)) + " gold)"
+  upgradeHullDiv.textContent = "Upgrade Hull (Costs " + (5 * ((stateObj.currentLevel*2) +1)) + " gold)"
   if (stateObj.goldInventory >= (5 * ((stateObj.currentLevel*2) +1))) {
     upgradeHullDiv.classList.add("hull-gold-upgrade-hover")
   }
   upgradeHullDiv.onclick = async function () {
       await pause(450)
-      await upgradeHullGold(stateObj, sellTotal)
+      await upgradeHullGold(stateObj)
   }
+
+  let tradeRelicRubyDiv = document.createElement("Div")
+  if (stateObj.storeRelic1) {
+    tradeRelicRubyDiv.classList.add("ruby-relic-div")
+    tradeRelicRubyDiv.textContent = stateObj.storeRelic1.name + " - " + stateObj.storeRelic1.text + " (Costs " + (3 * ((stateObj.currentLevel) +1)) + " rubies)"
+    if (stateObj.rubyInventory >= (3 * ((stateObj.currentLevel) +1))) {
+      tradeRelicRubyDiv.classList.add("ruby-relic-hover")
+    }
+    tradeRelicRubyDiv.onclick = async function () {
+        await tradeRelicRuby(stateObj)
+    }
+  }
+  
 
   let sellButtonDiv = document.createElement("Div")
   if (stateObj.currentInventory > 0) {
     sellButtonDiv.classList.add("sell-button")
-  } else {
-    sellButtonDiv.classList.add("sell-empty")
-  }
-  
-  sellButtonDiv.textContent = "Sell Items ($" + sellTotal + ")"
-  sellButtonDiv.onclick = async function () {
+    sellButtonDiv.textContent = "Sell Items ($" + sellTotal + ")"
+    sellButtonDiv.onclick = async function () {
       document.querySelector(".sell-button").classList.add("emphasis")
       await pause(450)
       await sellItems(stateObj, sellTotal)
+    }
   }
+  
+  
 
   let seeStoreDiv = document.createElement("Div")
   seeStoreDiv.setAttribute("id", "sell-see-store-div")
@@ -962,7 +974,7 @@ function renderSellingItems(stateObj) {
       leaveStore(stateObj)
   }
 
-  sellDiv.append(sellInventoryDiv, sellButtonDiv, upgradeHullDiv, seeStoreDiv,  buyNothingDiv)
+  sellDiv.append(sellInventoryDiv, sellButtonDiv, upgradeHullDiv, tradeRelicRubyDiv, seeStoreDiv,  buyNothingDiv)
   storeDiv.append(sellDiv)
   
   return storeDiv

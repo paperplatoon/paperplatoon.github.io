@@ -115,7 +115,7 @@ let gameStartState = {
             numberRows: 20,
             relicNumber: 1,
             floorNumber: 0,
-            storeRelicPrice: 1500
+            storeRelicPrice: 1750
         },
         {
             barVals: [1, 0.999, 0.997, 0.99, 0.95, 0.80, 0.65],
@@ -124,7 +124,7 @@ let gameStartState = {
             bottomRowEnemies: [0, 3, 7, 9],
             relicNumber: 1,
             floorNumber: 1,
-            storeRelicPrice: 3000,
+            storeRelicPrice: 4000,
         },
         {
             barVals: [1, 0.997, 0.99, 0.95, 0.85, 0.75, 0.7],
@@ -133,7 +133,7 @@ let gameStartState = {
             bottomRowEnemies: [1, 3, 5, 7],
             relicNumber: 1,
             floorNumber: 2,
-            storeRelicPrice: 6000
+            storeRelicPrice: 10000
         },
         {
             barVals: [0.999, 0.99, 0.96, 0.9, 0.8, 0.72, 0.7],
@@ -142,7 +142,7 @@ let gameStartState = {
             bottomRowEnemies: [1, 2, 4, 5, 7],
             relicNumber: 1,
             floorNumber: 3,
-            storeRelicPrice: 10000
+            storeRelicPrice: 25000
         },
         {
             barVals: [0.99, 0.97, 0.91, 0.85, 0.77, 0.73, 0.7],
@@ -151,7 +151,7 @@ let gameStartState = {
             bottomRowEnemies: [1, 2, 4, 5, 7],
             relicNumber: 1,
             floorNumber: 4,
-            storeRelicPrice: 15000
+            storeRelicPrice: 100000
         },
         
     ],
@@ -728,7 +728,7 @@ async function renderScreen(stateObj) {
 
         let pacifistDiv = document.createElement("Div")
         pacifistDiv.classList.add("next-level-option")
-        pacifistDiv.textContent = "PACIFIST - After completing the level, gain $100 for every enemy that is still alive"
+        pacifistDiv.textContent = "PACIFIST - After completing this next level, gain $100 for every enemy that is still alive"
         pacifistDiv.classList.add("next-level-clickable")
         pacifistDiv.onclick = function () {
             pacifistChoice(stateObj)
@@ -936,23 +936,6 @@ async function renderScreen(stateObj) {
             }
         }
 
-        let hullUpgradeDiv = document.createElement("Div")
-        hullUpgradeDiv.setAttribute("id", "store-hull-upgrade-div")
-        hullUpgradeDiv.classList.add("store-option")
-        let hullText1 = document.createElement("Div")
-        hullText1.classList.add("store-option-text")
-        let hullText2 = document.createElement("Div")
-        hullText2.classList.add("store-option-text")
-        hullText1.textContent = "Hull Integrity Upgrade" 
-        hullText2.textContent = "$" + stateObj.hullUpgradeCost * (1-stateObj.cheaperShops)
-        hullUpgradeDiv.append(hullText1, hullText2)
-        if (stateObj.bankedCash >= stateObj.hullUpgradeCost * (1-stateObj.cheaperShops)) {
-            hullUpgradeDiv.classList.add("store-clickable")
-            hullUpgradeDiv.onclick = function () {
-                upgradeHull(stateObj)
-            }
-        }
-
         let buyLaserDiv = document.createElement("Div")
         buyLaserDiv.setAttribute("id", "store-buy-laser-div")
         if (stateObj.numberLasers < stateObj.laserCapacity) {
@@ -1012,25 +995,25 @@ async function renderScreen(stateObj) {
             }
         }
 
-        let buyRelic1Div = document.createElement("Div")
-        if (stateObj.storeRelic1 !== false) {
-            buyRelic1Div.setAttribute("id", "store-relic-1-div")
-            buyRelic1Div.classList.add("store-option")
-            buyRelic1Div.classList.add("relic-option")
-            let relicText1 = document.createElement("Div")
-            relicText1.classList.add("store-option-text")
-            let relicText2 = document.createElement("Div")
-            relicText2.classList.add("store-option-text")
-            relicText1.textContent = stateObj.storeRelic1.name + " - " + stateObj.storeRelic1.text
-            relicText2.textContent = "$" + stateObj.floorValues[stateObj.currentLevel].storeRelicPrice
-            buyRelic1Div.append(relicText1, relicText2)
-            if (stateObj.bankedCash >= stateObj.floorValues[stateObj.currentLevel].storeRelicPrice) {
-                buyRelic1Div.classList.add("store-clickable")
-                buyRelic1Div.onclick = function () {
-                    buyRelic1Func(stateObj)
-                }
-            }
-        }
+        // let buyRelic1Div = document.createElement("Div")
+        // if (stateObj.storeRelic1 !== false) {
+        //     buyRelic1Div.setAttribute("id", "store-relic-1-div")
+        //     buyRelic1Div.classList.add("store-option")
+        //     buyRelic1Div.classList.add("relic-option")
+        //     let relicText1 = document.createElement("Div")
+        //     relicText1.classList.add("store-option-text")
+        //     let relicText2 = document.createElement("Div")
+        //     relicText2.classList.add("store-option-text")
+        //     relicText1.textContent = stateObj.storeRelic1.name + " - " + stateObj.storeRelic1.text
+        //     relicText2.textContent = "$" + stateObj.floorValues[stateObj.currentLevel].storeRelicPrice
+        //     buyRelic1Div.append(relicText1, relicText2)
+        //     if (stateObj.bankedCash >= stateObj.floorValues[stateObj.currentLevel].storeRelicPrice) {
+        //         buyRelic1Div.classList.add("store-clickable")
+        //         buyRelic1Div.onclick = function () {
+        //             buyRelic1Func(stateObj)
+        //         }
+        //     }
+        // }
 
         let buyRelic2Div = document.createElement("Div")
         if (stateObj.storeRelic2 !== false) {
@@ -1062,8 +1045,7 @@ async function renderScreen(stateObj) {
         }
 
         storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, laserUpgradeDiv, buyBombDiv,  
-            bombUpgradeDiv, fuelUpgradeDiv, inventoryUpgradeDiv, hullUpgradeDiv, 
-            buyRelic1Div, buyRelic2Div, buyNothingDiv) //upgradeBombDistanceDiv,
+            bombUpgradeDiv, fuelUpgradeDiv, inventoryUpgradeDiv, buyRelic2Div, buyNothingDiv) //upgradeBombDistanceDiv,
 
         // if (stateObj.storeRelicArray.length > 0) {
         //     let relicDiv1 = document.createElement("Div")
@@ -1580,10 +1562,10 @@ async function upgradeHull(stateObj) {
 }
 
 async function upgradeHullGold(stateObj) {
-    if (stateObj.goldInventory >= (5 * ((stateObj.currentLevel*2) +1))) {
+    if (stateObj.goldInventory >= (5 * (stateObj.currentLevel+1))) {
         stateObj = immer.produce(stateObj, (newState) => {
-            newState.goldInventory -= (3 * ((stateObj.currentLevel*2) +1));
-            newState.currentInventory -= (3 * ((stateObj.currentLevel*2) +1));
+            newState.goldInventory -= (5 * (stateObj.currentLevel +1));
+            newState.currentInventory -= (5 * (stateObj.currentLevel +1));
             newState.currentHullIntegrity +=50;
             newState.maxHullIntegrity +=50;
         })
@@ -1595,6 +1577,20 @@ async function upgradeHullGold(stateObj) {
         await pause(300)
     }
     
+    await pause(300)
+    await changeState(stateObj);
+}
+
+async function tradeRelicRuby(stateObj) {
+    if (stateObj.rubyInventory >= (3 * ((stateObj.currentLevel) +1))) {
+        stateObj = await stateObj.storeRelic1.relicFunc(stateObj)
+        stateObj = immer.produce(stateObj, (newState) => {
+            newState.storeRelic1 = false;
+            newState.rubyInventory -= (3 * ((stateObj.currentLevel) +1));
+            newState.currentInventory -= (3 * ((stateObj.currentLevel) +1));
+        })        
+    }
+    document.querySelector(".ruby-relic-div").classList.add("mini-emphasis")
     await pause(300)
     await changeState(stateObj);
 }
@@ -1987,7 +1983,7 @@ async function sellItems(stateObj, sellTotal) {
 }
 
 async function sellBronze(stateObj, sellTotal) {
-    document.querySelector(".bronze-convert-row").classList.add("mini-emphasis")
+    document.querySelector(".bronze-sell-row").classList.add("mini-emphasis")
     await pause(300)
     if (sellTotal) {
         stateObj = await immer.produce(stateObj, async (newState) => {
@@ -2001,7 +1997,7 @@ async function sellBronze(stateObj, sellTotal) {
 }
 
 async function sellSilver(stateObj, sellTotal) {
-    document.querySelector(".silver-convert-row").classList.add("mini-emphasis")
+    document.querySelector(".silver-sell-row").classList.add("mini-emphasis")
     await pause(300)
     if (sellTotal) {
         stateObj = await immer.produce(stateObj, async (newState) => {
@@ -2015,7 +2011,7 @@ async function sellSilver(stateObj, sellTotal) {
 }
 
 async function sellGold(stateObj, sellTotal) {
-    document.querySelector(".gold-convert-row").classList.add("mini-emphasis")
+    document.querySelector(".gold-sell-row").classList.add("mini-emphasis")
     await pause(300)
     if (sellTotal) {
         stateObj = await immer.produce(stateObj, async (newState) => {
@@ -2029,7 +2025,7 @@ async function sellGold(stateObj, sellTotal) {
 }
 
 async function sellRuby(stateObj, sellTotal) {
-    document.querySelector(".ruby-convert-row").classList.add("mini-emphasis")
+    document.querySelector(".ruby-sell-row").classList.add("mini-emphasis")
     await pause(300)
     if (sellTotal) {
         stateObj = await immer.produce(stateObj, async (newState) => {
@@ -2043,7 +2039,7 @@ async function sellRuby(stateObj, sellTotal) {
 }
 
 async function sellAmethyst(stateObj, sellTotal) {
-    document.querySelector(".amethyst-convert-row").classList.add("mini-emphasis")
+    document.querySelector(".amethyst-sell-row").classList.add("mini-emphasis")
     await pause(300)
     if (sellTotal) {
         stateObj = await immer.produce(stateObj, async (newState) => {
@@ -2057,7 +2053,7 @@ async function sellAmethyst(stateObj, sellTotal) {
 }
 
 async function sellDiamond(stateObj, sellTotal) {
-    document.querySelector(".diamond-convert-row").classList.add("mini-emphasis")
+    document.querySelector(".diamond-sell-row").classList.add("mini-emphasis")
     await pause(300)
     if (sellTotal) {
         stateObj = await immer.produce(stateObj, async (newState) => {
@@ -2071,7 +2067,7 @@ async function sellDiamond(stateObj, sellTotal) {
 }
 
 async function sellBlackDiamond(stateObj, sellTotal) {
-    document.querySelector(".black-diamond-convert-row").classList.add("mini-emphasis")
+    document.querySelector(".black-diamond-sell-row").classList.add("mini-emphasis")
     await pause(300)
     if (sellTotal) {
         stateObj = await immer.produce(stateObj, async (newState) => {
@@ -2345,7 +2341,7 @@ async function dropBlock(stateObj) {
                 newState.dirtReserves = 0;
             } else if (newState.fuelToBlocks > 0) {
                 let dirtNeeded = newState.dirtThresholdNeeded - newState.dirtReserves;
-                if (newState.currentFuel > ((dirtNeeded*2)/newState.fuelToBlocks)) {
+                if (newState.currentFuel > Math.floor((dirtNeeded)/newState.fuelToBlocks)) {
                     mapText = (stateObj.dirtRuby === true) ? "4" : "0";
                     newState.dirtReserves = 0;
                     newState.currentFuel -= Math.floor((dirtNeeded*2)/newState.fuelToBlocks)
