@@ -74,6 +74,7 @@ let gameStartState = {
     currentPosition: false,
     inStore: false,
     sellingItems: false,
+    viewingInventory: false,
     choosingNextLevel: false,
     inTransition: false,  
     
@@ -376,19 +377,21 @@ async function moveEnemies() {
         stateObj = await fillMapWithArray(stateObj)
         await updateState(stateObj)
     }
-    stateObj = await immer.produce(stateObj, (newState) => {
-        newState.timeCounter += 1;
-        if (newState.takingDamage !== false) {
-            if (newState.takingDamage > 0) {
-                newState.takingDamage -= 1
-            } else {
-                console.log("able to take damage again")
-                newState.takingDamage = false;
+    if (stateObj.inStore === false && stateObj.choosingNextLevel === false && stateObj.sellingItems === false && stateObj.viewingInventory === false) {
+
+        stateObj = await immer.produce(stateObj, (newState) => {
+            newState.timeCounter += 1;
+            if (newState.takingDamage !== false) {
+                if (newState.takingDamage > 0) {
+                    newState.takingDamage -= 1
+                } else {
+                    console.log("able to take damage again")
+                    newState.takingDamage = false;
+                }
+                console.log('taking damage state is ' + newState.takingDamage)
             }
-            console.log('taking damage state is ' + newState.takingDamage)
-        }
-    })
-    if (stateObj.inStore === false && stateObj.choosingNextLevel === false && stateObj.sellingItems === false) {
+        })
+
         console.log("firing moveEnemies")
         if (stateObj.timeCounter % 3 ===0) {
 
@@ -532,21 +535,22 @@ async function moveEnemies() {
 //renders all the map squares. 
 //Can set this to 0 in exitDoor
 //To-DO: Need to set values for mapDiv and each map-square, including elements
-async function renderScreen(stateObj, isMove=true) {
+async function renderScreen(stateObj) {
     //console.log("rendering Screen")
 
     document.getElementById("app").innerHTML = ""
     //create a mapDiv to append all your new squares to
-    if (isMove) {
-        topBar = await renderTopBarStats(stateObj);
+    topBar = await renderTopBarStats(stateObj);
         // arrowBar = renderArrowButtons(stateObj);
-        document.getElementById("app").append(topBar)
-    }
+    document.getElementById("app").append(topBar)
     if (stateObj.lostTheGame === true) {
         let storeDiv = lostTheGame()
         document.getElementById("app").append(storeDiv)
     } else if (stateObj.sellingItems === true) {
-        let storeDiv = sellingItemsFunction(stateObj)
+        let storeDiv = renderSellingItems(stateObj)
+        document.getElementById("app").append(storeDiv)
+    } else if (stateObj.viewingInventory === true) {
+        let storeDiv = renderInventory(stateObj)
         document.getElementById("app").append(storeDiv)
     } else if (stateObj.inStore === false && stateObj.choosingNextLevel === false) {
 
@@ -1089,6 +1093,7 @@ async function renderScreen(stateObj, isMove=true) {
 async function leaveStore(stateObj) {
     stateObj.inStore = false;
     stateObj.sellingItems = false;
+    stateObj.viewingInventory = false;
     await changeState(stateObj);
 }
 
@@ -1096,6 +1101,58 @@ async function viewStore(stateObj) {
     stateObj.inStore = true;
     stateObj.sellingItems = false;
     await changeState(stateObj);
+}
+
+async function convertBronze(stateObj) {
+    document.querySelector(".bronze-convert-row").classList.add("mini-emphasis")
+    await pause(300)
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.bronzeInventory -= 3;
+        newState.silverInventory += 1;
+        newState.currentInventory -= 2
+    })
+    await changeState(stateObj);
+    document.querySelector(".silver-convert-row").classList.add("converted")
+    await pause(300)
+}
+
+async function convertSilver(stateObj) {
+    document.querySelector(".silver-convert-row").classList.add("mini-emphasis")
+    await pause(300)
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.silverInventory -= 3;
+        newState.goldInventory += 1;
+        newState.currentInventory -= 2
+    })
+    await changeState(stateObj);
+    document.querySelector(".gold-convert-row").classList.add("converted")
+    await pause(300)
+}
+
+async function convertGold(stateObj) {
+    document.querySelector(".gold-convert-row").classList.add("mini-emphasis")
+    await pause(300)
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.goldInventory -= 3;
+        newState.rubyInventory += 1;
+        newState.currentInventory -= 2
+    })
+    await changeState(stateObj);
+    document.querySelector(".ruby-convert-row").classList.add("converted")
+    await pause(300)
+}
+
+async function convertRuby(stateObj) {
+    document.querySelector(".ruby-convert-row").classList.add("mini-emphasis")
+    await pause(300)
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.rubyInventory -= 3;
+        newState.amethystInventory += 1;
+        newState.currentInventory -= 2
+    })
+    await changeState(stateObj);
+    document.querySelector(".ruby-convert-row").classList.add("converted")
+    await pause(300)
 }
 
 
@@ -1613,6 +1670,11 @@ document.addEventListener('keydown', async function(event) {
                 stateObj = await dropBomb(stateObj)
                 await changeState(stateObj)
             //}
+        } else if (event.key === "i") {
+            //if (stateObj.numberLasers > 0) {
+                stateObj = await inventoryKey(stateObj)
+                await changeState(stateObj)
+            //}
         }
     }
   });
@@ -1884,6 +1946,13 @@ async function sellItems(stateObj, sellTotal) {
         })
     }
     stateObj = await changeState(stateObj)
+    return stateObj
+}
+
+async function inventoryKey(stateObj) {
+    stateObj = await immer.produce(stateObj, (newState) => {
+        newState.viewingInventory = true;
+    })
     return stateObj
 }
 
