@@ -1104,6 +1104,7 @@ async function viewStore(stateObj) {
 }
 
 async function convertBronze(stateObj) {
+    document.querySelector(".bronze-convert-row").classList.remove("mini-emphasis")
     document.querySelector(".bronze-convert-row").classList.add("mini-emphasis")
     await pause(300)
     stateObj = immer.produce(stateObj, (newState) => {
@@ -1117,6 +1118,8 @@ async function convertBronze(stateObj) {
 }
 
 async function convertSilver(stateObj) {
+    document.querySelector(".silver-convert-row").classList.remove("converted")
+    document.querySelector(".silver-convert-row").classList.remove("mini-emphasis")
     document.querySelector(".silver-convert-row").classList.add("mini-emphasis")
     await pause(300)
     stateObj = immer.produce(stateObj, (newState) => {
@@ -1130,6 +1133,8 @@ async function convertSilver(stateObj) {
 }
 
 async function convertGold(stateObj) {
+    document.querySelector(".gold-convert-row").classList.remove("converted")
+    document.querySelector(".gold-convert-row").classList.remove("mini-emphasis")
     document.querySelector(".gold-convert-row").classList.add("mini-emphasis")
     await pause(300)
     stateObj = immer.produce(stateObj, (newState) => {
@@ -1143,6 +1148,8 @@ async function convertGold(stateObj) {
 }
 
 async function convertRuby(stateObj) {
+    document.querySelector(".ruby-convert-row").classList.remove("converted")
+    document.querySelector(".ruby-convert-row").classList.remove("mini-emphasis")
     document.querySelector(".ruby-convert-row").classList.add("mini-emphasis")
     await pause(300)
     stateObj = immer.produce(stateObj, (newState) => {
@@ -1151,7 +1158,37 @@ async function convertRuby(stateObj) {
         newState.currentInventory -= 2
     })
     await changeState(stateObj);
-    document.querySelector(".ruby-convert-row").classList.add("converted")
+    document.querySelector(".amethyst-convert-row").classList.add("converted")
+    await pause(300)
+}
+
+async function convertAmethyst(stateObj) {
+    document.querySelector(".amethyst-convert-row").classList.remove("converted")
+    document.querySelector(".amethyst-convert-row").classList.remove("mini-emphasis")
+    document.querySelector(".amethyst-convert-row").classList.add("mini-emphasis")
+    await pause(300)
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.amethystInventory -= 3;
+        newState.diamondInventory += 1;
+        newState.currentInventory -= 2
+    })
+    await changeState(stateObj);
+    document.querySelector(".diamond-convert-row").classList.add("converted")
+    await pause(300)
+}
+
+async function convertDiamond(stateObj) {
+    document.querySelector(".diamond-convert-row").classList.remove("converted")
+    document.querySelector(".diamond-convert-row").classList.remove("mini-emphasis")
+    document.querySelector(".diamond-convert-row").classList.add("mini-emphasis")
+    await pause(300)
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.diamondInventory -= 3;
+        newState.blackDiamondInventory += 1;
+        newState.currentInventory -= 2
+    })
+    await changeState(stateObj);
+    document.querySelector(".black-diamond-convert-row").classList.add("converted")
     await pause(300)
 }
 
@@ -1943,6 +1980,104 @@ async function sellItems(stateObj, sellTotal) {
             if (sellTotal) {
                 newState.bankedCash += sellTotal;
             }
+        })
+    }
+    stateObj = await changeState(stateObj)
+    return stateObj
+}
+
+async function sellBronze(stateObj, sellTotal) {
+    document.querySelector(".bronze-convert-row").classList.add("mini-emphasis")
+    await pause(300)
+    if (sellTotal) {
+        stateObj = await immer.produce(stateObj, async (newState) => {
+            newState.currentInventory -= newState.bronzeInventory;
+            newState.bronzeInventory = 0;
+            newState.bankedCash += sellTotal;
+        })
+    }
+    stateObj = await changeState(stateObj)
+    return stateObj
+}
+
+async function sellSilver(stateObj, sellTotal) {
+    document.querySelector(".silver-convert-row").classList.add("mini-emphasis")
+    await pause(300)
+    if (sellTotal) {
+        stateObj = await immer.produce(stateObj, async (newState) => {
+            newState.currentInventory -= newState.silverInventory;
+            newState.silverInventory = 0;
+            newState.bankedCash += sellTotal;
+        })
+    }
+    stateObj = await changeState(stateObj)
+    return stateObj
+}
+
+async function sellGold(stateObj, sellTotal) {
+    document.querySelector(".gold-convert-row").classList.add("mini-emphasis")
+    await pause(300)
+    if (sellTotal) {
+        stateObj = await immer.produce(stateObj, async (newState) => {
+            newState.currentInventory -= newState.goldInventory;
+            newState.goldInventory = 0;
+            newState.bankedCash += sellTotal;
+        })
+    }
+    stateObj = await changeState(stateObj)
+    return stateObj
+}
+
+async function sellRuby(stateObj, sellTotal) {
+    document.querySelector(".ruby-convert-row").classList.add("mini-emphasis")
+    await pause(300)
+    if (sellTotal) {
+        stateObj = await immer.produce(stateObj, async (newState) => {
+            newState.currentInventory -= newState.rubyInventory;
+            newState.rubyInventory = 0;
+            newState.bankedCash += sellTotal;
+        })
+    }
+    stateObj = await changeState(stateObj)
+    return stateObj
+}
+
+async function sellAmethyst(stateObj, sellTotal) {
+    document.querySelector(".amethyst-convert-row").classList.add("mini-emphasis")
+    await pause(300)
+    if (sellTotal) {
+        stateObj = await immer.produce(stateObj, async (newState) => {
+            newState.currentInventory -= newState.amethystInventory;
+            newState.amethystInventory = 0;
+            newState.bankedCash += sellTotal;
+        })
+    }
+    stateObj = await changeState(stateObj)
+    return stateObj
+}
+
+async function sellDiamond(stateObj, sellTotal) {
+    document.querySelector(".diamond-convert-row").classList.add("mini-emphasis")
+    await pause(300)
+    if (sellTotal) {
+        stateObj = await immer.produce(stateObj, async (newState) => {
+            newState.currentInventory -= newState.diamondInventory;
+            newState.diamondInventory = 0;
+            newState.bankedCash += sellTotal;
+        })
+    }
+    stateObj = await changeState(stateObj)
+    return stateObj
+}
+
+async function sellBlackDiamond(stateObj, sellTotal) {
+    document.querySelector(".black-diamond-convert-row").classList.add("mini-emphasis")
+    await pause(300)
+    if (sellTotal) {
+        stateObj = await immer.produce(stateObj, async (newState) => {
+            newState.currentInventory -= newState.blackDiamondInventory;
+            newState.blackDiamondInventory = 0;
+            newState.bankedCash += sellTotal;
         })
     }
     stateObj = await changeState(stateObj)

@@ -115,7 +115,7 @@ function renderTopBarStats(stateObj) {
     if (stateObj.inventoryMax > 12) {
         inventoryText2Div.classList.add("upgraded-stat")
     }
-    inventoryText2Div.textContent = stateObj.currentInventory + "/" + stateObj.inventoryMax + "    . . . "
+    inventoryText2Div.textContent = "[Press 'i']"
     if (stateObj.currentInventory === stateObj.inventoryMax) {
         inventoryText2Div.classList.add("inventory-full-text")
         inventoryText1Div.classList.add("inventory-full-text")
@@ -837,16 +837,24 @@ function renderSellingItems(stateObj) {
   if (stateObj.bronzeInventory > 0) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
+      inventoryDiv.classList.add("bronze-sell-row")
       let bronzeSellTotal = ((25*stateObj.bronzeSilverBonus*stateObj.splinterCellModifier)*stateObj.bronzeInventory)
       inventoryDiv.textContent = "Bronze Ore (" + stateObj.bronzeInventory + "): $" + bronzeSellTotal 
+      inventoryDiv.onclick = async function () {
+        await sellBronze(stateObj, bronzeSellTotal)
+      }
       sellInventoryDiv.append(inventoryDiv)
       sellTotal += bronzeSellTotal
   }
   if (stateObj.silverInventory > 0) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
+      inventoryDiv.classList.add("silver-sell-row")
       let silverSellTotal = ((50*stateObj.bronzeSilverBonus*stateObj.splinterCellModifier)*stateObj.silverInventory)
       inventoryDiv.textContent = "Silver Ore (" + stateObj.silverInventory + "): $" + silverSellTotal
+      inventoryDiv.onclick = async function () {
+        await sellSilver(stateObj, silverSellTotal)
+      }
       sellInventoryDiv.append(inventoryDiv)
       sellTotal += silverSellTotal
   }
@@ -854,9 +862,12 @@ function renderSellingItems(stateObj) {
   if (stateObj.goldInventory > 0) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
-      inventoryDiv.classList.add("gold-row")
+      inventoryDiv.classList.add("gold-sell-row")
       let tempSellTotal = ((100*stateObj.splinterCellModifier)*stateObj.goldInventory)
       inventoryDiv.textContent = "Gold Ore (" + stateObj.goldInventory + "): $" + tempSellTotal
+      inventoryDiv.onclick = async function () {
+        await sellGold(stateObj, tempSellTotal)
+      }
       sellInventoryDiv.append(inventoryDiv)
       sellTotal += tempSellTotal
   }
@@ -864,32 +875,48 @@ function renderSellingItems(stateObj) {
   if (stateObj.rubyInventory > 0) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
+      inventoryDiv.classList.add("ruby-sell-row")
       let tempSellTotal = ((300*stateObj.splinterCellModifier)*stateObj.rubyInventory)
       inventoryDiv.textContent = "Rubies (" + stateObj.rubyInventory + "): " + tempSellTotal
+      inventoryDiv.onclick = async function () {
+        await sellRuby(stateObj, tempSellTotal)
+      }
       sellInventoryDiv.append(inventoryDiv)
       sellTotal += tempSellTotal
   }
   if (stateObj.amethystInventory > 0) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
+      inventoryDiv.classList.add("amethyst-sell-row")
       let tempSellTotal = ((750*stateObj.splinterCellModifier)*stateObj.amethystInventory)
       inventoryDiv.textContent = "Amethyst (" + stateObj.amethystInventory + "): $" + tempSellTotal
+      inventoryDiv.onclick = async function () {
+        await sellAmethyst(stateObj, tempSellTotal)
+      }
       sellInventoryDiv.append(inventoryDiv)
       sellTotal += tempSellTotal
   }
   if (stateObj.diamondInventory > 0) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
+      inventoryDiv.classList.add("diamond-sell-row")
       let tempSellTotal = ((1500*stateObj.splinterCellModifier)*stateObj.diamondInventory)
       inventoryDiv.textContent = "Diamonds (" + stateObj.diamondInventory + "): $" + tempSellTotal
+      inventoryDiv.onclick = async function () {
+        await sellDiamond(stateObj, tempSellTotal)
+      }
       sellInventoryDiv.append(inventoryDiv)
       sellTotal += tempSellTotal
   }
   if (stateObj.blackDiamondInventory > 0) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
+      inventoryDiv.classList.add("black-diamond-sell-row")
       let tempSellTotal = ((3000*stateObj.splinterCellModifier)*stateObj.blackDiamondInventory)
       inventoryDiv.textContent = "Black Diamonds (" + stateObj.blackDiamondInventory + "): $" + tempSellTotal
+      inventoryDiv.onclick = async function () {
+        await sellBlackDiamond(stateObj, tempSellTotal)
+      }
       sellInventoryDiv.append(inventoryDiv)
       sellTotal += tempSellTotal
   }
@@ -987,7 +1014,6 @@ function renderInventory(stateObj) {
         inventoryDiv.classList.add("can-convert")
         textString += " [click to convert 3 to 1 Silver]"
         inventoryDiv.onclick = async function () {
-          await pause(450)
           await convertBronze(stateObj)
         }
       }
@@ -1004,7 +1030,6 @@ function renderInventory(stateObj) {
       inventoryDiv.classList.add("can-convert")
       textString += " [click to convert 3 to 1 Gold]"
       inventoryDiv.onclick = async function () {
-        await pause(450)
         await convertSilver(stateObj)
       }
     }
@@ -1021,7 +1046,6 @@ if (stateObj.goldInventory > 0) {
     inventoryDiv.classList.add("can-convert")
     textString += " [click to convert 3 to 1 Ruby]"
     inventoryDiv.onclick = async function () {
-      await pause(450)
       await convertGold(stateObj)
     }
   }
@@ -1038,7 +1062,6 @@ if (stateObj.rubyInventory > 0) {
     inventoryDiv.classList.add("can-convert")
     textString += " [click to convert 3 to 1 Amethyst]"
     inventoryDiv.onclick = async function () {
-      await pause(450)
       await convertRuby(stateObj)
     }
   }
@@ -1046,34 +1069,46 @@ if (stateObj.rubyInventory > 0) {
   sellInventoryDiv.append(inventoryDiv)
 }
 
-  if (stateObj.rubyInventory > 0) {
-      let inventoryDiv = document.createElement("Div")
-      inventoryDiv.classList.add("sell-row")
-      let tempSellTotal = ((300*stateObj.splinterCellModifier)*stateObj.rubyInventory)
-      inventoryDiv.textContent = "Rubies (" + stateObj.rubyInventory + "): " + tempSellTotal
-      sellInventoryDiv.append(inventoryDiv)
+if (stateObj.amethystInventory > 0) {
+  let inventoryDiv = document.createElement("Div")
+  inventoryDiv.classList.add("inv-row")
+  inventoryDiv.classList.add("amethyst-convert-row")
+  let textString = "Amethyst Ore (" + stateObj.amethystInventory + ")"
+  if (stateObj.amethystInventory >= 3) {
+    inventoryDiv.classList.add("can-convert")
+    textString += " [click to convert 3 to 1 Diamond]"
+    inventoryDiv.onclick = async function () {
+      await convertAmethyst(stateObj)
+    }
   }
-  if (stateObj.amethystInventory > 0) {
-      let inventoryDiv = document.createElement("Div")
-      inventoryDiv.classList.add("sell-row")
-      let tempSellTotal = ((750*stateObj.splinterCellModifier)*stateObj.amethystInventory)
-      inventoryDiv.textContent = "Amethyst (" + stateObj.amethystInventory + "): $" + tempSellTotal
-      sellInventoryDiv.append(inventoryDiv)
+  inventoryDiv.textContent = textString
+  sellInventoryDiv.append(inventoryDiv)
+}
+
+if (stateObj.diamondInventory > 0) {
+  let inventoryDiv = document.createElement("Div")
+  inventoryDiv.classList.add("inv-row")
+  inventoryDiv.classList.add("diamond-convert-row")
+  let textString = "Diamond Ore (" + stateObj.diamondInventory + ")"
+  if (stateObj.diamondInventory >= 3) {
+    inventoryDiv.classList.add("can-convert")
+    textString += " [click to convert 3 to 1 Black Diamond]"
+    inventoryDiv.onclick = async function () {
+      await convertDiamond(stateObj)
+    }
   }
-  if (stateObj.diamondInventory > 0) {
-      let inventoryDiv = document.createElement("Div")
-      inventoryDiv.classList.add("sell-row")
-      let tempSellTotal = ((1500*stateObj.splinterCellModifier)*stateObj.diamondInventory)
-      inventoryDiv.textContent = "Diamonds (" + stateObj.diamondInventory + "): $" + tempSellTotal
-      sellInventoryDiv.append(inventoryDiv)
-  }
-  if (stateObj.blackDiamondInventory > 0) {
-      let inventoryDiv = document.createElement("Div")
-      inventoryDiv.classList.add("sell-row")
-      let tempSellTotal = ((3000*stateObj.splinterCellModifier)*stateObj.blackDiamondInventory)
-      inventoryDiv.textContent = "Black Diamonds (" + stateObj.blackDiamondInventory + "): $" + tempSellTotal
-      sellInventoryDiv.append(inventoryDiv)
-  }
+  inventoryDiv.textContent = textString
+  sellInventoryDiv.append(inventoryDiv)
+}
+
+if (stateObj.blackDiamondInventory > 0) {
+  let inventoryDiv = document.createElement("Div")
+  inventoryDiv.classList.add("inv-row")
+  inventoryDiv.classList.add("black-diamond-convert-row")
+  let textString = "Black Diamond Ore (" + stateObj.blackDiamondInventory + ")"
+  inventoryDiv.textContent = textString
+  sellInventoryDiv.append(inventoryDiv)
+}
 
   let buyNothingDiv = document.createElement("Div")
   buyNothingDiv.setAttribute("id", "sell-return-map-div")

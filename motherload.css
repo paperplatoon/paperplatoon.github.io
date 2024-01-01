@@ -352,22 +352,9 @@
   object-fit: contain;
 }
 
-.selling-items-div {
-  display: flex;
-  flex-direction: column-reverse;
-  width: 30vw;
-  height: 60vh;
-  justify-content: center;
-  align-items: center;
-  
-  background: linear-gradient(rgba(249, 249, 249, 0.844) 0%, rgba(228, 228, 228, 0.85) 10%, rgba(223, 223, 223, 0.85) 40%,
-  rgba(228, 228, 228, 0.85) 90%, rgba(249, 249, 249, 0.85)); 
-  font-family:monospace
-}
-
 .sell-row, .inv-row {
   width: 14vw;
-  padding: 2vh 2vw;
+  padding: 1.4vh 2vw;
   display: flex;
   justify-content: left;
   align-items: center;
@@ -385,7 +372,7 @@
   display: flex;
   flex-direction: column;
   width: 30vw;
-  height: 60vh;
+  height: 72vh;
   justify-content: center;
   align-items: center;
   border: 0.8vw dashed rgba(71, 71, 71, 0.726);
@@ -415,18 +402,6 @@
   transition: 1s all;
 }
 
-.sell-row {
-  width: 18vw;
-  padding: 2vh 2vw;
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  transition: 1s all; 
-  border-top: 0.2vh solid grey;
-  border-bottom: 0.2vh solid grey;
-  background-color: rgba(187, 186, 186, 0.861); 
-}
-
 .hull-gold-upgrade-div, .sell-empty {
   width: 21vw;
   height: 5vh;
@@ -442,7 +417,7 @@
   width: 21vw;
   height: 5vh;
   display: flex;
-  margin-top: 1vh;
+  margin-top: 4vh;
   justify-content: center;
   align-items: center;
   background: linear-gradient(to right, rgb(50, 201, 50) 0%, rgb(108, 238, 108) 20%, rgb(113, 232, 113) 40%, rgb(151, 238, 151) 70%, rgb(159, 245, 159) 75%, rgb(59, 216, 59));
@@ -450,6 +425,10 @@
   color: black;
   font-weight: 1000;
   transition: 1s all;
+}
+
+.hull-gold-upgrade-hover {
+  margin-top: 1vh;
 }
 
 .hull-gold-upgrade-div {
@@ -465,7 +444,7 @@
   color: white;
 }
 
-body:has(.hull-gold-upgrade-hover:hover) .gold-row {
+body:has(.hull-gold-upgrade-hover:hover) .gold-sell-row {
   display: flex;
   justify-content: left;
   align-items: center;
@@ -485,7 +464,7 @@ body:has(.sell-button:hover) .sell-row {
   color: white;
 }
 
-.can-convert:hover {
+.can-convert:hover, .sell-row:hover {
   border-bottom: 0.2vh solid white;
   border-top: 0.2vh solid white;
   background-color: rgb(78, 78, 78);
