@@ -1,5 +1,5 @@
 
-//TopBarStats
+//render the top bar with all the stats
 function renderTopBarStats(stateObj) {
     let topBarDiv = document.createElement("Div")
     topBarDiv.classList.add("top-stats-bar")
@@ -507,7 +507,7 @@ function renderTopBarStats(stateObj) {
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "fuel-blocks-popup")
           relicTextDiv.classList.add("none-display")
-          let fuelNeeded = Math.floor(((stateObj.dirtThresholdNeeded - stateObj.dirtReserves)*2)/stateObj.fuelToBlocks)
+          let fuelNeeded = Math.floor(((stateObj.dirtThresholdNeeded - stateObj.dirtReserves))/stateObj.fuelToBlocks)
           relicString = "Can spend " + fuelNeeded + " fuel to drop a dirt block"
           relicTextDiv.textContent = relicString
           weaponPriceRelicDiv.appendChild(relicTextDiv);
@@ -822,8 +822,7 @@ function renderTopBarStats(stateObj) {
     return topBarDiv
 }
 
-
-//sellingItems
+//store that lets you sell individual rows
 function renderSellingItems(stateObj) {
   let storeDiv = document.createElement("Div")
   storeDiv.classList.add("store-div")
@@ -839,7 +838,7 @@ function renderSellingItems(stateObj) {
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("bronze-sell-row")
       let bronzeSellTotal = ((20*stateObj.bronzeSilverBonus*stateObj.splinterCellModifier)*stateObj.bronzeInventory)
-      inventoryDiv.textContent = "Bronze Ore (" + stateObj.bronzeInventory + "): $" + bronzeSellTotal 
+      inventoryDiv.textContent = "Bronze Ore (" + stateObj.bronzeInventory + "): $" + bronzeSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellBronze(stateObj, bronzeSellTotal)
       }
@@ -851,7 +850,7 @@ function renderSellingItems(stateObj) {
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("silver-sell-row")
       let silverSellTotal = ((50*stateObj.bronzeSilverBonus*stateObj.splinterCellModifier)*stateObj.silverInventory)
-      inventoryDiv.textContent = "Silver Ore (" + stateObj.silverInventory + "): $" + silverSellTotal
+      inventoryDiv.textContent = "Silver Ore (" + stateObj.silverInventory + "): $" + silverSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellSilver(stateObj, silverSellTotal)
       }
@@ -864,7 +863,7 @@ function renderSellingItems(stateObj) {
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("gold-sell-row")
       let tempSellTotal = ((125*stateObj.splinterCellModifier)*stateObj.goldInventory)
-      inventoryDiv.textContent = "Gold Ore (" + stateObj.goldInventory + "): $" + tempSellTotal
+      inventoryDiv.textContent = "Gold Ore (" + stateObj.goldInventory + "): $" + tempSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellGold(stateObj, tempSellTotal)
       }
@@ -877,7 +876,7 @@ function renderSellingItems(stateObj) {
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("ruby-sell-row")
       let tempSellTotal = ((300*stateObj.splinterCellModifier)*stateObj.rubyInventory)
-      inventoryDiv.textContent = "Rubies (" + stateObj.rubyInventory + "): " + tempSellTotal
+      inventoryDiv.textContent = "Rubies (" + stateObj.rubyInventory + "): " + tempSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellRuby(stateObj, tempSellTotal)
       }
@@ -889,7 +888,7 @@ function renderSellingItems(stateObj) {
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("amethyst-sell-row")
       let tempSellTotal = ((750*stateObj.splinterCellModifier)*stateObj.amethystInventory)
-      inventoryDiv.textContent = "Amethyst (" + stateObj.amethystInventory + "): $" + tempSellTotal
+      inventoryDiv.textContent = "Amethyst (" + stateObj.amethystInventory + "): $" + tempSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellAmethyst(stateObj, tempSellTotal)
       }
@@ -901,7 +900,7 @@ function renderSellingItems(stateObj) {
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("diamond-sell-row")
       let tempSellTotal = ((1800*stateObj.splinterCellModifier)*stateObj.diamondInventory)
-      inventoryDiv.textContent = "Diamonds (" + stateObj.diamondInventory + "): $" + tempSellTotal
+      inventoryDiv.textContent = "Diamonds (" + stateObj.diamondInventory + "): $" + tempSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellDiamond(stateObj, tempSellTotal)
       }
@@ -913,7 +912,7 @@ function renderSellingItems(stateObj) {
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("black-diamond-sell-row")
       let tempSellTotal = ((4500*stateObj.splinterCellModifier)*stateObj.blackDiamondInventory)
-      inventoryDiv.textContent = "Black Diamonds (" + stateObj.blackDiamondInventory + "): $" + tempSellTotal
+      inventoryDiv.textContent = "Black Diamonds (" + stateObj.blackDiamondInventory + "): $" + tempSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellBlackDiamond(stateObj, tempSellTotal)
       }
@@ -923,12 +922,11 @@ function renderSellingItems(stateObj) {
 
   let upgradeHullDiv = document.createElement("Div")
   upgradeHullDiv.classList.add("hull-gold-upgrade-div")
-  upgradeHullDiv.textContent = "Upgrade Hull (Costs " + (5 * ((stateObj.currentLevel*2) +1)) + " gold)"
+  upgradeHullDiv.textContent = "Upgrade Hull (Costs " + (5 * (stateObj.currentLevel+1)) + " gold)"
   if (stateObj.goldInventory >= (5 * ((stateObj.currentLevel*2) +1))) {
     upgradeHullDiv.classList.add("hull-gold-upgrade-hover")
   }
   upgradeHullDiv.onclick = async function () {
-      await pause(450)
       await upgradeHullGold(stateObj)
   }
 
@@ -950,7 +948,7 @@ function renderSellingItems(stateObj) {
     sellButtonDiv.classList.add("sell-button")
     sellButtonDiv.textContent = "Sell Items ($" + sellTotal + ")"
     sellButtonDiv.onclick = async function () {
-      document.querySelector(".sell-button").classList.add("emphasis")
+      document.querySelector(".sell-button").classList.add("mini-emphasis")
       await pause(450)
       await sellItems(stateObj, sellTotal)
     }
@@ -1004,8 +1002,6 @@ function lostTheGame() {
 
   return storeDiv
 }
-
-
 //convert Inventory
 function renderInventory(stateObj) {
   let storeDiv = document.createElement("Div")
@@ -1133,6 +1129,479 @@ if (stateObj.blackDiamondInventory > 0) {
   sellDiv.append(sellInventoryDiv,  buyNothingDiv)
   storeDiv.append(sellDiv)
   
+  return storeDiv
+}
+
+//show the full map
+function renderMap(stateObj) {
+  let mapDiv = document.createElement("Div");
+  mapDiv.classList.add("map-div");
+
+  stateObj.gameMap.forEach(async function (mapSquare, squareIndex) {
+      let mapSquareDiv = document.createElement("Div");
+      mapSquareDiv.classList.add("map-square");
+
+      if (stateObj.currentPosition === squareIndex) {
+          mapSquareDiv.classList.add("player-here")
+          let mapSquareImg = document.createElement("Img");
+          if ((stateObj.currentFuel < stateObj.fuelCapacity/3)) {
+              mapSquareImg.classList.add("player-img-low-fuel")
+          } else if (stateObj.currentHullIntegrity <= (stateObj.maxHullIntegrity/2)) {
+              mapSquareImg.classList.add("player-img-damaged")
+          } else if (stateObj.currentInventory === stateObj.inventoryMax) {
+              mapSquareImg.classList.add("player-img-full")
+          } else {
+              mapSquareImg.classList.add("player-img")
+          }
+          mapSquareImg.src = "img/map/miner1.png"
+          mapSquareDiv.append(mapSquareImg)
+      }
+      if (mapSquare === "stone") {
+          mapSquareDiv.classList.add("stone")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("stone-img")
+          mapSquareImg.src = "img/map/stone.png"
+          mapSquareDiv.append(mapSquareImg)
+      }
+      
+      if (mapSquare === "0") {
+          mapSquareDiv.classList.add("dirt")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("dirt-img")
+          mapSquareImg.src = "img/map/dirt.png"
+          mapSquareDiv.append(mapSquareImg)
+      } else if (mapSquare === "empty") {
+          mapSquareDiv.classList.add("empty")
+      } else if (mapSquare === "active-laser") {
+          mapSquareDiv.classList.add("laser-effect")
+      } else if (mapSquare === "exploding-1") {
+          mapSquareDiv.classList.add("bomb-effect")
+      } else if (mapSquare === "enemy") {
+          mapSquareDiv.classList.add("enemy")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("enemy-img")
+          mapSquareImg.src = "img/map/enemy1.png"
+          mapSquareDiv.append(mapSquareImg)
+      } else if (mapSquare === "1") {
+          mapSquareDiv.classList.add("bronze")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("bronze-img")
+          mapSquareImg.src = "img/map/bronze.png"
+          mapSquareDiv.append(mapSquareImg)
+      } else if (mapSquare === "2") {
+          mapSquareDiv.classList.add("silver")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("silver-img")
+          mapSquareImg.src = "img/map/silver.png"
+          mapSquareDiv.append(mapSquareImg)
+      } else if (mapSquare === "3") {
+          mapSquareDiv.classList.add("gold")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("gold-img")
+          mapSquareImg.src = "img/map/gold.png"
+          mapSquareDiv.append(mapSquareImg)
+      }  else if (mapSquare === "4") {
+          mapSquareDiv.classList.add("ruby")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("ruby-img")
+          mapSquareImg.src = "img/map/ruby.png"
+          mapSquareDiv.append(mapSquareImg)
+      } else if (mapSquare === "5") {
+          mapSquareDiv.classList.add("amethyst")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("amethyst-img")
+          mapSquareImg.src = "img/map/amethyst.png"
+          mapSquareDiv.append(mapSquareImg)
+      } else if (mapSquare === "stone-5") {
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("stone-amethyst-img")
+          mapSquareImg.src = "img/map/stone-amethyst.png"
+          mapSquareDiv.append(mapSquareImg)
+      } else if (mapSquare === "6") {
+          mapSquareDiv.classList.add("diamond")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("diamond-img")
+          mapSquareImg.src = "img/map/diamond.png"
+          mapSquareDiv.append(mapSquareImg)
+      } else if (mapSquare === "stone-6") {
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("stone-diamond-img")
+          mapSquareImg.src = "img/map/stone-diamond.png"
+          mapSquareDiv.append(mapSquareImg)
+      } else if (mapSquare === "7") {
+          mapSquareDiv.classList.add("blkdiamond")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("blkdiamond-img")
+          mapSquareImg.src = "img/map/blkdiamond.png"
+          mapSquareDiv.append(mapSquareImg)
+      } else if (mapSquare === "stone-7") {
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("stone-blkdiamond-img")
+          mapSquareImg.src = "img/map/stone-blkdiamond.png"
+          mapSquareDiv.append(mapSquareImg)
+      }  else if (mapSquare === "STORE") {
+          mapSquareDiv.classList.add("store")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("store-img")
+          mapSquareImg.src = "img/map/store.png"
+          mapSquareDiv.append(mapSquareImg)
+      } else if (mapSquare === "EXIT") {
+          mapSquareDiv.classList.add("exit")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("exit-img")
+          mapSquareImg.src = "img/map/exit.jpg"
+          mapSquareDiv.append(mapSquareImg)
+      } else if (mapSquare === "BOMB") {
+          mapSquareDiv.classList.add("bomb")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("bomb-img")
+          mapSquareImg.src = "img/map/bomb.png"
+          mapSquareDiv.append(mapSquareImg)
+      } else if (mapSquare === "relic1") {
+          mapSquareDiv.classList.add("relic")
+          let mapSquareImg = document.createElement("Img");
+          mapSquareImg.classList.add("relic-img")
+          mapSquareImg.src = stateObj.mapRelic1.imgPath
+          mapSquareDiv.append(mapSquareImg)
+      } 
+      mapDiv.append(mapSquareDiv)
+  })
+  return mapDiv
+}
+
+function renderNextLevelChoice(stateObj) {
+  let storeDiv = document.createElement("Div")
+  storeDiv.classList.add("store-div")
+
+  let fewerEnemiesDiv = document.createElement("Div")
+  fewerEnemiesDiv.classList.add("next-level-option")
+  fewerEnemiesDiv.textContent = "SAFE PASSAGE - The next level has fewer enemies"
+  fewerEnemiesDiv.classList.add("next-level-clickable")
+  fewerEnemiesDiv.onclick = function () {
+      fewerEnemiesChoice(stateObj)
+  }
+
+  let moreGoldDiv = document.createElement("Div")
+  moreGoldDiv.classList.add("next-level-option")
+  moreGoldDiv.textContent = "PROSPECTOR - The next level has more gold ore"
+  moreGoldDiv.classList.add("next-level-clickable")
+  moreGoldDiv.onclick = function () {
+      moreGold(stateObj)
+  }
+
+  let cowardDiv = document.createElement("Div")
+  cowardDiv.classList.add("next-level-option")
+  cowardDiv.textContent = "COWARD - The enemies in the next level do not move, but the level only contains bronze, silver, and gold ore"
+  cowardDiv.classList.add("next-level-clickable")
+  cowardDiv.onclick = function () {
+      cowardChoice(stateObj)
+  }
+
+  let dirtEfficiencyDiv = document.createElement("Div")
+  dirtEfficiencyDiv.classList.add("next-level-option")
+  dirtEfficiencyDiv.textContent = "MINER - PERMANENT upgrade to dirt processing efficiency, letting you drop dirt blocks more often"
+  dirtEfficiencyDiv.classList.add("next-level-clickable")
+  dirtEfficiencyDiv.onclick = function () {
+      dirtEfficiencyChoice(stateObj)
+  }
+
+  let pacifistDiv = document.createElement("Div")
+  pacifistDiv.classList.add("next-level-option")
+  pacifistDiv.textContent = "PACIFIST - After completing this next level, gain $100 for every enemy that is still alive"
+  pacifistDiv.classList.add("next-level-clickable")
+  pacifistDiv.onclick = function () {
+      pacifistChoice(stateObj)
+  }
+
+  let killEnemiesForMoneyDiv = document.createElement("Div")
+  killEnemiesForMoneyDiv.classList.add("next-level-option")
+  killEnemiesForMoneyDiv.textContent = "SCRAP METAL - Gain $50 for each enemy killed (next level only)"
+  killEnemiesForMoneyDiv.classList.add("next-level-clickable")
+  killEnemiesForMoneyDiv.onclick = function () {
+      killEnemiesForMoneyChoice(stateObj)
+  }
+
+  let shorterDiv = document.createElement("Div")
+  shorterDiv.classList.add("next-level-option")
+  shorterDiv.textContent = "SPEEDY - The next level is smaller"
+  shorterDiv.classList.add("next-level-clickable")
+  shorterDiv.onclick = function () {
+      shorterLevelChoice(stateObj)
+  }
+
+  let longerDiv = document.createElement("Div")
+  longerDiv.classList.add("next-level-option")
+  longerDiv.textContent = "ODYSSEY - The next level is twice as long, but has two relics"
+  longerDiv.classList.add("next-level-clickable")
+  longerDiv.onclick = function () {
+      longerLevelChoice(stateObj)
+  }
+
+  let moreEnemiesDiv = document.createElement("Div")
+  moreEnemiesDiv.classList.add("next-level-option")
+  moreEnemiesDiv.textContent = "HOSTILE - The next level has more enemies, but a higher chance of rare gems"
+  moreEnemiesDiv.classList.add("next-level-clickable")
+  moreEnemiesDiv.onclick = function () {
+      moreEnemies(stateObj)
+  }
+
+  let cheaperShopsDiv = document.createElement("Div")
+  cheaperShopsDiv.classList.add("next-level-option")
+  cheaperShopsDiv.textContent = "BARGAINER - The next level's shop prices are slightly cheaper"
+  cheaperShopsDiv.classList.add("next-level-clickable")
+  cheaperShopsDiv.onclick = function () {
+      cheaperShopsChoice(stateObj)
+  }
+
+  let freeFuelDiv = document.createElement("Div")
+  freeFuelDiv.classList.add("next-level-option")
+  freeFuelDiv.textContent = "OIL WELL - Fuel is free for the next level"
+  freeFuelDiv.classList.add("next-level-clickable")
+  freeFuelDiv.onclick = function () {
+      freeFuelChoice(stateObj)
+  }
+
+  let splinterCellDiv = document.createElement("Div")
+  splinterCellDiv.classList.add("next-level-option")
+  splinterCellDiv.textContent = "COVERT OPS - Gems are worth double for the next level. Prices revert back to normal after killing an enemy"
+  splinterCellDiv.classList.add("next-level-clickable")
+  splinterCellDiv.onclick = function () {
+      splinterCellChoice(stateObj)
+  }
+
+  //12 choices
+  let levelChoiceArray = [freeFuelDiv, fewerEnemiesDiv, moreGoldDiv, cowardDiv, dirtEfficiencyDiv, pacifistDiv, shorterDiv, longerDiv, moreEnemiesDiv, cheaperShopsDiv, killEnemiesForMoneyDiv, splinterCellDiv]
+  //let levelChoiceArray = [freeFuelDiv, cheaperShopsDiv, moreEnemiesDiv]
+  let chosenLevels = []
+  for (i = 0; i < 3; i++) {
+      let chosenLevel = Math.floor(Math.random() * levelChoiceArray.length);
+      console.log("pushing number " + chosenLevel)
+      chosenLevels.push(levelChoiceArray[chosenLevel])
+      levelChoiceArray.splice(chosenLevel, 1)
+  }
+
+  storeDiv.append(chosenLevels[0], chosenLevels[1], chosenLevels[2])
+  return storeDiv
+}
+
+function renderStore(stateObj) {
+  let storeDiv = document.createElement("Div")
+  storeDiv.classList.add("store-div")
+
+  let fuelUpgradeDiv = document.createElement("Div")
+  fuelUpgradeDiv.setAttribute("id", "store-fuel-upgrade-div")
+  fuelUpgradeDiv.classList.add("store-option")
+  let fuelText1 = document.createElement("Div")
+  fuelText1.classList.add("store-option-text")
+  let fuelText2 = document.createElement("Div")
+  fuelText2.classList.add("store-option-text")
+  fuelText1.textContent = "Fuel Capacity Upgrade" 
+  fuelText2.textContent = "$" + stateObj.fuelUpgradeCost * (1-stateObj.cheaperShops)
+  fuelUpgradeDiv.append(fuelText1, fuelText2)
+  if (stateObj.bankedCash >= stateObj.fuelUpgradeCost * (1-stateObj.cheaperShops)) {
+      fuelUpgradeDiv.classList.add("store-clickable")
+      fuelUpgradeDiv.onclick = function () {
+          upgradeFuel(stateObj)
+      }
+    }
+
+  let laserUpgradeDiv = document.createElement("Div")
+  laserUpgradeDiv.classList.add("store-option")
+  laserUpgradeDiv.setAttribute("id", "store-laser-capacity-upgrade-div")
+  let laserText1 = document.createElement("Div")
+  laserText1.classList.add("store-option-text")
+  let laserText2 = document.createElement("Div")
+  laserText2.classList.add("store-option-text")
+  laserText1.textContent = "Laser Capacity Upgrade" 
+  laserText2.textContent = "$" + stateObj.laserCapacityUpgradeCost * (1-stateObj.cheaperShops)
+  laserUpgradeDiv.append(laserText1, laserText2)
+  if (stateObj.bankedCash >= stateObj.laserCapacityUpgradeCost * (1-stateObj.cheaperShops)) {
+      laserUpgradeDiv.classList.add("store-clickable")
+      laserUpgradeDiv.onclick = function () {
+          laserUpgrade(stateObj)
+      }
+    }
+
+    let bombUpgradeDiv = document.createElement("Div")
+    bombUpgradeDiv.classList.add("store-option")
+    bombUpgradeDiv.setAttribute("id", "store-bomb-capacity-upgrade-div")
+    let bombText1 = document.createElement("Div")
+    bombText1.classList.add("store-option-text")
+    let bombText2 = document.createElement("Div")
+    bombText2.classList.add("store-option-text")
+    bombText1.textContent = "Bomb Capacity Upgrade" 
+    bombText2.textContent = "$" + stateObj.bombCapacityUpgradeCost * (1-stateObj.cheaperShops)
+    bombUpgradeDiv.append(bombText1, bombText2)
+  if (stateObj.bankedCash >= stateObj.bombCapacityUpgradeCost * (1-stateObj.cheaperShops)) {
+      bombUpgradeDiv.classList.add("store-clickable")
+      bombUpgradeDiv.onclick = function () {
+          bombUpgrade(stateObj)
+      }
+    }
+
+  let fillFuelDiv = document.createElement("Div")
+  fillFuelDiv.setAttribute("id", "store-fuel-div")
+  let missingFuel = Math.floor(stateObj.fuelCapacity-stateObj.currentFuel)
+  let fuelPrice = Math.ceil((missingFuel * (1+stateObj.currentLevel) - (1-stateObj.cheaperShops))/2)
+  if (missingFuel > 0) {
+      fillFuelDiv.classList.add("store-option")
+      let fillText1 = document.createElement("Div")
+      fillText1.classList.add("store-option-text")
+      let fillText2 = document.createElement("Div")
+      fillText2.classList.add("store-option-text")
+      
+      if (stateObj.freeFuel === true) {
+          fillText1.textContent = "Refill fuel" 
+          fillText2.textContent = "Free"
+      } else if (stateObj.bankedCash < fuelPrice) {
+          fillText1.textContent = "Spend all money on fuel" 
+          fillText2.textContent = "$" + stateObj.bankedCash
+      } else {
+          fillText1.textContent = "Refill fuel" 
+          fillText2.textContent = "$" + fuelPrice
+      }
+
+      fillFuelDiv.append(fillText1, fillText2)
+      fillFuelDiv.classList.add("store-clickable")
+      fillFuelDiv.onclick = function () {
+              fillFuel(stateObj)
+      }
+  }
+
+  let repairDiv = document.createElement("Div")
+  repairDiv.setAttribute("id", "store-repair-div")
+  let missingHull = stateObj.maxHullIntegrity-stateObj.currentHullIntegrity
+  if (missingHull > 0) {
+      repairDiv.classList.add("store-option")
+      let repairText1 = document.createElement("Div")
+      repairText1.classList.add("store-option-text")
+      let repairText2 = document.createElement("Div")
+      repairText1.classList.add("store-option-text")
+      
+      if ((missingHull*5) > (stateObj.bankedCash * (1-stateObj.cheaperShops))) {
+          repairText1.textContent = "Spend all money on repairs" 
+          repairText2.textContent = "$" + Math.ceil(stateObj.bankedCash) * (1-stateObj.cheaperShops)
+      } else {
+          repairText1.textContent = "Repair hull fully " 
+          repairText2.textContent = "$" +  Math.ceil(missingHull*5) * (1-stateObj.cheaperShops)
+      }
+      repairText2.classList.add("store-option-text")
+      repairDiv.append(repairText1, repairText2)
+      repairDiv.classList.add("store-clickable")
+      
+      repairDiv.onclick = function () {
+              repairHull(stateObj)
+  }
+  }
+
+  let inventoryUpgradeDiv = document.createElement("Div")
+  inventoryUpgradeDiv.classList.add("store-option")
+  inventoryUpgradeDiv.setAttribute("id", "store-inventory-upgrade-div")
+  let invText1 = document.createElement("Div")
+  invText1.classList.add("store-option-text")
+  let invText2 = document.createElement("Div")
+  invText2.classList.add("store-option-text")
+  invText1.textContent = "Inventory Size Upgrade" 
+  invText2.textContent = "$" + stateObj.inventoryUpgradeCost * (1-stateObj.cheaperShops)
+  inventoryUpgradeDiv.append(invText1, invText2)
+  if (stateObj.bankedCash >= stateObj.inventoryUpgradeCost * (1-stateObj.cheaperShops)) {
+      inventoryUpgradeDiv.classList.add("store-clickable")
+      inventoryUpgradeDiv.onclick = function () {
+          upgradeInventory(stateObj)
+      }
+  }
+
+  let buyLaserDiv = document.createElement("Div")
+  buyLaserDiv.setAttribute("id", "store-buy-laser-div")
+  if (stateObj.numberLasers < stateObj.laserCapacity) {
+      buyLaserDiv.classList.add("store-option")
+      let laserText1 = document.createElement("Div")
+      laserText1.classList.add("store-option-text")
+      let laserText2 = document.createElement("Div")
+      laserText2.classList.add("store-option-text")
+      laserText1.textContent = "Buy a laser" 
+      laserText2.textContent = "$" + (stateObj.laserCost * stateObj.weaponsPriceModifier) * (1-stateObj.cheaperShops)
+      buyLaserDiv.append(laserText1, laserText2)
+      buyLaserDiv.onclick = function () {
+      }
+      if (stateObj.bankedCash >= stateObj.laserCost * (1-stateObj.cheaperShops)) {
+          buyLaserDiv.classList.add("store-clickable")
+          buyLaserDiv.onclick = function () {
+              buyLaser(stateObj)
+          }
+      }
+  }
+
+  let buyBombDiv = document.createElement("Div")
+  buyBombDiv.setAttribute("id", "store-buy-bomb-div")
+  if (stateObj.bombCurrentTotal < stateObj.bombCapacity) {
+      buyBombDiv.classList.add("store-option")
+      let bombText1 = document.createElement("Div")
+      bombText1.classList.add("store-option-text")
+      let bombText2 = document.createElement("Div")
+      bombText2.classList.add("store-option-text")
+      bombText1.textContent = "Buy a bomb" 
+      bombText2.textContent = "$" + (stateObj.bombCost * stateObj.weaponsPriceModifier) * (1-stateObj.cheaperShops)
+      buyBombDiv.append(bombText1, bombText2)
+      buyBombDiv.onclick = function () {
+      }
+      if (stateObj.bankedCash >= stateObj.bombCost * (1-stateObj.cheaperShops)) {
+          buyBombDiv.classList.add("store-clickable")
+          buyBombDiv.onclick = function () {
+              buyBomb(stateObj)
+          }
+      }
+  }
+
+  let upgradeBombDistanceDiv = document.createElement("Div")
+  upgradeBombDistanceDiv.setAttribute("id", "store-upgrade-bomb-distance-div")
+  upgradeBombDistanceDiv.classList.add("store-option")
+  let bombDistText1 = document.createElement("Div")
+  bombDistText1.classList.add("store-option-text")
+  let bombDistText2 = document.createElement("Div")
+  bombDistText2.classList.add("store-option-text")
+  bombDistText1.textContent = "Bomb Distance Upgrade" 
+  bombDistText2.textContent = "$" + stateObj.bombDistanceUpgradeCost
+  upgradeBombDistanceDiv.append(bombDistText1, bombDistText2)
+  if (stateObj.bankedCash >= stateObj.bombDistanceUpgradeCost) {
+      upgradeBombDistanceDiv.classList.add("store-clickable")
+      upgradeBombDistanceDiv.onclick = function () {
+          buyBombDistanceUpgrade(stateObj)
+      }
+  }
+
+  let buyRelic2Div = document.createElement("Div")
+  if (stateObj.storeRelic2 !== false) {
+      buyRelic2Div.setAttribute("id", "store-relic-2-div")
+      buyRelic2Div.classList.add("store-option")
+      buyRelic2Div.classList.add("relic-option")
+      let relicText1 = document.createElement("Div")
+      relicText1.classList.add("store-option-text")
+      let relicText2 = document.createElement("Div")
+      relicText2.classList.add("store-option-text")
+      relicText1.textContent = stateObj.storeRelic2.name + " - " + stateObj.storeRelic2.text
+      relicText2.textContent = "$" + stateObj.floorValues[stateObj.currentLevel].storeRelicPrice
+      buyRelic2Div.append(relicText1, relicText2)
+      if (stateObj.bankedCash >= stateObj.floorValues[stateObj.currentLevel].storeRelicPrice) {
+          buyRelic2Div.classList.add("store-clickable")
+          buyRelic2Div.onclick = function () {
+              buyRelic2Func(stateObj)
+          }
+      }
+  }
+
+  let buyNothingDiv = document.createElement("Div")
+  buyNothingDiv.classList.add("store-option")
+  buyNothingDiv.setAttribute("id", "store-return-map-div")
+  buyNothingDiv.classList.add("return-to-map")
+  buyNothingDiv.textContent = "Return to Map"
+  buyNothingDiv.onclick = function () {
+      leaveStore(stateObj)
+  }
+
+  storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, laserUpgradeDiv, buyBombDiv,  
+      bombUpgradeDiv, fuelUpgradeDiv, inventoryUpgradeDiv, buyRelic2Div, buyNothingDiv)
+
   return storeDiv
 }
   
