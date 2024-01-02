@@ -832,11 +832,11 @@ async function repairHull(stateObj) {
     let missingHull = stateObj.maxHullIntegrity - stateObj.currentHullIntegrity
     stateObj = immer.produce(stateObj, (newState) => {
         if (missingHull > 0) {
-            if (newState.bankedCash > (missingHull*5)) {
+            if (newState.bankedCash > (missingHull*5)* (stateObj.currentLevel+1)) {
                 newState.currentHullIntegrity = newState.maxHullIntegrity ;
-                newState.bankedCash -= Math.ceil(missingHull*5) * (1-stateObj.cheaperShops)
+                newState.bankedCash -= Math.ceil(missingHull*5)* (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
             } else {
-                newState.currentHullIntegrity += Math.ceil(newState.bankedCash/5);
+                newState.currentHullIntegrity += Math.ceil(newState.bankedCash/5)* (stateObj.currentLevel+1);
                 newState.bankedCash = 0;    
             }
         }
@@ -853,7 +853,7 @@ async function laserUpgrade(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.laserCapacity += 1;
         newState.numberLasers += 1;
-        newState.bankedCash -= stateObj.laserCapacityUpgradeCost * (1-stateObj.cheaperShops)
+        newState.bankedCash -= stateObj.laserCapacityUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
         newState.laserCapacityUpgradeCost += 1000;
     })
     document.getElementById("store-laser-capacity-upgrade-div").classList.add("store-clicked")
@@ -868,7 +868,7 @@ async function bombUpgrade(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.bombCapacity += 1;
         newState.bombCurrentTotal += 1;
-        newState.bankedCash -= stateObj.bombCapacityUpgradeCost * (1-stateObj.cheaperShops)
+        newState.bankedCash -= stateObj.bombCapacityUpgradeCost * (stateObj.currentLevel+1)* (1-stateObj.cheaperShops)
         newState.bombCapacityUpgradeCost += 1000;
     })
     document.getElementById("store-bomb-capacity-upgrade-div").classList.add("store-clicked")
@@ -884,7 +884,7 @@ async function upgradeFuel(stateObj) {
         newState.fuelCapacity += 50;
         newState.currentFuel += 50;
         newState.fuelUpgrades +=1;
-        newState.bankedCash -= stateObj.fuelUpgradeCost * (1-stateObj.cheaperShops)
+        newState.bankedCash -= stateObj.fuelUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
         newState.fuelUpgradeCost += 1000;
 
     })
@@ -901,7 +901,7 @@ async function upgradeInventory(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.inventoryMax += 6;
         newState.inventoryUpgrades +=1;
-        newState.bankedCash -= stateObj.inventoryUpgradeCost * (1-stateObj.cheaperShops)
+        newState.bankedCash -= stateObj.inventoryUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
         newState.inventoryUpgradeCost += 1000;
 
     })
@@ -909,22 +909,6 @@ async function upgradeInventory(stateObj) {
     await pause(300)
     document.getElementById("inventory-size-text").classList.add("upgraded-stat")
     document.getElementById("inventory-size-text").classList.add("emphasis")
-    await pause(300)
-    await changeState(stateObj);
-}
-
-async function upgradeHull(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.maxHullIntegrity += 50;
-        newState.currentHullIntegrity +=50;
-        newState.bankedCash -= stateObj.hullUpgradeCost * (1-stateObj.cheaperShops)
-        newState.hullUpgradeCost += 1500;
-
-    })
-    document.getElementById("store-hull-upgrade-div").classList.add("store-clicked")
-    await pause(300)
-    document.getElementById("hull-integrity-text").classList.add("upgraded-stat")
-    document.getElementById("hull-integrity-text").classList.add("emphasis")
     await pause(300)
     await changeState(stateObj);
 }
@@ -958,21 +942,6 @@ async function tradeRelicRuby(stateObj) {
         })        
     }
     document.querySelector(".ruby-relic-div").classList.add("mini-emphasis")
-    await pause(300)
-    await changeState(stateObj);
-}
-
-async function buyBombDistanceUpgrade(stateObj) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.bombDistance += 1;
-        newState.bankedCash -= stateObj.bombDistanceUpgradeCost * (1-stateObj.cheaperShops)
-        newState.bombDistanceUpgradeCost += 1000;
-
-    })
-    document.getElementById("store-upgrade-bomb-distance-div").classList.add("store-clicked")
-    await pause(300)
-    document.getElementById("bomb-distance-text").classList.add("upgraded-stat")
-    document.getElementById("bomb-distance-text").classList.add("emphasis")
     await pause(300)
     await changeState(stateObj);
 }
