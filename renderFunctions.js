@@ -817,6 +817,34 @@ function renderTopBarStats(stateObj) {
           topBarDiv.append(weaponPriceRelicDiv)
     }
 
+    if (stateObj.fuelTeleportCost > 0) {
+      let weaponPriceRelicDiv = document.createElement("Div")
+      weaponPriceRelicDiv.classList.add("relic-div")
+      let weaponImg = document.createElement("Img");
+      weaponImg.classList.add("relic-img")
+      weaponImg.src = "img/relics/teleporter.png"
+      weaponPriceRelicDiv.append(weaponImg)
+      
+      weaponPriceRelicDiv.addEventListener('mouseover', function() {
+          const statusText = document.querySelector("#fuel-teleport-popup");
+          statusText.style.display = 'block'
+        });
+        
+        weaponPriceRelicDiv.addEventListener('mouseout', function() {
+          const statusText = document.querySelector("#fuel-teleport-popup");
+          statusText.style.display = 'none'
+        });
+  
+        let relicTextDiv = document.createElement("Div");
+        relicTextDiv.setAttribute("id", "fuel-teleport-popup")
+        relicTextDiv.classList.add("none-display")
+        relicTextDiv.textContent = "Press 'T' to teleport back to the shop. Costs " + stateObj.fuelTeleportCost + " fuel"
+        weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+        topBarDiv.append(weaponPriceRelicDiv)
+  }
+
+
     
 
     return topBarDiv

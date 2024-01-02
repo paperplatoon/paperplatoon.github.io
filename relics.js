@@ -290,6 +290,39 @@ let potentialRelics = [
     },
 
     //21
+    fuelTeleporter = {
+        name: "Fuel-powered Teleporter",
+        varName: "fuelTeleporter",
+        text: "Can press T to spend 50 fuel to teleport back to the shop",
+        relicFunc: async (stateObj) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                if (newState.fuelTeleportCost === 0) {
+                    newState.fuelTeleportCost = 50;
+                } else if (newState.fuelTeleportCost >= 20) {
+                    newState.fuelTeleportCost -= 20;
+                } else {
+                    newState.fuelTeleportCost = 0;
+                }
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        imgPath: "img/relics/teleporter.png",
+    },
+
+    fuelTeleporter = {
+        name: "Dirt Compactor",
+        varName: "dirtCompactor",
+        text: "Can collect infinite dirt",
+        relicFunc: async (stateObj) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                newState.noDirtThreshold = true;
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        imgPath: "img/relics/infinitedirt.png",
+    },
 ]
 
 

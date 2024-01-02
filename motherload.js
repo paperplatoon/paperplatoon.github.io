@@ -32,7 +32,7 @@ let gameStartState = {
     firingLaserRight: false,
     laserExplosion: false,
     
-    //relicValues
+    //relic values relicValues
     weaponsPriceModifier: 1,
     enemyDamageModifier: 1,
     halfDamageFullFuel: 1,
@@ -49,6 +49,8 @@ let gameStartState = {
     bombRefill: 0,
     fuelToBlocks: 0,
     spareFuelTank: 0,
+    fuelTeleportCost: 0,
+    noDirtThreshold: false,
 
     storeRelics: [],
     mapRelic1: false,
@@ -324,7 +326,7 @@ async function fillMapWithArray(stateObj) {
                     relicNum = Math.floor(Math.random() * relicArray.length)
                     if (i === 0) {
                         newState.mapRelic1 = relicArray[relicNum]
-                        //newState.mapRelic1 = relicArray[14]
+                        //newState.mapRelic1 = potentialRelics[21]
                         newState.gameMap[relicSquareArray[i]] = "relic1"
                     } else {
                         newState.mapRelic2 = relicArray[relicNum]
@@ -1060,21 +1062,19 @@ document.addEventListener('keydown', async function(event) {
                   await changeState(stateObj)
               }
           } else if (event.key === "p") {
-            //if (stateObj.numberLasers > 0) {
                 stateObj = await dropBlock(stateObj)
                 await changeState(stateObj)
-            //}
         } else if (event.key === "b") {
-            //if (stateObj.numberLasers > 0) {
                 stateObj = await dropBomb(stateObj)
                 await changeState(stateObj)
-            //}
         } else if (event.key === "i") {
-            //if (stateObj.numberLasers > 0) {
                 stateObj = await inventoryKey(stateObj)
                 await changeState(stateObj)
-            //}
-        }
+        } else if (event.key === "t") {
+            stateObj = await fuelTeleport(stateObj)
+            window.scrollTo(0, 0);
+            await changeState(stateObj)
+    } 
     }
   });
 
@@ -1495,15 +1495,18 @@ async function triggerHandleSquare(stateObj, squareIndexToMoveTo, fuelToLose) {
 }
 
 async function handleSquare(stateObj, squareIndexToMoveTo, fuelToLose, isGem=false) {
-    let oldPosition = stateObj.currentPosition
     stateObj = immer.produce(stateObj, (newState) => {
         newState.currentFuel -= fuelToLose;
         newState.currentPosition = squareIndexToMoveTo;
         newState.moveToSquare = false;
         newState.inTransition = false;
 
-        if (newState.dirtReserves < (stateObj.dirtThresholdNeeded) && newState.gameMap[squareIndexToMoveTo] !== "empty") {
-            newState.dirtReserves += 1;
+        if (newState.gameMap[squareIndexToMoveTo] !== "empty") {
+            if (newState.noDirtThreshold) {
+                newState.dirtReserves += 1;
+            } else if (newState.dirtReserves < stateObj.dirtThresholdNeeded) {
+                newState.dirtReserves += 1;
+            }
         }
 
         if (isGem) {
@@ -1702,13 +1705,13 @@ async function dropBlock(stateObj) {
             newState.fuelCapacity += newState.dirtToMaxFuel
             if (newState.dirtReserves >= (newState.dirtThresholdNeeded)) {
                 mapText = (stateObj.dirtRuby === true) ? "4" : "0";
-                newState.dirtReserves = 0;
+                newState.dirtReserves -= newState.dirtThresholdNeeded;
             } else if (newState.fuelToBlocks > 0) {
                 let dirtNeeded = newState.dirtThresholdNeeded - newState.dirtReserves;
                 if (newState.currentFuel > Math.floor((dirtNeeded)/newState.fuelToBlocks)) {
                     mapText = (stateObj.dirtRuby === true) ? "4" : "0";
-                    newState.dirtReserves = 0;
-                    newState.currentFuel -= Math.floor((dirtNeeded*2)/newState.fuelToBlocks)
+                    newState.dirtReserves -= newState.dirtThresholdNeeded;
+                    newState.currentFuel -= Math.floor(dirtNeeded/newState.fuelToBlocks)
                 }
             }
 
@@ -1738,11 +1741,21 @@ async function dropBomb(stateObj) {
     return stateObj
 }
 
+async function fuelTeleport(stateObj) {
+    if (stateObj.currentFuel >= Math.floor(stateObj.fuelTeleportCost) && stateObj.fuelTeleportCost > 0) {
+        stateObj = await immer.produce(stateObj, (newState) => {
+            newState.currentPosition = 1;
+            newState.currentFuel -= newState.fuelTeleportCost
+        })
+    }
+    return stateObj
+}
+
 function buildRelicArray(stateObj) {
     let tempArray = [potentialRelics[0], potentialRelics[1], potentialRelics[2], potentialRelics[3],
     potentialRelics[4], potentialRelics[5], potentialRelics[7], potentialRelics[9], potentialRelics[10],
     potentialRelics[11], potentialRelics[12], potentialRelics[13], potentialRelics[15], potentialRelics[17],
-    potentialRelics[18], potentialRelics[19],     
+    potentialRelics[18], potentialRelics[19], potentialRelics[20],     
     ]
 
     if (stateObj.laserPiercing === false) {
@@ -1757,5 +1770,20 @@ function buildRelicArray(stateObj) {
     if (stateObj.dirtRuby === false) {
         tempArray.push(potentialRelics[14])
     }
+    //let tempArray = [spareTank, spareTank, spareTank, spareTank]
     return tempArray
+}
+
+spareTank = {
+    name: "Spare Fuel Tank",
+    varName: "spareTankRelic",
+    text: "Fully refills your fuel once if you run our of fuel",
+    relicFunc: async (stateObj) => {
+        stateObj = immer.produce(stateObj, (newState) => {
+            newState.spareFuelTank += 1;
+        })
+        await changeState(stateObj);
+        return stateObj
+    },
+    imgPath: "img/relics/sparetank.png",
 }
