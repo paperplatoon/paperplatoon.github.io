@@ -48,7 +48,7 @@ let potentialRelics = [
         text: "Increase maximum fuel when dropping dirt",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.dirtToMaxFuel += 5;
+                newState.dirtToMaxFuel += 10;
             })
             await changeState(stateObj);
             return stateObj
@@ -152,7 +152,7 @@ let potentialRelics = [
         text: "Killing Enemies increases max hull integrity",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.killEnemiesHullModifier += 10;
+                newState.killEnemiesHullModifier += 5;
             })
             await changeState(stateObj);
             return stateObj
@@ -166,7 +166,7 @@ let potentialRelics = [
         text: "Killing Enemies repairs your hull if damaged",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.killEnemiesForHealing += 25;
+                newState.killEnemiesForHealing += 15;
             })
             await changeState(stateObj);
             return stateObj

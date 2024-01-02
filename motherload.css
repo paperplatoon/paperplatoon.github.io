@@ -369,7 +369,7 @@
   width: 50vw;
 }
 
-.selling-items-div {
+.selling-items-div, .start-div {
   display: flex;
   flex-direction: column;
   width: 50vw;
@@ -441,6 +441,10 @@
   margin-top: 1vh;
   cursor: pointer;
   color: black;
+}
+
+.padding-width {
+  padding: 0.1vh 2vw;
 }
 
 .hull-gold-upgrade-div {
@@ -616,6 +620,11 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
     align-items: center;
     flex-wrap: wrap;
     transition: 2s all;
+  }
+
+  .start-div {
+    justify-content: left;
+    text-align: left;
   }
 
   .test {

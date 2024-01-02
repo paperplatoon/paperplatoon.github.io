@@ -4,14 +4,22 @@ let gameStartState = {
     currentFuel: 100,
     fuelCapacity: 120,
     fuelUpgrades: 0,
-    fuelUpgradeCost: 500,
+    fuelUpgradeCost: 1000,
+    //states
+    currentPosition: false,
+    inStore: false,
+    sellingItems: false,
+    viewingInventory: false,
+    choosingNextLevel: false,
+    inTransition: false, 
     lostTheGame: false,
+    startTheGame: true,
     
 
     currentInventory: 0,
     inventoryMax: 12,
     inventoryUpgrades: 0,
-    inventoryUpgradeCost: 500,
+    inventoryUpgradeCost: 1000,
     bronzeInventory: 0,
     silverInventory: 0,
     goldInventory: 0,
@@ -70,15 +78,7 @@ let gameStartState = {
     cheaperShops: 0,
     freeFuel: false,
     splinterCellModifier: 1,
-    splinterCellOn: false,
-
-    //states
-    currentPosition: false,
-    inStore: false,
-    sellingItems: false,
-    viewingInventory: false,
-    choosingNextLevel: false,
-    inTransition: false,  
+    splinterCellOn: false, 
     
     currentHullIntegrity: 100,
     maxHullIntegrity: 100,
@@ -204,11 +204,9 @@ async function updateState(newStateObj) {
 //     leftArrowDiv.classList.add("left")
 //     leftArrowDiv.textContent= "<"
 //     leftArrowDiv.onclick = function() {
-//         console.log("normal attach click")
 //     }
 
 //     arrowsDiv.onclick = function() {
-//         console.log("clicked arrows div")
 //     }
     
 //     arrowsDiv.append(leftArrowDiv)
@@ -265,7 +263,6 @@ async function ProduceBlockSquares(arrayObj, stateObj) {
     let tempDirection = "left";
     for (let j=0; j < (screenwidthBlocks); j++) {
         if (stateObj.floorValues[stateObj.currentLevel].bottomRowEnemies.includes(j)) {
-            console.log("pushing enemy to square " + j)
             arrayObj.push("enemy")
         } else {
             arrayObj.push("empty")
@@ -321,6 +318,7 @@ async function fillMapWithArray(stateObj) {
         stateObj = await immer.produce(stateObj, (newState) => {
             newState.gameMap = tempArray;
             newState.currentPosition = 2;
+            newState.timeCounter += 1
             if (relicSquareArray.length > 0) {
                 for (let i = 0; i < relicSquareArray.length; i++) {
                     relicNum = Math.floor(Math.random() * relicArray.length)
@@ -376,12 +374,12 @@ async function moveEnemies() {
     if (stateObj.timeCounter === 0) {
         console.log("calling fillMap function")
         stateObj = await fillMapWithArray(stateObj)
-        await updateState(stateObj)
     }
-    if (stateObj.inStore === false && stateObj.choosingNextLevel === false && stateObj.sellingItems === false && stateObj.viewingInventory === false) {
+    stateObj.timeCounter += 1
+    await updateState(stateObj)
+    if (stateObj.inStore === false && stateObj.choosingNextLevel === false && stateObj.sellingItems === false && stateObj.viewingInventory === false && stateObj.startTheGame === false) {
 
         stateObj = await immer.produce(stateObj, (newState) => {
-            newState.timeCounter += 1;
             if (newState.takingDamage !== false) {
                 if (newState.takingDamage > 0) {
                     newState.takingDamage -= 1
@@ -389,18 +387,14 @@ async function moveEnemies() {
                     console.log("able to take damage again")
                     newState.takingDamage = false;
                 }
-                console.log('taking damage state is ' + newState.takingDamage)
             }
         })
-
-        console.log("firing moveEnemies")
         if (stateObj.timeCounter % 3 ===0) {
 
         for (let i=0; i < stateObj.enemyArray.length; i++) {
             let k = stateObj.enemyArray[i]
             if (stateObj.enemyMovementArray[i] === "left") {
                     if (k % screenwidthBlocks !== 0 && stateObj.gameMap[k-1] === "empty") {
-                        //console.log("enemy  " + i + " moving left at position " + k + ", now " + k-1)
                         stateObj = await immer.produce(stateObj, (newState) => {
                             newState.gameMap[k-1] = "enemy";
                             newState.gameMap[k] = "empty";
@@ -412,11 +406,9 @@ async function moveEnemies() {
                         stateObj = await immer.produce(stateObj, (newState) => {
                             newState.enemyMovementArray[i] = "right";
                         })
-                        //console.log("enemy  " + i + " switching to right at position " + k)
                     }
             } else {
                     if ((k+1) % screenwidthBlocks !== 0 && stateObj.gameMap[k+1] === "empty") {
-                        //console.log("enemy  " + i + " moving right at position " + k + ", now " + k+1)
                         stateObj = await immer.produce(stateObj, (newState) => {
                             newState.gameMap[k+1] = "enemy";
                             newState.gameMap[k] = "empty";
@@ -426,7 +418,6 @@ async function moveEnemies() {
                         stateObj = await immer.produce(stateObj, (newState) => {
                             newState.enemyMovementArray[i] = "left";
                         })
-                        //console.log("enemy  " + i + " switching to left at position " + k)
                     }   
                 }
             }
@@ -537,7 +528,6 @@ async function moveEnemies() {
 //Can set this to 0 in exitDoor
 //To-DO: Need to set values for mapDiv and each map-square, including elements
 async function renderScreen(stateObj) {
-    //console.log("rendering Screen")
 
     document.getElementById("app").innerHTML = ""
     //create a mapDiv to append all your new squares to
@@ -546,6 +536,10 @@ async function renderScreen(stateObj) {
     document.getElementById("app").append(topBar)
     if (stateObj.lostTheGame === true) {
         let storeDiv = lostTheGame()
+        document.getElementById("app").append(storeDiv)
+    }if (stateObj.startTheGame === true) {
+        console.log("game started")
+        let storeDiv = renderStart(stateObj)
         document.getElementById("app").append(storeDiv)
     } else if (stateObj.sellingItems === true) {
         let storeDiv = renderSellingItems(stateObj)
@@ -570,6 +564,11 @@ async function leaveStore(stateObj) {
     stateObj.inStore = false;
     stateObj.sellingItems = false;
     stateObj.viewingInventory = false;
+    await changeState(stateObj);
+}
+
+async function startTheGame(stateObj) {
+    stateObj.startTheGame = false;
     await changeState(stateObj);
 }
 
@@ -903,7 +902,7 @@ async function upgradeInventory(stateObj) {
         newState.inventoryMax += 6;
         newState.inventoryUpgrades +=1;
         newState.bankedCash -= stateObj.inventoryUpgradeCost * (1-stateObj.cheaperShops)
-        newState.inventoryUpgradeCost += 500;
+        newState.inventoryUpgradeCost += 1000;
 
     })
     document.getElementById("store-inventory-upgrade-div").classList.add("store-clicked")
@@ -1074,7 +1073,10 @@ document.addEventListener('keydown', async function(event) {
             stateObj = await fuelTeleport(stateObj)
             window.scrollTo(0, 0);
             await changeState(stateObj)
-    } 
+        }  else if (event.key === "h") {
+            stateObj = await viewHelpScreen(stateObj)
+            await changeState(stateObj)
+        } 
     }
   });
 
@@ -1119,9 +1121,7 @@ async function doDamage(stateObj, damageAmount, enemyLocation) {
         stateObj = immer.produce(stateObj, (newState) => {
             if (newState.takingDamage === false) {
                 if (newState.thorns === true) {
-                    console.log("is this enemy" + newState.gameMap[newState.currentPosition+enemyLocation])
                     let enemyIndex = newState.enemyArray.indexOf(newState.currentPosition + enemyLocation);
-                    console.log("enemy index is" + enemyIndex)
                     newState.enemyArray.splice(enemyIndex, 1)
                     newState.enemyMovementArray.splice(enemyIndex, 1)
                     newState.enemiesKilledPerLevel += 1;
@@ -1296,6 +1296,9 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "relic1") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await stateObj.mapRelic1.relicFunc(stateObj)
+    } else if (targetSquare === "relic2") {
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
+        stateObj = await stateObj.mapRelic2.relicFunc(stateObj)
     } else {
         console.log("target square hasn't been handled yet")
     }
@@ -1453,6 +1456,13 @@ async function inventoryKey(stateObj) {
     return stateObj
 }
 
+async function viewHelpScreen(stateObj) {
+    stateObj = await immer.produce(stateObj, (newState) => {
+        newState.startTheGame = true;
+    })
+    return stateObj
+}
+
 async function goToNextLevel(stateObj) {
     stateObj = await immer.produce(stateObj, async (newState) => {
         newState.currentLevel += 1;
@@ -1512,8 +1522,6 @@ async function handleSquare(stateObj, squareIndexToMoveTo, fuelToLose, isGem=fal
         if (isGem) {
             if (newState.currentInventory < newState.inventoryMax) {
                 newState.currentInventory += 1;
-            } else {
-                console.log("inventory is full")
             }
         }    
     }) 
@@ -1521,7 +1529,6 @@ async function handleSquare(stateObj, squareIndexToMoveTo, fuelToLose, isGem=fal
 }
 
 async function loseTheGame(textString) {
-    console.log("firig lose the game")
     state.lostTheGame = true;
     state.takingDamage = false;
     clearInterval(enemyMovementTimer)
@@ -1572,7 +1579,6 @@ async function detonateBomb(stateObj, detonatePosition) {
     for (i=0; i < numberBlocks; i++) {
         downBlocksToBlast = i;
         if ((detonatePosition+(screenwidthBlocks*(i+1))) > (stateObj.gameMap.length-screenwidthBlocks) ) {
-            console.log("breaking down")
             break;
         }
     }    
@@ -1698,7 +1704,6 @@ async function detonateBlock(stateObj, blockPosition, isLaser=false) {
 }
 
 async function dropBlock(stateObj) {
-    console.log("dropping block")
     if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
         stateObj = await immer.produce(stateObj, (newState) => {
             let mapText = false
@@ -1725,7 +1730,6 @@ async function dropBlock(stateObj) {
 }
 
 async function dropBomb(stateObj) {
-    console.log("dropping bomb")
     if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty" && stateObj.bombLocation === false) {
         stateObj = await immer.produce(stateObj, (newState) => {
             if (newState.bombCurrentTotal > 0) {
@@ -1787,3 +1791,5 @@ spareTank = {
     },
     imgPath: "img/relics/sparetank.png",
 }
+
+renderScreen(gameStartState)

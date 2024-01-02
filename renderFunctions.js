@@ -1030,6 +1030,56 @@ function lostTheGame() {
 
   return storeDiv
 }
+
+function renderStart(stateObj) {
+  console.log("rendering start function triggered")
+  let storeDiv = document.createElement("Div")
+  storeDiv.classList.add("store-div")
+
+  let lostDiv = document.createElement("Div")
+  lostDiv.classList.add("start-div")
+
+  let textDiv1 = document.createElement("H3")
+  textDiv1.classList.add("padding-width")
+  textDiv1.textContent = "Move with arrow keys or WASD"
+
+  let textDiv2 = document.createElement("H3")
+  textDiv2.classList.add("padding-width")
+  textDiv2.textContent = "Sell ore at the shop"
+
+  let textDiv3 = document.createElement("H3")
+  textDiv3.classList.add("padding-width")
+  textDiv3.textContent = "Mine or buy relics to gain powers"
+
+  let textDiv4 = document.createElement("H3")
+  textDiv4.classList.add("padding-width")
+  textDiv4.textContent = "View Inventory with 'I'. Convert ores here"
+
+  let textDiv5 = document.createElement("H3")
+  textDiv5.classList.add("padding-width")
+  textDiv5.textContent = "Shoot lasers with 'L' and drop bombs with 'B'"
+
+  let textDiv7 = document.createElement("H3")
+  textDiv7.classList.add("padding-width")
+  textDiv7.textContent = "Gems in stone must be hit with lasers or bombs first"
+
+  let textDiv6 = document.createElement("H3")
+  textDiv6.classList.add("padding-width")
+  textDiv6.textContent = "Press 'H' at any time to see this screen again"
+
+  lostDiv.append(textDiv1, textDiv2, textDiv3, textDiv4, textDiv5, textDiv7, textDiv6)
+
+  let startButton = document.createElement("Div")
+  startButton.classList.add("sell-button")
+  startButton.textContent = "OK"
+  startButton.onclick = function() {
+      startTheGame(stateObj)
+  }
+  lostDiv.append(startButton)
+  storeDiv.append(lostDiv)
+
+  return storeDiv
+}
 //convert Inventory
 function renderInventory(stateObj) {
   let storeDiv = document.createElement("Div")
@@ -1291,7 +1341,13 @@ function renderMap(stateObj) {
           mapSquareImg.classList.add("relic-img")
           mapSquareImg.src = stateObj.mapRelic1.imgPath
           mapSquareDiv.append(mapSquareImg)
-      } 
+      }  else if (mapSquare === "relic2") {
+        mapSquareDiv.classList.add("relic")
+        let mapSquareImg = document.createElement("Img");
+        mapSquareImg.classList.add("relic-img")
+        mapSquareImg.src = stateObj.mapRelic2.imgPath
+        mapSquareDiv.append(mapSquareImg)
+    } 
       mapDiv.append(mapSquareDiv)
   })
   return mapDiv
