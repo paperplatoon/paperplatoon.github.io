@@ -117,7 +117,7 @@ let gameStartState = {
             numberRows: 20,
             relicNumber: 1,
             floorNumber: 0,
-            storeRelicPrice: 1750
+            storeRelicPrice: 1500
         },
         {
             barVals: [1, 0.999, 0.997, 0.99, 0.95, 0.80, 0.65],
@@ -126,7 +126,7 @@ let gameStartState = {
             bottomRowEnemies: [0, 3, 7, 9],
             relicNumber: 1,
             floorNumber: 1,
-            storeRelicPrice: 4000,
+            storeRelicPrice: 3500,
         },
         {
             barVals: [1, 0.997, 0.99, 0.95, 0.85, 0.75, 0.7],
@@ -135,7 +135,7 @@ let gameStartState = {
             bottomRowEnemies: [1, 3, 5, 7],
             relicNumber: 1,
             floorNumber: 2,
-            storeRelicPrice: 10000
+            storeRelicPrice: 8000
         },
         {
             barVals: [0.999, 0.99, 0.96, 0.9, 0.8, 0.72, 0.7],
@@ -144,7 +144,7 @@ let gameStartState = {
             bottomRowEnemies: [1, 2, 4, 5, 7],
             relicNumber: 1,
             floorNumber: 3,
-            storeRelicPrice: 25000
+            storeRelicPrice: 20000
         },
         {
             barVals: [0.99, 0.97, 0.91, 0.85, 0.77, 0.73, 0.7],
@@ -153,7 +153,7 @@ let gameStartState = {
             bottomRowEnemies: [1, 2, 4, 5, 7],
             relicNumber: 1,
             floorNumber: 4,
-            storeRelicPrice: 100000
+            storeRelicPrice: 75000
         },
         
     ],
