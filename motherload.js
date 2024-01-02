@@ -535,10 +535,11 @@ async function renderScreen(stateObj) {
         // arrowBar = renderArrowButtons(stateObj);
     document.getElementById("app").append(topBar)
     if (stateObj.lostTheGame === true) {
+        document.getElementById("app").innerHTML = ""
         let storeDiv = lostTheGame()
         document.getElementById("app").append(storeDiv)
     }if (stateObj.startTheGame === true) {
-        console.log("game started")
+        document.getElementById("app").innerHTML = ""
         let storeDiv = renderStart(stateObj)
         document.getElementById("app").append(storeDiv)
     } else if (stateObj.sellingItems === true) {
@@ -1501,6 +1502,7 @@ async function loseTheGame(textString) {
     state.lostTheGame = true;
     state.takingDamage = false;
     clearInterval(enemyMovementTimer)
+    window.scrollTo(0, 0)
     await changeState(state)
 }
 
