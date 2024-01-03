@@ -325,6 +325,20 @@ let potentialRelics = [
         },
         imgPath: "img/relics/infinitedirt.png",
     },
+
+    magneticBlocks = {
+        name: "Magetic Blocks",
+        varName: "magneticBlocks",
+        text: "Enemies stick to dropped dirt blocks",
+        relicFunc: async (stateObj) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                newState.magneticBlocks = true;
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        imgPath: "img/relics/magnetblocks.png",
+    },
 ]
 
 

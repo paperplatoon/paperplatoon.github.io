@@ -59,6 +59,7 @@ let gameStartState = {
     spareFuelTank: 0,
     fuelTeleportCost: 0,
     noDirtThreshold: false,
+    magneticBlocks: false,
 
     storeRelics: [],
     mapRelic1: false,
@@ -344,7 +345,7 @@ async function fillMapWithArray(stateObj) {
                     relicNum = Math.floor(Math.random() * relicArray.length)
                     if (i === 0) {
                         newState.mapRelic1 = relicArray[relicNum]
-                        //newState.mapRelic1 = potentialRelics[19]
+                        //newState.mapRelic1 = potentialRelics[22]
                         newState.gameMap[relicSquareArray[i]] = "relic1"
                     } else {
                         newState.mapRelic2 = relicArray[relicNum]
@@ -416,34 +417,51 @@ async function moveEnemies() {
         for (let i=0; i < stateObj.enemyArray.length; i++) {
             let k = stateObj.enemyArray[i]
             if (stateObj.enemyMovementArray[i] === "left") {
-                    if (k % screenwidthBlocks !== 0 && stateObj.gameMap[k-1] === "empty") {
-                        stateObj = await immer.produce(stateObj, (newState) => {
-                            newState.gameMap[k-1] = "enemy";
-                            newState.gameMap[k] = "empty";
-                            newState.enemyArray[i] -= 1
-                        })
-
-                        
-                    } else {
+                    if (k % screenwidthBlocks !== 0) {
+                        if (stateObj.gameMap[k-1] === "empty") {
+                            stateObj = await immer.produce(stateObj, (newState) => {
+                                newState.gameMap[k-1] = "enemy";
+                                newState.gameMap[k] = "empty";
+                                newState.enemyArray[i] -= 1
+                            })
+                        } else {
+                            stateObj = await immer.produce(stateObj, (newState) => {
+                                if (stateObj.gameMap[k-1] === "magnetic-0" || stateObj.gameMap[k-1] === "magnetic-4") {
+                                    newState.enemyMovementArray[i] = "frozen"
+                                } else {
+                                    newState.enemyMovementArray[i] = "right";
+                                }
+                            })
+                        }
+                    }  else {
                         stateObj = await immer.produce(stateObj, (newState) => {
                             newState.enemyMovementArray[i] = "right";
                         })
-                    }
-            } else {
-                    if ((k+1) % screenwidthBlocks !== 0 && stateObj.gameMap[k+1] === "empty") {
-                        stateObj = await immer.produce(stateObj, (newState) => {
-                            newState.gameMap[k+1] = "enemy";
-                            newState.gameMap[k] = "empty";
-                            newState.enemyArray[i] += 1
-                        })
+                    }     
+            } else if (stateObj.enemyMovementArray[i] === "right")  {
+                    if ((k+1) % screenwidthBlocks !== 0) {
+                        if (stateObj.gameMap[k+1] === "empty") {
+                            stateObj = await immer.produce(stateObj, (newState) => {
+                                newState.gameMap[k+1] = "enemy";
+                                newState.gameMap[k] = "empty";
+                                newState.enemyArray[i] += 1
+                            })
+                        } else {
+                            stateObj = await immer.produce(stateObj, (newState) => {
+                                if (stateObj.gameMap[k+1] === "magnetic-0" || stateObj.gameMap[k+1] === "magnetic-4") {
+                                    newState.enemyMovementArray[i] = "frozen"
+                                } else {
+                                    newState.enemyMovementArray[i] = "left";
+                                }
+                            })
+                        }
                     } else {
                         stateObj = await immer.produce(stateObj, (newState) => {
                             newState.enemyMovementArray[i] = "left";
                         })
-                    }   
-                }
+                    }
             }
-
+        }
             if (stateObj.bombExploding === true || stateObj.laserExplosion === true) {
                 stateObj = await immer.produce(stateObj, (newState) => {
                     newState.bombExploding = false
@@ -455,7 +473,6 @@ async function moveEnemies() {
                     }
                 })
             }
-
         }
             if (stateObj.bombLocation) {
                 if (stateObj.bombExploding) {
@@ -1239,7 +1256,7 @@ async function calculateMoveChange(stateObj, squaresToMove) {
 
     //check if target square has an enemy nearby
     
-    if (targetSquare === "0") {
+    if (targetSquare === "0" || targetSquare === "magnetic-0") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)   
     } else if (targetSquare === "1") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
@@ -1271,7 +1288,7 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         if ((stateObj.currentInventory-1) < stateObj.inventoryMax) { 
             stateObj = await immer.produce(stateObj, (newState) => {newState.goldInventory += 1})
         } 
-    } else if (targetSquare === "4") {
+    } else if (targetSquare === "4" || targetSquare === "magnetic-4") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
         if ((stateObj.currentInventory-1) < stateObj.inventoryMax) { 
             stateObj = await immer.produce(stateObj, (newState) => {newState.rubyInventory += 1})
@@ -1712,27 +1729,29 @@ async function detonateBlock(stateObj, blockPosition, isLaser=false) {
 }
 
 async function dropBlock(stateObj) {
+    let dirtNeeded = stateObj.dirtThresholdNeeded - stateObj.dirtReserves;
     if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
-        stateObj = await immer.produce(stateObj, (newState) => {
-            let mapText = false
-            newState.fuelCapacity += newState.dirtToMaxFuel
-            if (newState.dirtReserves >= (newState.dirtThresholdNeeded)) {
-                mapText = (stateObj.dirtRuby === true) ? "4" : "0";
-                newState.dirtReserves -= newState.dirtThresholdNeeded;
-            } else if (newState.fuelToBlocks > 0) {
-                let dirtNeeded = newState.dirtThresholdNeeded - newState.dirtReserves;
-                if (newState.currentFuel > Math.floor((dirtNeeded)/newState.fuelToBlocks)) {
-                    mapText = (stateObj.dirtRuby === true) ? "4" : "0";
+        if (stateObj.dirtReserves >= stateObj.dirtThresholdNeeded || (stateObj.fuelToBlocks > 0) &&  stateObj.currentFuel > Math.floor((dirtNeeded)/stateObj.fuelToBlocks)) {
+            let mapText = (stateObj.magneticBlocks) ? "magnetic-" : ""
+            if (stateObj.dirtRuby === true) {
+                mapText += "4"
+            } else {
+                mapText += "0"
+            }
+            stateObj = await immer.produce(stateObj, (newState) => {
+                newState.fuelCapacity += newState.dirtToMaxFuel
+                if (newState.dirtReserves >= newState.dirtThresholdNeeded) {
                     newState.dirtReserves -= newState.dirtThresholdNeeded;
+                } else if (newState.currentFuel > Math.floor((dirtNeeded)/newState.fuelToBlocks)) {
+                    newState.dirtReserves = 0;
                     newState.currentFuel -= Math.floor(dirtNeeded/newState.fuelToBlocks)
                 }
-            }
-
-            if (mapText) {
-                newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = mapText;
-            }
-            
-        })
+                if (mapText) {
+                    newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = mapText;
+                    console.log("block is " + mapText)
+                }
+            }) 
+        }
     }
     return stateObj
 }

@@ -23,7 +23,7 @@ function renderTopBarStats(stateObj) {
     fuelText1Div = document.createElement("Div")
     fuelText1Div.classList.add("bars-text-div")
     fuelText1Div.setAttribute("id", "fuel-opening-text");
-    fuelText1Div.textContent = "Fuel "
+    fuelText1Div.textContent = "Fuel - "
 
     fuelText2Div = document.createElement("Div")
     fuelText2Div.classList.add("bars-text-div")
@@ -63,7 +63,7 @@ function renderTopBarStats(stateObj) {
     hullDiv.setAttribute("id", "hull-div");
     hullText1Div = document.createElement("Div")
     hullText1Div.classList.add("bars-text-div")
-    hullText1Div.textContent = "Hull "
+    hullText1Div.textContent = "Hull - "
 
     hullText2Div = document.createElement("Div")
     hullText2Div.classList.add("bars-text-div")
@@ -106,7 +106,7 @@ function renderTopBarStats(stateObj) {
     let inventoryText1Div = document.createElement("Div")
     inventoryText1Div = document.createElement("Div")
     inventoryText1Div.classList.add("bars-text-div")
-    inventoryText1Div.textContent = "Inventory "
+    inventoryText1Div.textContent = "Cargo "
 
     let inventoryText2Div = document.createElement("Div")
     inventoryText2Div = document.createElement("Div")
@@ -200,7 +200,7 @@ function renderTopBarStats(stateObj) {
     dirtDiv.classList.add("top-vertical-div")
     dirtString = "Dirt: " + Math.round((stateObj.dirtReserves/(stateObj.dirtThresholdNeeded))*100) + "%"
     if (stateObj.dirtReserves >= (stateObj.dirtThresholdNeeded)) {
-        dirtString = dirtString + " (press P to drop dirt)"
+        dirtString = dirtString + " - press P to drop"
     }
     if (stateObj.dirtThresholdNeeded < 50) {
         dirtDiv.classList.add("upgraded-stat")
@@ -842,7 +842,34 @@ function renderTopBarStats(stateObj) {
         weaponPriceRelicDiv.appendChild(relicTextDiv);
 
         topBarDiv.append(weaponPriceRelicDiv)
-  }
+    }
+
+    if (stateObj.magneticBlocks) {
+      let weaponPriceRelicDiv = document.createElement("Div")
+      weaponPriceRelicDiv.classList.add("relic-div")
+      let weaponImg = document.createElement("Img");
+      weaponImg.classList.add("relic-img")
+      weaponImg.src = "img/relics/magnetblocks.png"
+      weaponPriceRelicDiv.append(weaponImg)
+      
+      weaponPriceRelicDiv.addEventListener('mouseover', function() {
+          const statusText = document.querySelector("#magnet-blocks-popup");
+          statusText.style.display = 'block'
+        });
+        
+        weaponPriceRelicDiv.addEventListener('mouseout', function() {
+          const statusText = document.querySelector("#magnet-blocks-popup");
+          statusText.style.display = 'none'
+        });
+  
+        let relicTextDiv = document.createElement("Div");
+        relicTextDiv.setAttribute("id", "magnet-blocks-popup")
+        relicTextDiv.classList.add("none-display")
+        relicTextDiv.textContent = "Enemies stick to dropped dirt blocks"
+        weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+        topBarDiv.append(weaponPriceRelicDiv)
+    }
 
 
     
@@ -1293,7 +1320,7 @@ function renderMap(stateObj) {
           mapSquareDiv.append(mapSquareImg)
       }
       
-      if (mapSquare === "0") {
+      if (mapSquare === "0" || mapSquare === "magnetic-0") {
           mapSquareDiv.classList.add("dirt")
           let mapSquareImg = document.createElement("Img");
           mapSquareImg.classList.add("dirt-img")
@@ -1329,7 +1356,7 @@ function renderMap(stateObj) {
           mapSquareImg.classList.add("gold-img")
           mapSquareImg.src = "img/map/gold.png"
           mapSquareDiv.append(mapSquareImg)
-      }  else if (mapSquare === "4") {
+      }  else if (mapSquare === "4" || mapSquare==="magnetic-4") {
           mapSquareDiv.classList.add("ruby")
           let mapSquareImg = document.createElement("Img");
           mapSquareImg.classList.add("ruby-img")
