@@ -1801,22 +1801,15 @@ function buildRelicArray(stateObj) {
     if (stateObj.dirtRuby === false) {
         tempArray.push(potentialRelics[14])
     }
+    if (stateObj.noDirtThreshold === false) {
+        tempArray.push(potentialRelics[21])
+    }
+
+    if (stateObj.magneticBlocks === false) {
+        tempArray.push(potentialRelics[22])
+    }
     //let tempArray = [spareTank, spareTank, spareTank, spareTank]
     return tempArray
-}
-
-spareTank = {
-    name: "Spare Fuel Tank",
-    varName: "spareTankRelic",
-    text: "Fully refills your fuel once if you run our of fuel",
-    relicFunc: async (stateObj) => {
-        stateObj = immer.produce(stateObj, (newState) => {
-            newState.spareFuelTank += 1;
-        })
-        await changeState(stateObj);
-        return stateObj
-    },
-    imgPath: "img/relics/sparetank.png",
 }
 
 renderScreen(gameStartState)
