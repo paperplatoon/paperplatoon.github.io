@@ -22,14 +22,14 @@ let gameStartState = {
     inventoryUpgradeCost: 1000,
     bronzeInventory: 0,
     silverInventory: 0,
-    goldInventory: 0,
-    rubyInventory: 0,
+    goldInventory: 10,
+    rubyInventory: 6,
     amethystInventory: 0,
     diamondInventory: 0,
     blackDiamondInventory: 0,
     
 
-    bankedCash: 100,
+    bankedCash: 10000,
     
     numberLasers: 1,
     laserCapacity: 1,
@@ -117,7 +117,11 @@ let gameStartState = {
             numberRows: 20,
             relicNumber: 1,
             floorNumber: 0,
-            storeRelicPrice: 1500
+            storeRelicPrice: 1300,
+            rubyRelicPrice: 3,
+            diamondRelicPrice: 0,
+            hullGoldUpgradePrice: 5,
+            rubyHullUpgradePrice: 0,
         },
         {
             barVals: [1, 0.999, 0.997, 0.99, 0.95, 0.80, 0.65],
@@ -127,6 +131,10 @@ let gameStartState = {
             relicNumber: 1,
             floorNumber: 1,
             storeRelicPrice: 3500,
+            rubyRelicPrice: 7,
+            diamondRelicPrice: 0,
+            hullGoldUpgradePrice: 10,
+            rubyHullUpgradePrice: 0,
         },
         {
             barVals: [1, 0.997, 0.99, 0.95, 0.85, 0.75, 0.7],
@@ -135,7 +143,11 @@ let gameStartState = {
             bottomRowEnemies: [1, 3, 5, 7],
             relicNumber: 1,
             floorNumber: 2,
-            storeRelicPrice: 8000
+            storeRelicPrice: 8000,
+            rubyRelicPrice: 0,
+            diamondRelicPrice: 7,
+            hullGoldUpgradePrice: 0,
+            rubyHullUpgradePrice: 10,
         },
         {
             barVals: [0.999, 0.99, 0.96, 0.9, 0.8, 0.72, 0.7],
@@ -144,7 +156,11 @@ let gameStartState = {
             bottomRowEnemies: [1, 2, 4, 5, 7],
             relicNumber: 1,
             floorNumber: 3,
-            storeRelicPrice: 20000
+            storeRelicPrice: 20000,
+            rubyRelicPrice: 0,
+            diamondRelicPrice: 15,
+            hullGoldUpgradePrice: 0,
+            rubyHullUpgradePrice: 20,
         },
         {
             barVals: [0.99, 0.97, 0.91, 0.85, 0.77, 0.73, 0.7],
@@ -153,7 +169,11 @@ let gameStartState = {
             bottomRowEnemies: [1, 2, 4, 5, 7],
             relicNumber: 1,
             floorNumber: 4,
-            storeRelicPrice: 75000
+            storeRelicPrice: 75000,
+            rubyRelicPrice: 0,
+            diamondRelicPrice: 25,
+            hullGoldUpgradePrice: 0,
+            rubyHullUpgradePrice: 30,
         },
         
     ],
@@ -324,7 +344,7 @@ async function fillMapWithArray(stateObj) {
                     relicNum = Math.floor(Math.random() * relicArray.length)
                     if (i === 0) {
                         newState.mapRelic1 = relicArray[relicNum]
-                        //newState.mapRelic1 = potentialRelics[21]
+                        //newState.mapRelic1 = potentialRelics[19]
                         newState.gameMap[relicSquareArray[i]] = "relic1"
                     } else {
                         newState.mapRelic2 = relicArray[relicNum]
@@ -334,9 +354,11 @@ async function fillMapWithArray(stateObj) {
                 }
                 relicStoreNum = Math.floor(Math.random() * relicArray.length)
                 newState.storeRelic1 = relicArray[relicStoreNum]
+                //newState.storeRelic1 = potentialRelics[19]
                 relicArray.splice(relicStoreNum, 1)
                 relicStoreNum2 = Math.floor(Math.random() * relicArray.length)
                 newState.storeRelic2 = relicArray[relicStoreNum2]
+                //newState.storeRelic2 = potentialRelics[19]
             }
 
         })
@@ -806,7 +828,7 @@ async function dirtEfficiencyChoice(stateObj) {
 
 async function fillFuel(stateObj) {
     let missingFuel = Math.floor(stateObj.fuelCapacity-stateObj.currentFuel)
-    let fuelPrice = Math.ceil((missingFuel * (1+stateObj.currentLevel) - (1-stateObj.cheaperShops))/2)
+    let fuelPrice = Math.ceil((missingFuel * Math.ceil((1+stateObj.currentLevel)/2) - (1-stateObj.cheaperShops))/2)
     stateObj = immer.produce(stateObj, (newState) => {
         if (missingFuel > 0) {
             if (newState.freeFuel === true ) {
@@ -816,7 +838,7 @@ async function fillFuel(stateObj) {
                     newState.currentFuel += missingFuel;
                     newState.bankedCash -= fuelPrice
                 } else {
-                    let affordableFuel = Math.ceil(newState.bankedCash/(1+stateObj.currentLevel))
+                    let affordableFuel = Math.ceil(newState.bankedCash/Math.ceil((1+stateObj.currentLevel)/2))
                     newState.currentFuel += affordableFuel;
                     newState.bankedCash = 0;    
                 }
@@ -854,7 +876,7 @@ async function laserUpgrade(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.laserCapacity += 1;
         newState.numberLasers += 1;
-        newState.bankedCash -= stateObj.laserCapacityUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
+        newState.bankedCash -= stateObj.laserCapacityUpgradeCost   * (1-stateObj.cheaperShops)
         newState.laserCapacityUpgradeCost += 1000;
     })
     document.getElementById("store-laser-capacity-upgrade-div").classList.add("store-clicked")
@@ -869,7 +891,7 @@ async function bombUpgrade(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.bombCapacity += 1;
         newState.bombCurrentTotal += 1;
-        newState.bankedCash -= stateObj.bombCapacityUpgradeCost * (stateObj.currentLevel+1)* (1-stateObj.cheaperShops)
+        newState.bankedCash -= stateObj.bombCapacityUpgradeCost  * (1-stateObj.cheaperShops)
         newState.bombCapacityUpgradeCost += 1000;
     })
     document.getElementById("store-bomb-capacity-upgrade-div").classList.add("store-clicked")
@@ -902,7 +924,7 @@ async function upgradeInventory(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.inventoryMax += 6;
         newState.inventoryUpgrades +=1;
-        newState.bankedCash -= stateObj.inventoryUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
+        newState.bankedCash -= stateObj.inventoryUpgradeCost   * (1-stateObj.cheaperShops)
         newState.inventoryUpgradeCost += 1000;
 
     })
@@ -918,29 +940,46 @@ async function upgradeHullGold(stateObj) {
     document.querySelector(".hull-gold-upgrade-div").classList.add("store-clicked")
     document.querySelector(".hull-gold-upgrade-div").classList.add("emphasis")
     await pause(300)
-    
-    if (stateObj.goldInventory >= (5 * (stateObj.currentLevel+1))) {
+    let goldPrice = stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
+    let rubyPrice = stateObj.floorValues[stateObj.currentLevel].rubyHullUpgradePrice
+    if (goldPrice > 0) {
         stateObj = immer.produce(stateObj, (newState) => {
-            newState.goldInventory -= (5 * (stateObj.currentLevel +1));
-            newState.currentInventory -= (5 * (stateObj.currentLevel +1));
+            newState.goldInventory -= goldPrice;
+            newState.currentInventory -= goldPrice;
             newState.currentHullIntegrity +=50;
             newState.maxHullIntegrity +=50;
         })
-        await changeState(stateObj);
-        document.getElementById("hull-integrity-text").classList.add("upgraded-stat")
-        document.getElementById("hull-integrity-text").classList.add("emphasis")
-        await pause(300)
+    } else if (rubyPrice > 0) {
+        stateObj = immer.produce(stateObj, (newState) => {
+            newState.rubyInventory -= rubyPrice;
+            newState.currentInventory -= rubyPrice;
+            newState.currentHullIntegrity +=50;
+            newState.maxHullIntegrity +=50;
+        })
     }
+    await changeState(stateObj);
+    document.getElementById("hull-integrity-text").classList.add("upgraded-stat")
+    document.getElementById("hull-integrity-text").classList.add("emphasis")
+    await pause(300)
 }
 
 async function tradeRelicRuby(stateObj) {
-    if (stateObj.rubyInventory >= (3 * ((stateObj.currentLevel) +1))) {
+    let rubyPrice = stateObj.floorValues[stateObj.currentLevel].rubyRelicPrice
+    let diamondPrice = stateObj.floorValues[stateObj.currentLevel].diamondRelicPrice
+    if (rubyPrice > 0 && stateObj.rubyInventory >= rubyPrice) {
         stateObj = await stateObj.storeRelic1.relicFunc(stateObj)
         stateObj = immer.produce(stateObj, (newState) => {
             newState.storeRelic1 = false;
-            newState.rubyInventory -= (3 * ((stateObj.currentLevel) +1));
-            newState.currentInventory -= (3 * ((stateObj.currentLevel) +1));
-        })        
+            newState.rubyInventory -= rubyPrice;
+            newState.currentInventory -= rubyPrice;
+        }) 
+    } else if (diamondPrice > 0 && stateObj.diamondInventory >= diamondPrice) {
+        stateObj = await stateObj.storeRelic1.relicFunc(stateObj)
+        stateObj = immer.produce(stateObj, (newState) => {
+            newState.storeRelic1 = false;
+            newState.diamondInventory -= diamondPrice;
+            newState.currentInventory -= diamondPrice;
+        }) 
     }
     document.querySelector(".ruby-relic-div").classList.add("mini-emphasis")
     await pause(300)

@@ -281,9 +281,11 @@ let potentialRelics = [
             stateObj = immer.produce(stateObj, (newState) => {
                 if (newState.dirtThresholdNeeded > 15) {
                     newState.dirtThresholdNeeded -= 15;
+                    console.log("dirt threshold is now " + newState.dirtThresholdNeeded)
                 }
             })
             await changeState(stateObj);
+            console.log("dirth threshold is now " + stateObj.dirtThresholdNeeded)
             return stateObj
         },
         imgPath: "img/relics/drillupgrade.png",

@@ -949,25 +949,55 @@ function renderSellingItems(stateObj) {
   }
 
   let upgradeHullDiv = document.createElement("Div")
+  let goldPrice = stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
+  let rubyPrice = stateObj.floorValues[stateObj.currentLevel].rubyHullUpgradePrice
+  let tradeString = "Upgrade Hull (Costs "
   upgradeHullDiv.classList.add("hull-gold-upgrade-div")
+  if (goldPrice > 0) {
+    tradeString += goldPrice + " gold)"
+    if (stateObj.goldInventory >= goldPrice) {
+      upgradeHullDiv.classList.add("hull-gold-upgrade-hover")
+      upgradeHullDiv.onclick = async function () {
+        await upgradeHullGold(stateObj)
+      }
+    }
+  } else if (rubyPrice > 0) {
+    tradeString += rubyPrice + " rubies)"
+    if (stateObj.rubyInventory >= rubyPrice) {
+      upgradeHullDiv.classList.add("ruby-relic-hover")
+      upgradeHullDiv.onclick = async function () {
+        await upgradeHullGold(stateObj)
+      }
+    } 
+  }
+  upgradeHullDiv.textContent = tradeString
   upgradeHullDiv.textContent = "Upgrade Hull (Costs " + (5 * (stateObj.currentLevel+1)) + " gold)"
-  if (stateObj.goldInventory >= (5 * ((stateObj.currentLevel*2) +1))) {
-    upgradeHullDiv.classList.add("hull-gold-upgrade-hover")
-  }
-  upgradeHullDiv.onclick = async function () {
-      await upgradeHullGold(stateObj)
-  }
+  
 
   let tradeRelicRubyDiv = document.createElement("Div")
   if (stateObj.storeRelic1) {
     tradeRelicRubyDiv.classList.add("ruby-relic-div")
-    tradeRelicRubyDiv.textContent = stateObj.storeRelic1.name + " - " + stateObj.storeRelic1.text + " (Costs " + (3 * ((stateObj.currentLevel) +1)) + " rubies)"
-    if (stateObj.rubyInventory >= (3 * ((stateObj.currentLevel) +1))) {
-      tradeRelicRubyDiv.classList.add("ruby-relic-hover")
-    }
-    tradeRelicRubyDiv.onclick = async function () {
+    let rubyPrice = stateObj.floorValues[stateObj.currentLevel].rubyRelicPrice
+    let diamondPrice = stateObj.floorValues[stateObj.currentLevel].diamondRelicPrice
+    let tradeString = stateObj.storeRelic1.name + " - " + stateObj.storeRelic1.text + " (Costs "
+    if (rubyPrice > 0) {
+      tradeString += rubyPrice + " rubies)"
+      if (stateObj.rubyInventory >= rubyPrice) {
+        tradeRelicRubyDiv.classList.add("ruby-relic-hover")
+      }
+      tradeRelicRubyDiv.onclick = async function () {
         await tradeRelicRuby(stateObj)
+      }
+    } else if (diamondPrice > 0) {
+      tradeString += diamondPrice + " diamonds)"
+      if (stateObj.diamondInventory >= diamondPrice) {
+        tradeRelicRubyDiv.classList.add("ruby-relic-hover")
+      }
+      tradeRelicRubyDiv.onclick = async function () {
+        await tradeRelicRuby(stateObj)
+      }
     }
+    tradeRelicRubyDiv.textContent = tradeString
   }
   
 
@@ -1480,9 +1510,9 @@ function renderStore(stateObj) {
   let fuelText2 = document.createElement("Div")
   fuelText2.classList.add("store-option-text")
   fuelText1.textContent = "Fuel Capacity Upgrade" 
-  fuelText2.textContent = "$" + stateObj.fuelUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
+  fuelText2.textContent = "$" + stateObj.fuelUpgradeCost * (1-stateObj.cheaperShops)
   fuelUpgradeDiv.append(fuelText1, fuelText2)
-  if (stateObj.bankedCash >= stateObj.fuelUpgradeCost* (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)) {
+  if (stateObj.bankedCash >= stateObj.fuelUpgradeCost* (1-stateObj.cheaperShops)) {
       fuelUpgradeDiv.classList.add("store-clickable")
       fuelUpgradeDiv.onclick = function () {
           upgradeFuel(stateObj)
@@ -1499,7 +1529,7 @@ function renderStore(stateObj) {
   laserText1.textContent = "Laser Capacity Upgrade" 
   laserText2.textContent = "$" + stateObj.laserCapacityUpgradeCost * (stateObj.currentLevel+1)* (1-stateObj.cheaperShops)
   laserUpgradeDiv.append(laserText1, laserText2)
-  if (stateObj.bankedCash >= stateObj.laserCapacityUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)) {
+  if (stateObj.bankedCash >= stateObj.laserCapacityUpgradeCost * (1-stateObj.cheaperShops)) {
       laserUpgradeDiv.classList.add("store-clickable")
       laserUpgradeDiv.onclick = function () {
           laserUpgrade(stateObj)
@@ -1514,9 +1544,9 @@ function renderStore(stateObj) {
     let bombText2 = document.createElement("Div")
     bombText2.classList.add("store-option-text")
     bombText1.textContent = "Bomb Capacity Upgrade" 
-    bombText2.textContent = "$" + stateObj.bombCapacityUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
+    bombText2.textContent = "$" + stateObj.bombCapacityUpgradeCost * (1-stateObj.cheaperShops)
     bombUpgradeDiv.append(bombText1, bombText2)
-  if (stateObj.bankedCash >= stateObj.bombCapacityUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)) {
+  if (stateObj.bankedCash >= stateObj.bombCapacityUpgradeCost * (1-stateObj.cheaperShops)) {
       bombUpgradeDiv.classList.add("store-clickable")
       bombUpgradeDiv.onclick = function () {
           bombUpgrade(stateObj)
@@ -1564,10 +1594,10 @@ function renderStore(stateObj) {
       
       if ((missingHull*5) * (stateObj.currentLevel+1) > (stateObj.bankedCash * (1-stateObj.cheaperShops))) {
           repairText1.textContent = "Spend all money on repairs" 
-          repairText2.textContent = "$" + Math.ceil(stateObj.bankedCash)* (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
+          repairText2.textContent = "$" + Math.ceil(stateObj.bankedCash)* (1-stateObj.cheaperShops)
       } else {
           repairText1.textContent = "Repair hull fully " 
-          repairText2.textContent = "$" +  Math.ceil(missingHull*5 * (stateObj.currentLevel+1)) * (1-stateObj.cheaperShops)
+          repairText2.textContent = "$" +  Math.ceil(missingHull*5  ) * (1-stateObj.cheaperShops)
       }
       repairText2.classList.add("store-option-text")
       repairDiv.append(repairText1, repairText2)
@@ -1586,9 +1616,9 @@ function renderStore(stateObj) {
   let invText2 = document.createElement("Div")
   invText2.classList.add("store-option-text")
   invText1.textContent = "Inventory Size Upgrade" 
-  invText2.textContent = "$" + stateObj.inventoryUpgradeCost * (stateObj.currentLevel+1)* (1-stateObj.cheaperShops)
+  invText2.textContent = "$" + stateObj.inventoryUpgradeCost  * (1-stateObj.cheaperShops)
   inventoryUpgradeDiv.append(invText1, invText2)
-  if (stateObj.bankedCash >= stateObj.inventoryUpgradeCost * (stateObj.currentLevel+1)* (1-stateObj.cheaperShops)) {
+  if (stateObj.bankedCash >= stateObj.inventoryUpgradeCost  * (1-stateObj.cheaperShops)) {
       inventoryUpgradeDiv.classList.add("store-clickable")
       inventoryUpgradeDiv.onclick = function () {
           upgradeInventory(stateObj)
