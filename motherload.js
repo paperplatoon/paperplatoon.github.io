@@ -902,16 +902,14 @@ async function bombUpgrade(stateObj) {
     await changeState(stateObj);
 }
 
-async function upgradeFuel(stateObj) {
+async function upgradeFuelGold(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.fuelCapacity += 50;
         newState.currentFuel += 50;
-        newState.fuelUpgrades +=1;
-        newState.bankedCash -= stateObj.fuelUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
-        newState.fuelUpgradeCost += 1000;
-
+        newState.goldInventory -= stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
+        newState.currentInventory -= stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
     })
-    document.getElementById("store-fuel-upgrade-div").classList.add("store-clicked")
+    document.getElementById("fuel-gold-upgrade-div").classList.add("store-clicked")
     await pause(300)
     document.getElementById("empty-fuel-bar").classList.add("emphasis")
     document.getElementById("max-fuel-text").classList.add("emphasis")
@@ -924,7 +922,7 @@ async function upgradeInventory(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.inventoryMax += 6;
         newState.inventoryUpgrades +=1;
-        newState.bankedCash -= stateObj.inventoryUpgradeCost   * (1-stateObj.cheaperShops)
+        newState.bankedCash -= stateObj.inventoryUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
         newState.inventoryUpgradeCost += 1000;
 
     })

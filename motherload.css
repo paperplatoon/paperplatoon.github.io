@@ -353,7 +353,7 @@
 }
 
 .sell-row, .inv-row {
-  width: 32vw;
+  width: 40vw;
   padding: 0.5vh 1vw;
   display: flex;
   justify-content: left;
@@ -372,8 +372,8 @@
 .selling-items-div, .start-div {
   display: flex;
   flex-direction: column;
-  width: 50vw;
-  height: 72vh;
+  width: 60vw;
+  height: 78vh;
   justify-content: center;
   align-items: center;
   border: 0.8vw dashed rgba(71, 71, 71, 0.726);
@@ -403,8 +403,8 @@
   transition: 1s all;
 }
 
-.hull-gold-upgrade-div, .sell-empty, .ruby-relic-div {
-  width: 30vw;
+.hull-gold-upgrade-div, .fuel-gold-upgrade-div, .sell-empty, .ruby-relic-div {
+  width: 40vw;
   height: 5vh;
   display: flex;
   margin-top: 1vh;
@@ -417,7 +417,7 @@
   color: rgb(203, 203, 203);
 }
 
-.sell-button, .ruby-relic-hover {
+.sell-button, .ruby-relic-hover, .diamond-relic-hover {
   width: 30vw;
   height: 5vh;
   display: flex;
@@ -436,7 +436,7 @@
   height: 6.5vh;
 }
 
-.hull-gold-upgrade-hover {
+.hull-gold-upgrade-hover, .fuel-gold-upgrade-hover {
   background: linear-gradient(to right, rgb(50, 201, 50) 0%, rgb(108, 238, 108) 20%, rgb(113, 232, 113) 40%, rgb(151, 238, 151) 70%, rgb(159, 245, 159) 75%, rgb(59, 216, 59));
   margin-top: 1vh;
   cursor: pointer;
@@ -447,11 +447,11 @@
   padding: 0.1vh 2vw;
 }
 
-.hull-gold-upgrade-div {
+.hull-gold-upgrade-div, .fuel-gold-upgrade-div {
   cursor: auto;
 }
 
-.sell-button:hover, .hull-gold-upgrade-hover:hover, .ruby-relic-hover:hover {
+.sell-button:hover, .hull-gold-upgrade-hover:hover, .fuel-gold-upgrade-hover, .ruby-relic-hover:hover, .diamond-relic-hover:hover {
   border: 0.5vh dashed rgb(144, 255, 144);
   height: 5.5vh;
   background: linear-gradient(to right, rgb(31, 125, 31) 0%, rgb(60, 133, 60) 20%, rgb(59, 122, 59) 40%, rgb(80, 126, 80) 70%, rgb(64, 100, 64) 75%, rgb(30, 111, 30));
@@ -471,6 +471,16 @@ body:has(.hull-gold-upgrade-hover:hover) .gold-sell-row {
 }
 
 body:has(.ruby-relic-hover:hover) .ruby-sell-row {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  border-bottom: 0.2vh solid white;
+  border-top: 0.2vh solid white;
+  background-color: rgb(78, 78, 78);
+  color: white;
+}
+
+body:has(.diamond-relic-hover:hover) .diamond-sell-row {
   display: flex;
   justify-content: left;
   align-items: center;
@@ -509,6 +519,11 @@ body:has(#store-fuel-div:hover) #empty-fuel-bar {
 
 body:has(.hull-gold-upgrade-hover:hover) #empty-hull-bar {
   background-color: rgba(16, 46, 197, 0.6);
+  animation: flash 1s infinite;
+}
+
+body:has(.fuel-gold-upgrade-hover:hover) #empty-fuel-bar {
+  background-color: rgba(197, 185, 16, 0.6);
   animation: flash 1s infinite;
 }
 

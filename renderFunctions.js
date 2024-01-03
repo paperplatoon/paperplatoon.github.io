@@ -971,7 +971,28 @@ function renderSellingItems(stateObj) {
     } 
   }
   upgradeHullDiv.textContent = tradeString
-  upgradeHullDiv.textContent = "Upgrade Hull (Costs " + (5 * (stateObj.currentLevel+1)) + " gold)"
+
+  let upgradeFuelDiv = document.createElement("Div")
+  let fuelString = "Upgrade Fuel Capacity (Costs "
+  upgradeFuelDiv.classList.add("fuel-gold-upgrade-div")
+  if (goldPrice > 0) {
+    fuelString += goldPrice + " gold)"
+    if (stateObj.goldInventory >= goldPrice) {
+      upgradeFuelDiv.classList.add("fuel-gold-upgrade-hover")
+      upgradeFuelDiv.onclick = async function () {
+        await upgradeFuelGold(stateObj)
+      }
+    }
+  } else if (rubyPrice > 0) {
+    fuelString += rubyPrice + " rubies)"
+    if (stateObj.rubyInventory >= rubyPrice) {
+      upgradeFuelDiv.classList.add("ruby-relic-hover")
+      upgradeFuelDiv.onclick = async function () {
+        await upgradeFuelGold(stateObj)
+      }
+    } 
+  }
+  upgradeFuelDiv.textContent = fuelString
   
 
   let tradeRelicRubyDiv = document.createElement("Div")
@@ -991,7 +1012,7 @@ function renderSellingItems(stateObj) {
     } else if (diamondPrice > 0) {
       tradeString += diamondPrice + " diamonds)"
       if (stateObj.diamondInventory >= diamondPrice) {
-        tradeRelicRubyDiv.classList.add("ruby-relic-hover")
+        tradeRelicRubyDiv.classList.add("diamond-relic-hover")
       }
       tradeRelicRubyDiv.onclick = async function () {
         await tradeRelicRuby(stateObj)
@@ -1030,7 +1051,7 @@ function renderSellingItems(stateObj) {
       leaveStore(stateObj)
   }
 
-  sellDiv.append(sellInventoryDiv, sellButtonDiv, upgradeHullDiv, tradeRelicRubyDiv, seeStoreDiv,  buyNothingDiv)
+  sellDiv.append(sellInventoryDiv, sellButtonDiv, upgradeHullDiv, upgradeFuelDiv, tradeRelicRubyDiv, seeStoreDiv,  buyNothingDiv)
   storeDiv.append(sellDiv)
   
   return storeDiv
@@ -1502,23 +1523,6 @@ function renderStore(stateObj) {
   let storeDiv = document.createElement("Div")
   storeDiv.classList.add("store-div")
 
-  let fuelUpgradeDiv = document.createElement("Div")
-  fuelUpgradeDiv.setAttribute("id", "store-fuel-upgrade-div")
-  fuelUpgradeDiv.classList.add("store-option")
-  let fuelText1 = document.createElement("Div")
-  fuelText1.classList.add("store-option-text")
-  let fuelText2 = document.createElement("Div")
-  fuelText2.classList.add("store-option-text")
-  fuelText1.textContent = "Fuel Capacity Upgrade" 
-  fuelText2.textContent = "$" + stateObj.fuelUpgradeCost * (1-stateObj.cheaperShops)
-  fuelUpgradeDiv.append(fuelText1, fuelText2)
-  if (stateObj.bankedCash >= stateObj.fuelUpgradeCost* (1-stateObj.cheaperShops)) {
-      fuelUpgradeDiv.classList.add("store-clickable")
-      fuelUpgradeDiv.onclick = function () {
-          upgradeFuel(stateObj)
-      }
-    }
-
   let laserUpgradeDiv = document.createElement("Div")
   laserUpgradeDiv.classList.add("store-option")
   laserUpgradeDiv.setAttribute("id", "store-laser-capacity-upgrade-div")
@@ -1616,9 +1620,9 @@ function renderStore(stateObj) {
   let invText2 = document.createElement("Div")
   invText2.classList.add("store-option-text")
   invText1.textContent = "Inventory Size Upgrade" 
-  invText2.textContent = "$" + stateObj.inventoryUpgradeCost  * (1-stateObj.cheaperShops)
+  invText2.textContent = "$" + stateObj.inventoryUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
   inventoryUpgradeDiv.append(invText1, invText2)
-  if (stateObj.bankedCash >= stateObj.inventoryUpgradeCost  * (1-stateObj.cheaperShops)) {
+  if (stateObj.bankedCash >= stateObj.inventoryUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)) {
       inventoryUpgradeDiv.classList.add("store-clickable")
       inventoryUpgradeDiv.onclick = function () {
           upgradeInventory(stateObj)
@@ -1714,7 +1718,7 @@ function renderStore(stateObj) {
   }
 
   storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, laserUpgradeDiv, buyBombDiv,  
-      bombUpgradeDiv, fuelUpgradeDiv, inventoryUpgradeDiv, buyRelic2Div, buyNothingDiv)
+      bombUpgradeDiv, inventoryUpgradeDiv, buyRelic2Div, buyNothingDiv)
 
   return storeDiv
 }
