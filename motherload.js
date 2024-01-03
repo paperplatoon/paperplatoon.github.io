@@ -22,14 +22,14 @@ let gameStartState = {
     inventoryUpgradeCost: 1000,
     bronzeInventory: 0,
     silverInventory: 0,
-    goldInventory: 10,
-    rubyInventory: 6,
+    goldInventory: 0,
+    rubyInventory: 0,
     amethystInventory: 0,
     diamondInventory: 0,
     blackDiamondInventory: 0,
     
 
-    bankedCash: 10000,
+    bankedCash: 100,
     
     numberLasers: 1,
     laserCapacity: 1,
