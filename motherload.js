@@ -53,13 +53,15 @@ let gameStartState = {
     bronzeSilverBonus: 1,
     laserPiercing: false,
     silverHealing: 0,
-    bronzeMaxFuel: 0,
+    silverMaxFuel: 0,
+    bronzeMaxHull: 0,
     bombRefill: 0,
     fuelToBlocks: 0,
     spareFuelTank: 0,
     fuelTeleportCost: 0,
     noDirtThreshold: false,
     magneticBlocks: false,
+    bronzeSilverConverter: false,
 
     storeRelics: [],
     mapRelic1: false,
@@ -345,7 +347,7 @@ async function fillMapWithArray(stateObj) {
                     relicNum = Math.floor(Math.random() * relicArray.length)
                     if (i === 0) {
                         newState.mapRelic1 = relicArray[relicNum]
-                        //newState.mapRelic1 = potentialRelics[22]
+                        //newState.mapRelic1 = potentialRelics[24]
                         newState.gameMap[relicSquareArray[i]] = "relic1"
                     } else {
                         newState.mapRelic2 = relicArray[relicNum]
@@ -1262,10 +1264,15 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
         if ((stateObj.currentInventory-1) < stateObj.inventoryMax) { 
             stateObj = await immer.produce(stateObj, (newState) => {
-                newState.bronzeInventory += 1
-                if (stateObj.bronzeMaxFuel > 0) {
-                    newState.currentFuel += stateObj.bronzeMaxFuel;
-                    newState.fuelCapacity += stateObj.bronzeMaxFuel
+                if (stateObj.bronzeSilverConverter === true) {
+                    newState.silverInventory += 1
+                } else {
+                    newState.bronzeInventory += 1
+                }
+                
+                if (stateObj.bronzeMaxHull > 0) {
+                    newState.currentHullIntegrity += stateObj.bronzeMaxHull;
+                    newState.maxHullIntegrity += stateObj.bronzeMaxHull
                 }
             })
         } 
@@ -1280,6 +1287,10 @@ async function calculateMoveChange(stateObj, squaresToMove) {
                     } else {
                         newState.currentHullIntegrity += newState.silverHealing
                     }
+                }
+                if (stateObj. silverMaxFuel > 0) {
+                    newState.currentFuel += stateObj.silverMaxFuel;
+                    newState.fuelCapacity += stateObj.silverMaxFuel
                 }
             })
         } 
@@ -1786,7 +1797,7 @@ function buildRelicArray(stateObj) {
     let tempArray = [potentialRelics[0], potentialRelics[1], potentialRelics[2], potentialRelics[3],
     potentialRelics[4], potentialRelics[5], potentialRelics[7], potentialRelics[9], potentialRelics[10],
     potentialRelics[11], potentialRelics[12], potentialRelics[13], potentialRelics[15], potentialRelics[17],
-    potentialRelics[18], potentialRelics[19], potentialRelics[20],     
+    potentialRelics[18], potentialRelics[19], potentialRelics[20], potentialRelics[23],     
     ]
 
     if (stateObj.laserPiercing === false) {
@@ -1804,9 +1815,11 @@ function buildRelicArray(stateObj) {
     if (stateObj.noDirtThreshold === false) {
         tempArray.push(potentialRelics[21])
     }
-
     if (stateObj.magneticBlocks === false) {
         tempArray.push(potentialRelics[22])
+    }
+    if (stateObj.bronzeSilverConverter === false) {
+        tempArray.push(potentialRelics[24])
     }
     //let tempArray = [spareTank, spareTank, spareTank, spareTank]
     return tempArray

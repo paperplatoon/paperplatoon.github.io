@@ -428,32 +428,86 @@ function renderTopBarStats(stateObj) {
           topBarDiv.append(weaponPriceRelicDiv)
     }
 
-    if (stateObj.bronzeMaxFuel > 0) {
+    if (stateObj.bronzeMaxHull > 0) {
         let weaponPriceRelicDiv = document.createElement("Div")
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/bronzemaxfuel.png"
+        weaponImg.src = "img/relics/bronzemaxhull.png"
         weaponPriceRelicDiv.append(weaponImg)
         
         weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#bronze-fuel-popup");
+            const statusText = document.querySelector("#bronze-hull-popup");
             statusText.style.display = 'block'
           });
           
           weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#bronze-fuel-popup");
+            const statusText = document.querySelector("#bronze-hull-popup");
             statusText.style.display = 'none'
           });
     
           let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "bronze-fuel-popup")
+          relicTextDiv.setAttribute("id", "bronze-hull-popup")
           relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Mining bronze ore adds " + stateObj.bronzeMaxFuel + " maximum fuel capacity"
+          relicTextDiv.textContent = "Mining bronze ore adds " + stateObj.bronzeMaxHull + " hull armor"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
           topBarDiv.append(weaponPriceRelicDiv)
     }
+
+    if (stateObj.silverMaxFuel > 0) {
+      let weaponPriceRelicDiv = document.createElement("Div")
+      weaponPriceRelicDiv.classList.add("relic-div")
+      let weaponImg = document.createElement("Img");
+      weaponImg.classList.add("relic-img")
+      weaponImg.src = "img/relics/silvermaxfuel.png"
+      weaponPriceRelicDiv.append(weaponImg)
+      
+      weaponPriceRelicDiv.addEventListener('mouseover', function() {
+          const statusText = document.querySelector("#silver-fuel-popup");
+          statusText.style.display = 'block'
+        });
+        
+        weaponPriceRelicDiv.addEventListener('mouseout', function() {
+          const statusText = document.querySelector("#silver-fuel-popup");
+          statusText.style.display = 'none'
+        });
+  
+        let relicTextDiv = document.createElement("Div");
+        relicTextDiv.setAttribute("id", "silver-fuel-popup")
+        relicTextDiv.classList.add("none-display")
+        relicTextDiv.textContent = "Mining silver ore adds " + stateObj.silverMaxFuel + " fuel capacity"
+        weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+        topBarDiv.append(weaponPriceRelicDiv)
+  }
+
+  if (stateObj.bronzeSilverConverter) {
+    let weaponPriceRelicDiv = document.createElement("Div")
+    weaponPriceRelicDiv.classList.add("relic-div")
+    let weaponImg = document.createElement("Img");
+    weaponImg.classList.add("relic-img")
+    weaponImg.src = "img/relics/bronzesilverconverter.png"
+    weaponPriceRelicDiv.append(weaponImg)
+    
+    weaponPriceRelicDiv.addEventListener('mouseover', function() {
+        const statusText = document.querySelector("#bronze-converter-popup");
+        statusText.style.display = 'block'
+      });
+      
+      weaponPriceRelicDiv.addEventListener('mouseout', function() {
+        const statusText = document.querySelector("#bronze-converter-popup");
+        statusText.style.display = 'none'
+      });
+
+      let relicTextDiv = document.createElement("Div");
+      relicTextDiv.setAttribute("id", "bronze-converter-popup")
+      relicTextDiv.classList.add("none-display")
+      relicTextDiv.textContent = "Mined bronze ore gets converted to silver"
+      weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+      topBarDiv.append(weaponPriceRelicDiv)
+}
 
     if (stateObj.bombRefill > 0) {
         let weaponPriceRelicDiv = document.createElement("Div")

@@ -13,18 +13,18 @@ let potentialRelics = [
         imgPath: "img/relics/sparetank.png",
     },
 
-    bronzeMaxFuel = {
-        name: "Bronze Ore Converter",
-        varName: "bronzeMaxFuelRelic",
-        text: "Mining bronze ore increases max fuel",
+    bronzeMaxHull = {
+        name: "Bronze Armor",
+        varName: "bronzeMaxHullRelic",
+        text: "Mining bronze ore increases max armor",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.bronzeMaxFuel += 1;
+                newState.bronzeMaxHull += 1;
             })
             await changeState(stateObj);
             return stateObj
         },
-        imgPath: "img/relics/bronzemaxfuel.png",
+        imgPath: "img/relics/bronzemaxhull.png",
     },
 
     pauseEnemies = {
@@ -312,7 +312,7 @@ let potentialRelics = [
         imgPath: "img/relics/teleporter.png",
     },
 
-    fuelTeleporter = {
+    dirtCompactor = {
         name: "Dirt Compactor",
         varName: "dirtCompactor",
         text: "Can collect infinite dirt",
@@ -339,6 +339,37 @@ let potentialRelics = [
         },
         imgPath: "img/relics/magnetblocks.png",
     },
+
+    silverMaxFuel = {
+        name: "Silver Tank",
+        varName: "silverMaxFuelRelic",
+        text: "Mining silver ore increases max fuel",
+        relicFunc: async (stateObj) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                newState.silverMaxFuel += 1;
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        imgPath: "img/relics/silvermaxfuel.png",
+    },
+
+    bronzeSilverConverter = {
+        name: "Bronze Refiner",
+        varName: "bronzeSilverRelic",
+        text: "Mined bronze ore gets converted to silver",
+        relicFunc: async (stateObj) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                newState.bronzeSilverConverter = true;
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        imgPath: "img/relics/bronzesilverconverter.png",
+    },
+
+
+    //26
 ]
 
 
