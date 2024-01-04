@@ -507,7 +507,34 @@ function renderTopBarStats(stateObj) {
       weaponPriceRelicDiv.appendChild(relicTextDiv);
 
       topBarDiv.append(weaponPriceRelicDiv)
-}
+  }
+
+  if (stateObj.dirtRefillsWeapons) {
+    let weaponPriceRelicDiv = document.createElement("Div")
+    weaponPriceRelicDiv.classList.add("relic-div")
+    let weaponImg = document.createElement("Img");
+    weaponImg.classList.add("relic-img")
+    weaponImg.src = "img/relics/dirtrefillsweapons.png"
+    weaponPriceRelicDiv.append(weaponImg)
+    
+    weaponPriceRelicDiv.addEventListener('mouseover', function() {
+        const statusText = document.querySelector("#dirt-refiller-popup");
+        statusText.style.display = 'block'
+      });
+      
+      weaponPriceRelicDiv.addEventListener('mouseout', function() {
+        const statusText = document.querySelector("#dirt-refiller-popup");
+        statusText.style.display = 'none'
+      });
+
+      let relicTextDiv = document.createElement("Div");
+      relicTextDiv.setAttribute("id", "dirt-refiller-popup")
+      relicTextDiv.classList.add("none-display")
+      relicTextDiv.textContent = "Dirt refills weapons"
+      weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+      topBarDiv.append(weaponPriceRelicDiv)
+  }
 
     if (stateObj.bombRefill > 0) {
         let weaponPriceRelicDiv = document.createElement("Div")
@@ -539,6 +566,37 @@ function renderTopBarStats(stateObj) {
 
           topBarDiv.append(weaponPriceRelicDiv)
     }
+
+    if (stateObj.laserGemRefill > 0) {
+      let weaponPriceRelicDiv = document.createElement("Div")
+      weaponPriceRelicDiv.classList.add("relic-div")
+      let weaponImg = document.createElement("Img");
+      weaponImg.classList.add("relic-img")
+      weaponImg.src = "img/relics/laserrecapture.png"
+      weaponPriceRelicDiv.append(weaponImg)
+      
+      weaponPriceRelicDiv.addEventListener('mouseover', function() {
+          const statusText = document.querySelector("#laser-recapture-popup");
+          statusText.style.display = 'block'
+        });
+        
+        weaponPriceRelicDiv.addEventListener('mouseout', function() {
+          const statusText = document.querySelector("#laser-recapture-popup");
+          statusText.style.display = 'none'
+        });
+  
+        let relicTextDiv = document.createElement("Div");
+        relicTextDiv.setAttribute("id", "laser-recapture-popup")
+        relicTextDiv.classList.add("none-display")
+        relicString = "Mining a gem with a laser refills " + stateObj.laserGemRefill + " laser"
+        if (stateObj.laserGemRefill > 1) {
+          relicString += "s"
+        }
+        relicTextDiv.textContent = relicString
+        weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+        topBarDiv.append(weaponPriceRelicDiv)
+  }
 
     if (stateObj.fuelToBlocks > 0) {
         let weaponPriceRelicDiv = document.createElement("Div")

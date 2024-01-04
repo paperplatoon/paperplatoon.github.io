@@ -368,8 +368,49 @@ let potentialRelics = [
         imgPath: "img/relics/bronzesilverconverter.png",
     },
 
-
     //26
+    dirtRefiller = {
+        name: "Dirt Weapons",
+        varName: "dirtRefillsWeapons",
+        text: "Dropping dirt refills your weapons",
+        relicFunc: async (stateObj) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                newState.dirtRefillsWeapons = true;
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        imgPath: "img/relics/dirtrefillsweapons.png",
+    },
+
+    laserCapacityRelic = {
+        name: "Laser Storage",
+        varName: "laserCapacityRelic",
+        text: "Can carry two more lasers",
+        relicFunc: async (stateObj) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                newState.numberLasers += 2;
+                newState.laserCapacity += 2;
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        imgPath: "img/relics/lasercapacity.png",
+    },
+
+    laserRecaptureRelic = {
+        name: "Laser Recapture",
+        varName: "laserRecapture",
+        text: "Mining a gem with a laser refills your lasers",
+        relicFunc: async (stateObj) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                newState.laserGemRefill += 1;
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        imgPath: "img/relics/laserrecapture.png",
+    },
 ]
 
 

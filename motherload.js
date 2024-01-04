@@ -62,6 +62,8 @@ let gameStartState = {
     noDirtThreshold: false,
     magneticBlocks: false,
     bronzeSilverConverter: false,
+    dirtRefillsWeapons: false,
+    laserGemRefill: 0,
 
     storeRelics: [],
     mapRelic1: false,
@@ -347,7 +349,7 @@ async function fillMapWithArray(stateObj) {
                     relicNum = Math.floor(Math.random() * relicArray.length)
                     if (i === 0) {
                         newState.mapRelic1 = relicArray[relicNum]
-                        //newState.mapRelic1 = potentialRelics[24]
+                        //newState.mapRelic1 = potentialRelics[27]
                         newState.gameMap[relicSquareArray[i]] = "relic1"
                     } else {
                         newState.mapRelic2 = relicArray[relicNum]
@@ -1060,7 +1062,7 @@ document.addEventListener('keydown', async function(event) {
     let currentWidth = Math.floor(stateObj.currentPosition % screenwidthBlocks)
     let scrollHeight = Math.floor(viewportHeight * 0.1);
     let scrollWidth = Math.floor(viewportWidth * 0.1);
-    if (stateObj.inTransition === false && stateObj.inStore === false) {
+    if (stateObj.inTransition === false && stateObj.inStore === false && stateObj.viewingInventory===false) {
         if (event.key === 'ArrowUp' || event.key ==="w") {
             // Execute your function for the up arrow key
             stateObj = await UpArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth);
@@ -1714,6 +1716,8 @@ async function detonateBlock(stateObj, blockPosition, isLaser=false) {
                 newState.bombCurrentTotal += stateObj.bombRefill;
             }
 
+            if (isLaser === true && stateObj.laserGemRefill > 0 && newState.numberLasers < newState.laserCapacity)
+
             if (newState.splinterCellModifier > 1) {
                 newState.splinterCellModifier = 1;
             }
@@ -1721,10 +1725,19 @@ async function detonateBlock(stateObj, blockPosition, isLaser=false) {
         if (newState.gameMap[blockPosition] !== "STORE" && newState.gameMap[blockPosition] !== "stone") {
             if (newState.gameMap[blockPosition] === "stone-5") {
                 newState.gameMap[blockPosition] = "5"
+                if (isLaser === true && stateObj.laserGemRefill > 0 && newState.numberLasers < newState.laserCapacity) {
+                    newState.numberLasers += newState.laserGemRefill
+                }
             } else if (newState.gameMap[blockPosition] === "stone-6") {
                 newState.gameMap[blockPosition] = "6"
+                if (isLaser === true && stateObj.laserGemRefill > 0 && newState.numberLasers < newState.laserCapacity) {
+                    newState.numberLasers += newState.laserGemRefill
+                }
             } else if (newState.gameMap[blockPosition] === "stone-7") {
                 newState.gameMap[blockPosition] = "7"
+                if (isLaser === true && stateObj.laserGemRefill > 0 && newState.numberLasers < newState.laserCapacity) {
+                    newState.numberLasers += newState.laserGemRefill
+                }
             } else {
                 newState.gameMap[blockPosition] = "exploding-1"
             }
@@ -1761,7 +1774,13 @@ async function dropBlock(stateObj) {
                     newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = mapText;
                     console.log("block is " + mapText)
                 }
+                
+                if (stateObj.dirtRefillsWeapons) {
+                    newState.bombCurrentTotal = newState.bombCapacity
+                    newState.numberLasers = newState.laserCapacity
+                }
             }) 
+
         }
     }
     return stateObj
@@ -1797,9 +1816,9 @@ function buildRelicArray(stateObj) {
     let tempArray = [potentialRelics[0], potentialRelics[1], potentialRelics[2], potentialRelics[3],
     potentialRelics[4], potentialRelics[5], potentialRelics[7], potentialRelics[9], potentialRelics[10],
     potentialRelics[11], potentialRelics[12], potentialRelics[13], potentialRelics[15], potentialRelics[17],
-    potentialRelics[18], potentialRelics[19], potentialRelics[20], potentialRelics[23],     
+    potentialRelics[18], potentialRelics[19], potentialRelics[20], potentialRelics[23], potentialRelics[26],
+    potentialRelics[27],     
     ]
-
     if (stateObj.laserPiercing === false) {
         tempArray.push(potentialRelics[16])
     }
@@ -1820,6 +1839,10 @@ function buildRelicArray(stateObj) {
     }
     if (stateObj.bronzeSilverConverter === false) {
         tempArray.push(potentialRelics[24])
+    }
+
+    if (stateObj.dirtRefillsWeapons === false) {
+        tempArray.push(potentialRelics[25])
     }
     //let tempArray = [spareTank, spareTank, spareTank, spareTank]
     return tempArray
