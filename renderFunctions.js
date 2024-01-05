@@ -1537,7 +1537,12 @@ function renderMap(stateObj) {
         mapSquareImg.classList.add("relic-img")
         mapSquareImg.src = stateObj.mapRelic2.imgPath
         mapSquareDiv.append(mapSquareImg)
-    } 
+    }   else if (mapSquare === "teleporter") {
+      let mapSquareImg = document.createElement("Img");
+      mapSquareImg.classList.add("relic-img")
+      mapSquareImg.src = "img/relics/teleporter.png"
+      mapSquareDiv.append(mapSquareImg)
+  } 
       mapDiv.append(mapSquareDiv)
   })
   return mapDiv
@@ -1643,9 +1648,27 @@ function renderNextLevelChoice(stateObj) {
       splinterCellChoice(stateObj)
   }
 
-  //12 choices
-  let levelChoiceArray = [freeFuelDiv, fewerEnemiesDiv, moreGoldDiv, cowardDiv, dirtEfficiencyDiv, pacifistDiv, shorterDiv, longerDiv, moreEnemiesDiv, cheaperShopsDiv, killEnemiesForMoneyDiv, splinterCellDiv]
-  //let levelChoiceArray = [freeFuelDiv, cheaperShopsDiv, moreEnemiesDiv]
+  let teleporterChoiceDiv = document.createElement("Div")
+  teleporterChoiceDiv.classList.add("next-level-option")
+  teleporterChoiceDiv.textContent = "TELEPORTER - Next level contains a teleporter that returns you to the store"
+  teleporterChoiceDiv.classList.add("next-level-clickable")
+  teleporterChoiceDiv.onclick = function () {
+    teleporterChoice(stateObj)
+  }
+
+  let noEmptySquaresDiv = document.createElement("Div")
+  noEmptySquaresDiv.classList.add("next-level-option")
+  noEmptySquaresDiv.textContent = "EXTRA BRONZE - Next level has bronze ore instead of any empty squares"
+  noEmptySquaresDiv.classList.add("next-level-clickable")
+  noEmptySquaresDiv.onclick = function () {
+    noEmptySquaresChoice(stateObj)
+  }
+
+  //14 choices
+  let levelChoiceArray = [freeFuelDiv, fewerEnemiesDiv, moreGoldDiv, cowardDiv, dirtEfficiencyDiv, 
+    noEmptySquaresDiv, pacifistDiv, shorterDiv, longerDiv, moreEnemiesDiv, 
+    cheaperShopsDiv, killEnemiesForMoneyDiv, splinterCellDiv, teleporterChoiceDiv]
+  //levelChoiceArray = [freeFuelDiv, noEmptySquaresDiv, teleporterChoiceDiv]
   let chosenLevels = []
   for (i = 0; i < 3; i++) {
       let chosenLevel = Math.floor(Math.random() * levelChoiceArray.length);
@@ -1687,7 +1710,7 @@ function renderStore(stateObj) {
     let bombText2 = document.createElement("Div")
     bombText2.classList.add("store-option-text")
     bombText1.textContent = "Bomb Capacity Upgrade" 
-    bombText2.textContent = "$" + stateObj.bombCapacityUpgradeCost * (1-stateObj.cheaperShops)
+    bombText2.textContent = "$" + stateObj.bombCapacityUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
     bombUpgradeDiv.append(bombText1, bombText2)
   if (stateObj.bankedCash >= stateObj.bombCapacityUpgradeCost * (1-stateObj.cheaperShops)) {
       bombUpgradeDiv.classList.add("store-clickable")
@@ -1699,7 +1722,7 @@ function renderStore(stateObj) {
   let fillFuelDiv = document.createElement("Div")
   fillFuelDiv.setAttribute("id", "store-fuel-div")
   let missingFuel = Math.floor(stateObj.fuelCapacity-stateObj.currentFuel)
-  let fuelPrice = Math.ceil((missingFuel * (1+stateObj.currentLevel) - (1-stateObj.cheaperShops))/2)
+  let fuelPrice = Math.ceil((missingFuel * Math.floor((2+stateObj.currentLevel)*0.5) - (1-stateObj.cheaperShops))/2)
   if (missingFuel > 0) {
       fillFuelDiv.classList.add("store-option")
       let fillText1 = document.createElement("Div")
@@ -1837,7 +1860,7 @@ function renderStore(stateObj) {
       let relicText2 = document.createElement("Div")
       relicText2.classList.add("store-option-text")
       relicText1.textContent = stateObj.storeRelic2.name + " - " + stateObj.storeRelic2.text
-      relicText2.textContent = "$" + stateObj.floorValues[stateObj.currentLevel].storeRelicPrice
+      relicText2.textContent = "$" + Math.ceil(stateObj.floorValues[stateObj.currentLevel].storeRelicPrice * (1-stateObj.cheaperShops))
       buyRelic2Div.append(relicText1, relicText2)
       if (stateObj.bankedCash >= stateObj.floorValues[stateObj.currentLevel].storeRelicPrice) {
           buyRelic2Div.classList.add("store-clickable")

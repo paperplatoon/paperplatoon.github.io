@@ -84,6 +84,8 @@ let gameStartState = {
     freeFuel: false,
     splinterCellModifier: 1,
     splinterCellOn: false, 
+    levelTeleport: false,
+    noEmptySquares: false,
     
     currentHullIntegrity: 100,
     maxHullIntegrity: 100,
@@ -278,7 +280,11 @@ async function ProduceBlockSquares(arrayObj, stateObj) {
                 } else if (randomNumber > floorObj.barVals[6]) {
                     arrayObj.push("1")
                 } else if (randomNumber > 0.55) {
+                    if (stateObj.noEmptySquares) {
+                        arrayObj.push("1")
+                    } else {
                     arrayObj.push("empty")
+                    }
                 } else {
                     arrayObj.push("0")
                 }
@@ -344,6 +350,12 @@ async function fillMapWithArray(stateObj) {
             newState.gameMap = tempArray;
             newState.currentPosition = 2;
             newState.timeCounter += 1
+            if (stateObj.levelTeleport === true) {
+                let mapLength = stateObj.floorValues[stateObj.currentLevel].numberRows * screenwidthBlocks
+                let randSquare = Math.floor(Math.random() * ((mapLength) - (Math.floor(mapLength/2) + 1) + Math.floor(mapLength/2)));
+                newState.gameMap[randSquare] = "teleporter"
+            }
+            
             if (relicSquareArray.length > 0) {
                 for (let i = 0; i < relicSquareArray.length; i++) {
                     relicNum = Math.floor(Math.random() * relicArray.length)
@@ -807,6 +819,22 @@ async function pacifistChoice(stateObj) {
     await changeState(stateObj);
 }
 
+async function teleporterChoice(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.choosingNextLevel = false;
+        newState.levelTeleport = true;
+    })
+    await changeState(stateObj);
+}
+
+async function noEmptySquaresChoice(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.choosingNextLevel = false;
+        newState.noEmptySquares = true;
+    })
+    await changeState(stateObj);
+}
+
 async function killEnemiesForMoneyChoice(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.choosingNextLevel = false;
@@ -849,7 +877,7 @@ async function dirtEfficiencyChoice(stateObj) {
 
 async function fillFuel(stateObj) {
     let missingFuel = Math.floor(stateObj.fuelCapacity-stateObj.currentFuel)
-    let fuelPrice = Math.ceil((missingFuel * Math.ceil((1+stateObj.currentLevel)/2) - (1-stateObj.cheaperShops))/2)
+    let fuelPrice = Math.ceil((missingFuel * Math.floor((2+stateObj.currentLevel)*0.5) - (1-stateObj.cheaperShops))/2)
     stateObj = immer.produce(stateObj, (newState) => {
         if (missingFuel > 0) {
             if (newState.freeFuel === true ) {
@@ -876,11 +904,11 @@ async function repairHull(stateObj) {
     let missingHull = stateObj.maxHullIntegrity - stateObj.currentHullIntegrity
     stateObj = immer.produce(stateObj, (newState) => {
         if (missingHull > 0) {
-            if (newState.bankedCash > (missingHull*5)* (stateObj.currentLevel+1)) {
+            if (newState.bankedCash > Math.ceil(missingHull*5)* (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)) {
                 newState.currentHullIntegrity = newState.maxHullIntegrity ;
                 newState.bankedCash -= Math.ceil(missingHull*5)* (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
             } else {
-                newState.currentHullIntegrity += Math.ceil(newState.bankedCash/5)* (stateObj.currentLevel+1);
+                newState.currentHullIntegrity += Math.ceil(newState.bankedCash/ (5 * (stateObj.currentLevel+1)) * (1-stateObj.cheaperShops));
                 newState.bankedCash = 0;    
             }
         }
@@ -897,7 +925,7 @@ async function laserUpgrade(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.laserCapacity += 1;
         newState.numberLasers += 1;
-        newState.bankedCash -= stateObj.laserCapacityUpgradeCost   * (1-stateObj.cheaperShops)
+        newState.bankedCash -= stateObj.laserCapacityUpgradeCost * (stateObj.currentLevel+1)  * (1-stateObj.cheaperShops)
         newState.laserCapacityUpgradeCost += 1000;
     })
     document.getElementById("store-laser-capacity-upgrade-div").classList.add("store-clicked")
@@ -912,7 +940,7 @@ async function bombUpgrade(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.bombCapacity += 1;
         newState.bombCurrentTotal += 1;
-        newState.bankedCash -= stateObj.bombCapacityUpgradeCost  * (1-stateObj.cheaperShops)
+        newState.bankedCash -= stateObj.bombCapacityUpgradeCost * (stateObj.currentLevel+1)  * (1-stateObj.cheaperShops)
         newState.bombCapacityUpgradeCost += 1000;
     })
     document.getElementById("store-bomb-capacity-upgrade-div").classList.add("store-clicked")
@@ -1020,7 +1048,7 @@ async function buyRelic1Func(stateObj) {
 async function buyRelic2Func(stateObj) {
     stateObj = await stateObj.storeRelic2.relicFunc(stateObj)
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.bankedCash -= stateObj.floorValues[stateObj.currentLevel].storeRelicPrice * (1-stateObj.cheaperShops)
+        newState.bankedCash -= Math.floor(stateObj.floorValues[stateObj.currentLevel].storeRelicPrice * (1-stateObj.cheaperShops))
         newState.storeRelic2 = false;
 
     })
@@ -1323,6 +1351,8 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         } 
     } else if (targetSquare === "empty") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 1)
+    } else if (targetSquare === "teleporter") {
+        stateObj = await levelTeleport(stateObj)
     } else if (targetSquare === "enemy") {
         stateObj = await doDamage(stateObj, 75)
         stateObj = await handleSquare(stateObj, targetSquareNum, 1)
@@ -1341,7 +1371,7 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     }
 
 
-    if (targetSquare !== "empty" && targetSquare !== "STORE") {
+    if (targetSquare !== "empty" && targetSquare !== "STORE" && targetSquare !== "teleporter") {
         stateObj = await immer.produce(stateObj, async (newState) => {
             newState.gameMap[targetSquareNum] = "empty"
         })
@@ -1363,7 +1393,6 @@ async function sellItemsScreen(stateObj, emptyInv=false) {
             newState.inStore = true;
         }
     })
-
     return stateObj
 }
 
@@ -1809,6 +1838,14 @@ async function fuelTeleport(stateObj) {
             newState.currentFuel -= newState.fuelTeleportCost
         })
     }
+    return stateObj
+}
+
+async function levelTeleport(stateObj) {
+        stateObj = await immer.produce(stateObj, (newState) => {
+            newState.currentPosition = 1;
+        })
+        window.scrollTo(0, 0);
     return stateObj
 }
 
