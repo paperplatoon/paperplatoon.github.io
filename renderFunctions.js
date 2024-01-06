@@ -1852,9 +1852,9 @@ function renderStore(stateObj) {
   let laserText2 = document.createElement("Div")
   laserText2.classList.add("store-option-text")
   laserText1.textContent = "Laser Capacity Upgrade" 
-  laserText2.textContent = "$" + stateObj.laserCapacityUpgradeCost * (stateObj.currentLevel+1)* (1-stateObj.cheaperShops)
+  laserText2.textContent = "$" + stateObj.laserCapacityUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
   laserUpgradeDiv.append(laserText1, laserText2)
-  if (stateObj.bankedCash >= stateObj.laserCapacityUpgradeCost * (1-stateObj.cheaperShops)) {
+  if (stateObj.bankedCash >= stateObj.laserCapacityUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)) {
       laserUpgradeDiv.classList.add("store-clickable")
       laserUpgradeDiv.onclick = function () {
           laserUpgrade(stateObj)
@@ -1871,7 +1871,7 @@ function renderStore(stateObj) {
     bombText1.textContent = "Bomb Capacity Upgrade" 
     bombText2.textContent = "$" + stateObj.bombCapacityUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
     bombUpgradeDiv.append(bombText1, bombText2)
-  if (stateObj.bankedCash >= stateObj.bombCapacityUpgradeCost * (1-stateObj.cheaperShops)) {
+  if (stateObj.bankedCash >= stateObj.bombCapacityUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)) {
       bombUpgradeDiv.classList.add("store-clickable")
       bombUpgradeDiv.onclick = function () {
           bombUpgrade(stateObj)
