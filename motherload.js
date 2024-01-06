@@ -13,7 +13,8 @@ let gameStartState = {
     choosingNextLevel: false,
     inTransition: false, 
     lostTheGame: false,
-    startTheGame: true,
+    startTheGame: false,
+    choosingRobot: true,
     
 
     currentInventory: 0,
@@ -419,7 +420,7 @@ async function moveEnemies() {
     }
     stateObj.timeCounter += 1
     await updateState(stateObj)
-    if (stateObj.inStore === false && stateObj.choosingNextLevel === false && stateObj.sellingItems === false && stateObj.viewingInventory === false && stateObj.startTheGame === false) {
+    if (stateObj.inStore === false && stateObj.choosingRobot === false  && stateObj.choosingNextLevel === false && stateObj.sellingItems === false && stateObj.viewingInventory === false && stateObj.startTheGame === false) {
 
         stateObj = await immer.produce(stateObj, (newState) => {
             if (newState.takingDamage !== false) {
@@ -596,7 +597,11 @@ async function renderScreen(stateObj) {
         document.getElementById("app").innerHTML = ""
         let storeDiv = lostTheGame()
         document.getElementById("app").append(storeDiv)
-    }if (stateObj.startTheGame === true) {
+    } else if (stateObj.choosingRobot === true) {
+        document.getElementById("app").innerHTML = ""
+        let storeDiv = chooseRobot(stateObj)
+        document.getElementById("app").append(storeDiv)
+    } else if (stateObj.startTheGame === true) {
         document.getElementById("app").innerHTML = ""
         let storeDiv = renderStart(stateObj)
         document.getElementById("app").append(storeDiv)
@@ -628,6 +633,31 @@ async function leaveStore(stateObj) {
 
 async function startTheGame(stateObj) {
     stateObj.startTheGame = false;
+    await changeState(stateObj);
+}
+
+async function chooseRobot1(stateObj) {
+    console.log("choose robot 1")
+    stateObj.choosingRobot = false
+    stateObj.startTheGame = true;
+    await changeState(stateObj);
+}
+
+async function chooseRobot2(stateObj) {
+    stateObj.choosingRobot = false
+    stateObj.startTheGame = true;
+    stateObj.currentHullIntegrity = 20;
+    stateObj.maxHullIntegrity = 20;
+    stateObj.bronzeMaxHull = 1;
+    await changeState(stateObj);
+}
+
+async function chooseRobot3(stateObj) {
+    stateObj.choosingRobot = false
+    stateObj.startTheGame = true;
+    stateObj.fuelCapacity = 100;
+    stateObj.currentFuel = 90;
+    stateObj.fuelTeleportCost = 40;
     await changeState(stateObj);
 }
 
@@ -1098,7 +1128,7 @@ document.addEventListener('keydown', async function(event) {
     let currentWidth = Math.floor(stateObj.currentPosition % screenwidthBlocks)
     let scrollHeight = Math.floor(viewportHeight * 0.1);
     let scrollWidth = Math.floor(viewportWidth * 0.1);
-    if (stateObj.inTransition === false && stateObj.inStore === false && stateObj.viewingInventory===false) {
+    if (stateObj.inTransition === false && stateObj.inStore === false && stateObj.viewingInventory===false && stateObj.choosingRobot === false) {
         if (event.key === 'ArrowUp' || event.key ==="w") {
             // Execute your function for the up arrow key
             stateObj = await UpArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth);

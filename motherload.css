@@ -370,7 +370,7 @@
   width: 50vw;
 }
 
-.selling-items-div, .start-div {
+.selling-items-div, .start-div, .choose-robot-div {
   display: flex;
   flex-direction: column;
   width: 60vw;
@@ -385,6 +385,12 @@
   font-family: monospace;
   box-shadow: 1vw 1vw 1vw rgba(113, 113, 113, 0.619);
   transition: 1s all;
+}
+
+.choose-robot-div {
+  flex-direction: row;
+  width: 80vw;
+  justify-content: space-evenly;
 }
 
 .viewing-inv-div {
@@ -418,7 +424,7 @@
   color: rgb(203, 203, 203);
 }
 
-.sell-button, .ruby-relic-hover, .diamond-relic-hover {
+.sell-button, .ruby-relic-hover, .diamond-relic-hover, .choose-robot-button {
   width: 30vw;
   height: 5vh;
   display: flex;
@@ -431,6 +437,10 @@
   color: black;
   font-weight: 1000;
   transition: 1s all;
+}
+
+.choose-robot-button {
+  width: 18vw;
 }
 
 .ruby-relic-div {
@@ -910,4 +920,32 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .robot-div {
+    width: 15vw;
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+    border: 1px dotted black;
+    padding: 2vw;
+    transition: 1s all;
+  }
+
+  .robot-div:hover {
+    background-color: rgb(103, 103, 103);
+    color: white;
+    border: 3px dotted green;
+    cursor: pointer;
+    box-shadow: 1vw 1vw 1vw rgba(113, 113, 113, 0.619);
+  }
+
+  .robot-img {
+    width: 14vw;
+    height: auto;
+    object-fit: cover;
   }

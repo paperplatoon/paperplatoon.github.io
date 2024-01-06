@@ -300,7 +300,7 @@ let potentialRelics = [
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 if (newState.fuelTeleportCost === 0) {
-                    newState.fuelTeleportCost = 50;
+                    newState.fuelTeleportCost = 40;
                 } else if (newState.fuelTeleportCost >= 20) {
                     newState.fuelTeleportCost -= 20;
                 } else {

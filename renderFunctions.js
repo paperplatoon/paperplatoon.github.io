@@ -1306,6 +1306,74 @@ function lostTheGame() {
   return storeDiv
 }
 
+//chooseRobot
+function chooseRobot(stateObj) {
+  let storeDiv = document.createElement("Div")
+  storeDiv.classList.add("store-div")
+
+  let lostDiv = document.createElement("Div")
+  lostDiv.classList.add("choose-robot-div")
+
+
+  let robot1Div = document.createElement("Div")
+  let robot1TextDiv = document.createElement("H3")
+  robot1TextDiv.textContent = "The Default"
+  let robotImageDiv1 = document.createElement("Div")
+  robot1Div.classList.add("robot-div")
+  let robotImg1 = document.createElement("Img");
+  robotImg1.classList.add("robot-img")
+  robotImg1.src = "img/map/robot1.png"
+  robotImageDiv1.append(robotImg1)
+
+  let robotDescDiv = document.createElement("Div")
+  robotDescDiv.textContent = "Base stats"
+
+  robot1Div.onclick = function() {
+      chooseRobot1(stateObj)
+  }
+  robot1Div.append(robot1TextDiv, robotImageDiv1, robotDescDiv)
+
+  let robot2Div = document.createElement("Div")
+  let robot2TextDiv = document.createElement("H3")
+  robot2TextDiv.textContent = "Hard - fragile"
+  let robotImageDiv2 = document.createElement("Div")
+  robot2Div.classList.add("robot-div")
+  let robotImg2 = document.createElement("Img");
+  robotImg2.classList.add("robot-img")
+  robotImg2.src = "img/map/robot2.png"
+  robotImageDiv2.append(robotImg2)
+
+  let robotDescDiv2 = document.createElement("Div")
+  robotDescDiv2.textContent = "Low base HP but increases when mining bronze ore"
+  robot2Div.onclick = function() {
+      chooseRobot2(stateObj)
+  }
+  robot2Div.append(robot2TextDiv, robotImageDiv2, robotDescDiv2)
+
+  let robot3Div = document.createElement("Div")
+  let robot3TextDiv = document.createElement("H3")
+  robot3TextDiv.textContent = "Hard - shifter"
+  let robotImageDiv3 = document.createElement("Div")
+  robot3Div.classList.add("robot-div")
+  let robotImg3 = document.createElement("Img");
+  robotImg3.classList.add("robot-img")
+  robotImg3.src = "img/map/robot3.png"
+  robotImageDiv3.append(robotImg3)
+
+  let robotDescDiv3 = document.createElement("Div")
+  robotDescDiv3.textContent = "Lower fuel capacity, but built-in teleporter"
+  robot3Div.onclick = function() {
+      chooseRobot3(stateObj)
+  }
+  robot3Div.append(robot3TextDiv, robotImageDiv3, robotDescDiv3)
+
+
+  lostDiv.append(robot1Div, robot2Div, robot3Div)
+  storeDiv.append(lostDiv)
+
+  return storeDiv
+}
+
 function renderStart(stateObj) {
   console.log("rendering start function triggered")
   let storeDiv = document.createElement("Div")
