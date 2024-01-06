@@ -31,7 +31,7 @@ function renderTopBarStats(stateObj) {
     if (stateObj.fuelCapacity > 120) {
         fuelText2Div.classList.add("upgraded-stat")
     }
-    fuelText2Div.textContent = stateObj.currentFuel + "/" + stateObj.fuelCapacity
+    fuelText2Div.textContent = Math.floor(stateObj.currentFuel) + "/" + Math.floor(stateObj.fuelCapacity)
 
     let emptyFuelBarDiv = document.createElement("Div");
     emptyFuelBarDiv.classList.add("empty-fuel-bar");
@@ -71,7 +71,7 @@ function renderTopBarStats(stateObj) {
     if (stateObj.maxHullIntegrity > 100) {
         hullText2Div.classList.add("upgraded-stat")
     }
-    hullText2Div.textContent = stateObj.currentHullIntegrity + "/" + stateObj.maxHullIntegrity
+    hullText2Div.textContent = Math.floor(stateObj.currentHullIntegrity) + "/" + Math.floor(stateObj.maxHullIntegrity)
 
     let emptyHullBarDiv = document.createElement("Div");
     emptyHullBarDiv.classList.add("empty-hull-bar");
@@ -454,6 +454,91 @@ function renderTopBarStats(stateObj) {
 
           topBarDiv.append(weaponPriceRelicDiv)
     }
+
+    if (stateObj.efficientGoldConverter === true) {
+      let weaponPriceRelicDiv = document.createElement("Div")
+      weaponPriceRelicDiv.classList.add("relic-div")
+      let weaponImg = document.createElement("Img");
+      weaponImg.classList.add("relic-img")
+      weaponImg.src = "img/relics/efficientgold.png"
+      weaponPriceRelicDiv.append(weaponImg)
+      
+      weaponPriceRelicDiv.addEventListener('mouseover', function() {
+          const statusText = document.querySelector("#efficient-gold-popup");
+          statusText.style.display = 'block'
+        });
+        
+        weaponPriceRelicDiv.addEventListener('mouseout', function() {
+          const statusText = document.querySelector("#efficient-gold-popup");
+          statusText.style.display = 'none'
+        });
+  
+        let relicTextDiv = document.createElement("Div");
+        relicTextDiv.setAttribute("id", "efficient-gold-popup")
+        relicTextDiv.classList.add("none-display")
+        relicTextDiv.textContent = "Can create a ruby with only 2 gold ore"
+        weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+        topBarDiv.append(weaponPriceRelicDiv)
+  }
+
+    if (stateObj.goldMaxInventory > 0) {
+      let weaponPriceRelicDiv = document.createElement("Div")
+      weaponPriceRelicDiv.classList.add("relic-div")
+      let weaponImg = document.createElement("Img");
+      weaponImg.classList.add("relic-img")
+      weaponImg.src = "img/relics/goldmaxinventory.png"
+      weaponPriceRelicDiv.append(weaponImg)
+      
+      weaponPriceRelicDiv.addEventListener('mouseover', function() {
+          const statusText = document.querySelector("#gold-inv-popup");
+          statusText.style.display = 'block'
+        });
+        
+        weaponPriceRelicDiv.addEventListener('mouseout', function() {
+          const statusText = document.querySelector("#gold-inv-popup");
+          statusText.style.display = 'none'
+        });
+  
+        let relicTextDiv = document.createElement("Div");
+        relicTextDiv.setAttribute("id", "gold-inv-popup")
+        relicTextDiv.classList.add("none-display")
+        relicTextDiv.textContent = "Mining gold ore adds " + stateObj.goldMaxInventory + " inventory capacity"
+        weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+        topBarDiv.append(weaponPriceRelicDiv)
+  }
+
+  if (stateObj.rubyIncrease > 0) {
+    let weaponPriceRelicDiv = document.createElement("Div")
+    weaponPriceRelicDiv.classList.add("relic-div")
+    let weaponImg = document.createElement("Img");
+    weaponImg.classList.add("relic-img")
+    weaponImg.src = "img/relics/rubyincrease.png"
+    weaponPriceRelicDiv.append(weaponImg)
+    
+    weaponPriceRelicDiv.addEventListener('mouseover', function() {
+        const statusText = document.querySelector("#ruby-increase-popup");
+        statusText.style.display = 'block'
+      });
+      
+      weaponPriceRelicDiv.addEventListener('mouseout', function() {
+        const statusText = document.querySelector("#ruby-increase-popup");
+        statusText.style.display = 'none'
+      });
+
+      let relicTextDiv = document.createElement("Div");
+      relicTextDiv.setAttribute("id", "ruby-increase-popup")
+      relicTextDiv.classList.add("none-display")
+      if (stateObj.rubyIncrease > 0.01) {
+        relicTextDiv.textContent = "Rubies are much more common"
+      } else {
+        relicTextDiv.textContent = "Rubies are more common"
+      }
+
+      weaponPriceRelicDiv.appendChild(relicTextDiv);
+      topBarDiv.append(weaponPriceRelicDiv)
+}
 
     if (stateObj.silverMaxFuel > 0) {
       let weaponPriceRelicDiv = document.createElement("Div")
@@ -1138,7 +1223,7 @@ function renderSellingItems(stateObj) {
   if (stateObj.storeRelic1) {
     tradeRelicRubyDiv.classList.add("ruby-relic-div")
     let rubyPrice = stateObj.floorValues[stateObj.currentLevel].rubyRelicPrice
-    let diamondPrice = stateObj.floorValues[stateObj.currentLevel].diamondRelicPrice
+    let amethystPrice = stateObj.floorValues[stateObj.currentLevel].amethystRelicPrice
     let tradeString = stateObj.storeRelic1.name + " - " + stateObj.storeRelic1.text + " (Costs "
     if (rubyPrice > 0) {
       tradeString += rubyPrice + " rubies)"
@@ -1148,9 +1233,9 @@ function renderSellingItems(stateObj) {
       tradeRelicRubyDiv.onclick = async function () {
         await tradeRelicRuby(stateObj)
       }
-    } else if (diamondPrice > 0) {
-      tradeString += diamondPrice + " diamonds)"
-      if (stateObj.diamondInventory >= diamondPrice) {
+    } else if (amethystPrice > 0) {
+      tradeString += amethystPrice + " diamonds)"
+      if (stateObj.amethystRelicPrice >= amethystPrice) {
         tradeRelicRubyDiv.classList.add("diamond-relic-hover")
       }
       tradeRelicRubyDiv.onclick = async function () {
@@ -1231,33 +1316,25 @@ function renderStart(stateObj) {
 
   let textDiv1 = document.createElement("H3")
   textDiv1.classList.add("padding-width")
-  textDiv1.textContent = "Move with arrow keys or WASD"
+  textDiv1.textContent = "Use arrow keys or WASD to move around and mine ore"
 
   let textDiv2 = document.createElement("H3")
   textDiv2.classList.add("padding-width")
-  textDiv2.textContent = "Sell ore at the shop"
-
-  let textDiv3 = document.createElement("H3")
-  textDiv3.classList.add("padding-width")
-  textDiv3.textContent = "Mine or buy relics to gain powers"
+  textDiv2.textContent = "Sell and trade ore at the shop to upgrade your ship"
 
   let textDiv4 = document.createElement("H3")
   textDiv4.classList.add("padding-width")
-  textDiv4.textContent = "View Inventory with 'I'. Convert ores here"
-
-  let textDiv5 = document.createElement("H3")
-  textDiv5.classList.add("padding-width")
-  textDiv5.textContent = "Shoot lasers with 'L' and drop bombs with 'B'"
+  textDiv4.textContent = "View Inventory with 'I'. You can convert 3 ores to 1 higher quality ore"
 
   let textDiv7 = document.createElement("H3")
   textDiv7.classList.add("padding-width")
-  textDiv7.textContent = "Gems in stone must be hit with lasers or bombs first"
+  textDiv7.textContent = "Gems in stone must be hit with lasers ('L' key) or bombs ('B' key) before they can be mined"
 
   let textDiv6 = document.createElement("H3")
   textDiv6.classList.add("padding-width")
   textDiv6.textContent = "Press 'H' at any time to see this screen again"
 
-  lostDiv.append(textDiv1, textDiv2, textDiv3, textDiv4, textDiv5, textDiv7, textDiv6)
+  lostDiv.append(textDiv1, textDiv2, textDiv4, textDiv7, textDiv6)
 
   let startButton = document.createElement("Div")
   startButton.classList.add("sell-button")
@@ -1280,6 +1357,10 @@ function renderInventory(stateObj) {
 
   let sellInventoryDiv = document.createElement("Div")
   sellInventoryDiv.classList.add("selling-div")
+
+  let maxTextDiv = document.createElement("Div")
+  maxTextDiv.textContent = "Current Capacity: " + stateObj.currentInventory + "/" + stateObj.inventoryMax
+  sellInventoryDiv.append(maxTextDiv)
 
   if (stateObj.bronzeInventory > 0) {
       let inventoryDiv = document.createElement("Div")
@@ -1318,11 +1399,21 @@ if (stateObj.goldInventory > 0) {
   inventoryDiv.classList.add("inv-row")
   inventoryDiv.classList.add("gold-convert-row")
   let textString = "Gold Ore (" + stateObj.goldInventory + ")"
-  if (stateObj.goldInventory >= 3) {
-    inventoryDiv.classList.add("can-convert")
-    textString += " [click to convert 3 to 1 Ruby]"
-    inventoryDiv.onclick = async function () {
-      await convertGold(stateObj)
+  if (stateObj.efficientGoldConverter === true) {
+    if (stateObj.goldInventory >= 2) {
+      inventoryDiv.classList.add("can-convert")
+      textString += " [click to convert 2 to 1 Ruby]"
+      inventoryDiv.onclick = async function () {
+        await convertGold(stateObj)
+      }
+    }
+  } else {
+    if (stateObj.goldInventory >= 3) {
+      inventoryDiv.classList.add("can-convert")
+      textString += " [click to convert 3 to 1 Ruby]"
+      inventoryDiv.onclick = async function () {
+        await convertGold(stateObj)
+      }
     }
   }
   inventoryDiv.textContent = textString

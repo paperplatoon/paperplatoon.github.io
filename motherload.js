@@ -55,6 +55,7 @@ let gameStartState = {
     silverHealing: 0,
     silverMaxFuel: 0,
     bronzeMaxHull: 0,
+    goldMaxInventory: 0,
     bombRefill: 0,
     fuelToBlocks: 0,
     spareFuelTank: 0,
@@ -64,6 +65,8 @@ let gameStartState = {
     bronzeSilverConverter: false,
     dirtRefillsWeapons: false,
     laserGemRefill: 0,
+    efficientGoldConverter: false,
+    rubyIncrease: 0,
 
     storeRelics: [],
     mapRelic1: false,
@@ -117,7 +120,7 @@ let gameStartState = {
     currentLevel: 0,
     floorValues: [
         {
-            barVals: [, 1, 1, 0.997, 0.99, 0.9, 0.65],
+            barVals: [1, 1, 1, 0.997, 0.99, 0.9, 0.65],
             //barVals: [0.99, 0.97, 0.91, 0.85, 0.77, 0.73, 0.7],
             enemyValue: 0.97,
             bottomRowEnemies: [1, 5, 9],
@@ -126,7 +129,7 @@ let gameStartState = {
             floorNumber: 0,
             storeRelicPrice: 1300,
             rubyRelicPrice: 3,
-            diamondRelicPrice: 0,
+            amethystRelicPrice: 0,
             hullGoldUpgradePrice: 5,
             rubyHullUpgradePrice: 0,
         },
@@ -139,7 +142,7 @@ let gameStartState = {
             floorNumber: 1,
             storeRelicPrice: 3500,
             rubyRelicPrice: 7,
-            diamondRelicPrice: 0,
+            amethystRelicPrice: 0,
             hullGoldUpgradePrice: 10,
             rubyHullUpgradePrice: 0,
         },
@@ -152,7 +155,7 @@ let gameStartState = {
             floorNumber: 2,
             storeRelicPrice: 8000,
             rubyRelicPrice: 0,
-            diamondRelicPrice: 7,
+            amethystRelicPrice: 7,
             hullGoldUpgradePrice: 0,
             rubyHullUpgradePrice: 10,
         },
@@ -165,7 +168,7 @@ let gameStartState = {
             floorNumber: 3,
             storeRelicPrice: 20000,
             rubyRelicPrice: 0,
-            diamondRelicPrice: 15,
+            amethystRelicPrice: 15,
             hullGoldUpgradePrice: 0,
             rubyHullUpgradePrice: 20,
         },
@@ -178,7 +181,7 @@ let gameStartState = {
             floorNumber: 4,
             storeRelicPrice: 75000,
             rubyRelicPrice: 0,
-            diamondRelicPrice: 25,
+            amethystRelicPrice: 25,
             hullGoldUpgradePrice: 0,
             rubyHullUpgradePrice: 30,
         },
@@ -271,7 +274,7 @@ async function ProduceBlockSquares(arrayObj, stateObj) {
                     arrayObj.push("stone-6")
                 } else if (randomNumber > floorObj.barVals[2]) {
                     arrayObj.push("stone-5")
-                } else if (randomNumber > floorObj.barVals[3]) {
+                } else if (randomNumber > (floorObj.barVals[3] - (stateObj.rubyIncrease * stateObj.currentLevel))) {
                     arrayObj.push("4")
                 } else if (randomNumber > floorObj.barVals[4]) {
                     arrayObj.push("3")
@@ -361,7 +364,7 @@ async function fillMapWithArray(stateObj) {
                     relicNum = Math.floor(Math.random() * relicArray.length)
                     if (i === 0) {
                         newState.mapRelic1 = relicArray[relicNum]
-                        //newState.mapRelic1 = potentialRelics[27]
+                        //newState.mapRelic1 = potentialRelics[29]
                         newState.gameMap[relicSquareArray[i]] = "relic1"
                     } else {
                         newState.mapRelic2 = relicArray[relicNum]
@@ -669,9 +672,14 @@ async function convertGold(stateObj) {
     document.querySelector(".gold-convert-row").classList.add("mini-emphasis")
     await pause(300)
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.goldInventory -= 3;
+        if (stateObj.efficientGoldConverter === true) {
+            newState.goldInventory -= 2;
+            newState.currentInventory -= 1
+        } else {
+            newState.goldInventory -= 3;
+            newState.currentInventory -= 2
+        }
         newState.rubyInventory += 1;
-        newState.currentInventory -= 2
     })
     await changeState(stateObj);
     document.querySelector(".ruby-convert-row").classList.add("converted")
@@ -1012,7 +1020,7 @@ async function upgradeHullGold(stateObj) {
 
 async function tradeRelicRuby(stateObj) {
     let rubyPrice = stateObj.floorValues[stateObj.currentLevel].rubyRelicPrice
-    let diamondPrice = stateObj.floorValues[stateObj.currentLevel].diamondRelicPrice
+    let amethystPrice = stateObj.floorValues[stateObj.currentLevel].diamondRelicPrice
     if (rubyPrice > 0 && stateObj.rubyInventory >= rubyPrice) {
         stateObj = await stateObj.storeRelic1.relicFunc(stateObj)
         stateObj = immer.produce(stateObj, (newState) => {
@@ -1020,12 +1028,12 @@ async function tradeRelicRuby(stateObj) {
             newState.rubyInventory -= rubyPrice;
             newState.currentInventory -= rubyPrice;
         }) 
-    } else if (diamondPrice > 0 && stateObj.diamondInventory >= diamondPrice) {
+    } else if (amethystPrice > 0 && stateObj.amethystInventory >= amethystPrice) {
         stateObj = await stateObj.storeRelic1.relicFunc(stateObj)
         stateObj = immer.produce(stateObj, (newState) => {
             newState.storeRelic1 = false;
-            newState.diamondInventory -= diamondPrice;
-            newState.currentInventory -= diamondPrice;
+            newState.amethystInventory -= amethystPrice;
+            newState.currentInventory -= amethystPrice;
         }) 
     }
     document.querySelector(".ruby-relic-div").classList.add("mini-emphasis")
@@ -1292,7 +1300,9 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)   
     } else if (targetSquare === "1") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
-        if ((stateObj.currentInventory-1) < stateObj.inventoryMax) { 
+        console.log("curret inventory is " + stateObj.currentInventory + " and max is " + stateObj.inventoryMax)
+        if ((stateObj.currentInventory) < stateObj.inventoryMax) { 
+            console.log("add bronze fired")
             stateObj = await immer.produce(stateObj, (newState) => {
                 if (stateObj.bronzeSilverConverter === true) {
                     newState.silverInventory += 1
@@ -1308,7 +1318,9 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         } 
     } else if (targetSquare === "2") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
-        if ((stateObj.currentInventory-1) < stateObj.inventoryMax) { 
+        console.log("curret inventory is " + stateObj.currentInventory + " and max is " + stateObj.inventoryMax)
+        if ((stateObj.currentInventory) < stateObj.inventoryMax) {  
+            console.log("add silver fired")
             stateObj = await immer.produce(stateObj, (newState) => {
                 newState.silverInventory += 1
                 if (stateObj.silverHealing > 0) {
@@ -1326,27 +1338,32 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         } 
     } else if (targetSquare === "3") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
-        if ((stateObj.currentInventory-1) < stateObj.inventoryMax) { 
-            stateObj = await immer.produce(stateObj, (newState) => {newState.goldInventory += 1})
+        if ((stateObj.currentInventory) < stateObj.inventoryMax) { 
+            stateObj = await immer.produce(stateObj, (newState) => {
+                newState.goldInventory += 1
+                if (stateObj.goldMaxInventory > 0) {
+                    newState.inventoryMax += stateObj.goldMaxInventory;
+                }
+            })
         } 
     } else if (targetSquare === "4" || targetSquare === "magnetic-4") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
-        if ((stateObj.currentInventory-1) < stateObj.inventoryMax) { 
+        if ((stateObj.currentInventory) < stateObj.inventoryMax) { 
             stateObj = await immer.produce(stateObj, (newState) => {newState.rubyInventory += 1})
         } 
     } else if (targetSquare === "5") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
-        if ((stateObj.currentInventory-1) < stateObj.inventoryMax) { 
+        if ((stateObj.currentInventory) < stateObj.inventoryMax) { 
             stateObj = await immer.produce(stateObj, (newState) => {newState.amethystInventory += 1})
         } 
     } else if (targetSquare === "6") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
-        if ((stateObj.currentInventory-1) < stateObj.inventoryMax) { 
+        if ((stateObj.currentInventory) < stateObj.inventoryMax) {  
             stateObj = await immer.produce(stateObj, (newState) => {newState.diamondInventory += 1})
         } 
     } else if (targetSquare === "7") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
-        if ((stateObj.currentInventory-1) < stateObj.inventoryMax) { 
+        if ((stateObj.currentInventory) < stateObj.inventoryMax) { 
             stateObj = await immer.produce(stateObj, (newState) => {newState.blackDiamondInventory += 1})
         } 
     } else if (targetSquare === "empty") {
@@ -1854,7 +1871,7 @@ function buildRelicArray(stateObj) {
     potentialRelics[4], potentialRelics[5], potentialRelics[7], potentialRelics[9], potentialRelics[10],
     potentialRelics[11], potentialRelics[12], potentialRelics[13], potentialRelics[15], potentialRelics[17],
     potentialRelics[18], potentialRelics[19], potentialRelics[20], potentialRelics[23], potentialRelics[26],
-    potentialRelics[27],     
+    potentialRelics[27], potentialRelics[29], 
     ]
     if (stateObj.laserPiercing === false) {
         tempArray.push(potentialRelics[16])
@@ -1877,9 +1894,11 @@ function buildRelicArray(stateObj) {
     if (stateObj.bronzeSilverConverter === false) {
         tempArray.push(potentialRelics[24])
     }
-
     if (stateObj.dirtRefillsWeapons === false) {
         tempArray.push(potentialRelics[25])
+    }
+    if (stateObj.efficientGoldConverter === false) {
+        tempArray.push(potentialRelics[28])
     }
     //let tempArray = [spareTank, spareTank, spareTank, spareTank]
     return tempArray

@@ -1,4 +1,5 @@
 let potentialRelics = [
+    //0
     spareTank = {
         name: "Spare Fuel Tank",
         varName: "spareTankRelic",
@@ -13,18 +14,18 @@ let potentialRelics = [
         imgPath: "img/relics/sparetank.png",
     },
 
-    bronzeMaxHull = {
-        name: "Bronze Armor",
-        varName: "bronzeMaxHullRelic",
-        text: "Mining bronze ore increases max armor",
+    goldMaxInventory = {
+        name: "Augmented Cargo Bay",
+        varName: "goldMaxInvRelic",
+        text: "Mining gold ore increases max inventory",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.bronzeMaxHull += 1;
+                newState.goldMaxInventory += 1;
             })
             await changeState(stateObj);
             return stateObj
         },
-        imgPath: "img/relics/bronzemaxhull.png",
+        imgPath: "img/relics/goldmaxinventory.png",
     },
 
     pauseEnemies = {
@@ -48,7 +49,7 @@ let potentialRelics = [
         text: "Increase maximum fuel when dropping dirt",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.dirtToMaxFuel += 10;
+                newState.dirtToMaxFuel += 15;
             })
             await changeState(stateObj);
             return stateObj
@@ -70,14 +71,14 @@ let potentialRelics = [
         imgPath: "img/relics/shield2.png",
     },
 
-    //6
+    //5
     halfDamageFuel = {
         name: "Fuel-Powered Shield",
         varName: "halfDamageFullFuelRelic",
         text: "Take less damage from enemies if fuel above 50%",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.halfDamageFullFuel *= 0.75;
+                newState.halfDamageFullFuel *= 0.7;
             })
             await changeState(stateObj);
             return stateObj
@@ -116,7 +117,7 @@ let potentialRelics = [
     remoteBombsRelic = {
         name: "Remote Detonator",
         varName: "remoteBombsRelic",
-        text: "Explode bombs remotely",
+        text: "Trigger bombs remotely instead of on impact",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.remoteBombs = true;
@@ -133,8 +134,8 @@ let potentialRelics = [
         text: "Weapons are cheaper in the shop",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                if (newState.weaponsPriceModifier > 0.2) {
-                    newState.weaponsPriceModifier -= 0.2;
+                if (newState.weaponsPriceModifier >= 0.5) {
+                    newState.weaponsPriceModifier *= 0.5;
                 } else {
                     newState.weaponsPriceModifier = 0
                 }
@@ -145,7 +146,7 @@ let potentialRelics = [
         imgPath: "img/relics/gun1.png",
     },
 
-    //11
+    //10
     killEnemiesHullRelic = {
         name: "Scrap to Armor",
         varName: "killEnemiesHullRelic",
@@ -166,7 +167,7 @@ let potentialRelics = [
         text: "Killing Enemies repairs your hull if damaged",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.killEnemiesForHealing += 15;
+                newState.killEnemiesForHealing += 10;
             })
             await changeState(stateObj);
             return stateObj
@@ -180,7 +181,7 @@ let potentialRelics = [
         text: "Mining silver repairs your hull if damaged",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.silverHealing += 10;
+                newState.silverHealing += 5;
             })
             await changeState(stateObj);
             return stateObj
@@ -188,18 +189,18 @@ let potentialRelics = [
         imgPath: "img/relics/silverhealing.png",
     },
 
-    bronzeMaxFuelRelic = {
-        name: "Bronze Tank",
-        varName: "bronzeMaxFuelRelic",
-        text: "Mining bronze ore increases max fuel",
+    bronzeMaxHullRelic = {
+        name: "Bronze Armor",
+        varName: "bronzeMaxHullRelic",
+        text: "Mining bronze ore increases hull armor",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.bronzeMaxFuel += 1;
+                newState.bronzeMaxHull += 1;
             })
             await changeState(stateObj);
             return stateObj
         },
-        imgPath: "img/relics/bronzemaxfuel.png",
+        imgPath: "img/relics/bronzemaxhull.png",
     },
 
     dirtRubyRelic = {
@@ -216,7 +217,7 @@ let potentialRelics = [
         imgPath: "img/relics/dirtruby.png",
     },
 
-    //16
+    //15
     bombDistanceRelic = {
         name: "Stronger Bombs",
         varName: "bombDistanceRelic",
@@ -291,11 +292,11 @@ let potentialRelics = [
         imgPath: "img/relics/drillupgrade.png",
     },
 
-    //21
+    //20
     fuelTeleporter = {
         name: "Fuel-powered Teleporter",
         varName: "fuelTeleporter",
-        text: "Can press T to spend 50 fuel to teleport back to the shop",
+        text: "Can press T to spend fuel to teleport back to the shop",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 if (newState.fuelTeleportCost === 0) {
@@ -368,7 +369,7 @@ let potentialRelics = [
         imgPath: "img/relics/bronzesilverconverter.png",
     },
 
-    //26
+    //25
     dirtRefiller = {
         name: "Dirt Weapons",
         varName: "dirtRefillsWeapons",
@@ -411,6 +412,36 @@ let potentialRelics = [
         },
         imgPath: "img/relics/laserrecapture.png",
     },
+
+    efficientConverter = {
+        name: "Efficient Gold Converter",
+        varName: "laserRecapture",
+        text: "Only costs 2 gold to create a ruby",
+        relicFunc: async (stateObj) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                newState.efficientGoldConverter = true;
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        imgPath: "img/relics/efficientgold.png",
+    },
+
+    rubyLocator = {
+        name: "Ruby Locator",
+        varName: "rubyLocator",
+        text: "Rubies are more common on every level",
+        relicFunc: async (stateObj) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                newState.rubyIncrease += 0.01;
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        imgPath: "img/relics/rubyincrease.png",
+    },
+
+    //30
 ]
 
 
