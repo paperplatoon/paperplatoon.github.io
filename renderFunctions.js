@@ -1234,7 +1234,7 @@ function renderSellingItems(stateObj) {
         await tradeRelicRuby(stateObj)
       }
     } else if (amethystPrice > 0) {
-      tradeString += amethystPrice + " diamonds)"
+      tradeString += amethystPrice + " amethysts)"
       if (stateObj.amethystRelicPrice >= amethystPrice) {
         tradeRelicRubyDiv.classList.add("diamond-relic-hover")
       }
