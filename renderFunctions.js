@@ -1745,7 +1745,7 @@ function renderNextLevelChoice(stateObj) {
 
   let pacifistDiv = document.createElement("Div")
   pacifistDiv.classList.add("next-level-option")
-  pacifistDiv.textContent = "PACIFIST - After completing this next level, gain $100 for every enemy that is still alive"
+  pacifistDiv.textContent = "PACIFIST - After completing this next level, gain $50 for every enemy that is still alive"
   pacifistDiv.classList.add("next-level-clickable")
   pacifistDiv.onclick = function () {
       pacifistChoice(stateObj)
@@ -1753,7 +1753,7 @@ function renderNextLevelChoice(stateObj) {
 
   let killEnemiesForMoneyDiv = document.createElement("Div")
   killEnemiesForMoneyDiv.classList.add("next-level-option")
-  killEnemiesForMoneyDiv.textContent = "SCRAP METAL - Gain $50 for each enemy killed (next level only)"
+  killEnemiesForMoneyDiv.textContent = "SCRAP METAL - Gain $100 for each enemy killed (next level only)"
   killEnemiesForMoneyDiv.classList.add("next-level-clickable")
   killEnemiesForMoneyDiv.onclick = function () {
       killEnemiesForMoneyChoice(stateObj)
@@ -1761,7 +1761,7 @@ function renderNextLevelChoice(stateObj) {
 
   let shorterDiv = document.createElement("Div")
   shorterDiv.classList.add("next-level-option")
-  shorterDiv.textContent = "SPEEDY - The next level is smaller"
+  shorterDiv.textContent = "SPEEDY - The next level is smaller, and has fewer enemies"
   shorterDiv.classList.add("next-level-clickable")
   shorterDiv.onclick = function () {
       shorterLevelChoice(stateObj)
@@ -1793,7 +1793,7 @@ function renderNextLevelChoice(stateObj) {
 
   let freeFuelDiv = document.createElement("Div")
   freeFuelDiv.classList.add("next-level-option")
-  freeFuelDiv.textContent = "OIL WELL - Fuel is free for the next level"
+  freeFuelDiv.textContent = "OIL WELL - Fuel is free for the next level. The level is also shorter"
   freeFuelDiv.classList.add("next-level-clickable")
   freeFuelDiv.onclick = function () {
       freeFuelChoice(stateObj)

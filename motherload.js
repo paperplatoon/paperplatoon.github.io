@@ -23,7 +23,7 @@ let gameStartState = {
     inventoryUpgradeCost: 1000,
     bronzeInventory: 0,
     silverInventory: 0,
-    goldInventory: 0,
+    goldInventory: 3,
     rubyInventory: 0,
     amethystInventory: 0,
     diamondInventory: 0,
@@ -815,6 +815,7 @@ async function freeFuelChoice(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.freeFuel = true;
         newState.choosingNextLevel = false;
+        newState.floorValues[newState.currentLevel].numberRows -= 10
     })
     await changeState(stateObj);
 }
@@ -852,7 +853,7 @@ async function cowardChoice(stateObj) {
 async function pacifistChoice(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.choosingNextLevel = false;
-        newState.isPacifist += 100;
+        newState.isPacifist += 50;
     })
     await changeState(stateObj);
 }
@@ -876,7 +877,7 @@ async function noEmptySquaresChoice(stateObj) {
 async function killEnemiesForMoneyChoice(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.choosingNextLevel = false;
-        newState.killEnemiesForMoney += 50;
+        newState.killEnemiesForMoney += 100;
     })
     await changeState(stateObj);
 }
@@ -885,6 +886,7 @@ async function shorterLevelChoice(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.choosingNextLevel = false;
         newState.floorValues[newState.currentLevel].numberRows -= 10
+        newState.floorValues[newState.currentLevel].enemyValue += 0.02
     })
     await changeState(stateObj);
 }
@@ -996,7 +998,7 @@ async function upgradeFuelGold(stateObj) {
         newState.goldInventory -= stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
         newState.currentInventory -= stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
     })
-    document.getElementById("fuel-gold-upgrade-div").classList.add("store-clicked")
+    document.querySelector(".fuel-gold-upgrade-div").classList.add("store-clicked")
     await pause(300)
     document.getElementById("empty-fuel-bar").classList.add("emphasis")
     document.getElementById("max-fuel-text").classList.add("emphasis")

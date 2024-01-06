@@ -462,7 +462,7 @@
   cursor: auto;
 }
 
-.sell-button:hover, .hull-gold-upgrade-hover:hover, .fuel-gold-upgrade-hover, .ruby-relic-hover:hover, .diamond-relic-hover:hover {
+.sell-button:hover, .hull-gold-upgrade-hover:hover, .fuel-gold-upgrade-hover:hover, .ruby-relic-hover:hover, .diamond-relic-hover:hover {
   border: 0.5vh dashed rgb(144, 255, 144);
   height: 5.5vh;
   background: linear-gradient(to right, rgb(31, 125, 31) 0%, rgb(60, 133, 60) 20%, rgb(59, 122, 59) 40%, rgb(80, 126, 80) 70%, rgb(64, 100, 64) 75%, rgb(30, 111, 30));
