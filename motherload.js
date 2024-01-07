@@ -1,5 +1,6 @@
 let gameStartState = {
     gameMap: [],
+    robotPath: "img/map/miner1.png",
 
     currentFuel: 100,
     fuelCapacity: 120,
@@ -23,7 +24,7 @@ let gameStartState = {
     inventoryUpgradeCost: 1000,
     bronzeInventory: 0,
     silverInventory: 0,
-    goldInventory: 3,
+    goldInventory: 0,
     rubyInventory: 0,
     amethystInventory: 0,
     diamondInventory: 0,
@@ -131,7 +132,7 @@ let gameStartState = {
             storeRelicPrice: 1300,
             rubyRelicPrice: 3,
             amethystRelicPrice: 0,
-            hullGoldUpgradePrice: 4,
+            hullGoldUpgradePrice: 5,
             rubyHullUpgradePrice: 0,
         },
         {
@@ -142,9 +143,9 @@ let gameStartState = {
             relicNumber: 1,
             floorNumber: 1,
             storeRelicPrice: 3500,
-            rubyRelicPrice: 6,
+            rubyRelicPrice: 7,
             amethystRelicPrice: 0,
-            hullGoldUpgradePrice: 8,
+            hullGoldUpgradePrice: 10,
             rubyHullUpgradePrice: 0,
         },
         {
@@ -158,7 +159,7 @@ let gameStartState = {
             rubyRelicPrice: 0,
             amethystRelicPrice: 3,
             hullGoldUpgradePrice: 0,
-            rubyHullUpgradePrice: 4,
+            rubyHullUpgradePrice: 5,
         },
         {
             barVals: [0.999, 0.99, 0.96, 0.9, 0.8, 0.72, 0.7],
@@ -169,9 +170,9 @@ let gameStartState = {
             floorNumber: 3,
             storeRelicPrice: 20000,
             rubyRelicPrice: 0,
-            amethystRelicPrice: 6,
+            amethystRelicPrice: 7,
             hullGoldUpgradePrice: 0,
-            rubyHullUpgradePrice: 8,
+            rubyHullUpgradePrice: 10,
         },
         {
             barVals: [0.99, 0.97, 0.91, 0.85, 0.77, 0.73, 0.7],
@@ -182,9 +183,9 @@ let gameStartState = {
             floorNumber: 4,
             storeRelicPrice: 75000,
             rubyRelicPrice: 0,
-            amethystRelicPrice: 10,
+            amethystRelicPrice: 15,
             hullGoldUpgradePrice: 0,
-            rubyHullUpgradePrice: 10,
+            rubyHullUpgradePrice: 15,
         },
         
     ],
@@ -637,15 +638,16 @@ async function startTheGame(stateObj) {
 }
 
 async function chooseRobot1(stateObj) {
-    console.log("choose robot 1")
     stateObj.choosingRobot = false
     stateObj.startTheGame = true;
+    stateObj.robotPath = "img/map/robot1.png",
     await changeState(stateObj);
 }
 
 async function chooseRobot2(stateObj) {
     stateObj.choosingRobot = false
     stateObj.startTheGame = true;
+    stateObj.robotPath = "img/map/robot2.png",
     stateObj.currentHullIntegrity = 20;
     stateObj.maxHullIntegrity = 20;
     stateObj.bronzeMaxHull = 1;
@@ -653,11 +655,31 @@ async function chooseRobot2(stateObj) {
 }
 
 async function chooseRobot3(stateObj) {
+    stateObj.robotPath = "img/map/robot3.png",
     stateObj.choosingRobot = false
     stateObj.startTheGame = true;
     stateObj.fuelCapacity = 100;
     stateObj.currentFuel = 90;
     stateObj.fuelTeleportCost = 40;
+    await changeState(stateObj);
+}
+
+async function chooseRobot4(stateObj) {
+    stateObj.choosingRobot = false
+    stateObj.startTheGame = true;
+    stateObj.robotPath = "img/map/robot4.png",
+    stateObj.currentHullIntegrity = 75;
+    stateObj.maxHullIntegrity = 75;
+    stateObj.dirtThresholdNeeded = 30;
+    await changeState(stateObj);
+}
+
+async function chooseRobot5(stateObj) {
+    stateObj.choosingRobot = false
+    stateObj.startTheGame = true;
+    stateObj.robotPath = "img/map/robot5.png",
+    stateObj.inventoryMax = 10;
+    stateObj.killEnemiesHullModifier = 5;
     await changeState(stateObj);
 }
 
@@ -1214,7 +1236,7 @@ async function checkForDeath(stateObj) {
 
 async function doDamage(stateObj, damageAmount, enemyLocation) {
     if (stateObj.inStore === false) {
-        stateObj = immer.produce(stateObj, (newState) => {
+        stateObj = immer.produce(stateObj, async (newState) => {
             if (newState.takingDamage === false) {
                 if (newState.thorns === true) {
                     let enemyIndex = newState.enemyArray.indexOf(newState.currentPosition + enemyLocation);
@@ -1241,6 +1263,11 @@ async function doDamage(stateObj, damageAmount, enemyLocation) {
                     newState.currentHullIntegrity -= (damageAmount * newState.enemyDamageModifier);
                     newState.takingDamage = 5
                 }
+
+                    document.querySelector(".player-here").classList.add("taking-damage")
+        
+                //document.querySelector(".player-img").classList.remove("taking-damage")
+
             }           
 
         })
@@ -1265,7 +1292,7 @@ async function LeftArrow(stateObj, currentHeight, currentWidth, scrollHeight, sc
         || stateObj.gameMap[stateObj.currentPosition - 1] === "stone-7") {
             return stateObj
         }
-        window.scrollTo(currentWidth*scrollWidth- (scrollWidth*4), currentHeight*scrollHeight - (scrollHeight*2))
+        //window.scrollTo(currentWidth*scrollWidth- (scrollWidth*4), currentHeight*scrollHeight - (scrollHeight*2))
         stateObj = await calculateMoveChange(stateObj, -1)
         
     return stateObj
@@ -1898,42 +1925,5 @@ async function levelTeleport(stateObj) {
     return stateObj
 }
 
-function buildRelicArray(stateObj) {
-    let tempArray = [potentialRelics[0], potentialRelics[1], potentialRelics[2], potentialRelics[3],
-    potentialRelics[4], potentialRelics[5], potentialRelics[7], potentialRelics[9], potentialRelics[10],
-    potentialRelics[11], potentialRelics[12], potentialRelics[13], potentialRelics[15], potentialRelics[17],
-    potentialRelics[18], potentialRelics[19], potentialRelics[20], potentialRelics[23], potentialRelics[26],
-    potentialRelics[27], potentialRelics[29], 
-    ]
-    if (stateObj.laserPiercing === false) {
-        tempArray.push(potentialRelics[16])
-    }
-    if (stateObj.thorns === false) {
-        tempArray.push(potentialRelics[6])
-    }
-    if (stateObj.remoteBombs === false) {
-        tempArray.push(potentialRelics[8])
-    }
-    if (stateObj.dirtRuby === false) {
-        tempArray.push(potentialRelics[14])
-    }
-    if (stateObj.noDirtThreshold === false) {
-        tempArray.push(potentialRelics[21])
-    }
-    if (stateObj.magneticBlocks === false) {
-        tempArray.push(potentialRelics[22])
-    }
-    if (stateObj.bronzeSilverConverter === false) {
-        tempArray.push(potentialRelics[24])
-    }
-    if (stateObj.dirtRefillsWeapons === false) {
-        tempArray.push(potentialRelics[25])
-    }
-    if (stateObj.efficientGoldConverter === false) {
-        tempArray.push(potentialRelics[28])
-    }
-    //let tempArray = [spareTank, spareTank, spareTank, spareTank]
-    return tempArray
-}
 
 renderScreen(gameStartState)

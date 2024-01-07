@@ -368,7 +368,7 @@ function renderTopBarStats(stateObj) {
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "kill-enemies-fuel-popup")
           relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Increase Hull Integrity by " + Math.ceil(stateObj.killEnemiesHullModifier) + " whenever you kill an enemy"
+          relicTextDiv.textContent = "Increase Hull Armor by " + Math.ceil(stateObj.killEnemiesHullModifier) + " whenever you kill an enemy"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
           topBarDiv.append(weaponPriceRelicDiv)
@@ -395,7 +395,7 @@ function renderTopBarStats(stateObj) {
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "kill-enemies-heal-popup")
           relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Killing enemies heals your hull by " + Math.ceil(stateObj.killEnemiesForHealing)
+          relicTextDiv.textContent = "Killing enemies repairs Hull Armor by " + Math.ceil(stateObj.killEnemiesForHealing)
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
           topBarDiv.append(weaponPriceRelicDiv)
@@ -449,7 +449,7 @@ function renderTopBarStats(stateObj) {
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "bronze-hull-popup")
           relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Mining bronze ore adds " + stateObj.bronzeMaxHull + " hull armor"
+          relicTextDiv.textContent = "Mining bronze ore increases Hull Armor by " + stateObj.bronzeMaxHull
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
           topBarDiv.append(weaponPriceRelicDiv)
@@ -503,7 +503,7 @@ function renderTopBarStats(stateObj) {
         let relicTextDiv = document.createElement("Div");
         relicTextDiv.setAttribute("id", "gold-inv-popup")
         relicTextDiv.classList.add("none-display")
-        relicTextDiv.textContent = "Mining gold ore adds " + stateObj.goldMaxInventory + " inventory capacity"
+        relicTextDiv.textContent = "Mining gold ore adds " + stateObj.goldMaxInventory + " Cargo Bay capacity"
         weaponPriceRelicDiv.appendChild(relicTextDiv);
 
         topBarDiv.append(weaponPriceRelicDiv)
@@ -561,7 +561,7 @@ function renderTopBarStats(stateObj) {
         let relicTextDiv = document.createElement("Div");
         relicTextDiv.setAttribute("id", "silver-fuel-popup")
         relicTextDiv.classList.add("none-display")
-        relicTextDiv.textContent = "Mining silver ore adds " + stateObj.silverMaxFuel + " fuel capacity"
+        relicTextDiv.textContent = "Mining silver ore adds " + stateObj.silverMaxFuel + " fuel tank capacity"
         weaponPriceRelicDiv.appendChild(relicTextDiv);
 
         topBarDiv.append(weaponPriceRelicDiv)
@@ -873,7 +873,7 @@ function renderTopBarStats(stateObj) {
           let relicTextDiv = document.createElement("Div");
           relicTextDiv.setAttribute("id", "dirt-fuel-popup")
           relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Gain " + Math.ceil(stateObj.dirtToMaxFuel) + " maximum fuel when dropping a dirt block"
+          relicTextDiv.textContent = "Gain " + Math.ceil(stateObj.dirtToMaxFuel) + " fuel tank capacity when dropping a dirt block"
           weaponPriceRelicDiv.appendChild(relicTextDiv);
 
           topBarDiv.append(weaponPriceRelicDiv)
@@ -1175,7 +1175,7 @@ function renderSellingItems(stateObj) {
   let upgradeHullDiv = document.createElement("Div")
   let goldPrice = stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
   let rubyPrice = stateObj.floorValues[stateObj.currentLevel].rubyHullUpgradePrice
-  let tradeString = "Upgrade Hull (Costs "
+  let tradeString = "Upgrade Hull Armor (Costs "
   upgradeHullDiv.classList.add("hull-gold-upgrade-div")
   if (goldPrice > 0) {
     tradeString += goldPrice + " gold)"
@@ -1197,7 +1197,7 @@ function renderSellingItems(stateObj) {
   upgradeHullDiv.textContent = tradeString
 
   let upgradeFuelDiv = document.createElement("Div")
-  let fuelString = "Upgrade Fuel Capacity (Costs "
+  let fuelString = "Upgrade Fuel Tank (Costs "
   upgradeFuelDiv.classList.add("fuel-gold-upgrade-div")
   if (goldPrice > 0) {
     fuelString += goldPrice + " gold)"
@@ -1235,12 +1235,13 @@ function renderSellingItems(stateObj) {
       }
     } else if (amethystPrice > 0) {
       tradeString += amethystPrice + " amethysts)"
-      if (stateObj.amethystRelicPrice >= amethystPrice) {
+      if (stateObj.amethystInventory >= amethystPrice) {
         tradeRelicRubyDiv.classList.add("diamond-relic-hover")
+        tradeRelicRubyDiv.onclick = async function () {
+          await tradeRelicRuby(stateObj)
+        }
       }
-      tradeRelicRubyDiv.onclick = async function () {
-        await tradeRelicRuby(stateObj)
-      }
+      
     }
     tradeRelicRubyDiv.textContent = tradeString
   }
@@ -1317,7 +1318,7 @@ function chooseRobot(stateObj) {
 
   let robot1Div = document.createElement("Div")
   let robot1TextDiv = document.createElement("H3")
-  robot1TextDiv.textContent = "The Default"
+  robot1TextDiv.textContent = "Standard Model"
   let robotImageDiv1 = document.createElement("Div")
   robot1Div.classList.add("robot-div")
   let robotImg1 = document.createElement("Img");
@@ -1326,16 +1327,20 @@ function chooseRobot(stateObj) {
   robotImageDiv1.append(robotImg1)
 
   let robotDescDiv = document.createElement("Div")
-  robotDescDiv.textContent = "Base stats"
+  robotDescDiv.textContent = "Medium Fuel Tank"
+  let robot1DescDiv = document.createElement("Div")
+  robot1DescDiv.textContent = "Medium Hull Armor"
+  let robot2DescDiv = document.createElement("Div")
+  robot2DescDiv.textContent = "Medium Cargo Bay"
 
   robot1Div.onclick = function() {
       chooseRobot1(stateObj)
   }
-  robot1Div.append(robot1TextDiv, robotImageDiv1, robotDescDiv)
+  robot1Div.append(robot1TextDiv, robotImageDiv1, robotDescDiv, robot1DescDiv, robot2DescDiv)
 
   let robot2Div = document.createElement("Div")
   let robot2TextDiv = document.createElement("H3")
-  robot2TextDiv.textContent = "Hard - fragile"
+  robot2TextDiv.textContent = "Bronze Mini-Drone"
   let robotImageDiv2 = document.createElement("Div")
   robot2Div.classList.add("robot-div")
   let robotImg2 = document.createElement("Img");
@@ -1344,15 +1349,17 @@ function chooseRobot(stateObj) {
   robotImageDiv2.append(robotImg2)
 
   let robotDescDiv2 = document.createElement("Div")
-  robotDescDiv2.textContent = "Low base HP but increases when mining bronze ore"
+  robotDescDiv2.textContent = "Very low Hull Armor"
+  let robotDesc1Div2 = document.createElement("Div")
+  robotDesc1Div2.textContent = "Hull Armor increases when mining bronze ore"
   robot2Div.onclick = function() {
       chooseRobot2(stateObj)
   }
-  robot2Div.append(robot2TextDiv, robotImageDiv2, robotDescDiv2)
+  robot2Div.append(robot2TextDiv, robotImageDiv2, robotDescDiv2, robotDesc1Div2)
 
   let robot3Div = document.createElement("Div")
   let robot3TextDiv = document.createElement("H3")
-  robot3TextDiv.textContent = "Hard - shifter"
+  robot3TextDiv.textContent = "Light Quantum Ship"
   let robotImageDiv3 = document.createElement("Div")
   robot3Div.classList.add("robot-div")
   let robotImg3 = document.createElement("Img");
@@ -1361,14 +1368,54 @@ function chooseRobot(stateObj) {
   robotImageDiv3.append(robotImg3)
 
   let robotDescDiv3 = document.createElement("Div")
-  robotDescDiv3.textContent = "Lower fuel capacity, but built-in teleporter"
+  robotDescDiv3.textContent = "Small fuel tank"
+  let robotDesc1Div3 = document.createElement("Div")
+  robotDesc1Div3.textContent = "Fuel-powered teleporter"
   robot3Div.onclick = function() {
       chooseRobot3(stateObj)
   }
-  robot3Div.append(robot3TextDiv, robotImageDiv3, robotDescDiv3)
+  robot3Div.append(robot3TextDiv, robotImageDiv3, robotDescDiv3, robotDesc1Div3)
+
+  let robot4Div = document.createElement("Div")
+  let robot4TextDiv = document.createElement("H3")
+  robot4TextDiv.textContent = "Light Miner"
+  let robotImageDiv4 = document.createElement("Div")
+  robot4Div.classList.add("robot-div")
+  let robotImg4 = document.createElement("Img");
+  robotImg4.classList.add("robot-img")
+  robotImg4.src = "img/map/robot4.png"
+  robotImageDiv4.append(robotImg4)
+
+  let robotDescDiv4 = document.createElement("Div")
+  robotDescDiv4.textContent = "Low Hull Armor"
+  let robotDesc1Div4 = document.createElement("Div")
+  robotDesc1Div4.textContent = "Drop dirt much faster"
+  robot4Div.onclick = function() {
+      chooseRobot4(stateObj)
+  }
+  robot4Div.append(robot4TextDiv, robotImageDiv4, robotDescDiv4, robotDesc1Div4)
+
+  let robot5Div = document.createElement("Div")
+  let robot5TextDiv = document.createElement("H3")
+  robot5TextDiv.textContent = "Scrap Robot"
+  let robotImageDiv5 = document.createElement("Div")
+  robot5Div.classList.add("robot-div")
+  let robotImg5 = document.createElement("Img");
+  robotImg5.classList.add("robot-img")
+  robotImg5.src = "img/map/robot5.png"
+  robotImageDiv5.append(robotImg5)
+
+  let robotDescDiv5 = document.createElement("Div")
+  robotDescDiv5.textContent = "Small Cargo Bay"
+  let robotDesc1Div5 = document.createElement("Div")
+  robotDesc1Div5.textContent = "Gain small amounts of Hull Armor for killing enemies"
+  robot5Div.onclick = function() {
+      chooseRobot5(stateObj)
+  }
+  robot5Div.append(robot5TextDiv, robotImageDiv5, robotDescDiv5, robotDesc1Div5)
 
 
-  lostDiv.append(robot1Div, robot2Div, robot3Div)
+  lostDiv.append(robot1Div, robot2Div, robot3Div, robot4Div, robot5Div)
   storeDiv.append(lostDiv)
 
   return storeDiv
@@ -1392,7 +1439,7 @@ function renderStart(stateObj) {
 
   let textDiv4 = document.createElement("H3")
   textDiv4.classList.add("padding-width")
-  textDiv4.textContent = "View Inventory with 'I'. You can convert 3 ores to 1 higher quality ore"
+  textDiv4.textContent = "View Cargo Bay Inventory with 'I'. You can convert 3 ores to 1 higher quality ore"
 
   let textDiv7 = document.createElement("H3")
   textDiv7.classList.add("padding-width")
@@ -1580,7 +1627,12 @@ function renderMap(stateObj) {
           } else {
               mapSquareImg.classList.add("player-img")
           }
-          mapSquareImg.src = "img/map/miner1.png"
+          if (stateObj.takingDamage > 3) {
+            mapSquareImg.classList.add("taking-damage-1")
+          } else if (stateObj.takingDamage > 0) {
+            mapSquareImg.classList.add("taking-damage-2")
+          }
+          mapSquareImg.src = stateObj.robotPath
           mapSquareDiv.append(mapSquareImg)
       }
       if (mapSquare === "stone") {
@@ -1918,10 +1970,10 @@ function renderStore(stateObj) {
       repairText1.classList.add("store-option-text")
       
       if ((missingHull*5) * (stateObj.currentLevel+1) > (stateObj.bankedCash * (1-stateObj.cheaperShops))) {
-          repairText1.textContent = "Spend all money on repairs" 
+          repairText1.textContent = "Spend all money on repairing Hull Armor" 
           repairText2.textContent = "$" + Math.ceil(stateObj.bankedCash)* (1-stateObj.cheaperShops)
       } else {
-          repairText1.textContent = "Repair hull fully " 
+          repairText1.textContent = "Repair Hull Armor fully " 
           repairText2.textContent = "$" +  Math.ceil(missingHull*5  ) * (1-stateObj.cheaperShops)
       }
       repairText2.classList.add("store-option-text")
@@ -1940,7 +1992,7 @@ function renderStore(stateObj) {
   invText1.classList.add("store-option-text")
   let invText2 = document.createElement("Div")
   invText2.classList.add("store-option-text")
-  invText1.textContent = "Inventory Size Upgrade" 
+  invText1.textContent = "Cargo Bay Size Upgrade" 
   invText2.textContent = "$" + stateObj.inventoryUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
   inventoryUpgradeDiv.append(invText1, invText2)
   if (stateObj.bankedCash >= stateObj.inventoryUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)) {

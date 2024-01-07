@@ -445,4 +445,40 @@ let potentialRelics = [
 ]
 
 
-
+function buildRelicArray(stateObj) {
+    let tempArray = [potentialRelics[0], potentialRelics[1], potentialRelics[2], potentialRelics[3],
+    potentialRelics[4], potentialRelics[5], potentialRelics[7], potentialRelics[9], potentialRelics[10],
+    potentialRelics[11], potentialRelics[12], potentialRelics[13], potentialRelics[15], potentialRelics[17],
+    potentialRelics[18], potentialRelics[19], potentialRelics[20], potentialRelics[23], potentialRelics[26],
+    potentialRelics[27], potentialRelics[29], 
+    ]
+    if (stateObj.laserPiercing === false) {
+        tempArray.push(potentialRelics[16])
+    }
+    if (stateObj.thorns === false) {
+        tempArray.push(potentialRelics[6])
+    }
+    if (stateObj.remoteBombs === false) {
+        tempArray.push(potentialRelics[8])
+    }
+    if (stateObj.dirtRuby === false) {
+        tempArray.push(potentialRelics[14])
+    }
+    if (stateObj.noDirtThreshold === false) {
+        tempArray.push(potentialRelics[21])
+    }
+    if (stateObj.magneticBlocks === false) {
+        tempArray.push(potentialRelics[22])
+    }
+    if (stateObj.bronzeSilverConverter === false) {
+        tempArray.push(potentialRelics[24])
+    }
+    if (stateObj.dirtRefillsWeapons === false) {
+        tempArray.push(potentialRelics[25])
+    }
+    if (stateObj.efficientGoldConverter === false) {
+        tempArray.push(potentialRelics[28])
+    }
+    //let tempArray = [spareTank, spareTank, spareTank, spareTank]
+    return tempArray
+}

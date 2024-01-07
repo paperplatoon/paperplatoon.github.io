@@ -1,3 +1,8 @@
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 .map-div {
     display: flex;
     flex-direction: row;
@@ -263,6 +268,14 @@
     animation: low-fuel 1s infinite;
   }
 
+  .taking-damage-1 {
+    filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(0deg) brightness(126%) contrast(63%);
+  }
+
+  .taking-damage-2 {
+    filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(747%) hue-rotate(0deg) brightness(126%) contrast(63%);
+  }
+
   /* @keyframes low-fuel {
     0% {
       filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(40deg) brightness(126%) contrast(63)
@@ -428,7 +441,6 @@
   width: 30vw;
   height: 5vh;
   display: flex;
-  margin-top: 4vh;
   padding: 0.5vh 0.5vw;
   justify-content: center;
   align-items: center;
@@ -737,6 +749,10 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
     animation: emphasis 0.5s linear
   }
 
+  .taking-damage {
+    animation: damage 0.1s linear
+  }
+
   .mini-emphasis {
     animation: mini-emphasis 0.3s linear
   }
@@ -807,6 +823,18 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
     }
     100% {
       scale: 1;
+    }
+  }
+
+  @keyframes damage {
+    0% {
+      scale: 1,
+    }
+    50% {
+      scale: 0.5,
+    }
+    100% {
+      scale: 1
     }
   }
 
@@ -923,7 +951,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
   }
 
   .robot-div {
-    width: 15vw;
+    width: 12vw;
     height: 60vh;
     display: flex;
     flex-direction: column;
@@ -932,7 +960,6 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
     align-content: center;
     text-align: center;
     border: 1px dotted black;
-    padding: 2vw;
     transition: 1s all;
   }
 
@@ -945,7 +972,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
   }
 
   .robot-img {
-    width: 14vw;
+    width: 12vw;
     height: auto;
     object-fit: cover;
   }
