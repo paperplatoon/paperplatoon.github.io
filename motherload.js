@@ -2,8 +2,8 @@ let gameStartState = {
     gameMap: [],
     robotPath: "img/map/miner1.png",
 
-    currentFuel: 100,
-    fuelCapacity: 120,
+    currentFuel: 130,
+    fuelCapacity: 130,
     fuelUpgrades: 0,
     fuelUpgradeCost: 1000,
     //states
@@ -939,18 +939,18 @@ async function dirtEfficiencyChoice(stateObj) {
 
 async function fillFuel(stateObj) {
     let missingFuel = Math.floor(stateObj.fuelCapacity-stateObj.currentFuel)
-    let fuelPrice = Math.ceil((missingFuel * Math.floor((2+stateObj.currentLevel)*0.5) - (1-stateObj.cheaperShops))/2)
+    let fuelPrice = 1+stateObj.currentLevel
+    let fuelCost = Math.ceil((missingFuel * fuelPrice - (1-stateObj.cheaperShops))/2)
     stateObj = immer.produce(stateObj, (newState) => {
         if (missingFuel > 0) {
             if (newState.freeFuel === true ) {
                 newState.currentFuel = newState.fuelCapacity
             } else {
-                if (newState.bankedCash > fuelPrice) {
+                if (newState.bankedCash > fuelCost) {
                     newState.currentFuel += missingFuel;
-                    newState.bankedCash -= fuelPrice
+                    newState.bankedCash -= fuelCost
                 } else {
-                    let affordableFuel = Math.ceil(newState.bankedCash/Math.ceil((1+stateObj.currentLevel)/2))
-                    newState.currentFuel += affordableFuel;
+                    newState.currentFuel += ((newState.bankedCash/fuelPrice)*2);
                     newState.bankedCash = 0;    
                 }
             }

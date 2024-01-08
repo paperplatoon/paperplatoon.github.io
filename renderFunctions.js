@@ -28,7 +28,7 @@ function renderTopBarStats(stateObj) {
     fuelText2Div = document.createElement("Div")
     fuelText2Div.classList.add("bars-text-div")
     fuelText2Div.setAttribute("id", "max-fuel-text");
-    if (stateObj.fuelCapacity > 120) {
+    if (stateObj.fuelCapacity > 130) {
         fuelText2Div.classList.add("upgraded-stat")
     }
     fuelText2Div.textContent = Math.floor(stateObj.currentFuel) + "/" + Math.floor(stateObj.fuelCapacity)
