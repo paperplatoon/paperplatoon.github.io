@@ -1019,6 +1019,8 @@ async function upgradeFuelGold(stateObj) {
         newState.currentFuel += 50;
         newState.goldInventory -= stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
         newState.currentInventory -= stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
+        newState.rubyInventory -= stateObj.floorValues[stateObj.currentLevel].rubyHullUpgradePrice
+        newState.currentInventory -= stateObj.floorValues[stateObj.currentLevel].rubyHullUpgradePrice
     })
     document.querySelector(".fuel-gold-upgrade-div").classList.add("store-clicked")
     await pause(300)
