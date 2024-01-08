@@ -2,8 +2,8 @@ let gameStartState = {
     gameMap: [],
     robotPath: "img/map/miner1.png",
 
-    currentFuel: 130,
-    fuelCapacity: 130,
+    currentFuel: 150,
+    fuelCapacity: 150,
     fuelUpgrades: 0,
     fuelUpgradeCost: 1000,
     //states
@@ -1358,11 +1358,9 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     if (targetSquare === "0" || targetSquare === "magnetic-0") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)   
     } else if (targetSquare === "1") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
-        console.log("curret inventory is " + stateObj.currentInventory + " and max is " + stateObj.inventoryMax)
         if ((stateObj.currentInventory) < stateObj.inventoryMax) { 
-            console.log("add bronze fired")
             stateObj = await immer.produce(stateObj, (newState) => {
+                newState.currentInventory +=1
                 if (stateObj.bronzeSilverConverter === true) {
                     newState.silverInventory += 1
                 } else {
@@ -1375,13 +1373,14 @@ async function calculateMoveChange(stateObj, squaresToMove) {
                 }
             })
         } 
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
+        
     } else if (targetSquare === "2") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
-        console.log("curret inventory is " + stateObj.currentInventory + " and max is " + stateObj.inventoryMax)
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         if ((stateObj.currentInventory) < stateObj.inventoryMax) {  
-            console.log("add silver fired")
             stateObj = await immer.produce(stateObj, (newState) => {
                 newState.silverInventory += 1
+                newState.currentInventory +=1
                 if (stateObj.silverHealing > 0) {
                     if (newState.maxHullIntegrity - newState.currentHullIntegrity < newState.silverHealing) {
                         newState.currentHullIntegrity = newState.maxHullIntegrity
@@ -1396,34 +1395,43 @@ async function calculateMoveChange(stateObj, squaresToMove) {
             })
         } 
     } else if (targetSquare === "3") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         if ((stateObj.currentInventory) < stateObj.inventoryMax) { 
             stateObj = await immer.produce(stateObj, (newState) => {
                 newState.goldInventory += 1
+                newState.currentInventory +=1
                 if (stateObj.goldMaxInventory > 0) {
                     newState.inventoryMax += stateObj.goldMaxInventory;
                 }
             })
         } 
     } else if (targetSquare === "4" || targetSquare === "magnetic-4") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         if ((stateObj.currentInventory) < stateObj.inventoryMax) { 
-            stateObj = await immer.produce(stateObj, (newState) => {newState.rubyInventory += 1})
+            stateObj = await immer.produce(stateObj, (newState) => {
+                newState.currentInventory +=1
+                newState.rubyInventory += 1})
         } 
     } else if (targetSquare === "5") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         if ((stateObj.currentInventory) < stateObj.inventoryMax) { 
-            stateObj = await immer.produce(stateObj, (newState) => {newState.amethystInventory += 1})
+            stateObj = await immer.produce(stateObj, (newState) => {
+                newState.currentInventory +=1
+                newState.amethystInventory += 1})
         } 
     } else if (targetSquare === "6") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         if ((stateObj.currentInventory) < stateObj.inventoryMax) {  
-            stateObj = await immer.produce(stateObj, (newState) => {newState.diamondInventory += 1})
+            stateObj = await immer.produce(stateObj, (newState) => {
+                newState.currentInventory +=1
+                newState.diamondInventory += 1})
         } 
     } else if (targetSquare === "7") {
-        stateObj = await handleSquare(stateObj, targetSquareNum, 2, true)
+        stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         if ((stateObj.currentInventory) < stateObj.inventoryMax) { 
-            stateObj = await immer.produce(stateObj, (newState) => {newState.blackDiamondInventory += 1})
+            stateObj = await immer.produce(stateObj, (newState) => {
+                newState.currentInventory +=1
+                newState.blackDiamondInventory += 1})
         } 
     } else if (targetSquare === "empty") {
         stateObj = await handleSquare(stateObj, targetSquareNum, 1)
@@ -1646,7 +1654,7 @@ async function triggerHandleSquare(stateObj, squareIndexToMoveTo, fuelToLose) {
     return stateObj;
 }
 
-async function handleSquare(stateObj, squareIndexToMoveTo, fuelToLose, isGem=false) {
+async function handleSquare(stateObj, squareIndexToMoveTo, fuelToLose) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.currentFuel -= fuelToLose;
         newState.currentPosition = squareIndexToMoveTo;
@@ -1659,13 +1667,7 @@ async function handleSquare(stateObj, squareIndexToMoveTo, fuelToLose, isGem=fal
             } else if (newState.dirtReserves < stateObj.dirtThresholdNeeded) {
                 newState.dirtReserves += 1;
             }
-        }
-
-        if (isGem) {
-            if (newState.currentInventory < newState.inventoryMax) {
-                newState.currentInventory += 1;
-            }
-        }    
+        }  
     }) 
     return stateObj
 }
