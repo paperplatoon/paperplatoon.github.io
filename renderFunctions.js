@@ -143,7 +143,6 @@ function renderTopBarStats(stateObj) {
     cashDiv.setAttribute("id", "cash-div");
     cashDiv.classList.add("centered")
     cashDiv.textContent = "$" + stateObj.bankedCash;
-    
 
     let lasersDiv = document.createElement("Div")
     lasersDiv.classList.add("weapons-div")
@@ -1307,6 +1306,35 @@ function lostTheGame() {
   return storeDiv
 }
 
+function wonTheGame() {
+  console.log('triggering won the game')
+  let storeDiv = document.createElement("Div")
+  storeDiv.classList.add("store-div")
+
+  let lostDiv = document.createElement("Div")
+  lostDiv.classList.add("selling-items-div")
+
+  let lostTextDiv = document.createElement("H3")
+  lostTextDiv.textContent = "CONGRATULATIONS!!!!"
+  let lostTextDiv1 = document.createElement("H3")
+  lostTextDiv1.textContent = "You made it to the end of the demo! Great build!"
+  let lostTextDiv2 = document.createElement("H3")
+  lostTextDiv2.textContent = "Click the button below to try a new run"
+
+  lostDiv.append(lostTextDiv, lostTextDiv1, lostTextDiv2)
+
+  let lostButtonDiv = document.createElement("Div")
+  lostButtonDiv.classList.add("sell-button")
+  lostButtonDiv.textContent = "New Game"
+  lostButtonDiv.onclick = function() {
+      location.reload(true)
+  }
+  lostDiv.append(lostButtonDiv)
+  storeDiv.append(lostDiv)
+
+  return storeDiv
+}
+
 //chooseRobot
 function chooseRobot(stateObj) {
   let storeDiv = document.createElement("Div")
@@ -1422,7 +1450,6 @@ function chooseRobot(stateObj) {
 }
 
 function renderStart(stateObj) {
-  console.log("rendering start function triggered")
   let storeDiv = document.createElement("Div")
   storeDiv.classList.add("store-div")
 
@@ -1883,7 +1910,6 @@ function renderNextLevelChoice(stateObj) {
   let chosenLevels = []
   for (i = 0; i < 3; i++) {
       let chosenLevel = Math.floor(Math.random() * levelChoiceArray.length);
-      console.log("pushing number " + chosenLevel)
       chosenLevels.push(levelChoiceArray[chosenLevel])
       levelChoiceArray.splice(chosenLevel, 1)
   }

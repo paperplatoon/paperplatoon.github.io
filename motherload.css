@@ -3,6 +3,12 @@ html, body {
   overflow-x: hidden;
 }
 
+.left-button {
+  height: 6vh;
+  width: 6vw;
+  background-color: green;
+}
+
 .map-div {
     display: flex;
     flex-direction: row;

@@ -6,6 +6,12 @@ let gameStartState = {
     fuelCapacity: 150,
     fuelUpgrades: 0,
     fuelUpgradeCost: 1000,
+
+    currentHullIntegrity: 100,
+    maxHullIntegrity: 100,
+    hullUpgradeCost: 1000,
+    takingDamage: false,
+    
     //states
     currentPosition: false,
     inStore: false,
@@ -14,6 +20,7 @@ let gameStartState = {
     choosingNextLevel: false,
     inTransition: false, 
     lostTheGame: false,
+    wonTheGame: false,
     startTheGame: false,
     choosingRobot: true,
     
@@ -92,10 +99,6 @@ let gameStartState = {
     levelTeleport: false,
     noEmptySquares: false,
     
-    currentHullIntegrity: 100,
-    maxHullIntegrity: 100,
-    hullUpgradeCost: 1000,
-    takingDamage: false,
 
     dirtReserves: 0,
     dirtThresholdNeeded: 50,
@@ -589,39 +592,38 @@ async function moveEnemies() {
 //To-DO: Need to set values for mapDiv and each map-square, including elements
 async function renderScreen(stateObj) {
 
-    document.getElementById("app").innerHTML = ""
-    //create a mapDiv to append all your new squares to
-    topBar = await renderTopBarStats(stateObj);
-        // arrowBar = renderArrowButtons(stateObj);
-    document.getElementById("app").append(topBar)
+    let storeDiv = false;
+    let addTopBar = false
     if (stateObj.lostTheGame === true) {
-        document.getElementById("app").innerHTML = ""
-        let storeDiv = lostTheGame()
-        document.getElementById("app").append(storeDiv)
+        storeDiv = lostTheGame()
+    } else if (stateObj.wonTheGame === true) {
+        storeDiv = wonTheGame(stateObj)
     } else if (stateObj.choosingRobot === true) {
-        document.getElementById("app").innerHTML = ""
-        let storeDiv = chooseRobot(stateObj)
-        document.getElementById("app").append(storeDiv)
+        storeDiv = chooseRobot(stateObj)
     } else if (stateObj.startTheGame === true) {
-        document.getElementById("app").innerHTML = ""
-        let storeDiv = renderStart(stateObj)
-        document.getElementById("app").append(storeDiv)
+        storeDiv = renderStart(stateObj)
     } else if (stateObj.sellingItems === true) {
-        let storeDiv = renderSellingItems(stateObj)
-        document.getElementById("app").append(storeDiv)
+        storeDiv = renderSellingItems(stateObj)
+        addTopBar = true;
     } else if (stateObj.viewingInventory === true) {
-        let storeDiv = renderInventory(stateObj)
-        document.getElementById("app").append(storeDiv)
+        addTopBar = true;
+        storeDiv = renderInventory(stateObj)
     } else if (stateObj.inStore === false && stateObj.choosingNextLevel === false) {
-        let mapDiv = renderMap(stateObj)
-        document.getElementById("app").append(mapDiv)
+        addTopBar = true;
+        storeDiv = renderMap(stateObj)
     } else if (stateObj.choosingNextLevel === true) {
-        let storeDiv = renderNextLevelChoice(stateObj)
-        document.getElementById("app").append(storeDiv)
+        addTopBar = true;
+        storeDiv = renderNextLevelChoice(stateObj)
     } else if (stateObj.inStore === true) {
-        let storeDiv = renderStore(stateObj)
-        document.getElementById("app").append(storeDiv)
+        addTopBar = true;
+        storeDiv = renderStore(stateObj)
     }
+    document.getElementById("app").innerHTML = ""
+    if (addTopBar) {
+        topBar = await renderTopBarStats(stateObj);
+        document.getElementById("app").append(topBar)
+    }
+    document.getElementById("app").append(storeDiv)
     return stateObj
 }
 
@@ -983,7 +985,6 @@ async function repairHull(stateObj) {
 }
 
 async function laserUpgrade(stateObj) {
-    console.log("triggering laser upgrade")
     stateObj = immer.produce(stateObj, (newState) => {
         newState.laserCapacity += 1;
         newState.numberLasers += 1;
@@ -1483,7 +1484,6 @@ async function sellItemsScreen(stateObj, emptyInv=false) {
 }
 
 async function sellItems(stateObj, sellTotal) {
-    console.log("inside seeStore")
     if (sellTotal) {
         stateObj = await immer.produce(stateObj, async (newState) => {
             newState.currentInventory = 0;
@@ -1625,6 +1625,11 @@ async function goToNextLevel(stateObj) {
         newState.enemiesKilledPerLevel = 0;
         newState.splinterCellOn = false;
         newState.splinterCellModifier = 1;
+        if (newState.currentLevel > 4) {
+            // console.log("current level is " + )
+            newState.wonTheGame = true;
+        }
+
 
         if (stateObj.isPacifist > 0) {
             const countEnemyOccurrences = newState.gameMap.reduce((acc, currentValue) => {
@@ -1881,7 +1886,6 @@ async function dropBlock(stateObj) {
                 }
                 if (mapText) {
                     newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = mapText;
-                    console.log("block is " + mapText)
                 }
                 
                 if (stateObj.dirtRefillsWeapons) {
