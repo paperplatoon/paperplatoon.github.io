@@ -17,7 +17,7 @@ html, body {
     padding: 0vh 0.5vw;
     height: 100%;
     width: 99%;
-    margin-top: 20vh;
+    margin-top: 12vh;
   }
 
   .top-stats-bar {
@@ -69,9 +69,16 @@ html, body {
 }
 
   .map-square {
+    /* width: 13.5vw;
+    height: 12vh; */
     width: 9.5vw;
-    height: 10vh;
+    height: 15vh;
+    color: mediumspringgreen;
     transition: background-color 1500ms ease-out;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+    object-fit: cover;
     /* border: 0.5px solid rgba(97, 48, 0, 0.756); */
   }
 
@@ -234,7 +241,7 @@ html, body {
 .player-here {
   position: relative;
   width: 9.5vw;
-  height: 10vh;
+  height: 15vh;
 
 }
   .player-img {
@@ -257,7 +264,7 @@ html, body {
   .player-img-full {
     filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(200deg) brightness(126%) contrast(63%);
     position: absolute;
-    height: 10vh;
+    height: 100%;
     width: auto;
     left: 20%;
     transition: all 0.3s ease-out;
@@ -266,7 +273,7 @@ html, body {
   .player-img-low-fuel {
     position: absolute;
     filter: brightness(0) saturate(100%) invert(12%) sepia(46%) saturate(7487%) hue-rotate(50deg) brightness(126%) contrast(63%);
-    height: 10vh;
+    height: 100%;
     width: auto;
     left: 20%;
     transition: all 0.3s ease-out;
@@ -313,7 +320,7 @@ html, body {
   .bronze-img, .enemy-img, .dirt-img, .stone-img,  .silver-img, .gold-img, .ruby-img, .amethyst-img, .diamond-img, .blkdiamond-img,
   .stone-amethyst-img, .stone-diamond-img, .stone-blkdiamond-img, .crate-img {
     width: 9.5vw;
-    height: 10vh;
+    height: 15vh;
     object-fit: cover;
   }
 

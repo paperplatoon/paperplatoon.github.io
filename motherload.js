@@ -138,6 +138,7 @@ let gameStartState = {
             amethystRelicPrice: 0,
             hullGoldUpgradePrice: 5,
             rubyHullUpgradePrice: 0,
+            screenwidthBlocks: 20,
         },
         {
             barVals: [1, 0.999, 0.997, 0.99, 0.95, 0.80, 0.65],
@@ -151,6 +152,7 @@ let gameStartState = {
             amethystRelicPrice: 0,
             hullGoldUpgradePrice: 10,
             rubyHullUpgradePrice: 0,
+            screenwidthBlocks: 25,
         },
         {
             barVals: [1, 0.997, 0.99, 0.95, 0.85, 0.75, 0.7],
@@ -164,11 +166,13 @@ let gameStartState = {
             amethystRelicPrice: 3,
             hullGoldUpgradePrice: 0,
             rubyHullUpgradePrice: 5,
+            screenwidthBlocks: 30,
         },
         {
             barVals: [0.999, 0.99, 0.96, 0.9, 0.8, 0.72, 0.7],
             enemyValue: 0.91,
             numberRows: 50,
+            screenwidthBlocks: 35,
             bottomRowEnemies: [1, 2, 4, 5, 7],
             relicNumber: 1,
             floorNumber: 3,
@@ -182,6 +186,7 @@ let gameStartState = {
             barVals: [0.99, 0.97, 0.91, 0.85, 0.77, 0.73, 0.7],
             enemyValue: 0.88,
             numberRows: 70,
+            screenwidthBlocks: 40,
             bottomRowEnemies: [1, 2, 4, 5, 7],
             relicNumber: 1,
             floorNumber: 4,
@@ -199,13 +204,6 @@ let gameStartState = {
 
 
 let state = {...gameStartState}
-
-let screenwidthBlocks = 10; 
-
-let introBlockSquare = 4
-let middleBlockSquare = 16
-let totalSquareNumber = screenwidthBlocks * middleBlockSquare
-//let totalSquareNumber = introBlockSquare + middleBlockSquare + middleBlockSquare + middleBlockSquare
 
 //TO-DO
 //change the state when the player "clears" a square; decrease  the fuel
@@ -256,20 +254,20 @@ async function ProduceBlockSquares(arrayObj, stateObj) {
     
     let nextSquareEmpty = false;
     //the top row is already reserved for store and empty space
-    let middleLength = (screenwidthBlocks*floorObj.numberRows) + (screenwidthBlocks);
-    for (let j=screenwidthBlocks; j < middleLength; j++) {
+    let middleLength = (stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks*floorObj.numberRows) + (stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks);
+    for (let j=stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks; j < middleLength; j++) {
         if (nextSquareEmpty === true){
             arrayObj.push("empty")
             nextSquareEmpty = false
         } else {
             let randomNumber = Math.random() 
             const isEnemy = Math.random()
-            let enemyVal = (j < (screenwidthBlocks*3)) ? 1 : floorObj.enemyValue
+            let enemyVal = (j < (stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks*3)) ? 1 : floorObj.enemyValue
             let isRoulette = Math.random()
-            if (isRoulette > 0.98) {
+            if (isRoulette > 0.99) {
                 arrayObj.push("crate")
             } else {
-                if (isEnemy > enemyVal && (j % screenwidthBlocks !== 0) && ((j+1) % screenwidthBlocks !== 0) && j-1 !== chosenSquare) {
+                if (isEnemy > enemyVal && (j % stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks !== 0) && ((j+1) % stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks !== 0) && j-1 !== chosenSquare) {
                     arrayObj.pop()
                     arrayObj.push("empty")
                     arrayObj.push("enemy")
@@ -303,7 +301,7 @@ async function ProduceBlockSquares(arrayObj, stateObj) {
         }  
     }
     let tempDirection = "left";
-    for (let j=0; j < (screenwidthBlocks); j++) {
+    for (let j=0; j < (stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks); j++) {
         if (stateObj.floorValues[stateObj.currentLevel].bottomRowEnemies.includes(j)) {
             arrayObj.push("enemy")
         } else {
@@ -311,9 +309,9 @@ async function ProduceBlockSquares(arrayObj, stateObj) {
         }
     }
 
-    middleLength += screenwidthBlocks
-    const exit = Math.floor(Math.random() * screenwidthBlocks)
-    for (let j=0; j < (screenwidthBlocks); j++) {
+    middleLength += stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks
+    const exit = Math.floor(Math.random() * stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks)
+    for (let j=0; j < (stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks); j++) {
         if (j === exit ) {
             arrayObj.push("EXIT")
         } else {
@@ -326,7 +324,7 @@ async function ProduceBlockSquares(arrayObj, stateObj) {
 
 async function returnArrayObject(stateObj) {
     tempArray = ["STORE"];
-    for (let i=0; i<screenwidthBlocks-1; i++ ) {
+    for (let i=0; i<stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks-1; i++ ) {
         tempArray.push("empty")
     };
     tempArray = await ProduceBlockSquares(tempArray, stateObj)  
@@ -339,11 +337,11 @@ async function produceRelicSquareArray(stateObj) {
     let chosenSquareArray = []
 
     for (let i = 0; i < floorObj.relicNumber; i++) {
-        chosenSquare = Math.floor(Math.random() * screenwidthBlocks*floorObj.numberRows);
-        if (chosenSquare > screenwidthBlocks) {
+        chosenSquare = Math.floor(Math.random() * stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks*floorObj.numberRows);
+        if (chosenSquare > stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks) {
             chosenSquareArray.push(chosenSquare)
         } else {
-            chosenSquareArray.push(chosenSquare+screenwidthBlocks)
+            chosenSquareArray.push(chosenSquare+stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks)
         }
     }
     return chosenSquareArray
@@ -362,7 +360,7 @@ async function fillMapWithArray(stateObj) {
             newState.currentPosition = 2;
             newState.timeCounter += 1
             if (stateObj.levelTeleport === true) {
-                let mapLength = stateObj.floorValues[stateObj.currentLevel].numberRows * screenwidthBlocks
+                let mapLength = stateObj.floorValues[stateObj.currentLevel].numberRows * stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks
                 let randSquare = Math.floor(Math.random() * ((mapLength) - (Math.floor(mapLength/2) + 1) + Math.floor(mapLength/2)));
                 newState.gameMap[randSquare] = "teleporter"
             }
@@ -428,7 +426,7 @@ async function moveEnemies() {
     stateObj.timeCounter += 1
     await updateState(stateObj)
     if (stateObj.inStore === false && stateObj.choosingRobot === false  && stateObj.choosingNextLevel === false && stateObj.sellingItems === false 
-        && stateObj.viewingInventory === false && stateObj.startTheGame === false && stateObj.choosingRoulette === false) {
+        && stateObj.viewingInventory === false && stateObj.startTheGame === false && stateObj.choosingRoulette === false && stateObj.lostTheGame === false) {
 
         stateObj = await immer.produce(stateObj, (newState) => {
             if (newState.takingDamage !== false) {
@@ -445,7 +443,7 @@ async function moveEnemies() {
         for (let i=0; i < stateObj.enemyArray.length; i++) {
             let k = stateObj.enemyArray[i]
             if (stateObj.enemyMovementArray[i] === "left") {
-                    if (k % screenwidthBlocks !== 0) {
+                    if (k % stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks !== 0) {
                         if (stateObj.gameMap[k-1] === "empty") {
                             stateObj = await immer.produce(stateObj, (newState) => {
                                 newState.gameMap[k-1] = "enemy";
@@ -467,7 +465,7 @@ async function moveEnemies() {
                         })
                     }     
             } else if (stateObj.enemyMovementArray[i] === "right")  {
-                    if ((k+1) % screenwidthBlocks !== 0) {
+                    if ((k+1) % stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks !== 0) {
                         if (stateObj.gameMap[k+1] === "empty") {
                             stateObj = await immer.produce(stateObj, (newState) => {
                                 newState.gameMap[k+1] = "enemy";
@@ -507,14 +505,14 @@ async function moveEnemies() {
                     stateObj = await detonateBomb(stateObj, stateObj.bombLocation)
                 } else {
                     stateObj = await immer.produce(stateObj, (newState) => {
-                        if (stateObj.gameMap[stateObj.bombLocation + screenwidthBlocks] !== "empty") {
+                        if (stateObj.gameMap[stateObj.bombLocation + stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] !== "empty") {
                             if (stateObj.remoteBombs === false) {
                                 newState.bombExploding = true;
                             }
                         } else {
                             newState.gameMap[stateObj.bombLocation] = "empty";
-                            newState.gameMap[stateObj.bombLocation+screenwidthBlocks] = "BOMB";
-                            newState.bombLocation += screenwidthBlocks
+                            newState.gameMap[stateObj.bombLocation+stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] = "BOMB";
+                            newState.bombLocation += stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks
                         }
                     })
                 }
@@ -522,7 +520,7 @@ async function moveEnemies() {
         //}
 
         if (stateObj.firingLaserLeft) {
-            if (stateObj.firingLaserLeft % screenwidthBlocks !== 0) {
+            if (stateObj.firingLaserLeft % stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks !== 0) {
                 if (stateObj.gameMap[stateObj.firingLaserLeft - 1] === "empty") {
                     stateObj = await immer.produce(stateObj, (newState) => {
                         newState.gameMap[stateObj.firingLaserLeft - 1] = "active-laser"
@@ -557,7 +555,7 @@ async function moveEnemies() {
         }
 
         if (stateObj.firingLaserRight) {
-            if ((stateObj.firingLaserRight+1) % screenwidthBlocks !== 0) {
+            if ((stateObj.firingLaserRight+1) % stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks !== 0) {
                 if (stateObj.gameMap[stateObj.firingLaserRight + 1] === "empty") {
                     stateObj = await immer.produce(stateObj, (newState) => {
                         newState.gameMap[stateObj.firingLaserRight + 1] = "active-laser"
@@ -1160,12 +1158,12 @@ document.addEventListener('keydown', async function(event) {
     let stateObj = {...state};
     let viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     let viewportHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-    let currentHeight = Math.floor(stateObj.currentPosition/screenwidthBlocks)
-    let currentWidth = Math.floor(stateObj.currentPosition % screenwidthBlocks)
+    let currentHeight = Math.floor(stateObj.currentPosition/stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks)
+    let currentWidth = Math.floor(stateObj.currentPosition % stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks)
     let scrollHeight = Math.floor(viewportHeight * 0.1);
     let scrollWidth = Math.floor(viewportWidth * 0.1);
     if (stateObj.inTransition === false && stateObj.inStore === false && stateObj.viewingInventory===false 
-        && stateObj.choosingRobot === false && stateObj.choosingRoulette === false) {
+        && stateObj.choosingRobot === false && stateObj.choosingRoulette === false && stateObj.lostTheGame === false) {
         if (event.key === 'ArrowUp' || event.key ==="w") {
             // Execute your function for the up arrow key
             stateObj = await UpArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth);
@@ -1215,14 +1213,14 @@ async function checkForDeath(stateObj) {
     if (stateObj.sellingItems === false && stateObj.inStore === false) {
         
 
-        if (stateObj.gameMap[stateObj.currentPosition-1] === "enemy" && stateObj.currentPosition % screenwidthBlocks !== 0) {
+        if (stateObj.gameMap[stateObj.currentPosition-1] === "enemy" && stateObj.currentPosition % stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks !== 0) {
             stateObj = await doDamage(stateObj, 50, -1)
-        } else if (stateObj.gameMap[stateObj.currentPosition+1] === "enemy" && (stateObj.currentPosition+1) % screenwidthBlocks !== 0) {
+        } else if (stateObj.gameMap[stateObj.currentPosition+1] === "enemy" && (stateObj.currentPosition+1) % stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks !== 0) {
             stateObj = await doDamage(stateObj, 50, 1)
-        } else if (stateObj.gameMap[stateObj.currentPosition+screenwidthBlocks] === "enemy") {
-            stateObj = await doDamage(stateObj, 50, screenwidthBlocks)
-        } else if (stateObj.gameMap[stateObj.currentPosition-screenwidthBlocks] === "enemy") {
-            stateObj = await doDamage(stateObj, 50, -screenwidthBlocks)
+        } else if (stateObj.gameMap[stateObj.currentPosition+stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] === "enemy") {
+            stateObj = await doDamage(stateObj, 50, stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks)
+        } else if (stateObj.gameMap[stateObj.currentPosition-stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] === "enemy") {
+            stateObj = await doDamage(stateObj, 50, -stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks)
         }
     
         await changeState(stateObj)
@@ -1294,9 +1292,9 @@ async function doDamage(stateObj, damageAmount, enemyLocation) {
 
 async function LeftArrow(stateObj) {   
     //make sure not on left side
-    if (stateObj.currentPosition % screenwidthBlocks !== 0 ) {
+    if (stateObj.currentPosition % stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks !== 0 ) {
 
-        if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty" && stateObj.gameMap[stateObj.currentPosition - 1] !== "empty") {
+        if (stateObj.gameMap[stateObj.currentPosition + stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] === "empty" && stateObj.gameMap[stateObj.currentPosition - 1] !== "empty") {
             if (stateObj.gameMap[stateObj.currentPosition-1] !== "STORE") {
                 return stateObj
             }
@@ -1316,7 +1314,7 @@ async function LeftArrow(stateObj) {
 //7, 15, 23
 async function RightArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth) {
     //do nothing if you're in the air and space to your left isn't air
-    if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty" && stateObj.gameMap[stateObj.currentPosition + 1] !== "empty") {
+    if (stateObj.gameMap[stateObj.currentPosition + stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] === "empty" && stateObj.gameMap[stateObj.currentPosition + 1] !== "empty") {
         return stateObj
     } 
     if (stateObj.gameMap[stateObj.currentPosition + 1] === "stone-5" || stateObj.gameMap[stateObj.currentPosition + 1] === "stone-6"
@@ -1324,7 +1322,7 @@ async function RightArrow(stateObj, currentHeight, currentWidth, scrollHeight, s
         return stateObj
     } else {
         //only execute if not already on right side
-        if ((stateObj.currentPosition+1) % screenwidthBlocks !== 0) {
+        if ((stateObj.currentPosition+1) % stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks !== 0) {
             stateObj = await calculateMoveChange(stateObj, 1)
         }
     }
@@ -1336,11 +1334,10 @@ async function RightArrow(stateObj, currentHeight, currentWidth, scrollHeight, s
 //check target square figures out 
 
 async function UpArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth) {
-    let newSquare = stateObj.gameMap[stateObj.currentPosition - screenwidthBlocks]
+    let newSquare = stateObj.gameMap[stateObj.currentPosition - stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks]
     if (stateObj.currentPosition > 7 && stateObj.inTransition === false) {
         if (newSquare=== "empty" || newSquare === "STORE") {
-            window.scrollTo(currentWidth*scrollWidth- (scrollWidth*3), currentHeight*scrollHeight - (scrollHeight*2))
-            stateObj = await calculateMoveChange(stateObj, -screenwidthBlocks)
+            stateObj = await calculateMoveChange(stateObj, -stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks)
             stateObj = immer.produce(stateObj, (newState) => {
             })
         }   
@@ -1349,13 +1346,12 @@ async function UpArrow(stateObj, currentHeight, currentWidth, scrollHeight, scro
 }
 
 async function DownArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth) {
-    if (stateObj.currentPosition < (stateObj.gameMap.length-screenwidthBlocks) && stateObj.gameMap[stateObj.currentPosition+screenwidthBlocks] !== "stone") {
-        if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "stone-5" || stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "stone-6"
-        || stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "stone-7") {
+    if (stateObj.currentPosition < (stateObj.gameMap.length-stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks) && stateObj.gameMap[stateObj.currentPosition+stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] !== "stone") {
+        if (stateObj.gameMap[stateObj.currentPosition + stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] === "stone-5" || stateObj.gameMap[stateObj.currentPosition + stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] === "stone-6"
+        || stateObj.gameMap[stateObj.currentPosition + stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] === "stone-7") {
             return stateObj
         }
-        window.scrollTo(currentWidth*scrollWidth- (scrollWidth*3), currentHeight*scrollHeight - (scrollHeight))
-        stateObj = await calculateMoveChange(stateObj, screenwidthBlocks)
+        stateObj = await calculateMoveChange(stateObj, stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks)
     }
     return stateObj
 }
@@ -1459,9 +1455,11 @@ async function calculateMoveChange(stateObj, squaresToMove) {
     } else if (targetSquare === "EXIT") {
         stateObj = await goToNextLevel(stateObj)
     } else if (targetSquare === "relic1") {
+        console.log("collecting relic 1")
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await stateObj.mapRelic1.relicFunc(stateObj)
     } else if (targetSquare === "relic2") {
+        console.log("collecting relic 2")
         stateObj = await handleSquare(stateObj, targetSquareNum, 2)
         stateObj = await stateObj.mapRelic2.relicFunc(stateObj)
     } else {
@@ -1721,27 +1719,27 @@ async function detonateBomb(stateObj, detonatePosition) {
     })
     for (i=0; i < numberBlocks; i++) {
         leftBlocksToBlast = i;
-        if ((detonatePosition-i) % screenwidthBlocks === 0) {
+        if ((detonatePosition-i) % stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks === 0) {
             break;
         }
     }
     for (i=0; i < numberBlocks; i++) {
         rightBlocksToBlast = i;
-        if ((detonatePosition+i+1) % screenwidthBlocks === 0) {
+        if ((detonatePosition+i+1) % stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks === 0) {
             break;
         }
     }
 
     for (i=0; i < numberBlocks; i++) {
         upBlocksToBlast = i;
-        if ((detonatePosition-(screenwidthBlocks*(i+1))) < 0) {
+        if ((detonatePosition-(stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks*(i+1))) < 0) {
             break;
         }
     }
 
     for (i=0; i < numberBlocks; i++) {
         downBlocksToBlast = i;
-        if ((detonatePosition+(screenwidthBlocks*(i+1))) > (stateObj.gameMap.length-screenwidthBlocks) ) {
+        if ((detonatePosition+(stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks*(i+1))) > (stateObj.gameMap.length-stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks) ) {
             break;
         }
     }    
@@ -1756,11 +1754,11 @@ async function detonateBomb(stateObj, detonatePosition) {
     }
 
     for (i=1; i < upBlocksToBlast+1; i++) {
-        stateObj = await detonateBlock(stateObj, detonatePosition-(screenwidthBlocks*i))
+        stateObj = await detonateBlock(stateObj, detonatePosition-(stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks*i))
     }
 
     for (i=1; i < downBlocksToBlast+1; i++) {
-        stateObj = await detonateBlock(stateObj, detonatePosition+(screenwidthBlocks*i))
+        stateObj = await detonateBlock(stateObj, detonatePosition+(stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks*i))
     }
 
     if (leftBlocksToBlast > 0 && upBlocksToBlast > 0) {
@@ -1768,7 +1766,7 @@ async function detonateBomb(stateObj, detonatePosition) {
             if ((leftBlocksToBlast >= i)) {
                 for (j=1; j < numberBlocks+1; j++) {
                     if (upBlocksToBlast >= j) {
-                        stateObj = await detonateBlock(stateObj, detonatePosition - (screenwidthBlocks*j)-i)
+                        stateObj = await detonateBlock(stateObj, detonatePosition - (stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks*j)-i)
                     }    
                 }
             }
@@ -1780,7 +1778,7 @@ async function detonateBomb(stateObj, detonatePosition) {
             if ((leftBlocksToBlast >= i)) {
                 for (j=1; j < downBlocksToBlast+1; j++) {
                     if (upBlocksToBlast >= j) {
-                        stateObj = await detonateBlock(stateObj, detonatePosition + (screenwidthBlocks*j)-i)
+                        stateObj = await detonateBlock(stateObj, detonatePosition + (stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks*j)-i)
                     }    
                 }
             }
@@ -1792,7 +1790,7 @@ async function detonateBomb(stateObj, detonatePosition) {
             if ((rightBlocksToBlast >= i)) {
                 for (j=1; j < numberBlocks+1; j++) {
                     if (upBlocksToBlast >= j) {
-                        stateObj = await detonateBlock(stateObj, detonatePosition - (screenwidthBlocks*j)+i)
+                        stateObj = await detonateBlock(stateObj, detonatePosition - (stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks*j)+i)
                     }    
                 }
             }
@@ -1804,7 +1802,7 @@ async function detonateBomb(stateObj, detonatePosition) {
             if ((rightBlocksToBlast >= i)) {
                 for (j=1; j < numberBlocks+1; j++) {
                     if (downBlocksToBlast >= j) {
-                        stateObj = await detonateBlock(stateObj, detonatePosition + (screenwidthBlocks*j)+i)
+                        stateObj = await detonateBlock(stateObj, detonatePosition + (stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks*j)+i)
                     }    
                 }
             }
@@ -1879,7 +1877,7 @@ async function detonateBlock(stateObj, blockPosition, isLaser=false) {
 
 async function dropBlock(stateObj) {
     let dirtNeeded = stateObj.dirtThresholdNeeded - stateObj.dirtReserves;
-    if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty") {
+    if (stateObj.gameMap[stateObj.currentPosition + stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] === "empty") {
         if (stateObj.dirtReserves >= stateObj.dirtThresholdNeeded || (stateObj.fuelToBlocks > 0) &&  stateObj.currentFuel > Math.floor((dirtNeeded)/stateObj.fuelToBlocks)) {
             let mapText = (stateObj.magneticBlocks) ? "magnetic-" : ""
             if (stateObj.dirtRuby === true) {
@@ -1896,7 +1894,7 @@ async function dropBlock(stateObj) {
                     newState.currentFuel -= Math.floor(dirtNeeded/newState.fuelToBlocks)
                 }
                 if (mapText) {
-                    newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = mapText;
+                    newState.gameMap[stateObj.currentPosition+stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] = mapText;
                 }
                 
                 if (stateObj.dirtRefillsWeapons) {
@@ -1911,12 +1909,12 @@ async function dropBlock(stateObj) {
 }
 
 async function dropBomb(stateObj) {
-    if (stateObj.gameMap[stateObj.currentPosition + screenwidthBlocks] === "empty" && stateObj.bombLocation === false) {
+    if (stateObj.gameMap[stateObj.currentPosition + stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] === "empty" && stateObj.bombLocation === false) {
         stateObj = await immer.produce(stateObj, (newState) => {
             if (newState.bombCurrentTotal > 0) {
-                newState.gameMap[stateObj.currentPosition+screenwidthBlocks] = "BOMB";
+                newState.gameMap[stateObj.currentPosition+stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks] = "BOMB";
                 newState.bombCurrentTotal -= 1;
-                newState.bombLocation = stateObj.currentPosition+screenwidthBlocks
+                newState.bombLocation = stateObj.currentPosition+stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks
                 newState.bombTimer = newState.bombTimerMax;
             }
         })

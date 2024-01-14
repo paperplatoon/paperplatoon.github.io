@@ -1637,8 +1637,65 @@ if (stateObj.blackDiamondInventory > 0) {
 function renderMap(stateObj) {
   let mapDiv = document.createElement("Div");
   mapDiv.classList.add("map-div");
+  //picking the 
+  let screenwidthBlocks = stateObj.floorValues[stateObj.currentLevel].screenwidthBlocks
+  let currentFloor = Math.floor(stateObj.currentPosition / screenwidthBlocks)
+  //starting floor position is 0 if you're not at least 4 floors deep
+  let startingFloor = false;
+  if (currentFloor < 3) {
+    startingFloor = 0
+  } else {
+    if (currentFloor > (stateObj.floorValues[stateObj.currentLevel].numberRows - 3)) {
+      startingFloor = stateObj.floorValues[stateObj.currentLevel].numberRows - 3
+    } else {
+      startingFloor = currentFloor - 2
+    }
+  }
+  let endingFloor = false
+  if (startingFloor === 0) {
+    //only show 8 floors at once
+    endingFloor = 6
+  } else {
+    //if you're near the end of the level, the ending floor range is the end of the level
+    if (currentFloor > (stateObj.floorValues[stateObj.currentLevel].numberRows-3)) {
+      endingFloor = stateObj.floorValues[stateObj.currentLevel].numberRows+3
+    } else {
+      endingFloor = currentFloor+4
+    }
+  }
+  let currentPosition = stateObj.currentPosition - (currentFloor*(screenwidthBlocks))
+  let startingPosition = false
+  if (currentPosition < 4) {
+    startingPosition = 0
+  } else {
+    if (currentPosition > (screenwidthBlocks-6)) {
+      startingPosition = screenwidthBlocks - 10
+    } else {
+      startingPosition = currentPosition - 4
+    }
+  }
+  let endingPosition = false
+  if (startingPosition === 0) {
+    endingPosition = 10
+  } else {
+    endingPosition = (currentPosition > (screenwidthBlocks-6))
+    ? screenwidthBlocks : currentPosition + 6
+  }
+  // console.log("current floor is " + currentFloor)
+  // console.log("starting floor is " + startingFloor)
+  // console.log("ending floor is " + endingFloor)
+  // console.log("current position is " + currentPosition)
+  // console.log("starting position is " + startingPosition)
+  // console.log("ending position is " + endingPosition)
+  
 
   stateObj.gameMap.forEach(async function (mapSquare, squareIndex) {
+    let currentMapFloor = Math.floor(squareIndex / screenwidthBlocks)
+    let inFloorRange = ((currentMapFloor >= startingFloor) && (currentMapFloor < endingFloor))
+    let currentMapPosition = squareIndex - (currentMapFloor*(screenwidthBlocks))
+    let inPositionRange = ((currentMapPosition >= startingPosition) && (currentMapPosition < endingPosition))
+
+    if (inFloorRange && inPositionRange) {
       let mapSquareDiv = document.createElement("Div");
       mapSquareDiv.classList.add("map-square");
 
@@ -1786,8 +1843,15 @@ function renderMap(stateObj) {
       mapSquareImg.src = "img/map/crate.png"
       mapSquareDiv.append(mapSquareImg)
     } 
+
+    if (squareIndex !== stateObj.currentPosition) {
+      //mapSquareDiv.textContent = squareIndex
+    }
+    
       mapDiv.append(mapSquareDiv)
+  }
   })
+
   return mapDiv
 }
 
