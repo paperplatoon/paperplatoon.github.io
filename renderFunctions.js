@@ -1668,18 +1668,18 @@ function renderMap(stateObj) {
   if (currentPosition < 4) {
     startingPosition = 0
   } else {
-    if (currentPosition > (screenwidthBlocks-6)) {
-      startingPosition = screenwidthBlocks - 10
+    if (currentPosition > (screenwidthBlocks-5)) {
+      startingPosition = screenwidthBlocks - 9
     } else {
       startingPosition = currentPosition - 4
     }
   }
   let endingPosition = false
   if (startingPosition === 0) {
-    endingPosition = 10
+    endingPosition = 9
   } else {
-    endingPosition = (currentPosition > (screenwidthBlocks-6))
-    ? screenwidthBlocks : currentPosition + 6
+    endingPosition = (currentPosition > (screenwidthBlocks-5))
+    ? screenwidthBlocks : currentPosition + 5
   }
   // console.log("current floor is " + currentFloor)
   // console.log("starting floor is " + startingFloor)
