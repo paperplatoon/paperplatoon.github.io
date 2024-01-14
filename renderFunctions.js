@@ -28,10 +28,10 @@ function renderTopBarStats(stateObj) {
     fuelText2Div = document.createElement("Div")
     fuelText2Div.classList.add("bars-text-div")
     fuelText2Div.setAttribute("id", "max-fuel-text");
-    if (stateObj.fuelCapacity > 130) {
+    if (stateObj.fuelTankMax > 150) {
         fuelText2Div.classList.add("upgraded-stat")
     }
-    fuelText2Div.textContent = Math.floor(stateObj.currentFuel) + "/" + Math.floor(stateObj.fuelCapacity)
+    fuelText2Div.textContent = Math.floor(stateObj.currentFuel) + "/" + Math.floor(stateObj.fuelTankMax)
 
     let emptyFuelBarDiv = document.createElement("Div");
     emptyFuelBarDiv.classList.add("empty-fuel-bar");
@@ -39,7 +39,7 @@ function renderTopBarStats(stateObj) {
     let currentFuelBarDiv = document.createElement("Div");
     currentFuelBarDiv.classList.add("current-fuel-bar");
     currentFuelBarDiv.setAttribute("id", "current-fuel-bar");
-    if (stateObj.currentFuel >= stateObj.fuelCapacity/3) {
+    if (stateObj.currentFuel >= stateObj.fuelTankMax/3) {
         currentFuelBarDiv.classList.add("full-fuel-bar");
     } else {
         fuelText1Div.classList.add("inventory-full");
@@ -49,7 +49,7 @@ function renderTopBarStats(stateObj) {
             currentFuelBarDiv.classList.add("flash")
         }
     }
-    let barLength = 10*(stateObj.currentFuel/stateObj.fuelCapacity)
+    let barLength = 10*(stateObj.currentFuel/stateObj.fuelTankMax)
     let barText = "width:" + barLength + "vw"
     currentFuelBarDiv.setAttribute("style", barText);
     emptyFuelBarDiv.append(currentFuelBarDiv);
@@ -68,10 +68,10 @@ function renderTopBarStats(stateObj) {
     hullText2Div = document.createElement("Div")
     hullText2Div.classList.add("bars-text-div")
     hullText2Div.setAttribute("id", "hull-integrity-text");
-    if (stateObj.maxHullIntegrity > 100) {
+    if (stateObj.hullArmorMax > 100) {
         hullText2Div.classList.add("upgraded-stat")
     }
-    hullText2Div.textContent = Math.floor(stateObj.currentHullIntegrity) + "/" + Math.floor(stateObj.maxHullIntegrity)
+    hullText2Div.textContent = Math.floor(stateObj.currentHullArmor) + "/" + Math.floor(stateObj.hullArmorMax)
 
     let emptyHullBarDiv = document.createElement("Div");
     emptyHullBarDiv.classList.add("empty-hull-bar");
@@ -80,7 +80,7 @@ function renderTopBarStats(stateObj) {
     let currentHullBarDiv = document.createElement("Div");
     currentHullBarDiv.classList.add("current-hull-bar");
     currentHullBarDiv.setAttribute("id", "current-hull-bar");
-    if (stateObj.currentHullIntegrity > stateObj.maxHullIntegrity/2) {
+    if (stateObj.currentHullArmor > stateObj.hullArmorMax/2) {
         currentHullBarDiv.classList.add("full-hull-bar");
     } else {
         currentHullBarDiv.classList.add("low-hull-bar");
@@ -91,7 +91,7 @@ function renderTopBarStats(stateObj) {
         }
     }
 
-    let hullBarLength = 10*(stateObj.currentHullIntegrity/stateObj.maxHullIntegrity)
+    let hullBarLength = 10*(stateObj.currentHullArmor/stateObj.hullArmorMax)
     let hullBarText = "width:" + hullBarLength + "vw"
     currentHullBarDiv.setAttribute("style", hullBarText);
     emptyHullBarDiv.append(currentHullBarDiv);
@@ -711,7 +711,7 @@ function renderTopBarStats(stateObj) {
           topBarDiv.append(weaponPriceRelicDiv)
     }
 
-    if (stateObj.spareFuelTank > 0) {
+    if (stateObj.sparefuelTank > 0) {
         let weaponPriceRelicDiv = document.createElement("Div")
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
@@ -1645,9 +1645,9 @@ function renderMap(stateObj) {
       if (stateObj.currentPosition === squareIndex) {
           mapSquareDiv.classList.add("player-here")
           let mapSquareImg = document.createElement("Img");
-          if ((stateObj.currentFuel < stateObj.fuelCapacity/3)) {
+          if ((stateObj.currentFuel < stateObj.fuelTankMax/3)) {
               mapSquareImg.classList.add("player-img-low-fuel")
-          } else if (stateObj.currentHullIntegrity <= (stateObj.maxHullIntegrity/2)) {
+          } else if (stateObj.currentHullArmor <= (stateObj.hullArmorMax/2)) {
               mapSquareImg.classList.add("player-img-damaged")
           } else if (stateObj.currentInventory === stateObj.inventoryMax) {
               mapSquareImg.classList.add("player-img-full")
@@ -1775,12 +1775,17 @@ function renderMap(stateObj) {
         mapSquareImg.classList.add("relic-img")
         mapSquareImg.src = stateObj.mapRelic2.imgPath
         mapSquareDiv.append(mapSquareImg)
-    }   else if (mapSquare === "teleporter") {
+    } else if (mapSquare === "teleporter") {
       let mapSquareImg = document.createElement("Img");
       mapSquareImg.classList.add("relic-img")
       mapSquareImg.src = "img/relics/teleporter.png"
       mapSquareDiv.append(mapSquareImg)
-  } 
+    } else if (mapSquare === "crate") {
+      let mapSquareImg = document.createElement("Img");
+      mapSquareImg.classList.add("crate-img")
+      mapSquareImg.src = "img/map/crate.png"
+      mapSquareDiv.append(mapSquareImg)
+    } 
       mapDiv.append(mapSquareDiv)
   })
   return mapDiv
@@ -1958,7 +1963,7 @@ function renderStore(stateObj) {
 
   let fillFuelDiv = document.createElement("Div")
   fillFuelDiv.setAttribute("id", "store-fuel-div")
-  let missingFuel = Math.floor(stateObj.fuelCapacity-stateObj.currentFuel)
+  let missingFuel = Math.floor(stateObj.fuelTankMax-stateObj.currentFuel)
   let fuelPrice = Math.ceil((missingFuel * Math.floor((2+stateObj.currentLevel)*0.5) - (1-stateObj.cheaperShops))/2)
   if (missingFuel > 0) {
       fillFuelDiv.classList.add("store-option")
@@ -1987,7 +1992,7 @@ function renderStore(stateObj) {
 
   let repairDiv = document.createElement("Div")
   repairDiv.setAttribute("id", "store-repair-div")
-  let missingHull = stateObj.maxHullIntegrity-stateObj.currentHullIntegrity
+  let missingHull = stateObj.hullArmorMax-stateObj.currentHullArmor
   if (missingHull > 0) {
       repairDiv.classList.add("store-option")
       let repairText1 = document.createElement("Div")
@@ -2119,6 +2124,75 @@ function renderStore(stateObj) {
   storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, laserUpgradeDiv, buyBombDiv,  
       bombUpgradeDiv, inventoryUpgradeDiv, buyRelic2Div, buyNothingDiv)
 
+  return storeDiv
+}
+
+
+function renderRouletteChoices(stateObj) {
+  
+  let commonArray = [...commonRouletteChoices]
+  let uncommonArray = [...uncommonRouletteChoices]
+  let rareArray = [...rareRouletteChoices]
+  let legendaryArray = [...legendaryRouletteChoices]
+
+  let storeDiv = document.createElement("Div")
+  storeDiv.classList.add("store-div")
+
+  let roulette1Rarity = Math.random()
+  let roulette2Rarity = Math.random()
+  let roulette3Rarity = Math.random()
+  let roulette1Array = false
+  let roulette2Array = false
+  let roulette3Array = false
+  if (roulette1Rarity > 0.99) {roulette1Array = legendaryArray} else if (roulette1Rarity > 0.95) {roulette1Array = rareArray} else if
+  (roulette1Rarity > 0.75) {roulette1Array = uncommonArray} else {roulette1Array = commonArray}
+
+  if (roulette2Rarity > 0.99) {roulette2Array = legendaryArray} else if (roulette2Rarity > 0.95) {roulette2Array = rareArray} else if
+  (roulette2Rarity > 0.75) {roulette2Array = uncommonArray} else {roulette2Array = commonArray}
+
+  if (roulette3Rarity > 0.99) {roulette3Array = legendaryArray} else if (roulette3Rarity > 0.95) {roulette3Array = rareArray} else if
+  (roulette3Rarity > 0.75) {roulette3Array = uncommonArray} else {roulette3Array = commonArray}
+
+
+
+  let rouletteNum1 = Math.floor(Math.random() * roulette1Array.length)
+  let rouletteChoice1 = roulette1Array[rouletteNum1]
+  roulette1Array.splice(rouletteNum1, 1)
+
+
+  let choice1Div = document.createElement("Div")
+  choice1Div.classList.add("next-level-option")
+  choice1Div.textContent = rouletteChoice1.name + "-" + rouletteChoice1.text
+  choice1Div.classList.add("next-level-clickable")
+  choice1Div.onclick = function () {
+      rouletteChoice1.rouletteFunc(stateObj, rouletteChoice1.value)
+  }
+
+  let rouletteNum2 = Math.floor(Math.random() * roulette2Array.length)
+  let rouletteChoice2 = roulette2Array[rouletteNum2]
+  roulette2Array.splice(rouletteNum2, 1)
+
+  let choice2Div = document.createElement("Div")
+  choice2Div.classList.add("next-level-option")
+  choice2Div.textContent = rouletteChoice2.name + "-" + rouletteChoice2.text
+  choice2Div.classList.add("next-level-clickable")
+  choice2Div.onclick = function () {
+      rouletteChoice2.rouletteFunc(stateObj, rouletteChoice2.value)
+  }
+
+  let rouletteNum3 = Math.floor(Math.random() * roulette3Array.length)
+  let rouletteChoice3 = roulette3Array[rouletteNum3]
+  roulette3Array.splice(rouletteNum3, 1)
+
+  let choice3Div = document.createElement("Div")
+  choice3Div.classList.add("next-level-option")
+  choice3Div.textContent = rouletteChoice3.name + "-" + rouletteChoice3.text
+  choice3Div.classList.add("next-level-clickable")
+  choice3Div.onclick = function () {
+      rouletteChoice3.rouletteFunc(stateObj, rouletteChoice3.value)
+  }
+
+  storeDiv.append(choice1Div, choice2Div, choice3Div)
   return storeDiv
 }
   

@@ -3,15 +3,15 @@ let gameStartState = {
     robotPath: "img/map/miner1.png",
 
     currentFuel: 150,
-    fuelCapacity: 150,
+    fuelTankMax: 150,
     fuelUpgrades: 0,
     fuelUpgradeCost: 1000,
 
-    currentHullIntegrity: 100,
-    maxHullIntegrity: 100,
+    currentHullArmor: 100,
+    hullArmorMax: 100,
     hullUpgradeCost: 1000,
     takingDamage: false,
-    
+
     //states
     currentPosition: false,
     inStore: false,
@@ -23,6 +23,7 @@ let gameStartState = {
     wonTheGame: false,
     startTheGame: false,
     choosingRobot: true,
+    choosingRoulette: false,
     
 
     currentInventory: 0,
@@ -194,9 +195,6 @@ let gameStartState = {
     ],
 }
 
-fuelCapacityUpgrades = [50, 60, 70, 80, 90, 100, 110, 120, 150, 200]
-inventoryMaxUpgrades = [5, 8, 12, 17, 23, 30, 38, 47, 57]
-
 
 
 
@@ -267,34 +265,39 @@ async function ProduceBlockSquares(arrayObj, stateObj) {
             let randomNumber = Math.random() 
             const isEnemy = Math.random()
             let enemyVal = (j < (screenwidthBlocks*3)) ? 1 : floorObj.enemyValue
-            if (isEnemy > enemyVal && (j % screenwidthBlocks !== 0) && ((j+1) % screenwidthBlocks !== 0) && j-1 !== chosenSquare) {
-                arrayObj.pop()
-                arrayObj.push("empty")
-                arrayObj.push("enemy")
-                nextSquareEmpty = true;
+            let isRoulette = Math.random()
+            if (isRoulette > 0.98) {
+                arrayObj.push("crate")
             } else {
-                if (randomNumber > floorObj.barVals[0]) {
-                    arrayObj.push("stone-7")
-                } else if (randomNumber > floorObj.barVals[1]) {
-                    arrayObj.push("stone-6")
-                } else if (randomNumber > floorObj.barVals[2]) {
-                    arrayObj.push("stone-5")
-                } else if (randomNumber > (floorObj.barVals[3] - (stateObj.rubyIncrease * stateObj.currentLevel))) {
-                    arrayObj.push("4")
-                } else if (randomNumber > floorObj.barVals[4]) {
-                    arrayObj.push("3")
-                } else if (randomNumber > floorObj.barVals[5]) {
-                    arrayObj.push("2")
-                } else if (randomNumber > floorObj.barVals[6]) {
-                    arrayObj.push("1")
-                } else if (randomNumber > 0.55) {
-                    if (stateObj.noEmptySquares) {
-                        arrayObj.push("1")
-                    } else {
+                if (isEnemy > enemyVal && (j % screenwidthBlocks !== 0) && ((j+1) % screenwidthBlocks !== 0) && j-1 !== chosenSquare) {
+                    arrayObj.pop()
                     arrayObj.push("empty")
-                    }
+                    arrayObj.push("enemy")
+                    nextSquareEmpty = true;
                 } else {
-                    arrayObj.push("0")
+                    if (randomNumber > floorObj.barVals[0]) {
+                        arrayObj.push("stone-7")
+                    } else if (randomNumber > floorObj.barVals[1]) {
+                        arrayObj.push("stone-6")
+                    } else if (randomNumber > floorObj.barVals[2]) {
+                        arrayObj.push("stone-5")
+                    } else if (randomNumber > (floorObj.barVals[3] - (stateObj.rubyIncrease * stateObj.currentLevel))) {
+                        arrayObj.push("4")
+                    } else if (randomNumber > floorObj.barVals[4]) {
+                        arrayObj.push("3")
+                    } else if (randomNumber > floorObj.barVals[5]) {
+                        arrayObj.push("2")
+                    } else if (randomNumber > floorObj.barVals[6]) {
+                        arrayObj.push("1")
+                    } else if (randomNumber > 0.55) {
+                        if (stateObj.noEmptySquares) {
+                            arrayObj.push("1")
+                        } else {
+                        arrayObj.push("empty")
+                        }
+                    } else {
+                        arrayObj.push("0")
+                    }
                 }
             }
         }  
@@ -424,7 +427,8 @@ async function moveEnemies() {
     }
     stateObj.timeCounter += 1
     await updateState(stateObj)
-    if (stateObj.inStore === false && stateObj.choosingRobot === false  && stateObj.choosingNextLevel === false && stateObj.sellingItems === false && stateObj.viewingInventory === false && stateObj.startTheGame === false) {
+    if (stateObj.inStore === false && stateObj.choosingRobot === false  && stateObj.choosingNextLevel === false && stateObj.sellingItems === false 
+        && stateObj.viewingInventory === false && stateObj.startTheGame === false && stateObj.choosingRoulette === false) {
 
         stateObj = await immer.produce(stateObj, (newState) => {
             if (newState.takingDamage !== false) {
@@ -608,16 +612,21 @@ async function renderScreen(stateObj) {
     } else if (stateObj.viewingInventory === true) {
         addTopBar = true;
         storeDiv = renderInventory(stateObj)
-    } else if (stateObj.inStore === false && stateObj.choosingNextLevel === false) {
-        addTopBar = true;
-        storeDiv = renderMap(stateObj)
     } else if (stateObj.choosingNextLevel === true) {
         addTopBar = true;
         storeDiv = renderNextLevelChoice(stateObj)
     } else if (stateObj.inStore === true) {
         addTopBar = true;
         storeDiv = renderStore(stateObj)
+    }else if (stateObj.choosingRoulette === true) {
+        addTopBar = true;
+        storeDiv = renderRouletteChoices(stateObj)
+    } else if (stateObj.inStore === false && stateObj.choosingNextLevel === false) {
+        addTopBar = true;
+        storeDiv = renderMap(stateObj)
     }
+
+
     document.getElementById("app").innerHTML = ""
     if (addTopBar) {
         topBar = await renderTopBarStats(stateObj);
@@ -650,8 +659,8 @@ async function chooseRobot2(stateObj) {
     stateObj.choosingRobot = false
     stateObj.startTheGame = true;
     stateObj.robotPath = "img/map/robot2.png",
-    stateObj.currentHullIntegrity = 20;
-    stateObj.maxHullIntegrity = 20;
+    stateObj.currentHullArmor = 20;
+    stateObj.hullArmorMax = 20;
     stateObj.bronzeMaxHull = 1;
     await changeState(stateObj);
 }
@@ -660,7 +669,7 @@ async function chooseRobot3(stateObj) {
     stateObj.robotPath = "img/map/robot3.png",
     stateObj.choosingRobot = false
     stateObj.startTheGame = true;
-    stateObj.fuelCapacity = 100;
+    stateObj.fuelTankMax = 100;
     stateObj.currentFuel = 90;
     stateObj.fuelTeleportCost = 40;
     await changeState(stateObj);
@@ -670,8 +679,8 @@ async function chooseRobot4(stateObj) {
     stateObj.choosingRobot = false
     stateObj.startTheGame = true;
     stateObj.robotPath = "img/map/robot4.png",
-    stateObj.currentHullIntegrity = 75;
-    stateObj.maxHullIntegrity = 75;
+    stateObj.currentHullArmor = 75;
+    stateObj.hullArmorMax = 75;
     stateObj.dirtThresholdNeeded = 30;
     await changeState(stateObj);
 }
@@ -940,13 +949,13 @@ async function dirtEfficiencyChoice(stateObj) {
 //------------------------------------------------------------------------------------
 
 async function fillFuel(stateObj) {
-    let missingFuel = Math.floor(stateObj.fuelCapacity-stateObj.currentFuel)
+    let missingFuel = Math.floor(stateObj.fuelTankMax-stateObj.currentFuel)
     let fuelPrice = 1+stateObj.currentLevel
     let fuelCost = Math.ceil((missingFuel * fuelPrice - (1-stateObj.cheaperShops))/2)
     stateObj = immer.produce(stateObj, (newState) => {
         if (missingFuel > 0) {
             if (newState.freeFuel === true ) {
-                newState.currentFuel = newState.fuelCapacity
+                newState.currentFuel = newState.fuelTankMax
             } else {
                 if (newState.bankedCash > fuelCost) {
                     newState.currentFuel += missingFuel;
@@ -965,14 +974,14 @@ async function fillFuel(stateObj) {
 }
 
 async function repairHull(stateObj) {
-    let missingHull = stateObj.maxHullIntegrity - stateObj.currentHullIntegrity
+    let missingHull = stateObj.hullArmorMax - stateObj.currentHullArmor
     stateObj = immer.produce(stateObj, (newState) => {
         if (missingHull > 0) {
             if (newState.bankedCash > Math.ceil(missingHull*5)* (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)) {
-                newState.currentHullIntegrity = newState.maxHullIntegrity ;
+                newState.currentHullArmor = newState.hullArmorMax ;
                 newState.bankedCash -= Math.ceil(missingHull*5)* (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
             } else {
-                newState.currentHullIntegrity += Math.ceil(newState.bankedCash/ (5 * (stateObj.currentLevel+1)) * (1-stateObj.cheaperShops));
+                newState.currentHullArmor += Math.ceil(newState.bankedCash/ (5 * (stateObj.currentLevel+1)) * (1-stateObj.cheaperShops));
                 newState.bankedCash = 0;    
             }
         }
@@ -1016,7 +1025,7 @@ async function bombUpgrade(stateObj) {
 
 async function upgradeFuelGold(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.fuelCapacity += 50;
+        newState.fuelTankMax += 50;
         newState.currentFuel += 50;
         newState.goldInventory -= stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
         newState.currentInventory -= stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
@@ -1058,15 +1067,15 @@ async function upgradeHullGold(stateObj) {
         stateObj = immer.produce(stateObj, (newState) => {
             newState.goldInventory -= goldPrice;
             newState.currentInventory -= goldPrice;
-            newState.currentHullIntegrity +=50;
-            newState.maxHullIntegrity +=50;
+            newState.currentHullArmor +=50;
+            newState.hullArmorMax +=50;
         })
     } else if (rubyPrice > 0) {
         stateObj = immer.produce(stateObj, (newState) => {
             newState.rubyInventory -= rubyPrice;
             newState.currentInventory -= rubyPrice;
-            newState.currentHullIntegrity +=50;
-            newState.maxHullIntegrity +=50;
+            newState.currentHullArmor +=50;
+            newState.hullArmorMax +=50;
         })
     }
     await changeState(stateObj);
@@ -1155,7 +1164,8 @@ document.addEventListener('keydown', async function(event) {
     let currentWidth = Math.floor(stateObj.currentPosition % screenwidthBlocks)
     let scrollHeight = Math.floor(viewportHeight * 0.1);
     let scrollWidth = Math.floor(viewportWidth * 0.1);
-    if (stateObj.inTransition === false && stateObj.inStore === false && stateObj.viewingInventory===false && stateObj.choosingRobot === false) {
+    if (stateObj.inTransition === false && stateObj.inStore === false && stateObj.viewingInventory===false 
+        && stateObj.choosingRobot === false && stateObj.choosingRoulette === false) {
         if (event.key === 'ArrowUp' || event.key ==="w") {
             // Execute your function for the up arrow key
             stateObj = await UpArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth);
@@ -1222,7 +1232,7 @@ async function checkForDeath(stateObj) {
             if (stateObj.spareFuelTank > 0) {
                 stateObj = await immer.produce(stateObj, (newState) => {
                     newState.spareFuelTank -= 1
-                    newState.currentFuel = newState.fuelCapacity
+                    newState.currentFuel = newState.fuelTankMax
                 })
                 await changeState(stateObj)
             } else {
@@ -1231,7 +1241,7 @@ async function checkForDeath(stateObj) {
             
         }
 
-        if (stateObj.currentHullIntegrity <= 0) {
+        if (stateObj.currentHullArmor <= 0) {
             await loseTheGame("Your miner took too much damage and exploded!");
         }
     } 
@@ -1251,19 +1261,19 @@ async function doDamage(stateObj, damageAmount, enemyLocation) {
                     document.querySelectorAll(".enemy-img")[enemyIndex].classList.add("enemy-death")
                 }
                 if (newState.killEnemiesHullModifier > 0) {
-                    newState.currentHullIntegrity += newState.killEnemiesHullModifier
-                    newState.maxHullIntegrity += newState.killEnemiesHullModifier
+                    newState.currentHullArmor += newState.killEnemiesHullModifier
+                    newState.hullArmorMax += newState.killEnemiesHullModifier
                 }
     
                 if (newState.killEnemiesForMoney > 0) {
                     newState.bankedCash += newState.killEnemiesForMoney
                 }
 
-                if (newState.halfDamageFullFuel < 1 && newState.currentFuel >= (newState.fuelCapacity/2)) {
-                    newState.currentHullIntegrity -= Math.floor(((damageAmount * newState.enemyDamageModifier) * 0.5));
+                if (newState.halfDamageFullFuel < 1 && newState.currentFuel >= (newState.fuelTankMax/2)) {
+                    newState.currentHullArmor -= Math.floor(((damageAmount * newState.enemyDamageModifier) * 0.5));
                     newState.takingDamage = 5
                 } else {
-                    newState.currentHullIntegrity -= (damageAmount * newState.enemyDamageModifier);
+                    newState.currentHullArmor -= (damageAmount * newState.enemyDamageModifier);
                     newState.takingDamage = 5
                 }
 
@@ -1282,7 +1292,7 @@ async function doDamage(stateObj, damageAmount, enemyLocation) {
     return stateObj
 }
 
-async function LeftArrow(stateObj, currentHeight, currentWidth, scrollHeight, scrollWidth) {   
+async function LeftArrow(stateObj) {   
     //make sure not on left side
     if (stateObj.currentPosition % screenwidthBlocks !== 0 ) {
 
@@ -1295,7 +1305,6 @@ async function LeftArrow(stateObj, currentHeight, currentWidth, scrollHeight, sc
         || stateObj.gameMap[stateObj.currentPosition - 1] === "stone-7") {
             return stateObj
         }
-        //window.scrollTo(currentWidth*scrollWidth- (scrollWidth*4), currentHeight*scrollHeight - (scrollHeight*2))
         stateObj = await calculateMoveChange(stateObj, -1)
         
     return stateObj
@@ -1371,8 +1380,8 @@ async function calculateMoveChange(stateObj, squaresToMove) {
                 }
                 
                 if (stateObj.bronzeMaxHull > 0) {
-                    newState.currentHullIntegrity += stateObj.bronzeMaxHull;
-                    newState.maxHullIntegrity += stateObj.bronzeMaxHull
+                    newState.currentHullArmor += stateObj.bronzeMaxHull;
+                    newState.hullArmorMax += stateObj.bronzeMaxHull
                 }
             })
         } 
@@ -1385,15 +1394,15 @@ async function calculateMoveChange(stateObj, squaresToMove) {
                 newState.silverInventory += 1
                 newState.currentInventory +=1
                 if (stateObj.silverHealing > 0) {
-                    if (newState.maxHullIntegrity - newState.currentHullIntegrity < newState.silverHealing) {
-                        newState.currentHullIntegrity = newState.maxHullIntegrity
+                    if (newState.hullArmorMax - newState.currentHullArmor < newState.silverHealing) {
+                        newState.currentHullArmor = newState.hullArmorMax
                     } else {
-                        newState.currentHullIntegrity += newState.silverHealing
+                        newState.currentHullArmor += newState.silverHealing
                     }
                 }
                 if (stateObj. silverMaxFuel > 0) {
                     newState.currentFuel += stateObj.silverMaxFuel;
-                    newState.fuelCapacity += stateObj.silverMaxFuel
+                    newState.fuelTankMax += stateObj.silverMaxFuel
                 }
             })
         } 
@@ -1440,6 +1449,8 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         stateObj = await handleSquare(stateObj, targetSquareNum, 1)
     } else if (targetSquare === "teleporter") {
         stateObj = await levelTeleport(stateObj)
+    } else if (targetSquare === "crate") {
+        stateObj = await chooseRoulette(stateObj)
     } else if (targetSquare === "enemy") {
         stateObj = await doDamage(stateObj, 75)
         stateObj = await handleSquare(stateObj, targetSquareNum, 1)
@@ -1811,18 +1822,18 @@ async function detonateBlock(stateObj, blockPosition, isLaser=false) {
             newState.enemyMovementArray.splice(enemyIndex, 1);
             newState.enemiesKilledPerLevel += 1;
             if (newState.killEnemiesHullModifier > 0) {
-                newState.currentHullIntegrity += newState.killEnemiesHullModifier
-                newState.maxHullIntegrity += newState.killEnemiesHullModifier
+                newState.currentHullArmor += newState.killEnemiesHullModifier
+                newState.hullArmorMax += newState.killEnemiesHullModifier
             }
 
             if (newState.killEnemiesForMoney > 0) {
                 newState.bankedCash += newState.killEnemiesForMoney
             }
             if (newState.killEnemiesForHealing > 0) {
-                if (newState.maxHullIntegrity - newState.currentHullIntegrity < newState.killEnemiesForHealing) {
-                    newState.currentHullIntegrity = newState.maxHullIntegrity
+                if (newState.hullArmorMax - newState.currentHullArmor < newState.killEnemiesForHealing) {
+                    newState.currentHullArmor = newState.hullArmorMax
                 } else {
-                    newState.currentHullIntegrity += newState.killEnemiesForHealing
+                    newState.currentHullArmor += newState.killEnemiesForHealing
                 }
             }
 
@@ -1877,7 +1888,7 @@ async function dropBlock(stateObj) {
                 mapText += "0"
             }
             stateObj = await immer.produce(stateObj, (newState) => {
-                newState.fuelCapacity += newState.dirtToMaxFuel
+                newState.fuelTankMax += newState.dirtToMaxFuel
                 if (newState.dirtReserves >= newState.dirtThresholdNeeded) {
                     newState.dirtReserves -= newState.dirtThresholdNeeded;
                 } else if (newState.currentFuel > Math.floor((dirtNeeded)/newState.fuelToBlocks)) {
@@ -1931,6 +1942,14 @@ async function levelTeleport(stateObj) {
         })
         window.scrollTo(0, 0);
     return stateObj
+}
+
+async function chooseRoulette(stateObj) {
+    console.log("firing choose roulette")
+        stateObj = await immer.produce(stateObj, (newState) => {
+            newState.choosingRoulette = true;
+        })
+        return stateObj;
 }
 
 
