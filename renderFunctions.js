@@ -201,7 +201,7 @@ function renderTopBarStats(stateObj) {
     if (stateObj.dirtReserves >= (stateObj.dirtThresholdNeeded)) {
         dirtString = dirtString + " - press P to drop"
     }
-    if (stateObj.dirtThresholdNeeded < 50) {
+    if (stateObj.dirtThresholdNeeded < 50 || stateObj.noDirtThreshold === true) {
         dirtDiv.classList.add("upgraded-stat")
     }
     dirtDiv.textContent = dirtString
@@ -1076,6 +1076,14 @@ function renderTopBarStats(stateObj) {
 //store that lets you sell individual rows
 function renderSellingItems(stateObj) {
   let storeDiv = document.createElement("Div")
+  let bronzeCost = 40
+  let silverCost = 100
+  let goldCost = 250
+  let rubyCost = 600
+  let amethystCost = 1500
+  let diamondCost = 4000
+  let blackDiamondCost = 10000
+
   storeDiv.classList.add("store-div")
 
   let sellDiv = document.createElement("Div")
@@ -1088,7 +1096,7 @@ function renderSellingItems(stateObj) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("bronze-sell-row")
-      let bronzeSellTotal = ((20*stateObj.bronzeSilverBonus*stateObj.splinterCellModifier)*stateObj.bronzeInventory)
+      let bronzeSellTotal = ((bronzeCost*stateObj.bronzeSilverBonus*stateObj.splinterCellModifier)*stateObj.bronzeInventory)
       inventoryDiv.textContent = "Bronze Ore (" + stateObj.bronzeInventory + "): $" + bronzeSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellBronze(stateObj, bronzeSellTotal)
@@ -1100,7 +1108,7 @@ function renderSellingItems(stateObj) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("silver-sell-row")
-      let silverSellTotal = ((50*stateObj.bronzeSilverBonus*stateObj.splinterCellModifier)*stateObj.silverInventory)
+      let silverSellTotal = ((silverCost*stateObj.bronzeSilverBonus*stateObj.splinterCellModifier)*stateObj.silverInventory)
       inventoryDiv.textContent = "Silver Ore (" + stateObj.silverInventory + "): $" + silverSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellSilver(stateObj, silverSellTotal)
@@ -1113,7 +1121,7 @@ function renderSellingItems(stateObj) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("gold-sell-row")
-      let tempSellTotal = ((125*stateObj.splinterCellModifier)*stateObj.goldInventory)
+      let tempSellTotal = ((goldCost*stateObj.splinterCellModifier)*stateObj.goldInventory)
       inventoryDiv.textContent = "Gold Ore (" + stateObj.goldInventory + "): $" + tempSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellGold(stateObj, tempSellTotal)
@@ -1126,7 +1134,7 @@ function renderSellingItems(stateObj) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("ruby-sell-row")
-      let tempSellTotal = ((300*stateObj.splinterCellModifier)*stateObj.rubyInventory)
+      let tempSellTotal = ((rubyCost*stateObj.splinterCellModifier)*stateObj.rubyInventory)
       inventoryDiv.textContent = "Rubies (" + stateObj.rubyInventory + "): " + tempSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellRuby(stateObj, tempSellTotal)
@@ -1138,7 +1146,7 @@ function renderSellingItems(stateObj) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("amethyst-sell-row")
-      let tempSellTotal = ((750*stateObj.splinterCellModifier)*stateObj.amethystInventory)
+      let tempSellTotal = ((amethystCost*stateObj.splinterCellModifier)*stateObj.amethystInventory)
       inventoryDiv.textContent = "Amethyst (" + stateObj.amethystInventory + "): $" + tempSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellAmethyst(stateObj, tempSellTotal)
@@ -1150,7 +1158,7 @@ function renderSellingItems(stateObj) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("diamond-sell-row")
-      let tempSellTotal = ((1800*stateObj.splinterCellModifier)*stateObj.diamondInventory)
+      let tempSellTotal = ((diamondCost*stateObj.splinterCellModifier)*stateObj.diamondInventory)
       inventoryDiv.textContent = "Diamonds (" + stateObj.diamondInventory + "): $" + tempSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellDiamond(stateObj, tempSellTotal)
@@ -1162,7 +1170,7 @@ function renderSellingItems(stateObj) {
       let inventoryDiv = document.createElement("Div")
       inventoryDiv.classList.add("sell-row")
       inventoryDiv.classList.add("black-diamond-sell-row")
-      let tempSellTotal = ((4500*stateObj.splinterCellModifier)*stateObj.blackDiamondInventory)
+      let tempSellTotal = ((blackDiamondCost*stateObj.splinterCellModifier)*stateObj.blackDiamondInventory)
       inventoryDiv.textContent = "Black Diamonds (" + stateObj.blackDiamondInventory + "): $" + tempSellTotal + " [click to sell all]"
       inventoryDiv.onclick = async function () {
         await sellBlackDiamond(stateObj, tempSellTotal)
@@ -1275,7 +1283,7 @@ function renderSellingItems(stateObj) {
       leaveStore(stateObj)
   }
 
-  sellDiv.append(sellInventoryDiv, sellButtonDiv, upgradeHullDiv, upgradeFuelDiv, tradeRelicRubyDiv, seeStoreDiv,  buyNothingDiv)
+  sellDiv.append(sellInventoryDiv, sellButtonDiv, tradeRelicRubyDiv, seeStoreDiv,  buyNothingDiv)
   storeDiv.append(sellDiv)
   
   return storeDiv
@@ -2087,7 +2095,7 @@ function renderStore(stateObj) {
   invText1.classList.add("store-option-text")
   let invText2 = document.createElement("Div")
   invText2.classList.add("store-option-text")
-  invText1.textContent = "Cargo Bay Size Upgrade" 
+  invText1.textContent = "Cargo Bay Upgrade" 
   invText2.textContent = "$" + stateObj.inventoryUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
   inventoryUpgradeDiv.append(invText1, invText2)
   if (stateObj.bankedCash >= stateObj.inventoryUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)) {
@@ -2127,17 +2135,54 @@ function renderStore(stateObj) {
       let bombText2 = document.createElement("Div")
       bombText2.classList.add("store-option-text")
       bombText1.textContent = "Buy a bomb" 
-      bombText2.textContent = "$" + (stateObj.bombCost * stateObj.weaponsPriceModifier) * (1-stateObj.cheaperShops)
+      let purchaseCostBomb = Math.floor(stateObj.bombCost * (stateObj.currentLevel+1) * stateObj.weaponsPriceModifier * (1-stateObj.cheaperShops))
+      bombText2.textContent = "$" + purchaseCostBomb
       buyBombDiv.append(bombText1, bombText2)
       buyBombDiv.onclick = function () {
       }
-      if (stateObj.bankedCash >= stateObj.bombCost * (1-stateObj.cheaperShops)) {
+      if (stateObj.bankedCash >= purchaseCostBomb) {
           buyBombDiv.classList.add("store-clickable")
           buyBombDiv.onclick = function () {
-              buyBomb(stateObj)
+              buyBomb(stateObj, purchaseCostBomb)
           }
       }
   }
+
+  let fuelUpgradeDiv = document.createElement("Div")
+        fuelUpgradeDiv.setAttribute("id", "store-fuel-upgrade-div")
+        fuelUpgradeDiv.classList.add("store-option")
+        let fuelText1 = document.createElement("Div")
+        fuelText1.classList.add("store-option-text")
+        let fuelText2 = document.createElement("Div")
+        fuelText2.classList.add("store-option-text")
+        fuelText1.textContent = "Fuel Tank Upgrade" 
+        let purchaseCost = Math.floor(stateObj.fuelUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops))
+        fuelText2.textContent = "$" + purchaseCost
+        fuelUpgradeDiv.append(fuelText1, fuelText2)
+        if (stateObj.bankedCash >= purchaseCost) {
+            fuelUpgradeDiv.classList.add("store-clickable")
+            fuelUpgradeDiv.onclick = function () {
+                upgradeFuel(stateObj, purchaseCost)
+            }
+        }
+
+        let hullUpgradeDiv = document.createElement("Div")
+        hullUpgradeDiv.setAttribute("id", "store-hull-upgrade-div")
+        hullUpgradeDiv.classList.add("store-option")
+        let hullText1 = document.createElement("Div")
+        hullText1.classList.add("store-option-text")
+        let hullText2 = document.createElement("Div")
+        hullText2.classList.add("store-option-text")
+        hullText1.textContent = "Hull Armor Upgrade" 
+        let hullPrice = stateObj.hullUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops)
+        hullText2.textContent = "$" + hullPrice
+        hullUpgradeDiv.append(hullText1, hullText2)
+        if (stateObj.bankedCash >= hullPrice) {
+            hullUpgradeDiv.classList.add("store-clickable")
+            hullUpgradeDiv.onclick = function () {
+                upgradeHull(stateObj, hullPrice)
+            }
+        }
 
   let upgradeBombDistanceDiv = document.createElement("Div")
   upgradeBombDistanceDiv.setAttribute("id", "store-upgrade-bomb-distance-div")
@@ -2147,12 +2192,34 @@ function renderStore(stateObj) {
   let bombDistText2 = document.createElement("Div")
   bombDistText2.classList.add("store-option-text")
   bombDistText1.textContent = "Bomb Distance Upgrade" 
-  bombDistText2.textContent = "$" + stateObj.bombDistanceUpgradeCost
+  let purchaseCostBombUp = Math.floor(stateObj.bombDistanceUpgradeCost * (stateObj.currentLevel+1) * (1-stateObj.cheaperShops))
+  bombDistText2.textContent = "$" + purchaseCostBombUp
   upgradeBombDistanceDiv.append(bombDistText1, bombDistText2)
-  if (stateObj.bankedCash >= stateObj.bombDistanceUpgradeCost) {
+  if (stateObj.bankedCash >= purchaseCostBombUp) {
       upgradeBombDistanceDiv.classList.add("store-clickable")
       upgradeBombDistanceDiv.onclick = function () {
           buyBombDistanceUpgrade(stateObj)
+      }
+  }
+
+  let buyRelic1Div = document.createElement("Div")
+  if (stateObj.storeRelic1 !== false) {
+    buyRelic1Div.setAttribute("id", "store-relic-1-div")
+    buyRelic1Div.classList.add("store-option")
+    buyRelic1Div.classList.add("relic-option")
+      let relicText1 = document.createElement("Div")
+      relicText1.classList.add("store-option-text")
+      let relicText2 = document.createElement("Div")
+      relicText2.classList.add("store-option-text")
+      relicText1.textContent = stateObj.storeRelic2.name + " - " + stateObj.storeRelic2.text
+      let relicPrice = Math.ceil(stateObj.floorValues[stateObj.currentLevel].storeRelicPrice * (1-stateObj.cheaperShops))
+      relicText2.textContent = "$" + relicPrice
+      buyRelic1Div.append(relicText1, relicText2)
+      if (stateObj.bankedCash >= relicPrice) {
+          buyRelic1Div.classList.add("store-clickable")
+          buyRelic1Div.onclick = function () {
+              buyRelic1Func(stateObj, relicPrice)
+          }
       }
   }
 
@@ -2166,12 +2233,13 @@ function renderStore(stateObj) {
       let relicText2 = document.createElement("Div")
       relicText2.classList.add("store-option-text")
       relicText1.textContent = stateObj.storeRelic2.name + " - " + stateObj.storeRelic2.text
-      relicText2.textContent = "$" + Math.ceil(stateObj.floorValues[stateObj.currentLevel].storeRelicPrice * (1-stateObj.cheaperShops))
+      let relicPrice2 = Math.ceil(stateObj.floorValues[stateObj.currentLevel].storeRelicPrice * (1-stateObj.cheaperShops))
+      relicText2.textContent = "$" + relicPrice2
       buyRelic2Div.append(relicText1, relicText2)
-      if (stateObj.bankedCash >= stateObj.floorValues[stateObj.currentLevel].storeRelicPrice) {
+      if (stateObj.bankedCash >= relicPrice2) {
           buyRelic2Div.classList.add("store-clickable")
           buyRelic2Div.onclick = function () {
-              buyRelic2Func(stateObj)
+              buyRelic2Func(stateObj, relicPrice2)
           }
       }
   }
@@ -2185,8 +2253,8 @@ function renderStore(stateObj) {
       leaveStore(stateObj)
   }
 
-  storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, laserUpgradeDiv, buyBombDiv,  
-      bombUpgradeDiv, inventoryUpgradeDiv, buyRelic2Div, buyNothingDiv)
+  storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, buyBombDiv, laserUpgradeDiv, 
+      bombUpgradeDiv, fuelUpgradeDiv, hullUpgradeDiv, inventoryUpgradeDiv, buyRelic2Div, buyNothingDiv)
 
   return storeDiv
 }
