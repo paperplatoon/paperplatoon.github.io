@@ -71,7 +71,7 @@ html, body {
     /* width: 13.5vw;
     height: 12vh; */
     width: 10.95vw;
-    height: 15vh;
+    height: 10vh;
     color: mediumspringgreen;
     transition: background-color 1500ms ease-out;
     /* display: flex;
@@ -240,7 +240,7 @@ html, body {
 .player-here {
   position: relative;
   width: 10.95vw;
-  height: 15vh;
+  height: 10vh;
 
 }
   .player-img {
@@ -319,7 +319,7 @@ html, body {
   .bronze-img, .enemy-img, .dirt-img, .stone-img,  .silver-img, .gold-img, .ruby-img, .amethyst-img, .diamond-img, .blkdiamond-img,
   .stone-amethyst-img, .stone-diamond-img, .stone-blkdiamond-img, .crate-img {
     width: 10.95vw;
-    height: 15vh;
+    height: 10vh;
     object-fit: cover;
   }
 

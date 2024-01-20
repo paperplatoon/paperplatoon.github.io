@@ -1650,23 +1650,23 @@ function renderMap(stateObj) {
   let currentFloor = Math.floor(stateObj.currentPosition / screenwidthBlocks)
   //starting floor position is 0 if you're not at least 4 floors deep
   let startingFloor = false;
-  if (currentFloor < 3) {
+  if (currentFloor < 4) {
     startingFloor = 0
   } else {
-    if (currentFloor > (stateObj.floorValues[stateObj.currentLevel].numberRows - 3)) {
-      startingFloor = stateObj.floorValues[stateObj.currentLevel].numberRows - 3
+    if (currentFloor > (stateObj.floorValues[stateObj.currentLevel].numberRows - 4)) {
+      startingFloor = stateObj.floorValues[stateObj.currentLevel].numberRows - 5
     } else {
-      startingFloor = currentFloor - 2
+      startingFloor = currentFloor - 4
     }
   }
   let endingFloor = false
   if (startingFloor === 0) {
     //only show 8 floors at once
-    endingFloor = 6
+    endingFloor = 9
   } else {
     //if you're near the end of the level, the ending floor range is the end of the level
-    if (currentFloor > (stateObj.floorValues[stateObj.currentLevel].numberRows-3)) {
-      endingFloor = stateObj.floorValues[stateObj.currentLevel].numberRows+3
+    if (currentFloor > (stateObj.floorValues[stateObj.currentLevel].numberRows-4)) {
+      endingFloor = stateObj.floorValues[stateObj.currentLevel].numberRows+6
     } else {
       endingFloor = currentFloor+4
     }
