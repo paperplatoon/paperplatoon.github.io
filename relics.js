@@ -536,6 +536,39 @@ let potentialRelics = [
     },
 
     //30
+    fuelMult = {
+        name: "Fuel Multiplier",
+        varName: "rubyLocator",
+        text: "All fuel upgrades are 50% more powerful",
+        relicFunc: async (stateObj) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                newState.overallFuelModifier += 0.5;
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        imgPath: "img/relics/overallfuelmod.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
+    },
+
+    fuelMult = {
+        name: "Hull Multiplier",
+        varName: "rubyLocator",
+        text: "All hull upgrades are 50% more powerful",
+        relicFunc: async (stateObj) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                newState.overallHullModifier += 0.5;
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        imgPath: "img/relics/overallhullmod.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
+    },
 ]
 
 

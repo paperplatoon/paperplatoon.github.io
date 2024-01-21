@@ -6,8 +6,8 @@ let commonRouletteChoices = [
         value: 5,
         rouletteFunc: async (stateObj, value) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.fuelTankMax += value;
-                newState.currentFuel += value;
+                newState.fuelTankMax += Math.ceil(value * newState.overallFuelModifier);;
+                newState.currentFuel += Math.ceil(value * newState.overallFuelModifier);;
                 newState.choosingRoulette = false;
             })
             await changeState(stateObj);
@@ -23,8 +23,8 @@ let commonRouletteChoices = [
         value: 5,
         rouletteFunc: async (stateObj, value) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.hullArmorMax += value;
-                newState.currentHullArmor += value;
+                newState.hullArmorMax += Math.ceil(value  * newState.overallHullModifier);
+                newState.currentHullArmor += Math.ceil(value  * newState.overallHullModifier)
                 newState.choosingRoulette = false;
             })
             await changeState(stateObj);
@@ -33,37 +33,43 @@ let commonRouletteChoices = [
         type: "hull"
     },
 
-    gemone = {
-        name: "Bronze Shavings",
+    cargobayzero = {
+        name: "Cargo Bay",
         rarity: "common",
-        text: "Add $40",
-        value: 40,
+        text: "Increase Cargo Bay by 1",
+        value: 1,
         rouletteFunc: async (stateObj, value) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.bankedCash += value;
+                newState.currentInventory += value;
+                newState.inventoryMax += value;
                 newState.choosingRoulette = false;
             })
             await changeState(stateObj);
             return stateObj
         },
-        type: "gem"
+        type: "cargobay"
     },
 
-    gemtwo = {
-        name: "Bronze Nuggets",
+    dirtClod = {
+        name: "Concentrated Mud",
         rarity: "common",
-        text: "Add $50",
-        value: 50,
+        text: "Fill your dirt reserves",
+        value: 1,
         rouletteFunc: async (stateObj, value) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.bankedCash += value;
+                if (!stateObj.noDirtThreshold) {
+                    newState.dirtReserves = newState.dirtThreshold
+                } else {
+                    newState.dirtReserves += newState.dirtThreshold;
+                }
                 newState.choosingRoulette = false;
             })
             await changeState(stateObj);
             return stateObj
         },
-        type: "gem"
+        type: "cargobay"
     },
+
 ]
 
 let uncommonRouletteChoices = [
@@ -94,8 +100,8 @@ let uncommonRouletteChoices = [
         value: 10,
         rouletteFunc: async (stateObj, value) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.fuelTankMax += value;
-                newState.currentFuel += value;
+                newState.fuelTankMax += Math.ceil(value * newState.overallFuelModifier);;
+                newState.currentFuel += Math.ceil(value * newState.overallFuelModifier);;
                 newState.choosingRoulette = false;
             })
             await changeState(stateObj);
@@ -111,8 +117,8 @@ let uncommonRouletteChoices = [
         value: 10,
         rouletteFunc: async (stateObj, value) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.hullArmorMax += value;
-                newState.currentHullArmor += value;
+                newState.hullArmorMax += Math.ceil(value  * newState.overallHullModifier);
+                newState.currentHullArmor += Math.ceil(value  * newState.overallHullModifier);
                 newState.choosingRoulette = false;
             })
             await changeState(stateObj);
@@ -124,7 +130,7 @@ let uncommonRouletteChoices = [
     cargobayone = {
         name: "Cargo Bay +",
         rarity: "uncommon",
-        text: "Increase Cargo Bay by 1",
+        text: "Increase Cargo Bay by 2",
         value: 1,
         rouletteFunc: async (stateObj, value) => {
             stateObj = immer.produce(stateObj, (newState) => {
@@ -136,6 +142,24 @@ let uncommonRouletteChoices = [
             return stateObj
         },
         type: "cargobay"
+    },
+
+    dirtefficiencyone = {
+        name: "Dirt Efficiency",
+        rarity: "common",
+        text: "Decrease dirt threshold by 10%",
+        value: 1,
+        rouletteFunc: async (stateObj, value) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                if (stateObj.dirtThresholdNeeded > 0) {
+                    newState.dirtThresholdNeeded -= 5
+                }
+                newState.choosingRoulette = false;
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        type: "dirtEfficiency"
     },
 
 ]
@@ -165,8 +189,8 @@ let rareRouletteChoices = [
         value: 15,
         rouletteFunc: async (stateObj, value) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.fuelTankMax += value;
-                newState.currentFuel += value;
+                newState.fuelTankMax += Math.ceil(value * newState.overallFuelModifier);
+                newState.currentFuel += Math.ceil(value * newState.overallFuelModifier);;
                 newState.choosingRoulette = false;
             })
             await changeState(stateObj);
@@ -182,8 +206,8 @@ let rareRouletteChoices = [
         value: 15,
         rouletteFunc: async (stateObj, value) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.hullArmorMax += value;
-                newState.currentHullArmor += value;
+                newState.hullArmorMax += Math.ceil(value  * newState.overallHullModifier);
+                newState.currentHullArmor += Math.ceil(value  * newState.overallHullModifier);
                 newState.choosingRoulette = false;
             })
             await changeState(stateObj);
@@ -208,6 +232,25 @@ let rareRouletteChoices = [
         },
         type: "cargobay"
     },
+    dirtefficiencyone = {
+        name: "Dirt Efficiency+",
+        rarity: "rare",
+        text: "Decrease dirt threshold by 20%",
+        value: 1,
+        rouletteFunc: async (stateObj, value) => {
+            stateObj = immer.produce(stateObj, (newState) => {
+                if (stateObj.dirtThresholdNeeded > 10) {
+                    newState.dirtThresholdNeeded -= 10
+                } else {
+                    newState.dirtThresholdNeeded = 0
+                }
+                newState.choosingRoulette = false;
+            })
+            await changeState(stateObj);
+            return stateObj
+        },
+        type: "dirtEfficiency"
+    },
 
 ]
 
@@ -219,8 +262,8 @@ let legendaryRouletteChoices = [
         value: 8,
         rouletteFunc: async (stateObj, value) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.fuelTankMax += value;
-                newState.currentFuel += value;
+                newState.fuelTankMax += Math.ceil(value * newState.overallFuelModifier);;
+                newState.currentFuel += Math.ceil(value * newState.overallFuelModifier);;
                 newState.choosingRoulette = false;
             })
             await changeState(stateObj);
@@ -236,8 +279,8 @@ let legendaryRouletteChoices = [
         value: 10,
         rouletteFunc: async (stateObj, value) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.hullArmorMax += value;
-                newState.currentHullArmor += value;
+                newState.hullArmorMax += Math.ceil(value  * newState.overallHullModifier);
+                newState.currentHullArmor += Math.ceil(value  * newState.overallHullModifier);
                 newState.choosingRoulette = false;
             })
             await changeState(stateObj);

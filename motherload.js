@@ -81,6 +81,8 @@ let gameStartState = {
     laserGemRefill: 0,
     efficientGoldConverter: false,
     rubyIncrease: 0,
+    overallHullModifier: 1,
+    overallFuelModifier: 1,
 
     storeRelics: [],
     mapRelic1: false,
@@ -1046,8 +1048,8 @@ async function bombUpgrade(stateObj) {
 
 async function upgradeFuel(stateObj, purchaseCost) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.fuelTankMax += 50;
-        newState.currentFuel += 50;
+        newState.fuelTankMax += Math.ceil(50 * newState.overallFuelModifier);
+        newState.currentFuel += Math.ceil(50 * newState.overallFuelModifier);
         newState.fuelUpgradeCost += 500
         newState.bankedCash -= purchaseCost
         // newState.goldInventory -= stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
@@ -1055,10 +1057,10 @@ async function upgradeFuel(stateObj, purchaseCost) {
         // newState.rubyInventory -= stateObj.floorValues[stateObj.currentLevel].rubyHullUpgradePrice
         // newState.currentInventory -= stateObj.floorValues[stateObj.currentLevel].rubyHullUpgradePrice
     })
+    document.getElementById("store-fuel-upgrade-div").classList.add("store-clicked")
     await pause(300)
-    document.getElementById("empty-fuel-bar").classList.add("emphasis")
+    document.getElementById("current-fuel-bar").classList.add("emphasis")
     document.getElementById("max-fuel-text").classList.add("emphasis")
-    document.getElementById("max-fuel-text").classList.add("upgraded-stat")
     await pause(300)
     await changeState(stateObj);
 }
@@ -1074,16 +1076,15 @@ async function upgradeInventory(stateObj) {
     document.getElementById("store-inventory-upgrade-div").classList.add("store-clicked")
     await pause(300)
     document.getElementById("inventory-size-text").classList.add("upgraded-stat")
-    document.getElementById("inventory-size-text").classList.add("emphasis")
+    document.getElementById("empty-inv-bar").classList.add("emphasis")
     await pause(300)
     await changeState(stateObj);
 }
 
 async function upgradeHull(stateObj, hullCost) {
-    await pause(300)
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.currentHullArmor +=50;
-        newState.hullArmorMax +=50;
+        newState.currentHullArmor += Math.ceil(50 * newState.overallHullModifier);
+        newState.hullArmorMax += Math.ceil(50 * newState.overallHullModifier);
         newState.bankedCash -= hullCost
     })
     // let goldPrice = stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
@@ -1103,10 +1104,13 @@ async function upgradeHull(stateObj, hullCost) {
     //         newState.hullArmorMax +=50;
     //     })
     // }
-    await changeState(stateObj);
-    document.getElementById("hull-integrity-text").classList.add("upgraded-stat")
-    document.getElementById("hull-integrity-text").classList.add("emphasis")
+    document.getElementById("store-hull-upgrade-div").classList.add("store-clicked")
     await pause(300)
+    document.getElementById("current-hull-bar").classList.remove("emphasis")
+    document.getElementById("current-hull-bar").classList.add("emphasis")
+    await pause(300)
+    await changeState(stateObj);
+    
 }
 
 async function tradeRelicRuby(stateObj) {
@@ -1308,8 +1312,8 @@ async function doDamage(stateObj, damageAmount, enemyLocation) {
                     newState.gameMap[newState.currentPosition+enemyLocation] = "empty"
                 }
                 if (newState.killEnemiesHullModifier > 0) {
-                    newState.currentHullArmor += newState.killEnemiesHullModifier
-                    newState.hullArmorMax += newState.killEnemiesHullModifier
+                    newState.currentHullArmor += Math.ceil(newState.killEnemiesHullModifier * newState.overallHullModifier)
+                    newState.hullArmorMax += Math.ceil(newState.killEnemiesHullModifier * newState.overallHullModifier)
                 }
     
                 if (newState.killEnemiesForMoney > 0) {
@@ -1425,8 +1429,8 @@ async function calculateMoveChange(stateObj, squaresToMove) {
                 }
                 
                 if (stateObj.bronzeMaxHull > 0) {
-                    newState.currentHullArmor += stateObj.bronzeMaxHull;
-                    newState.hullArmorMax += stateObj.bronzeMaxHull
+                    newState.currentHullArmor += Math.ceil(stateObj.bronzeMaxHull * newState.overallHullModifier);
+                    newState.hullArmorMax += Math.ceil(stateObj.bronzeMaxHull * newState.overallHullModifier)
                 }
             })
         } 
@@ -1446,8 +1450,8 @@ async function calculateMoveChange(stateObj, squaresToMove) {
                     }
                 }
                 if (stateObj. silverMaxFuel > 0) {
-                    newState.currentFuel += stateObj.silverMaxFuel;
-                    newState.fuelTankMax += stateObj.silverMaxFuel
+                    newState.currentFuel += Math.ceil(stateObj.silverMaxFuel * newState.overallFuelModifier);
+                    newState.fuelTankMax += Math.ceil(stateObj.silverMaxFuel * newState.overallFuelModifier);
                 }
             })
         } 
@@ -1865,7 +1869,7 @@ async function detonateBlock(stateObj, blockPosition, isLaser=false) {
             newState.enemiesKilledPerLevel += 1;
             if (newState.killEnemiesHullModifier > 0) {
                 newState.currentHullArmor += newState.killEnemiesHullModifier
-                newState.hullArmorMax += newState.killEnemiesHullModifier
+                newState.hullArmorMax += Math.ceil(newState.killEnemiesHullModifier  * newState.overallHullModifier)
             }
 
             if (newState.killEnemiesForMoney > 0) {
@@ -1930,7 +1934,7 @@ async function dropBlock(stateObj) {
                 mapText += "0"
             }
             stateObj = await immer.produce(stateObj, (newState) => {
-                newState.fuelTankMax += newState.dirtToMaxFuel
+                newState.fuelTankMax += Math.ceil(newState.dirtToMaxFuel * newState.overallFuelModifier);
                 if (newState.dirtReserves >= newState.dirtThresholdNeeded) {
                     newState.dirtReserves -= newState.dirtThresholdNeeded;
                 } else if (newState.currentFuel > Math.floor((dirtNeeded)/newState.fuelToBlocks)) {

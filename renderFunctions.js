@@ -262,6 +262,60 @@ function renderTopBarStats(stateObj) {
           topBarDiv.append(weaponPriceRelicDiv)
     }
 
+    if (stateObj.overallHullModifier > 1) {
+      let weaponPriceRelicDiv = document.createElement("Div")
+      weaponPriceRelicDiv.classList.add("relic-div")
+      let weaponImg = document.createElement("Img");
+      weaponImg.classList.add("relic-img")
+      weaponImg.src = "img/relics/overallhullmod.png"
+      weaponPriceRelicDiv.append(weaponImg)
+      
+      weaponPriceRelicDiv.addEventListener('mouseover', function() {
+          const statusText = document.querySelector("#hull-popup");
+          statusText.style.display = 'block'
+        });
+        
+        weaponPriceRelicDiv.addEventListener('mouseout', function() {
+          const statusText = document.querySelector("#hull-popup");
+          statusText.style.display = 'none'
+        });
+  
+        let relicTextDiv = document.createElement("Div");
+        relicTextDiv.setAttribute("id", "hull-popup")
+        relicTextDiv.classList.add("none-display")
+        relicTextDiv.textContent = "Hull upgrades are " + ((stateObj.overallHullModifier*100)-100) + "% more powerful"
+        weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+        topBarDiv.append(weaponPriceRelicDiv)
+  }
+
+  if (stateObj.overallFuelModifier > 1) {
+    let weaponPriceRelicDiv = document.createElement("Div")
+    weaponPriceRelicDiv.classList.add("relic-div")
+    let weaponImg = document.createElement("Img");
+    weaponImg.classList.add("relic-img")
+    weaponImg.src = "img/relics/overallfuelmod.png"
+    weaponPriceRelicDiv.append(weaponImg)
+    
+    weaponPriceRelicDiv.addEventListener('mouseover', function() {
+        const statusText = document.querySelector("#fuel-popup");
+        statusText.style.display = 'block'
+      });
+      
+      weaponPriceRelicDiv.addEventListener('mouseout', function() {
+        const statusText = document.querySelector("#fuel-popup");
+        statusText.style.display = 'none'
+      });
+
+      let relicTextDiv = document.createElement("Div");
+      relicTextDiv.setAttribute("id", "fuel-popup")
+      relicTextDiv.classList.add("none-display")
+      relicTextDiv.textContent = "Fuel upgrades are " + ((stateObj.overallFuelModifier*100)-100) + "% more powerful"
+      weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+      topBarDiv.append(weaponPriceRelicDiv)
+}
+
     if (stateObj.remoteBombs === true) {
         let weaponPriceRelicDiv = document.createElement("Div")
         weaponPriceRelicDiv.classList.add("relic-div")
@@ -2296,14 +2350,20 @@ function renderRouletteChoices(stateObj) {
   let roulette1Array = false
   let roulette2Array = false
   let roulette3Array = false
-  if (roulette1Rarity > 0.99) {roulette1Array = legendaryArray} else if (roulette1Rarity > 0.95) {roulette1Array = rareArray} else if
-  (roulette1Rarity > 0.75) {roulette1Array = uncommonArray} else {roulette1Array = commonArray}
+  let legendThreshold = 0.95
+  let rareThreshold = 0.9
+  let uncommonThreshold = 0.75
+  if (roulette1Rarity > legendThreshold) {roulette1Array = legendaryArray} 
+  else if (roulette1Rarity > rareThreshold) {roulette1Array = rareArray} 
+  else if (roulette1Rarity > uncommonThreshold) {roulette1Array = uncommonArray} else {roulette1Array = commonArray}
 
-  if (roulette2Rarity > 0.99) {roulette2Array = legendaryArray} else if (roulette2Rarity > 0.95) {roulette2Array = rareArray} else if
-  (roulette2Rarity > 0.75) {roulette2Array = uncommonArray} else {roulette2Array = commonArray}
+  if (roulette2Rarity > legendThreshold) {roulette2Array = legendaryArray} 
+  else if (roulette2Rarity > rareThreshold) {roulette2Array = rareArray} 
+  else if (roulette2Rarity > uncommonThreshold) {roulette2Array = uncommonArray} else {roulette2Array = commonArray}
 
-  if (roulette3Rarity > 0.99) {roulette3Array = legendaryArray} else if (roulette3Rarity > 0.95) {roulette3Array = rareArray} else if
-  (roulette3Rarity > 0.75) {roulette3Array = uncommonArray} else {roulette3Array = commonArray}
+  if (roulette3Rarity > legendThreshold) {roulette3Array = legendaryArray} 
+  else if (roulette3Rarity > rareThreshold) {roulette3Array = rareArray} 
+  else if (roulette3Rarity > uncommonThreshold) {roulette3Array = uncommonArray} else {roulette3rray = commonArray}
 
 
 

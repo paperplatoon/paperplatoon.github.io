@@ -549,7 +549,6 @@ body:has(.sell-button:hover) .selling-items-div {
 
 body:has(#store-fuel-div:hover) #empty-fuel-bar {
   background-color: rgba(197, 185, 16, 0.6);
-  animation: flash 1s infinite;
 }
 
 body:has(.hull-gold-upgrade-hover:hover) #empty-hull-bar {
@@ -559,7 +558,6 @@ body:has(.hull-gold-upgrade-hover:hover) #empty-hull-bar {
 
 body:has(.fuel-gold-upgrade-hover:hover) #empty-fuel-bar {
   background-color: rgba(197, 185, 16, 0.6);
-  animation: flash 1s infinite;
 }
 
 body:has(#store-fuel-div:hover) #fuel-opening-text {
@@ -569,7 +567,6 @@ body:has(#store-fuel-div:hover) #fuel-opening-text {
 
 body:has(#store-repair-div:hover) #empty-hull-bar {
   background-color: rgba(201, 20, 20, 0.6);
-  animation: flash 1s infinite;
 }
 
 body:has(.store-clickable#store-bomb-capacity-upgrade-div:hover) #current-bombs-text {
@@ -595,12 +592,6 @@ body:has(.store-clickable#store-fuel-upgrade-div:hover) #max-fuel-text {
   animation: flash 1s infinite;
 }
 
-body:has(.store-clickable#store-fuel-upgrade-div:hover) #empty-fuel-bar,
-body:has(.store-clickable#store-hull-upgrade-div:hover) #empty-hull-bar,
-body:has(.store-clickable#store-inventory-upgrade-div:hover) #empty-inv-bar {
-  -webkit-animation: flash 1s;
-  animation: flash 1s infinite;
-}
 
 body:has(.store-clickable#store-hull-upgrade-div:hover) #hull-integrity-text {
   font-size: 120%;
