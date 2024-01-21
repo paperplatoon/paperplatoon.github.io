@@ -59,7 +59,7 @@ let gameStartState = {
     enemyDamageModifier: 1,
     halfDamageFullFuel: 1,
     dirtToMaxFuel: 0,
-    thorns: true,
+    thorns: false,
     killEnemiesHullModifier: 0,
     dirtRuby: false,
     killEnemiesForMoney: 0, //needs done
