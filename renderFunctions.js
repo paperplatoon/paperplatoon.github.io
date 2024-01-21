@@ -1255,7 +1255,7 @@ function renderSellingItems(stateObj) {
 
   let oreRelicDiv = document.createElement("Div")
   if (stateObj.storeRelic4) {
-    oreRelicDiv.classList.add("ore-relic-div")
+    oreRelicDiv.setAttribute("id", "ore-relic-div")
     let allowedOreValues = ["1", "2", "3", "4", "stone-5", "stone-6", "stone-7", "5", "6", "7"]
     let currentOres = stateObj.gameMap.filter(str => allowedOreValues.includes(str))
     

@@ -59,7 +59,7 @@ let gameStartState = {
     enemyDamageModifier: 1,
     halfDamageFullFuel: 1,
     dirtToMaxFuel: 0,
-    thorns: false,
+    thorns: true,
     killEnemiesHullModifier: 0,
     dirtRuby: false,
     killEnemiesForMoney: 0, //needs done
@@ -1168,14 +1168,13 @@ async function buyRelic3Func(stateObj, relicPrice) {
     await changeState(stateObj);
 }
 
-async function buyRelic4Func(stateObj, relicPrice) {
+async function buyRelic4Func(stateObj) {
     stateObj = await stateObj.storeRelic4.relicFunc(stateObj)
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.bankedCash -= relicPrice
         newState.storeRelic4 = false;
 
     })
-    document.getElementById("store-relic-4-div").classList.add("store-clicked")
+    document.getElementById("ore-relic-div").classList.add("store-clicked")
     await pause(300)
     await changeState(stateObj);
 }
@@ -1307,7 +1306,6 @@ async function doDamage(stateObj, damageAmount, enemyLocation) {
                     newState.enemiesKilledPerLevel += 1;
                     
                     newState.gameMap[newState.currentPosition+enemyLocation] = "empty"
-                    document.querySelectorAll(".enemy-img")[enemyIndex].classList.add("enemy-death")
                 }
                 if (newState.killEnemiesHullModifier > 0) {
                     newState.currentHullArmor += newState.killEnemiesHullModifier

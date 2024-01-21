@@ -70,7 +70,7 @@ html, body {
   .map-square {
     /* width: 13.5vw;
     height: 12vh; */
-    width: 10.95vw;
+    width:  10.5vw;
     height: 10vh;
     color: mediumspringgreen;
     transition: background-color 1500ms ease-out;
@@ -239,7 +239,7 @@ html, body {
 
 .player-here {
   position: relative;
-  width: 10.95vw;
+  width:  10.5vw;
   height: 10vh;
 
 }
@@ -318,7 +318,7 @@ html, body {
 
   .bronze-img, .enemy-img, .dirt-img, .stone-img,  .silver-img, .gold-img, .ruby-img, .amethyst-img, .diamond-img, .blkdiamond-img,
   .stone-amethyst-img, .stone-diamond-img, .stone-blkdiamond-img, .crate-img {
-    width: 10.95vw;
+    width:  10.5vw;
     height: 10vh;
     object-fit: cover;
   }
@@ -435,7 +435,7 @@ html, body {
   transition: 1s all;
 }
 
-.hull-gold-upgrade-div, .fuel-gold-upgrade-div, .sell-empty, .ruby-relic-div, .ore-relic-div {
+.hull-gold-upgrade-div, .fuel-gold-upgrade-div, .sell-empty, .ruby-relic-div, #ore-relic-div {
   width: 40vw;
   height: 5vh;
   display: flex;
@@ -467,7 +467,7 @@ html, body {
   width: 18vw;
 }
 
-.ruby-relic-div, .ore-relic-div {
+.ruby-relic-div, #ore-relic-div {
   height: 6.5vh;
 }
 
