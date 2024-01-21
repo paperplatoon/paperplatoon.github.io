@@ -2363,7 +2363,7 @@ function renderRouletteChoices(stateObj) {
 
   if (roulette3Rarity > legendThreshold) {roulette3Array = legendaryArray} 
   else if (roulette3Rarity > rareThreshold) {roulette3Array = rareArray} 
-  else if (roulette3Rarity > uncommonThreshold) {roulette3Array = uncommonArray} else {roulette3rray = commonArray}
+  else if (roulette3Rarity > uncommonThreshold) {roulette3Array = uncommonArray} else {roulette3Array = commonArray}
 
 
 
