@@ -566,7 +566,7 @@ function renderTopBarStats(stateObj) {
         topBarDiv.append(weaponPriceRelicDiv)
   }
 
-  if (stateObj.bronzeSilverConverter) {
+  if (stateObj.bronzeSilverConverter > 0) {
     let weaponPriceRelicDiv = document.createElement("Div")
     weaponPriceRelicDiv.classList.add("relic-div")
     let weaponImg = document.createElement("Img");
@@ -587,7 +587,7 @@ function renderTopBarStats(stateObj) {
       let relicTextDiv = document.createElement("Div");
       relicTextDiv.setAttribute("id", "bronze-converter-popup")
       relicTextDiv.classList.add("none-display")
-      relicTextDiv.textContent = "Mined bronze ore gets converted to silver"
+      relicTextDiv.textContent = "Mined bronze ore gets converted to " + stateObj.bronzeSilverConverter + " silver";
       weaponPriceRelicDiv.appendChild(relicTextDiv);
 
       topBarDiv.append(weaponPriceRelicDiv)
@@ -1252,6 +1252,25 @@ function renderSellingItems(stateObj) {
     }
     tradeRelicRubyDiv.textContent = tradeString
   }
+
+  let oreRelicDiv = document.createElement("Div")
+  if (stateObj.storeRelic4) {
+    oreRelicDiv.classList.add("ore-relic-div")
+    let allowedOreValues = ["1", "2", "3", "4", "stone-5", "stone-6", "stone-7", "5", "6", "7"]
+    let currentOres = stateObj.gameMap.filter(str => allowedOreValues.includes(str))
+    
+    let tradeString = stateObj.storeRelic4.name + " - " + stateObj.storeRelic4.text + ". "
+    tradeString += "(Mine all ore: " + (stateObj.totalLevelOre-currentOres.length) + "/" + stateObj.totalLevelOre + ")"
+      if (currentOres.length === 0) {
+        oreRelicDiv.classList.add("diamond-relic-hover")
+        oreRelicDiv.onclick = async function () {
+          await buyRelic4Func(stateObj)
+        }
+      }
+    oreRelicDiv.textContent = tradeString
+  }
+
+  
   
 
   let sellButtonDiv = document.createElement("Div")
@@ -1283,7 +1302,8 @@ function renderSellingItems(stateObj) {
       leaveStore(stateObj)
   }
 
-  sellDiv.append(sellInventoryDiv, sellButtonDiv, tradeRelicRubyDiv, seeStoreDiv,  buyNothingDiv)
+  
+  sellDiv.append(sellInventoryDiv, sellButtonDiv, oreRelicDiv, tradeRelicRubyDiv, seeStoreDiv,  buyNothingDiv)
   storeDiv.append(sellDiv)
   
   return storeDiv
@@ -2113,7 +2133,7 @@ function renderStore(stateObj) {
       laserText1.classList.add("store-option-text")
       let laserText2 = document.createElement("Div")
       laserText2.classList.add("store-option-text")
-      laserText1.textContent = "Buy a laser" 
+      laserText1.textContent = "Buy a laser [" + stateObj.numberLasers + "/" + stateObj.laserCapacity + "]" 
       laserText2.textContent = "$" + (stateObj.laserCost * stateObj.weaponsPriceModifier) * (1-stateObj.cheaperShops)
       buyLaserDiv.append(laserText1, laserText2)
       buyLaserDiv.onclick = function () {
@@ -2134,7 +2154,7 @@ function renderStore(stateObj) {
       bombText1.classList.add("store-option-text")
       let bombText2 = document.createElement("Div")
       bombText2.classList.add("store-option-text")
-      bombText1.textContent = "Buy a bomb" 
+      bombText1.textContent = "Buy a bomb [" + stateObj.bombCurrentTotal + "/" + stateObj.bombCapacity + "]" 
       let purchaseCostBomb = Math.floor(stateObj.bombCost * (stateObj.currentLevel+1) * stateObj.weaponsPriceModifier * (1-stateObj.cheaperShops))
       bombText2.textContent = "$" + purchaseCostBomb
       buyBombDiv.append(bombText1, bombText2)
@@ -2203,22 +2223,22 @@ function renderStore(stateObj) {
   }
 
   let buyRelic1Div = document.createElement("Div")
-  if (stateObj.storeRelic1 !== false) {
-    buyRelic1Div.setAttribute("id", "store-relic-1-div")
+  if (stateObj.storeRelic3 !== false) {
+    buyRelic1Div.setAttribute("id", "store-relic-3-div")
     buyRelic1Div.classList.add("store-option")
     buyRelic1Div.classList.add("relic-option")
       let relicText1 = document.createElement("Div")
       relicText1.classList.add("store-option-text")
       let relicText2 = document.createElement("Div")
       relicText2.classList.add("store-option-text")
-      relicText1.textContent = stateObj.storeRelic2.name + " - " + stateObj.storeRelic2.text
+      relicText1.textContent = stateObj.storeRelic3.name + " - " + stateObj.storeRelic3.text
       let relicPrice = Math.ceil(stateObj.floorValues[stateObj.currentLevel].storeRelicPrice * (1-stateObj.cheaperShops))
       relicText2.textContent = "$" + relicPrice
       buyRelic1Div.append(relicText1, relicText2)
       if (stateObj.bankedCash >= relicPrice) {
           buyRelic1Div.classList.add("store-clickable")
           buyRelic1Div.onclick = function () {
-              buyRelic1Func(stateObj, relicPrice)
+              buyRelic3Func(stateObj, relicPrice)
           }
       }
   }
@@ -2254,7 +2274,7 @@ function renderStore(stateObj) {
   }
 
   storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, buyBombDiv, laserUpgradeDiv, 
-      bombUpgradeDiv, fuelUpgradeDiv, hullUpgradeDiv, inventoryUpgradeDiv, buyRelic2Div, buyNothingDiv)
+      bombUpgradeDiv, fuelUpgradeDiv, hullUpgradeDiv, inventoryUpgradeDiv, buyRelic1Div, buyRelic2Div, buyNothingDiv)
 
   return storeDiv
 }

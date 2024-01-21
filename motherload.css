@@ -435,7 +435,7 @@ html, body {
   transition: 1s all;
 }
 
-.hull-gold-upgrade-div, .fuel-gold-upgrade-div, .sell-empty, .ruby-relic-div {
+.hull-gold-upgrade-div, .fuel-gold-upgrade-div, .sell-empty, .ruby-relic-div, .ore-relic-div {
   width: 40vw;
   height: 5vh;
   display: flex;
@@ -467,7 +467,7 @@ html, body {
   width: 18vw;
 }
 
-.ruby-relic-div {
+.ruby-relic-div, .ore-relic-div {
   height: 6.5vh;
 }
 

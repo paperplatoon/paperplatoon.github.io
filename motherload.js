@@ -46,7 +46,7 @@ let gameStartState = {
     bankedCash: 100,
     
     numberLasers: 1,
-    laserCapacity: 1,
+    laserCapacity: 2,
     laserCost: 150,
     laserCapacityUpgradeCost: 750,
     
@@ -76,7 +76,7 @@ let gameStartState = {
     fuelTeleportCost: 0,
     noDirtThreshold: false,
     magneticBlocks: false,
-    bronzeSilverConverter: false,
+    bronzeSilverConverter: 0,
     dirtRefillsWeapons: false,
     laserGemRefill: 0,
     efficientGoldConverter: false,
@@ -87,6 +87,8 @@ let gameStartState = {
     mapRelic2: false,
     storeRelic1: false,
     storeRelic2: false,
+    storeRelic3: false,
+    storeRelic4: false,
     
 
     drillTime: 850,
@@ -119,7 +121,7 @@ let gameStartState = {
     bombExploding: false,
     remoteBombs: false,
     bombTimerMax: 5,
-    bombCapacity: 1,
+    bombCapacity: 2,
     bombCurrentTotal: 1,
     bombCapacityUpgradeCost: 750,
     bombDistance: 2,
@@ -128,6 +130,8 @@ let gameStartState = {
 
 
     currentLevel: 0,
+    levelOreLeft: 0,
+    totalLevelOre: 0,
     floorValues: [
         {
             barVals: [1, 1, 1, 0.999, 0.995, 0.95, 0.80],
@@ -358,8 +362,13 @@ async function fillMapWithArray(stateObj) {
         let relicSquareArray = await produceRelicSquareArray(stateObj)
         let relicArray = buildRelicArray(stateObj)
 
+        let allowedOreValues = ["1", "2", "3", "4", "stone-5", "stone-6", "stone-7", "5", "6", "7"]
+        let totalOres = tempArray.filter(str => allowedOreValues.includes(str))
+    
+
 
         stateObj = await immer.produce(stateObj, (newState) => {
+            newState.totalLevelOre = totalOres.length
             newState.gameMap = tempArray;
             newState.currentPosition = 2;
             newState.timeCounter += 1
@@ -380,14 +389,24 @@ async function fillMapWithArray(stateObj) {
                         newState.mapRelic2 = relicArray[relicNum]
                         newState.gameMap[relicSquareArray[i]] = "relic2"
                     }
-                    relicArray.splice(relicNum, 1)
+                    if (!relicArray[relicNum].multiplePossible) {
+                        relicArray.splice(relicNum, 1)
+                    }
                 }
+                relicArray = relicArray.filter(obj => obj.shopRelic)
                 relicStoreNum = Math.floor(Math.random() * relicArray.length)
                 newState.storeRelic1 = relicArray[relicStoreNum]
                 //newState.storeRelic1 = potentialRelics[19]
                 relicArray.splice(relicStoreNum, 1)
                 relicStoreNum2 = Math.floor(Math.random() * relicArray.length)
                 newState.storeRelic2 = relicArray[relicStoreNum2]
+                relicArray.splice(relicStoreNum2, 1)
+                relicStoreNum3 = Math.floor(Math.random() * relicArray.length)
+                newState.storeRelic3 = relicArray[relicStoreNum3]
+                relicArray.splice(relicStoreNum3, 1)
+                relicStoreNum4 = Math.floor(Math.random() * relicArray.length)
+                newState.storeRelic4 = relicArray[relicStoreNum4]
+                relicArray.splice(relicStoreNum4, 1)
                 //newState.storeRelic2 = potentialRelics[19]
             }
 
@@ -399,7 +418,7 @@ async function fillMapWithArray(stateObj) {
     for (i = 0; i < stateObj.gameMap.length; i++) {
         if (stateObj.gameMap[i] === "enemy") {
             let direction = (Math.random() > 0.5) ? "left" : "right";
-            if (stateObj.isLevelCoward === false) {
+            if (!stateObj.isLevelCoward) {
                 tempEnemyArray.push(i)
                 tempEnemyMovementArray.push(direction)
             }
@@ -429,8 +448,8 @@ async function moveEnemies() {
     }
     stateObj.timeCounter += 1
     await updateState(stateObj)
-    if (stateObj.inStore === false && stateObj.choosingRobot === false  && stateObj.choosingNextLevel === false && stateObj.sellingItems === false 
-        && stateObj.viewingInventory === false && stateObj.startTheGame === false && stateObj.choosingRoulette === false && stateObj.lostTheGame === false) {
+    if (!stateObj.inStore && !stateObj.choosingRobot && !stateObj.choosingNextLevel && !stateObj.sellingItems  
+        && !stateObj.viewingInventory && !stateObj.startTheGame  && !stateObj.choosingRoulette  && !stateObj.lostTheGame ) {
 
         stateObj = await immer.produce(stateObj, (newState) => {
             if (newState.takingDamage !== false) {
@@ -1137,6 +1156,30 @@ async function buyRelic2Func(stateObj, relicPrice) {
     await changeState(stateObj);
 }
 
+async function buyRelic3Func(stateObj, relicPrice) {
+    stateObj = await stateObj.storeRelic3.relicFunc(stateObj)
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.bankedCash -= relicPrice
+        newState.storeRelic2 = false;
+
+    })
+    document.getElementById("store-relic-3-div").classList.add("store-clicked")
+    await pause(300)
+    await changeState(stateObj);
+}
+
+async function buyRelic4Func(stateObj, relicPrice) {
+    stateObj = await stateObj.storeRelic4.relicFunc(stateObj)
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.bankedCash -= relicPrice
+        newState.storeRelic4 = false;
+
+    })
+    document.getElementById("store-relic-4-div").classList.add("store-clicked")
+    await pause(300)
+    await changeState(stateObj);
+}
+
 async function buyLaser(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
         newState.numberLasers += 1;
@@ -1377,8 +1420,8 @@ async function calculateMoveChange(stateObj, squaresToMove) {
         if ((stateObj.currentInventory) < stateObj.inventoryMax) { 
             stateObj = await immer.produce(stateObj, (newState) => {
                 newState.currentInventory +=1
-                if (stateObj.bronzeSilverConverter === true) {
-                    newState.silverInventory += 1
+                if (stateObj.bronzeSilverConverter > 0) {
+                    newState.silverInventory += stateObj.bronzeSilverConverter
                 } else {
                     newState.bronzeInventory += 1
                 }
@@ -1491,11 +1534,6 @@ function pause(timeValue) {
 async function sellItemsScreen(stateObj, emptyInv=false) {
     stateObj = await immer.produce(stateObj, async (newState) => {
         newState.sellingItems = true;
-
-        if (newState.currentInventory === 0) {
-            newState.sellingItems = false;
-            newState.inStore = true;
-        }
     })
     return stateObj
 }

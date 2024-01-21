@@ -1,3 +1,5 @@
+
+
 let potentialRelics = [
     //0
     spareTank = {
@@ -12,6 +14,10 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/sparetank.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
+
     },
 
     goldMaxInventory = {
@@ -25,7 +31,11 @@ let potentialRelics = [
             await changeState(stateObj);
             return stateObj
         },
+        rarity: "rare",
         imgPath: "img/relics/goldmaxinventory.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     pauseEnemies = {
@@ -40,7 +50,11 @@ let potentialRelics = [
             await changeState(stateObj);
             return stateObj
         },
+        rarity: "common",
         imgPath: "img/relics/stoprelic.png",
+        levelRelic: true,
+        shopRelic: false,
+        multiplePossible: false,
     },
 
     dirtMaxFuel = {
@@ -55,6 +69,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/dirtmaxfuel.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     enemiesDealLess = {
@@ -69,6 +86,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/shield2.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     //5
@@ -78,12 +98,15 @@ let potentialRelics = [
         text: "Take less damage from enemies if fuel above 50%",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.halfDamageFullFuel *= 0.7;
+                newState.halfDamageFullFuel = Math.floor(newState.halfDamageFullFuel * 0.75);
             })
             await changeState(stateObj);
             return stateObj
         },
         imgPath: "img/relics/gasshield.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     thornsRelic = {
@@ -98,6 +121,10 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/thorns.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: false,
+        
     },
 
     bronzeSilverBonusRelic = {
@@ -112,6 +139,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/bronzesilverbonus.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     remoteBombsRelic = {
@@ -126,6 +156,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/remotebomb.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: false,
     },
 
     weaponsPriceRelic = {
@@ -134,15 +167,14 @@ let potentialRelics = [
         text: "Weapons are cheaper in the shop",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                if (newState.weaponsPriceModifier >= 0.5) {
-                    newState.weaponsPriceModifier *= 0.5;
-                } else {
-                    newState.weaponsPriceModifier = 0
-                }
+                    newState.weaponsPriceModifier = Math.floor(0.5 * newState.weaponsPriceModifier);
             })
             await changeState(stateObj);
             return stateObj
         },
+        levelRelic: true,
+        shopRelic: false,
+        multiplePossible: true,
         imgPath: "img/relics/gun1.png",
     },
 
@@ -159,6 +191,10 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/killhull.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
+        
     },
 
     killEnemiesHealRelic = {
@@ -173,6 +209,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/repairkill.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     silverHealingRelic = {
@@ -187,6 +226,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/silverhealing.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     bronzeMaxHullRelic = {
@@ -201,6 +243,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/bronzemaxhull.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     dirtRubyRelic = {
@@ -215,6 +260,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/dirtruby.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: false,
     },
 
     //15
@@ -230,6 +278,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/bombupgrader.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     laserPiercingRelic = {
@@ -244,6 +295,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/laserpiercing.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: false,
     },
 
     bombRefillRelic = {
@@ -258,20 +312,26 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/bombrefill.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     fuelToBlocksRelic = {
         name: "Fuel Compactor",
         varName: "fuelToBlocksRelic",
-        text: "Can use fuel to drop blocks (costs a lot of fuel!)",
+        text: "Can use fuel to drop blocks",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.fuelToBlocks += 1;
+                newState.fuelToBlocks += 2;
             })
             await changeState(stateObj);
             return stateObj
         },
         imgPath: "img/relics/fueltoblocks.png",
+        levelRelic: true,
+        shopRelic: false,
+        multiplePossible: true,
     },
 
     upgradeDirtBlockRelic = {
@@ -290,6 +350,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/drillupgrade.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     //20
@@ -311,6 +374,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/teleporter.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     dirtCompactor = {
@@ -325,6 +391,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/infinitedirt.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: false,
     },
 
     magneticBlocks = {
@@ -339,7 +408,11 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/magnetblocks.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: false,
     },
+
 
     silverMaxFuel = {
         name: "Silver Tank",
@@ -353,6 +426,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/silvermaxfuel.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     bronzeSilverConverter = {
@@ -361,12 +437,15 @@ let potentialRelics = [
         text: "Mined bronze ore gets converted to silver",
         relicFunc: async (stateObj) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.bronzeSilverConverter = true;
+                newState.bronzeSilverConverter += 1;
             })
             await changeState(stateObj);
             return stateObj
         },
         imgPath: "img/relics/bronzesilverconverter.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: false,
     },
 
     //25
@@ -382,6 +461,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/dirtrefillsweapons.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: false,
     },
 
     laserCapacityRelic = {
@@ -397,6 +479,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/lasercapacity.png",
+        levelRelic: true,
+        shopRelic: false,
+        multiplePossible: true,
     },
 
     laserRecaptureRelic = {
@@ -411,6 +496,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/laserrecapture.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: true,
     },
 
     efficientConverter = {
@@ -425,6 +513,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/efficientgold.png",
+        levelRelic: true,
+        shopRelic: true,
+        multiplePossible: false,
     },
 
     rubyLocator = {
@@ -439,6 +530,9 @@ let potentialRelics = [
             return stateObj
         },
         imgPath: "img/relics/rubyincrease.png",
+        levelRelic: true,
+        shopRelic: false,
+        multiplePossible: false,
     },
 
     //30
@@ -450,7 +544,7 @@ function buildRelicArray(stateObj) {
     potentialRelics[4], potentialRelics[5], potentialRelics[7], potentialRelics[9], potentialRelics[10],
     potentialRelics[11], potentialRelics[12], potentialRelics[13], potentialRelics[15], potentialRelics[17],
     potentialRelics[18], potentialRelics[19], potentialRelics[20], potentialRelics[23], potentialRelics[26],
-    potentialRelics[27], potentialRelics[29], 
+    potentialRelics[24], potentialRelics[27], potentialRelics[29], 
     ]
     if (stateObj.laserPiercing === false) {
         tempArray.push(potentialRelics[16])
@@ -469,9 +563,6 @@ function buildRelicArray(stateObj) {
     }
     if (stateObj.magneticBlocks === false) {
         tempArray.push(potentialRelics[22])
-    }
-    if (stateObj.bronzeSilverConverter === false) {
-        tempArray.push(potentialRelics[24])
     }
     if (stateObj.dirtRefillsWeapons === false) {
         tempArray.push(potentialRelics[25])
