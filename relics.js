@@ -307,7 +307,7 @@ let potentialRelics = [
         text: (stateObj) => {
             let val = stateObj.bronzeMaxHull
             let tradeString = "Mining bronze ore increases hull armor by "
-            let tradeString2 = (val === 0) ? 1 * Math.ceil(overallHullModifier) : val 
+            let tradeString2 = (val === 0) ? 1 * Math.ceil(stateObj.overallHullModifier) : val 
             return tradeString + tradeString2
         },
         relicFunc: async (stateObj) => {
