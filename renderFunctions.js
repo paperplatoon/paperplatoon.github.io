@@ -208,11 +208,8 @@ function renderTopBarStats(stateObj) {
 
     topBarDiv.append(levelDiv, cashDiv, barsDiv, weaponsDiv,dirtDiv)
 
-    console.log("player relic length is " + stateObj.playerRelicArray.length)
     for (let i=0; i < stateObj.playerRelicArray.length; i++) {
-      console.log("firing relic array for relic  " + i)
       let relic = stateObj.playerRelicArray[i];
-      console.log("relic name is  " +  stateObj.playerRelicArray[i].name)
       let weaponPriceRelicDiv = document.createElement("Div")
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
