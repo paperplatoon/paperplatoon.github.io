@@ -208,921 +208,37 @@ function renderTopBarStats(stateObj) {
 
     topBarDiv.append(levelDiv, cashDiv, barsDiv, weaponsDiv,dirtDiv)
 
-    if (stateObj.weaponsPriceModifier < 1) {
-        let weaponPriceRelicDiv = document.createElement("Div")
+    console.log("player relic length is " + stateObj.playerRelicArray.length)
+    for (let i=0; i < stateObj.playerRelicArray.length; i++) {
+      console.log("firing relic array for relic  " + i)
+      let relic = stateObj.playerRelicArray[i];
+      console.log("relic name is  " +  stateObj.playerRelicArray[i].name)
+      let weaponPriceRelicDiv = document.createElement("Div")
         weaponPriceRelicDiv.classList.add("relic-div")
         let weaponImg = document.createElement("Img");
         weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/gun1.png"
+        weaponImg.src = relic.imgPath
         weaponPriceRelicDiv.append(weaponImg)
-        
+        let idString = "relic-popup-" +i
+
         weaponPriceRelicDiv.addEventListener('mouseenter', function() {
-            const statusText = document.querySelector("#weapons-price-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseleave', function() {
-            const statusText = document.querySelector("#weapons-price-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "weapons-price-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Weapons are " + Math.ceil((1-stateObj.weaponsPriceModifier)*100) + "% cheaper"
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.thorns === true) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/thorns.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#thorns-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#thorns-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "thorns-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Enemies who damage you die afterwards"
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.overallHullModifier > 1) {
-      let weaponPriceRelicDiv = document.createElement("Div")
-      weaponPriceRelicDiv.classList.add("relic-div")
-      let weaponImg = document.createElement("Img");
-      weaponImg.classList.add("relic-img")
-      weaponImg.src = "img/relics/overallhullmod.png"
-      weaponPriceRelicDiv.append(weaponImg)
-      
-      weaponPriceRelicDiv.addEventListener('mouseover', function() {
-          const statusText = document.querySelector("#hull-popup");
+          const statusText = document.getElementById(idString);
           statusText.style.display = 'block'
         });
         
-        weaponPriceRelicDiv.addEventListener('mouseout', function() {
-          const statusText = document.querySelector("#hull-popup");
+        weaponPriceRelicDiv.addEventListener('mouseleave', function() {
+          const statusText = document.getElementById(idString);
           statusText.style.display = 'none'
         });
   
         let relicTextDiv = document.createElement("Div");
-        relicTextDiv.setAttribute("id", "hull-popup")
+        relicTextDiv.setAttribute("id", idString)
         relicTextDiv.classList.add("none-display")
-        relicTextDiv.textContent = "Hull upgrades are " + ((stateObj.overallHullModifier*100)-100) + "% more powerful"
-        weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-        topBarDiv.append(weaponPriceRelicDiv)
-  }
-
-  if (stateObj.overallFuelModifier > 1) {
-    let weaponPriceRelicDiv = document.createElement("Div")
-    weaponPriceRelicDiv.classList.add("relic-div")
-    let weaponImg = document.createElement("Img");
-    weaponImg.classList.add("relic-img")
-    weaponImg.src = "img/relics/overallfuelmod.png"
-    weaponPriceRelicDiv.append(weaponImg)
-    
-    weaponPriceRelicDiv.addEventListener('mouseover', function() {
-        const statusText = document.querySelector("#fuel-popup");
-        statusText.style.display = 'block'
-      });
-      
-      weaponPriceRelicDiv.addEventListener('mouseout', function() {
-        const statusText = document.querySelector("#fuel-popup");
-        statusText.style.display = 'none'
-      });
-
-      let relicTextDiv = document.createElement("Div");
-      relicTextDiv.setAttribute("id", "fuel-popup")
-      relicTextDiv.classList.add("none-display")
-      relicTextDiv.textContent = "Fuel upgrades are " + ((stateObj.overallFuelModifier*100)-100) + "% more powerful"
-      weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-      topBarDiv.append(weaponPriceRelicDiv)
-}
-
-    if (stateObj.remoteBombs === true) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/remotebomb.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#remote-bomb-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#remote-bomb-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "remote-bomb-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Can detonate bombs remotely by pressing 'B' again after dropping them "
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.enemyDamageModifier < 1) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/shield2.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#enemy-damage-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#enemy-damage-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "enemy-damage-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Enemies deal " + Math.ceil((1-stateObj.enemyDamageModifier)*100) + "% less damage"
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.halfDamageFullFuel < 1) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/gasshield.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseenter', async function() {
-            const statusText = document.querySelector("#enemy-damage-fuel-popup");
-                    statusText.style.display = 'block'
-          });
-
-          
-          weaponPriceRelicDiv.addEventListener('mouseleave', function() {
-                const statusText = document.querySelector("#enemy-damage-fuel-popup");
-                statusText.style.display = 'none'
-          });
-    
-
-            let relicTextDiv = document.createElement("Div");
-            relicTextDiv.setAttribute("id", "enemy-damage-fuel-popup")
-            relicTextDiv.classList.add("none-display")
-            relicTextDiv.textContent = "Enemies deal " + Math.ceil((1-stateObj.halfDamageFullFuel)*100) + "% less damage when your fuel is at least 50% full"
-            weaponPriceRelicDiv.appendChild(relicTextDiv);
-          
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.killEnemiesHullModifier > 0) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/killhull.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#kill-enemies-fuel-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#kill-enemies-fuel-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "kill-enemies-fuel-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Increase Hull Armor by " + Math.ceil(stateObj.killEnemiesHullModifier) + " whenever you kill an enemy"
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.killEnemiesForHealing > 0) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/repairkill.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#kill-enemies-heal-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#kill-enemies-heal-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "kill-enemies-heal-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Killing enemies repairs Hull Armor by " + Math.ceil(stateObj.killEnemiesForHealing)
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.silverHealing > 0) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/silverhealing.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#silver-heal-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#silver-heal-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "silver-heal-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Mining silver ore restores " + stateObj.silverHealing + " HP"
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.bronzeMaxHull > 0) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/bronzemaxhull.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#bronze-hull-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#bronze-hull-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "bronze-hull-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Mining bronze ore increases Hull Armor by " + stateObj.bronzeMaxHull
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.efficientGoldConverter === true) {
-      let weaponPriceRelicDiv = document.createElement("Div")
-      weaponPriceRelicDiv.classList.add("relic-div")
-      let weaponImg = document.createElement("Img");
-      weaponImg.classList.add("relic-img")
-      weaponImg.src = "img/relics/efficientgold.png"
-      weaponPriceRelicDiv.append(weaponImg)
-      
-      weaponPriceRelicDiv.addEventListener('mouseover', function() {
-          const statusText = document.querySelector("#efficient-gold-popup");
-          statusText.style.display = 'block'
-        });
-        
-        weaponPriceRelicDiv.addEventListener('mouseout', function() {
-          const statusText = document.querySelector("#efficient-gold-popup");
-          statusText.style.display = 'none'
-        });
-  
-        let relicTextDiv = document.createElement("Div");
-        relicTextDiv.setAttribute("id", "efficient-gold-popup")
-        relicTextDiv.classList.add("none-display")
-        relicTextDiv.textContent = "Can create a ruby with only 2 gold ore"
-        weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-        topBarDiv.append(weaponPriceRelicDiv)
-  }
-
-    if (stateObj.goldMaxInventory > 0) {
-      let weaponPriceRelicDiv = document.createElement("Div")
-      weaponPriceRelicDiv.classList.add("relic-div")
-      let weaponImg = document.createElement("Img");
-      weaponImg.classList.add("relic-img")
-      weaponImg.src = "img/relics/goldmaxinventory.png"
-      weaponPriceRelicDiv.append(weaponImg)
-      
-      weaponPriceRelicDiv.addEventListener('mouseover', function() {
-          const statusText = document.querySelector("#gold-inv-popup");
-          statusText.style.display = 'block'
-        });
-        
-        weaponPriceRelicDiv.addEventListener('mouseout', function() {
-          const statusText = document.querySelector("#gold-inv-popup");
-          statusText.style.display = 'none'
-        });
-  
-        let relicTextDiv = document.createElement("Div");
-        relicTextDiv.setAttribute("id", "gold-inv-popup")
-        relicTextDiv.classList.add("none-display")
-        relicTextDiv.textContent = "Mining gold ore adds " + stateObj.goldMaxInventory + " Cargo Bay capacity"
-        weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-        topBarDiv.append(weaponPriceRelicDiv)
-  }
-
-  if (stateObj.rubyIncrease > 0) {
-    let weaponPriceRelicDiv = document.createElement("Div")
-    weaponPriceRelicDiv.classList.add("relic-div")
-    let weaponImg = document.createElement("Img");
-    weaponImg.classList.add("relic-img")
-    weaponImg.src = "img/relics/rubyincrease.png"
-    weaponPriceRelicDiv.append(weaponImg)
-    
-    weaponPriceRelicDiv.addEventListener('mouseover', function() {
-        const statusText = document.querySelector("#ruby-increase-popup");
-        statusText.style.display = 'block'
-      });
-      
-      weaponPriceRelicDiv.addEventListener('mouseout', function() {
-        const statusText = document.querySelector("#ruby-increase-popup");
-        statusText.style.display = 'none'
-      });
-
-      let relicTextDiv = document.createElement("Div");
-      relicTextDiv.setAttribute("id", "ruby-increase-popup")
-      relicTextDiv.classList.add("none-display")
-      if (stateObj.rubyIncrease > 0.01) {
-        relicTextDiv.textContent = "Rubies are much more common"
-      } else {
-        relicTextDiv.textContent = "Rubies are more common"
-      }
-
-      weaponPriceRelicDiv.appendChild(relicTextDiv);
-      topBarDiv.append(weaponPriceRelicDiv)
-}
-
-    if (stateObj.silverMaxFuel > 0) {
-      let weaponPriceRelicDiv = document.createElement("Div")
-      weaponPriceRelicDiv.classList.add("relic-div")
-      let weaponImg = document.createElement("Img");
-      weaponImg.classList.add("relic-img")
-      weaponImg.src = "img/relics/silvermaxfuel.png"
-      weaponPriceRelicDiv.append(weaponImg)
-      
-      weaponPriceRelicDiv.addEventListener('mouseover', function() {
-          const statusText = document.querySelector("#silver-fuel-popup");
-          statusText.style.display = 'block'
-        });
-        
-        weaponPriceRelicDiv.addEventListener('mouseout', function() {
-          const statusText = document.querySelector("#silver-fuel-popup");
-          statusText.style.display = 'none'
-        });
-  
-        let relicTextDiv = document.createElement("Div");
-        relicTextDiv.setAttribute("id", "silver-fuel-popup")
-        relicTextDiv.classList.add("none-display")
-        relicTextDiv.textContent = "Mining silver ore adds " + stateObj.silverMaxFuel + " fuel tank capacity"
-        weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-        topBarDiv.append(weaponPriceRelicDiv)
-  }
-
-  if (stateObj.bronzeSilverConverter > 0) {
-    let weaponPriceRelicDiv = document.createElement("Div")
-    weaponPriceRelicDiv.classList.add("relic-div")
-    let weaponImg = document.createElement("Img");
-    weaponImg.classList.add("relic-img")
-    weaponImg.src = "img/relics/bronzesilverconverter.png"
-    weaponPriceRelicDiv.append(weaponImg)
-    
-    weaponPriceRelicDiv.addEventListener('mouseover', function() {
-        const statusText = document.querySelector("#bronze-converter-popup");
-        statusText.style.display = 'block'
-      });
-      
-      weaponPriceRelicDiv.addEventListener('mouseout', function() {
-        const statusText = document.querySelector("#bronze-converter-popup");
-        statusText.style.display = 'none'
-      });
-
-      let relicTextDiv = document.createElement("Div");
-      relicTextDiv.setAttribute("id", "bronze-converter-popup")
-      relicTextDiv.classList.add("none-display")
-      relicTextDiv.textContent = "Mined bronze ore gets converted to " + stateObj.bronzeSilverConverter + " silver";
-      weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-      topBarDiv.append(weaponPriceRelicDiv)
-  }
-
-  if (stateObj.dirtRefillsWeapons) {
-    let weaponPriceRelicDiv = document.createElement("Div")
-    weaponPriceRelicDiv.classList.add("relic-div")
-    let weaponImg = document.createElement("Img");
-    weaponImg.classList.add("relic-img")
-    weaponImg.src = "img/relics/dirtrefillsweapons.png"
-    weaponPriceRelicDiv.append(weaponImg)
-    
-    weaponPriceRelicDiv.addEventListener('mouseover', function() {
-        const statusText = document.querySelector("#dirt-refiller-popup");
-        statusText.style.display = 'block'
-      });
-      
-      weaponPriceRelicDiv.addEventListener('mouseout', function() {
-        const statusText = document.querySelector("#dirt-refiller-popup");
-        statusText.style.display = 'none'
-      });
-
-      let relicTextDiv = document.createElement("Div");
-      relicTextDiv.setAttribute("id", "dirt-refiller-popup")
-      relicTextDiv.classList.add("none-display")
-      relicTextDiv.textContent = "Dirt refills weapons"
-      weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-      topBarDiv.append(weaponPriceRelicDiv)
-  }
-
-    if (stateObj.bombRefill > 0) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/bombrefill.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#bomb-refill-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#bomb-refill-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "bomb-refill-popup")
-          relicTextDiv.classList.add("none-display")
-          relicString = "Killing an enemy with a bomb yields " + stateObj.bombRefill + " bomb"
-          if (stateObj.bombRefill > 1) {
-            relicString += "s"
-          }
-          relicTextDiv.textContent = relicString
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.laserGemRefill > 0) {
-      let weaponPriceRelicDiv = document.createElement("Div")
-      weaponPriceRelicDiv.classList.add("relic-div")
-      let weaponImg = document.createElement("Img");
-      weaponImg.classList.add("relic-img")
-      weaponImg.src = "img/relics/laserrecapture.png"
-      weaponPriceRelicDiv.append(weaponImg)
-      
-      weaponPriceRelicDiv.addEventListener('mouseover', function() {
-          const statusText = document.querySelector("#laser-recapture-popup");
-          statusText.style.display = 'block'
-        });
-        
-        weaponPriceRelicDiv.addEventListener('mouseout', function() {
-          const statusText = document.querySelector("#laser-recapture-popup");
-          statusText.style.display = 'none'
-        });
-  
-        let relicTextDiv = document.createElement("Div");
-        relicTextDiv.setAttribute("id", "laser-recapture-popup")
-        relicTextDiv.classList.add("none-display")
-        relicString = "Mining a gem with a laser refills " + stateObj.laserGemRefill + " laser"
-        if (stateObj.laserGemRefill > 1) {
-          relicString += "s"
-        }
-        relicTextDiv.textContent = relicString
-        weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-        topBarDiv.append(weaponPriceRelicDiv)
-  }
-
-    if (stateObj.fuelToBlocks > 0) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/fueltoblocks.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#fuel-blocks-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#fuel-blocks-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "fuel-blocks-popup")
-          relicTextDiv.classList.add("none-display")
-          let fuelNeeded = Math.floor(((stateObj.dirtThresholdNeeded - stateObj.dirtReserves))/stateObj.fuelToBlocks)
-          relicString = "Can spend " + fuelNeeded + " fuel to drop a dirt block"
-          relicTextDiv.textContent = relicString
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.sparefuelTank > 0) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/sparetank.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#spare-tank-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#spare-tank-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "spare-tank-popup")
-          relicTextDiv.classList.add("none-display")
-          let fuelNeeded = Math.floor(((stateObj.dirtThresholdNeeded - stateObj.dirtReserves)*2)/stateObj.fuelToBlocks)
-          relicString = "Refill fuel after running out " + stateObj.spareFuelTank + " time"
-          if (stateObj.spareFuelTank > 1) {
-            relicString += "s"
-          }
-          relicTextDiv.textContent = relicString
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.killEnemiesForMoney > 0) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/killmoney.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#kill-enemies-money-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#kill-enemies-money-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "kill-enemies-money-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Killing an enemy gets you $" + Math.ceil(stateObj.killEnemiesForMoney)
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.laserPiercing === true) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/laserpiercing.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#laser-piercing-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#laser-piercing-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "laser-piercing-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Laser pierces through entire row"
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.bronzeSilverBonus > 1) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/bronzesilverbonus.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#bronze-silver-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#bronze-silver-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "bronze-silver-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Bronze and silver ore sells for " + stateObj.bronzeSilverBonus + "x as much money"
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.isPacifist > 0) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/pacifist.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#pacifist-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#pacifist-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "pacifist-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Gain $" + stateObj.isPacifist + " at the end of the level for each enemy still alive"
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.dirtToMaxFuel > 0) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/dirtmaxfuel.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#dirt-fuel-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#dirt-fuel-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "dirt-fuel-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Gain " + Math.ceil(stateObj.dirtToMaxFuel) + " fuel tank capacity when dropping a dirt block"
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.bombTimerMax < 5) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/artifact3.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#bomb-timer-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#bomb-timer-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "bomb-timer-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Bomb Timer starts at " + Math.ceil(stateObj.bombTimerMax)
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.cheaperShops > 0) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/cheapershops.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#cheaper-shops-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#cheaper-shops-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "cheaper-shops-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Shop prices are " + Math.ceil(100*stateObj.cheaperShops) +"% cheaper for this level"
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.splinterCellModifier > 1) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/splintercell.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#splinter-cell-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#splinter-cell-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "splinter-cell-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Gems are worth " + stateObj.splinterCellModifier +"x more. Stops working after you kill an enemy."
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.freeFuel === true) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/oilwell.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#oil-well-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#oil-well-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "oil-well-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Fuel is free on this level"
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.dirtRuby === true) {
-        let weaponPriceRelicDiv = document.createElement("Div")
-        weaponPriceRelicDiv.classList.add("relic-div")
-        let weaponImg = document.createElement("Img");
-        weaponImg.classList.add("relic-img")
-        weaponImg.src = "img/relics/dirtruby.png"
-        weaponPriceRelicDiv.append(weaponImg)
-        
-        weaponPriceRelicDiv.addEventListener('mouseover', function() {
-            const statusText = document.querySelector("#money-dirt-popup");
-            statusText.style.display = 'block'
-          });
-          
-          weaponPriceRelicDiv.addEventListener('mouseout', function() {
-            const statusText = document.querySelector("#money-dirt-popup");
-            statusText.style.display = 'none'
-          });
-    
-          let relicTextDiv = document.createElement("Div");
-          relicTextDiv.setAttribute("id", "money-dirt-popup")
-          relicTextDiv.classList.add("none-display")
-          relicTextDiv.textContent = "Dropped blocks contain a ruby"
-          weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-          topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-    if (stateObj.fuelTeleportCost > 0) {
-      let weaponPriceRelicDiv = document.createElement("Div")
-      weaponPriceRelicDiv.classList.add("relic-div")
-      let weaponImg = document.createElement("Img");
-      weaponImg.classList.add("relic-img")
-      weaponImg.src = "img/relics/teleporter.png"
-      weaponPriceRelicDiv.append(weaponImg)
-      
-      weaponPriceRelicDiv.addEventListener('mouseover', function() {
-          const statusText = document.querySelector("#fuel-teleport-popup");
-          statusText.style.display = 'block'
-        });
-        
-        weaponPriceRelicDiv.addEventListener('mouseout', function() {
-          const statusText = document.querySelector("#fuel-teleport-popup");
-          statusText.style.display = 'none'
-        });
-  
-        let relicTextDiv = document.createElement("Div");
-        relicTextDiv.setAttribute("id", "fuel-teleport-popup")
-        relicTextDiv.classList.add("none-display")
-        relicTextDiv.textContent = "Press 'T' to teleport back to the shop. Costs " + stateObj.fuelTeleportCost + " fuel"
+        relicTextDiv.textContent = relic.text(stateObj)
         weaponPriceRelicDiv.appendChild(relicTextDiv);
 
         topBarDiv.append(weaponPriceRelicDiv)
     }
-
-    if (stateObj.magneticBlocks) {
-      let weaponPriceRelicDiv = document.createElement("Div")
-      weaponPriceRelicDiv.classList.add("relic-div")
-      let weaponImg = document.createElement("Img");
-      weaponImg.classList.add("relic-img")
-      weaponImg.src = "img/relics/magnetblocks.png"
-      weaponPriceRelicDiv.append(weaponImg)
-      
-      weaponPriceRelicDiv.addEventListener('mouseover', function() {
-          const statusText = document.querySelector("#magnet-blocks-popup");
-          statusText.style.display = 'block'
-        });
-        
-        weaponPriceRelicDiv.addEventListener('mouseout', function() {
-          const statusText = document.querySelector("#magnet-blocks-popup");
-          statusText.style.display = 'none'
-        });
-  
-        let relicTextDiv = document.createElement("Div");
-        relicTextDiv.setAttribute("id", "magnet-blocks-popup")
-        relicTextDiv.classList.add("none-display")
-        relicTextDiv.textContent = "Enemies stick to dropped dirt blocks"
-        weaponPriceRelicDiv.appendChild(relicTextDiv);
-
-        topBarDiv.append(weaponPriceRelicDiv)
-    }
-
-
-    
 
     return topBarDiv
 }
@@ -1285,7 +401,7 @@ function renderSellingItems(stateObj) {
     tradeRelicRubyDiv.classList.add("ruby-relic-div")
     let rubyPrice = stateObj.floorValues[stateObj.currentLevel].rubyRelicPrice
     let amethystPrice = stateObj.floorValues[stateObj.currentLevel].amethystRelicPrice
-    let tradeString = stateObj.storeRelic1.name + " - " + stateObj.storeRelic1.text + " (Costs "
+    let tradeString = stateObj.storeRelic1.name + " - " + stateObj.storeRelic1.text(stateObj) + " (Costs "
     if (rubyPrice > 0) {
       tradeString += rubyPrice + " rubies)"
       if (stateObj.rubyInventory >= rubyPrice) {
@@ -1313,16 +429,18 @@ function renderSellingItems(stateObj) {
     let allowedOreValues = ["1", "2", "3", "4", "stone-5", "stone-6", "stone-7", "5", "6", "7"]
     let currentOres = stateObj.gameMap.filter(str => allowedOreValues.includes(str))
     
-    let tradeString = stateObj.storeRelic4.name + " - " + stateObj.storeRelic4.text + ". "
+    let tradeString = stateObj.storeRelic4.name + " - " + stateObj.storeRelic4.text(stateObj) + ". "
     tradeString += "(Mine all ore: " + (stateObj.totalLevelOre-currentOres.length) + "/" + stateObj.totalLevelOre + ")"
       if (currentOres.length === 0) {
-        oreRelicDiv.classList.add("diamond-relic-hover")
+        oreRelicDiv.classList.add("ore-relic-hover")
         oreRelicDiv.onclick = async function () {
           await buyRelic4Func(stateObj)
         }
       }
     oreRelicDiv.textContent = tradeString
   }
+
+
 
   
   
@@ -2285,7 +1403,7 @@ function renderStore(stateObj) {
       relicText1.classList.add("store-option-text")
       let relicText2 = document.createElement("Div")
       relicText2.classList.add("store-option-text")
-      relicText1.textContent = stateObj.storeRelic3.name + " - " + stateObj.storeRelic3.text
+      relicText1.textContent = stateObj.storeRelic3.name + " - " + stateObj.storeRelic3.text(stateObj)
       let relicPrice = Math.ceil(stateObj.floorValues[stateObj.currentLevel].storeRelicPrice * (1-stateObj.cheaperShops))
       relicText2.textContent = "$" + relicPrice
       buyRelic1Div.append(relicText1, relicText2)
@@ -2306,7 +1424,7 @@ function renderStore(stateObj) {
       relicText1.classList.add("store-option-text")
       let relicText2 = document.createElement("Div")
       relicText2.classList.add("store-option-text")
-      relicText1.textContent = stateObj.storeRelic2.name + " - " + stateObj.storeRelic2.text
+      relicText1.textContent = stateObj.storeRelic2.name + " - " + stateObj.storeRelic2.text(stateObj)
       let relicPrice2 = Math.ceil(stateObj.floorValues[stateObj.currentLevel].storeRelicPrice * (1-stateObj.cheaperShops))
       relicText2.textContent = "$" + relicPrice2
       buyRelic2Div.append(relicText1, relicText2)
@@ -2466,4 +1584,918 @@ function renderRouletteChoices(stateObj) {
 //       } 
 //   }
 //   await changeState(stateObj)
+// }
+
+
+// if (stateObj.weaponsPriceModifier < 1) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/gun1.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseenter', function() {
+//       const statusText = document.querySelector("#weapons-price-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseleave', function() {
+//       const statusText = document.querySelector("#weapons-price-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "weapons-price-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Weapons are " + Math.ceil((1-stateObj.weaponsPriceModifier)*100) + "% cheaper"
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.thorns === true) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/thorns.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#thorns-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#thorns-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "thorns-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Enemies who damage you die afterwards"
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.overallHullModifier > 1) {
+// let weaponPriceRelicDiv = document.createElement("Div")
+// weaponPriceRelicDiv.classList.add("relic-div")
+// let weaponImg = document.createElement("Img");
+// weaponImg.classList.add("relic-img")
+// weaponImg.src = "img/relics/overallhullmod.png"
+// weaponPriceRelicDiv.append(weaponImg)
+
+// weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//     const statusText = document.querySelector("#hull-popup");
+//     statusText.style.display = 'block'
+//   });
+  
+//   weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//     const statusText = document.querySelector("#hull-popup");
+//     statusText.style.display = 'none'
+//   });
+
+//   let relicTextDiv = document.createElement("Div");
+//   relicTextDiv.setAttribute("id", "hull-popup")
+//   relicTextDiv.classList.add("none-display")
+//   relicTextDiv.textContent = "Hull upgrades are " + ((stateObj.overallHullModifier*100)-100) + "% more powerful"
+//   weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//   topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.overallFuelModifier > 1) {
+// let weaponPriceRelicDiv = document.createElement("Div")
+// weaponPriceRelicDiv.classList.add("relic-div")
+// let weaponImg = document.createElement("Img");
+// weaponImg.classList.add("relic-img")
+// weaponImg.src = "img/relics/overallfuelmod.png"
+// weaponPriceRelicDiv.append(weaponImg)
+
+// weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//   const statusText = document.querySelector("#fuel-popup");
+//   statusText.style.display = 'block'
+// });
+
+// weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//   const statusText = document.querySelector("#fuel-popup");
+//   statusText.style.display = 'none'
+// });
+
+// let relicTextDiv = document.createElement("Div");
+// relicTextDiv.setAttribute("id", "fuel-popup")
+// relicTextDiv.classList.add("none-display")
+// relicTextDiv.textContent = "Fuel upgrades are " + ((stateObj.overallFuelModifier*100)-100) + "% more powerful"
+// weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+// topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.remoteBombs === true) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/remotebomb.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#remote-bomb-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#remote-bomb-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "remote-bomb-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Can detonate bombs remotely by pressing 'B' again after dropping them "
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.enemyDamageModifier < 1) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/shield2.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#enemy-damage-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#enemy-damage-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "enemy-damage-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Enemies deal " + Math.ceil((1-stateObj.enemyDamageModifier)*100) + "% less damage"
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.halfDamageFullFuel < 1) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/gasshield.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseenter', async function() {
+//       const statusText = document.querySelector("#enemy-damage-fuel-popup");
+//               statusText.style.display = 'block'
+//     });
+
+    
+//     weaponPriceRelicDiv.addEventListener('mouseleave', function() {
+//           const statusText = document.querySelector("#enemy-damage-fuel-popup");
+//           statusText.style.display = 'none'
+//     });
+
+
+//       let relicTextDiv = document.createElement("Div");
+//       relicTextDiv.setAttribute("id", "enemy-damage-fuel-popup")
+//       relicTextDiv.classList.add("none-display")
+//       relicTextDiv.textContent = "Enemies deal " + Math.ceil((1-stateObj.halfDamageFullFuel)*100) + "% less damage when your fuel is at least 50% full"
+//       weaponPriceRelicDiv.appendChild(relicTextDiv);
+    
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.killEnemiesHullModifier > 0) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/killhull.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#kill-enemies-fuel-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#kill-enemies-fuel-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "kill-enemies-fuel-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Increase Hull Armor by " + Math.ceil(stateObj.killEnemiesHullModifier) + " whenever you kill an enemy"
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.killEnemiesForHealing > 0) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/repairkill.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#kill-enemies-heal-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#kill-enemies-heal-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "kill-enemies-heal-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Killing enemies repairs Hull Armor by " + Math.ceil(stateObj.killEnemiesForHealing)
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.silverHealing > 0) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/silverhealing.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#silver-heal-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#silver-heal-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "silver-heal-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Mining silver ore restores " + stateObj.silverHealing + " HP"
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.bronzeMaxHull > 0) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/bronzemaxhull.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#bronze-hull-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#bronze-hull-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "bronze-hull-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Mining bronze ore increases Hull Armor by " + stateObj.bronzeMaxHull
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.efficientGoldConverter === true) {
+// let weaponPriceRelicDiv = document.createElement("Div")
+// weaponPriceRelicDiv.classList.add("relic-div")
+// let weaponImg = document.createElement("Img");
+// weaponImg.classList.add("relic-img")
+// weaponImg.src = "img/relics/efficientgold.png"
+// weaponPriceRelicDiv.append(weaponImg)
+
+// weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//     const statusText = document.querySelector("#efficient-gold-popup");
+//     statusText.style.display = 'block'
+//   });
+  
+//   weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//     const statusText = document.querySelector("#efficient-gold-popup");
+//     statusText.style.display = 'none'
+//   });
+
+//   let relicTextDiv = document.createElement("Div");
+//   relicTextDiv.setAttribute("id", "efficient-gold-popup")
+//   relicTextDiv.classList.add("none-display")
+//   relicTextDiv.textContent = "Can create a ruby with only 2 gold ore"
+//   weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//   topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.goldMaxInventory > 0) {
+// let weaponPriceRelicDiv = document.createElement("Div")
+// weaponPriceRelicDiv.classList.add("relic-div")
+// let weaponImg = document.createElement("Img");
+// weaponImg.classList.add("relic-img")
+// weaponImg.src = "img/relics/goldmaxinventory.png"
+// weaponPriceRelicDiv.append(weaponImg)
+
+// weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//     const statusText = document.querySelector("#gold-inv-popup");
+//     statusText.style.display = 'block'
+//   });
+  
+//   weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//     const statusText = document.querySelector("#gold-inv-popup");
+//     statusText.style.display = 'none'
+//   });
+
+//   let relicTextDiv = document.createElement("Div");
+//   relicTextDiv.setAttribute("id", "gold-inv-popup")
+//   relicTextDiv.classList.add("none-display")
+//   relicTextDiv.textContent = "Mining gold ore adds " + stateObj.goldMaxInventory + " Cargo Bay capacity"
+//   weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//   topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.rubyIncrease > 0) {
+// let weaponPriceRelicDiv = document.createElement("Div")
+// weaponPriceRelicDiv.classList.add("relic-div")
+// let weaponImg = document.createElement("Img");
+// weaponImg.classList.add("relic-img")
+// weaponImg.src = "img/relics/rubyincrease.png"
+// weaponPriceRelicDiv.append(weaponImg)
+
+// weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//   const statusText = document.querySelector("#ruby-increase-popup");
+//   statusText.style.display = 'block'
+// });
+
+// weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//   const statusText = document.querySelector("#ruby-increase-popup");
+//   statusText.style.display = 'none'
+// });
+
+// let relicTextDiv = document.createElement("Div");
+// relicTextDiv.setAttribute("id", "ruby-increase-popup")
+// relicTextDiv.classList.add("none-display")
+// if (stateObj.rubyIncrease > 0.01) {
+//   relicTextDiv.textContent = "Rubies are much more common"
+// } else {
+//   relicTextDiv.textContent = "Rubies are more common"
+// }
+
+// weaponPriceRelicDiv.appendChild(relicTextDiv);
+// topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.silverMaxFuel > 0) {
+// let weaponPriceRelicDiv = document.createElement("Div")
+// weaponPriceRelicDiv.classList.add("relic-div")
+// let weaponImg = document.createElement("Img");
+// weaponImg.classList.add("relic-img")
+// weaponImg.src = "img/relics/silvermaxfuel.png"
+// weaponPriceRelicDiv.append(weaponImg)
+
+// weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//     const statusText = document.querySelector("#silver-fuel-popup");
+//     statusText.style.display = 'block'
+//   });
+  
+//   weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//     const statusText = document.querySelector("#silver-fuel-popup");
+//     statusText.style.display = 'none'
+//   });
+
+//   let relicTextDiv = document.createElement("Div");
+//   relicTextDiv.setAttribute("id", "silver-fuel-popup")
+//   relicTextDiv.classList.add("none-display")
+//   relicTextDiv.textContent = "Mining silver ore adds " + stateObj.silverMaxFuel + " fuel tank capacity"
+//   weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//   topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.bronzeSilverConverter > 0) {
+// let weaponPriceRelicDiv = document.createElement("Div")
+// weaponPriceRelicDiv.classList.add("relic-div")
+// let weaponImg = document.createElement("Img");
+// weaponImg.classList.add("relic-img")
+// weaponImg.src = "img/relics/bronzesilverconverter.png"
+// weaponPriceRelicDiv.append(weaponImg)
+
+// weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//   const statusText = document.querySelector("#bronze-converter-popup");
+//   statusText.style.display = 'block'
+// });
+
+// weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//   const statusText = document.querySelector("#bronze-converter-popup");
+//   statusText.style.display = 'none'
+// });
+
+// let relicTextDiv = document.createElement("Div");
+// relicTextDiv.setAttribute("id", "bronze-converter-popup")
+// relicTextDiv.classList.add("none-display")
+// relicTextDiv.textContent = "Mined bronze ore gets converted to " + stateObj.bronzeSilverConverter + " silver";
+// weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+// topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.dirtRefillsWeapons) {
+// let weaponPriceRelicDiv = document.createElement("Div")
+// weaponPriceRelicDiv.classList.add("relic-div")
+// let weaponImg = document.createElement("Img");
+// weaponImg.classList.add("relic-img")
+// weaponImg.src = "img/relics/dirtrefillsweapons.png"
+// weaponPriceRelicDiv.append(weaponImg)
+
+// weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//   const statusText = document.querySelector("#dirt-refiller-popup");
+//   statusText.style.display = 'block'
+// });
+
+// weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//   const statusText = document.querySelector("#dirt-refiller-popup");
+//   statusText.style.display = 'none'
+// });
+
+// let relicTextDiv = document.createElement("Div");
+// relicTextDiv.setAttribute("id", "dirt-refiller-popup")
+// relicTextDiv.classList.add("none-display")
+// relicTextDiv.textContent = "Dirt refills weapons"
+// weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+// topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.bombRefill > 0) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/bombrefill.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#bomb-refill-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#bomb-refill-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "bomb-refill-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicString = "Killing an enemy with a bomb yields " + stateObj.bombRefill + " bomb"
+//     if (stateObj.bombRefill > 1) {
+//       relicString += "s"
+//     }
+//     relicTextDiv.textContent = relicString
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.laserGemRefill > 0) {
+// let weaponPriceRelicDiv = document.createElement("Div")
+// weaponPriceRelicDiv.classList.add("relic-div")
+// let weaponImg = document.createElement("Img");
+// weaponImg.classList.add("relic-img")
+// weaponImg.src = "img/relics/laserrecapture.png"
+// weaponPriceRelicDiv.append(weaponImg)
+
+// weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//     const statusText = document.querySelector("#laser-recapture-popup");
+//     statusText.style.display = 'block'
+//   });
+  
+//   weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//     const statusText = document.querySelector("#laser-recapture-popup");
+//     statusText.style.display = 'none'
+//   });
+
+//   let relicTextDiv = document.createElement("Div");
+//   relicTextDiv.setAttribute("id", "laser-recapture-popup")
+//   relicTextDiv.classList.add("none-display")
+//   relicString = "Mining a gem with a laser refills " + stateObj.laserGemRefill + " laser"
+//   if (stateObj.laserGemRefill > 1) {
+//     relicString += "s"
+//   }
+//   relicTextDiv.textContent = relicString
+//   weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//   topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.fuelToBlocks > 0) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/fueltoblocks.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#fuel-blocks-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#fuel-blocks-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "fuel-blocks-popup")
+//     relicTextDiv.classList.add("none-display")
+//     let fuelNeeded = Math.floor(((stateObj.dirtThresholdNeeded - stateObj.dirtReserves))/stateObj.fuelToBlocks)
+//     relicString = "Can spend " + fuelNeeded + " fuel to drop a dirt block"
+//     relicTextDiv.textContent = relicString
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// // if (stateObj.sparefuelTank > 0) {
+// //     let weaponPriceRelicDiv = document.createElement("Div")
+// //     weaponPriceRelicDiv.classList.add("relic-div")
+// //     let weaponImg = document.createElement("Img");
+// //     weaponImg.classList.add("relic-img")
+// //     weaponImg.src = "img/relics/sparetank.png"
+// //     weaponPriceRelicDiv.append(weaponImg)
+  
+// //     weaponPriceRelicDiv.addEventListener('mouseover', function() {
+// //         const statusText = document.querySelector("#spare-tank-popup");
+// //         statusText.style.display = 'block'
+// //       });
+    
+// //       weaponPriceRelicDiv.addEventListener('mouseout', function() {
+// //         const statusText = document.querySelector("#spare-tank-popup");
+// //         statusText.style.display = 'none'
+// //       });
+
+// //       let relicTextDiv = document.createElement("Div");
+// //       relicTextDiv.setAttribute("id", "spare-tank-popup")
+// //       relicTextDiv.classList.add("none-display")
+// //       let fuelNeeded = Math.floor(((stateObj.dirtThresholdNeeded - stateObj.dirtReserves)*2)/stateObj.fuelToBlocks)
+// //       relicString = "Refill fuel after running out " + stateObj.spareFuelTank + " time"
+// //       if (stateObj.spareFuelTank > 1) {
+// //         relicString += "s"
+// //       }
+// //       relicTextDiv.textContent = relicString
+// //       weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+// //       topBarDiv.append(weaponPriceRelicDiv)
+// // }
+
+// if (stateObj.killEnemiesForMoney > 0) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/killmoney.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#kill-enemies-money-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#kill-enemies-money-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "kill-enemies-money-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Killing an enemy gets you $" + Math.ceil(stateObj.killEnemiesForMoney)
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.laserPiercing === true) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/laserpiercing.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#laser-piercing-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#laser-piercing-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "laser-piercing-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Laser pierces through entire row"
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.bronzeSilverBonus > 1) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/bronzesilverbonus.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#bronze-silver-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#bronze-silver-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "bronze-silver-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Bronze and silver ore sells for " + stateObj.bronzeSilverBonus + "x as much money"
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.isPacifist > 0) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/pacifist.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#pacifist-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#pacifist-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "pacifist-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Gain $" + stateObj.isPacifist + " at the end of the level for each enemy still alive"
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.dirtToMaxFuel > 0) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/dirtmaxfuel.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#dirt-fuel-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#dirt-fuel-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "dirt-fuel-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Gain " + Math.ceil(stateObj.dirtToMaxFuel) + " fuel tank capacity when dropping a dirt block"
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.bombTimerMax < 5) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/artifact3.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#bomb-timer-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#bomb-timer-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "bomb-timer-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Bomb Timer starts at " + Math.ceil(stateObj.bombTimerMax)
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.cheaperShops > 0) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/cheapershops.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#cheaper-shops-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#cheaper-shops-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "cheaper-shops-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Shop prices are " + Math.ceil(100*stateObj.cheaperShops) +"% cheaper for this level"
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.splinterCellModifier > 1) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/splintercell.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#splinter-cell-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#splinter-cell-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "splinter-cell-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Gems are worth " + stateObj.splinterCellModifier +"x more. Stops working after you kill an enemy."
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.freeFuel === true) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/oilwell.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#oil-well-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#oil-well-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "oil-well-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Fuel is free on this level"
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.dirtRuby === true) {
+//   let weaponPriceRelicDiv = document.createElement("Div")
+//   weaponPriceRelicDiv.classList.add("relic-div")
+//   let weaponImg = document.createElement("Img");
+//   weaponImg.classList.add("relic-img")
+//   weaponImg.src = "img/relics/dirtruby.png"
+//   weaponPriceRelicDiv.append(weaponImg)
+  
+//   weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//       const statusText = document.querySelector("#money-dirt-popup");
+//       statusText.style.display = 'block'
+//     });
+    
+//     weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//       const statusText = document.querySelector("#money-dirt-popup");
+//       statusText.style.display = 'none'
+//     });
+
+//     let relicTextDiv = document.createElement("Div");
+//     relicTextDiv.setAttribute("id", "money-dirt-popup")
+//     relicTextDiv.classList.add("none-display")
+//     relicTextDiv.textContent = "Dropped blocks contain a ruby"
+//     weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//     topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.fuelTeleportCost > 0) {
+// let weaponPriceRelicDiv = document.createElement("Div")
+// weaponPriceRelicDiv.classList.add("relic-div")
+// let weaponImg = document.createElement("Img");
+// weaponImg.classList.add("relic-img")
+// weaponImg.src = "img/relics/teleporter.png"
+// weaponPriceRelicDiv.append(weaponImg)
+
+// weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//     const statusText = document.querySelector("#fuel-teleport-popup");
+//     statusText.style.display = 'block'
+//   });
+  
+//   weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//     const statusText = document.querySelector("#fuel-teleport-popup");
+//     statusText.style.display = 'none'
+//   });
+
+//   let relicTextDiv = document.createElement("Div");
+//   relicTextDiv.setAttribute("id", "fuel-teleport-popup")
+//   relicTextDiv.classList.add("none-display")
+//   relicTextDiv.textContent = "Press 'T' to teleport back to the shop. Costs " + stateObj.fuelTeleportCost + " fuel"
+//   weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//   topBarDiv.append(weaponPriceRelicDiv)
+// }
+
+// if (stateObj.magneticBlocks) {
+// let weaponPriceRelicDiv = document.createElement("Div")
+// weaponPriceRelicDiv.classList.add("relic-div")
+// let weaponImg = document.createElement("Img");
+// weaponImg.classList.add("relic-img")
+// weaponImg.src = "img/relics/magnetblocks.png"
+// weaponPriceRelicDiv.append(weaponImg)
+
+// weaponPriceRelicDiv.addEventListener('mouseover', function() {
+//     const statusText = document.querySelector("#magnet-blocks-popup");
+//     statusText.style.display = 'block'
+//   });
+  
+//   weaponPriceRelicDiv.addEventListener('mouseout', function() {
+//     const statusText = document.querySelector("#magnet-blocks-popup");
+//     statusText.style.display = 'none'
+//   });
+
+//   let relicTextDiv = document.createElement("Div");
+//   relicTextDiv.setAttribute("id", "magnet-blocks-popup")
+//   relicTextDiv.classList.add("none-display")
+//   relicTextDiv.textContent = "Enemies stick to dropped dirt blocks"
+//   weaponPriceRelicDiv.appendChild(relicTextDiv);
+
+//   topBarDiv.append(weaponPriceRelicDiv)
 // }

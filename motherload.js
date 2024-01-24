@@ -83,6 +83,7 @@ let gameStartState = {
     rubyIncrease: 0,
     overallHullModifier: 1,
     overallFuelModifier: 1,
+    playerRelicArray: [],
 
     storeRelics: [],
     mapRelic1: false,
@@ -140,7 +141,7 @@ let gameStartState = {
             //barVals: [0.99, 0.97, 0.91, 0.85, 0.77, 0.73, 0.7],
             enemyValue: 0.97,
             bottomRowEnemies: [1, 5, 9],
-            numberRows: 20,
+            numberRows: 10,
             relicNumber: 1,
             floorNumber: 0,
             storeRelicPrice: 3000,
@@ -148,7 +149,8 @@ let gameStartState = {
             amethystRelicPrice: 0,
             hullGoldUpgradePrice: 5,
             rubyHullUpgradePrice: 0,
-            screenwidthBlocks: 20,
+            screenwidthBlocks: 10,
+            potentialRelicUpgrades: 0,
         },
         {
             barVals: [1, 0.9995, 0.998, 0.995, 0.975, 0.9, 0.80],
@@ -163,6 +165,7 @@ let gameStartState = {
             hullGoldUpgradePrice: 10,
             rubyHullUpgradePrice: 0,
             screenwidthBlocks: 25,
+            potentialRelicUpgrades: 1,
         },
         {
             barVals: [1, 0.999, 0.995, 0.97, 0.9, 0.85, 0.75],
@@ -177,6 +180,7 @@ let gameStartState = {
             hullGoldUpgradePrice: 0,
             rubyHullUpgradePrice: 5,
             screenwidthBlocks: 30,
+            potentialRelicUpgrades: 2,
         },
         {
             barVals: [0.9995, 0.995, 0.98, 0.95, 0.9, 0.8, 0.7],
@@ -191,6 +195,7 @@ let gameStartState = {
             amethystRelicPrice: 7,
             hullGoldUpgradePrice: 0,
             rubyHullUpgradePrice: 10,
+            potentialRelicUpgrades: 3,
         },
         {
             barVals: [0.995, 0.98, 0.95, 0.9, 0.85, 0.77, 0.7],
@@ -205,6 +210,7 @@ let gameStartState = {
             amethystRelicPrice: 15,
             hullGoldUpgradePrice: 0,
             rubyHullUpgradePrice: 15,
+            potentialRelicUpgrades: 3,
         },
         
     ],
