@@ -58,9 +58,9 @@ let commonRouletteChoices = [
         rouletteFunc: async (stateObj, value) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 if (!stateObj.noDirtThreshold) {
-                    newState.dirtReserves = newState.dirtThreshold
+                    newState.dirtReserves = newState.dirtThresholdNeeded
                 } else {
-                    newState.dirtReserves += newState.dirtThreshold;
+                    newState.dirtReserves += newState.dirtThresholdNeeded;
                 }
                 newState.choosingRoulette = false;
             })

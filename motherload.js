@@ -141,7 +141,7 @@ let gameStartState = {
             //barVals: [0.99, 0.97, 0.91, 0.85, 0.77, 0.73, 0.7],
             enemyValue: 0.97,
             bottomRowEnemies: [1, 5, 9],
-            numberRows: 10,
+            numberRows: 20,
             relicNumber: 1,
             floorNumber: 0,
             storeRelicPrice: 3000,
@@ -149,7 +149,7 @@ let gameStartState = {
             amethystRelicPrice: 0,
             hullGoldUpgradePrice: 5,
             rubyHullUpgradePrice: 0,
-            screenwidthBlocks: 10,
+            screenwidthBlocks: 15,
             potentialRelicUpgrades: 0,
         },
         {
