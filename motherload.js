@@ -84,6 +84,7 @@ let gameStartState = {
     overallHullModifier: 1,
     overallFuelModifier: 1,
     playerRelicArray: [],
+    storeUpgradeArray: [],
 
     storeRelics: [],
     mapRelic1: false,
@@ -433,12 +434,27 @@ async function fillMapWithArray(stateObj) {
             
         }
     }
+    let upgradeNum = stateObj.floorValues[stateObj.currentLevel].potentialRelicUpgrades
+    let relics = stateObj.playerRelicArray.filter(obj => obj.multiplePossible)
+    console.log("upgrade num is " + upgradeNum)
+    console.log("relics length is " + relics.length)
+    for (let i = 0; i < upgradeNum; i++) {
+        let relic = Math.floor(Math.random() * relics.length)
+        stateObj = await immer.produce(stateObj, (newState) => {
+            console.log('pushing to upgrade array ' + relics[relic].name)
+            newState.storeUpgradeArray.push(relics[relic])
+            console.log("newstate  array is " + newState.storeUpgradeArray.length)
+        })
+        relics.splice(relic, 1)
+    }
+
     stateObj = await immer.produce(stateObj, (newState) => {
         newState.enemyArray = tempEnemyArray;
         newState.enemyMovementArray = tempEnemyMovementArray;
     })
     await updateState(stateObj)
     console.log("enemy array is " + stateObj.enemyArray)
+    console.log("upgrade array is " + stateObj.storeUpgradeArray.length)
     return stateObj
 }
 
@@ -1170,7 +1186,7 @@ async function buyRelic3Func(stateObj, relicPrice) {
     stateObj = await stateObj.storeRelic3.relicFunc(stateObj)
     stateObj = immer.produce(stateObj, (newState) => {
         newState.bankedCash -= relicPrice
-        newState.storeRelic2 = false;
+        newState.storeRelic3 = false;
 
     })
     document.getElementById("store-relic-3-div").classList.add("store-clicked")
@@ -1185,6 +1201,23 @@ async function buyRelic4Func(stateObj) {
 
     })
     document.getElementById("ore-relic-div").classList.add("store-clicked")
+    await pause(300)
+    await changeState(stateObj);
+}
+
+async function upgradeStoreRelic(stateObj, index, rubyPrice=false, amethystPrice=false) {
+    stateObj = await stateObj.storeUpgradeArray[index].relicFunc(stateObj, false)
+    stateObj = immer.produce(stateObj, (newState) => {
+        if (rubyPrice) {
+            newState.rubyInventory -= rubyPrice
+            newState.currentInventory -= rubyPrice
+        } else if (amethystPrice) {
+            newState.amethystInventory -= amethystPrice
+            newState.currentInventory -= amethystPrice
+        }
+
+    })
+    document.querySelectorAll(".upgrade-relic-div")[index].classList.add("store-clicked")
     await pause(300)
     await changeState(stateObj);
 }

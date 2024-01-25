@@ -346,58 +346,12 @@ function renderSellingItems(stateObj) {
       sellTotal += tempSellTotal
   }
 
-  let upgradeHullDiv = document.createElement("Div")
-  let goldPrice = stateObj.floorValues[stateObj.currentLevel].hullGoldUpgradePrice
-  let rubyPrice = stateObj.floorValues[stateObj.currentLevel].rubyHullUpgradePrice
-  let tradeString = "Upgrade Hull Armor (Costs "
-  upgradeHullDiv.classList.add("hull-gold-upgrade-div")
-  if (goldPrice > 0) {
-    tradeString += goldPrice + " gold)"
-    if (stateObj.goldInventory >= goldPrice) {
-      upgradeHullDiv.classList.add("hull-gold-upgrade-hover")
-      upgradeHullDiv.onclick = async function () {
-        await upgradeHullGold(stateObj)
-      }
-    }
-  } else if (rubyPrice > 0) {
-    tradeString += rubyPrice + " rubies)"
-    if (stateObj.rubyInventory >= rubyPrice) {
-      upgradeHullDiv.classList.add("ruby-relic-hover")
-      upgradeHullDiv.onclick = async function () {
-        await upgradeHullGold(stateObj)
-      }
-    } 
-  }
-  upgradeHullDiv.textContent = tradeString
-
-  let upgradeFuelDiv = document.createElement("Div")
-  let fuelString = "Upgrade Fuel Tank (Costs "
-  upgradeFuelDiv.classList.add("fuel-gold-upgrade-div")
-  if (goldPrice > 0) {
-    fuelString += goldPrice + " gold)"
-    if (stateObj.goldInventory >= goldPrice) {
-      upgradeFuelDiv.classList.add("fuel-gold-upgrade-hover")
-      upgradeFuelDiv.onclick = async function () {
-        await upgradeFuelGold(stateObj)
-      }
-    }
-  } else if (rubyPrice > 0) {
-    fuelString += rubyPrice + " rubies)"
-    if (stateObj.rubyInventory >= rubyPrice) {
-      upgradeFuelDiv.classList.add("ruby-relic-hover")
-      upgradeFuelDiv.onclick = async function () {
-        await upgradeFuelGold(stateObj)
-      }
-    } 
-  }
-  upgradeFuelDiv.textContent = fuelString
   
-
+  let rubyPrice = stateObj.floorValues[stateObj.currentLevel].rubyRelicPrice
+  let amethystPrice = stateObj.floorValues[stateObj.currentLevel].amethystRelicPrice
   let tradeRelicRubyDiv = document.createElement("Div")
   if (stateObj.storeRelic1) {
     tradeRelicRubyDiv.classList.add("ruby-relic-div")
-    let rubyPrice = stateObj.floorValues[stateObj.currentLevel].rubyRelicPrice
-    let amethystPrice = stateObj.floorValues[stateObj.currentLevel].amethystRelicPrice
     let tradeString = stateObj.storeRelic1.name + " - " + stateObj.storeRelic1.text(stateObj) + " (Costs "
     if (rubyPrice > 0) {
       tradeString += rubyPrice + " rubies)"
@@ -415,7 +369,6 @@ function renderSellingItems(stateObj) {
           await tradeRelicRuby(stateObj)
         }
       }
-      
     }
     tradeRelicRubyDiv.textContent = tradeString
   }
@@ -470,9 +423,36 @@ function renderSellingItems(stateObj) {
   buyNothingDiv.onclick = function () {
       leaveStore(stateObj)
   }
+  sellDiv.append(sellInventoryDiv, sellButtonDiv)
 
-  
-  sellDiv.append(sellInventoryDiv, sellButtonDiv, oreRelicDiv, tradeRelicRubyDiv, seeStoreDiv,  buyNothingDiv)
+  let storeArr = stateObj.storeUpgradeArray
+  for (let i=0; i < storeArr.length; i++) {
+    let upgradeDiv = document.createElement("Div")
+    upgradeDiv.classList.add("ruby-relic-div")
+    upgradeDiv.classList.add("upgrade-relic-div")
+    let tradeString = storeArr[i].name + " - UPGRADE - " + storeArr[i].text(stateObj) + " (Costs "
+    if (rubyPrice > 0) {
+      tradeString += rubyPrice + " rubies)"
+      if (stateObj.rubyInventory >= rubyPrice) {
+        upgradeDiv.classList.add("ruby-relic-hover")
+      }
+      upgradeDiv.onclick = async function () {
+        await upgradeStoreRelic(stateObj, i, rubyPrice, false)
+      }
+    } else if (amethystPrice > 0) {
+      tradeString += amethystPrice + " amethysts)"
+      if (stateObj.amethystInventory >= amethystPrice) {
+        upgradeDiv.classList.add("diamond-relic-hover")
+        upgradeDiv.onclick = async function () {
+          await upgradeStoreRelic(stateObj, i, false, amethystPrice)
+        }
+      }
+    }
+    upgradeDiv.textContent = tradeString
+    sellDiv.append(upgradeDiv)
+  }
+
+  sellDiv.append(oreRelicDiv, tradeRelicRubyDiv, seeStoreDiv,  buyNothingDiv)
   storeDiv.append(sellDiv)
   
   return storeDiv

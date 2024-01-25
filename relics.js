@@ -8,13 +8,18 @@ let potentialRelics = [
         text: (stateObj) => {
             let val = stateObj.spareFuelTank
             let tradeString = "If you run out of fuel, fully refill your fuel " 
-            let tradeString2 = (val > 1) ? val + " times" : "1 time"
+            let tradeString2 = "";
+            if (stateObj.sellingItems || stateObj.inStore) {
+                tradeString2 = (val+1) + " times"
+            }  else {
+                tradeString2 = val + " times"
+            }
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.spareFuelTank += 1;
-                newState.playerRelicArray.push(spareTank)
+                if(add) {newState.playerRelicArray.push(spareTank)}
             })
             await changeState(stateObj);
             return stateObj
@@ -32,13 +37,19 @@ let potentialRelics = [
         text: (stateObj) => {
             let val = stateObj.goldMaxInventory
             let tradeString = "Mining gold increases Cargo Bay by " 
-            let tradeString2 = (val > 1) ? val : "1"
+            let tradeString2 = "";
+            if (stateObj.sellingItems || stateObj.inStore) {
+                tradeString2 = (val+1)
+            }  else {
+                tradeString2 = val
+            }
+            return tradeString + tradeString2
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.goldMaxInventory += 1;
-                newState.playerRelicArray.push(goldMaxInventory)
+                if (add){newState.playerRelicArray.push(goldMaxInventory)}
             })
             await changeState(stateObj);
             return stateObj
@@ -77,15 +88,20 @@ let potentialRelics = [
         varName: "dirtToMaxFuelRelic",
         text: (stateObj) => {
             let val = stateObj.dirtToMaxFuel
-            let increase = 15 * stateObj.overallFuelModifier
+            let increase = Math.floor(15 * stateObj.overallFuelModifier)
             let tradeString = "Dropping dirt increases Fuel Tank by " 
-            let tradeString2 = (val > 15) ? val*stateObj.overallFuelModifier : increase
+            let tradeString2 = "";
+            if (stateObj.sellingItems || stateObj.inStore) {
+                tradeString2 = val+increase
+            }  else {
+                tradeString2 = increase
+            }
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.dirtToMaxFuel += 15;
-                newState.playerRelicArray.push(dirtMaxFuel)
+                if(add){newState.playerRelicArray.push(dirtMaxFuel)}    
             })
             await changeState(stateObj);
             return stateObj
@@ -105,10 +121,10 @@ let potentialRelics = [
             let tradeString2 = (val === 1) ? "20% less damage" :  Math.ceil((1-val)*100) + "% less damage"
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.enemyDamageModifier -= 0.2;
-                newState.playerRelicArray.push(enemiesDealLess)
+                if (add) {newState.playerRelicArray.push(enemiesDealLess)}
             })
             await changeState(stateObj);
             return stateObj
@@ -125,14 +141,16 @@ let potentialRelics = [
         varName: "halfDamageFullFuelRelic",
         text: (stateObj) => {
             let val = stateObj.halfDamageFullFuel
-            let tradeString = (val === 1) ? "Take 25" : "Take " +  Math.ceil((1-val)*100) 
+            //if val = 0.75 should equal .5
+            //if val = 0.5 should equal .25
+            let tradeString = (val === 1) ? "Take 25" : "Take " +  Math.ceil(val*100)-25 
             let tradeString2 = "% less damage if Fuel Tank above 50%"
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.halfDamageFullFuel = Math.floor(newState.halfDamageFullFuel * 0.75);
-                newState.playerRelicArray.push(halfDamageFuel)
+                if (add) {newState.playerRelicArray.push(halfDamageFuel)}
             })
             await changeState(stateObj);
             return stateObj
@@ -170,13 +188,18 @@ let potentialRelics = [
         text: (stateObj) => {
             let val = stateObj.bronzeSilverBonus
             let tradeString = "Bronze and silver ore are worth " 
-            let tradeString2 = (val > 2) ? val + " times as much" : " twice as much"
+            let tradeString2 = "";
+            if (stateObj.sellingItems || stateObj.inStore) {
+                tradeString2 = (val+1) + " times as much"
+            }  else {
+                tradeString2 = val + " times as much"
+            }
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.bronzeSilverBonus += 1;
-                newState.playerRelicArray.push(bronzeSilverBonusRelic)
+                if(add){newState.playerRelicArray.push(bronzeSilverBonusRelic)}
             })
             await changeState(stateObj);
             return stateObj
@@ -216,10 +239,10 @@ let potentialRelics = [
             let tradeString2 = (val == 1) ? "50% cheaper" : Math.ceil((1-val)*100) 
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                     newState.weaponsPriceModifier = Math.floor(0.5 * newState.weaponsPriceModifier);
-                    newState.playerRelicArray.push(weaponsPriceRelic)
+                    if(add){newState.playerRelicArray.push(weaponsPriceRelic)}
             })
             await changeState(stateObj);
             return stateObj
@@ -240,10 +263,10 @@ let potentialRelics = [
             let tradeString2 = (val === 0) ? Math.ceil(5 * stateObj.overallHullModifier) : val 
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.killEnemiesHullModifier += 5;
-                newState.playerRelicArray.push(killEnemiesHullRelic)
+                if(add){newState.playerRelicArray.push(killEnemiesHullRelic)}
             })
             await changeState(stateObj);
             return stateObj
@@ -264,10 +287,10 @@ let potentialRelics = [
             let tradeString2 = (val === 0) ? "10 (if damaged)" : val + " (if damaged)" 
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.killEnemiesForHealing += 10;
-                newState.playerRelicArray.push(killEnemiesHealRelic)
+                if (add) {newState.playerRelicArray.push(killEnemiesHealRelic)}
             })
             await changeState(stateObj);
             return stateObj
@@ -287,10 +310,10 @@ let potentialRelics = [
             let tradeString2 = (val === 0) ? "5 (if damaged)" : val + " (if damaged)" 
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.silverHealing += 5;
-                newState.playerRelicArray.push(silverHealingRelic)
+                if (add) {newState.playerRelicArray.push(silverHealingRelic)}
             })
             await changeState(stateObj);
             return stateObj
@@ -310,10 +333,10 @@ let potentialRelics = [
             let tradeString2 = (val === 0) ? 1 * Math.ceil(stateObj.overallHullModifier) : val 
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.bronzeMaxHull += 1;
-                newState.playerRelicArray.push(bronzeMaxHullRelic)
+                if (add) {newState.playerRelicArray.push(bronzeMaxHullRelic)}
             })
             await changeState(stateObj);
             return stateObj
@@ -330,7 +353,7 @@ let potentialRelics = [
         text: (stateObj) => {
             return "Dropped dirt blocks contain a ruby"
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateOb, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.dirtRuby = true;
                 newState.playerRelicArray.push(dirtRubyRelic)
@@ -354,10 +377,10 @@ let potentialRelics = [
             let tradeString2 = (val === 2) ? 1 : val-2 
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.bombDistance += 1;
-                newState.playerRelicArray.push(bombDistanceRelic)
+                if(add){newState.playerRelicArray.push(bombDistanceRelic)}
             })
             await changeState(stateObj);
             return stateObj
@@ -397,10 +420,10 @@ let potentialRelics = [
             let tradeString2 = (val === 0) ? "1 bomb" : val + " bombs" 
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.bombRefill += 1;
-                newState.playerRelicArray.push(bombRefillRelic)
+                if(add){newState.playerRelicArray.push(bombRefillRelic)}
             })
             await changeState(stateObj);
             return stateObj
@@ -423,10 +446,10 @@ let potentialRelics = [
             else { tradeString += fuelNeeded + " fuel to drop dirt" }
             return tradeString
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.fuelToBlocks += 2;
-                newState.playerRelicArray.push(fuelToBlocksRelic)
+                if(add){newState.playerRelicArray.push(fuelToBlocksRelic)}
             })
             await changeState(stateObj);
             return stateObj
@@ -443,14 +466,14 @@ let potentialRelics = [
         text: (stateObj) => {
             return "Can drop dirt much faster"
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 if (newState.dirtThresholdNeeded > 15) {
                     newState.dirtThresholdNeeded -= 15;
                 } else {
                     newState.dirtThresholdNeeded = 5;
                 }
-                newState.playerRelicArray.push(upgradeDirtBlockRelic)
+                if(add){newState.playerRelicArray.push(upgradeDirtBlockRelic)}
             })
             await changeState(stateObj);
             return stateObj
@@ -475,9 +498,9 @@ let potentialRelics = [
             } else { tradeString += val + " fuel)" }
             return tradeString
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.playerRelicArray.push(fuelTeleporter)
+                if (add){newState.playerRelicArray.push(fuelTeleporter)}
                 if (newState.fuelTeleportCost === 0) {
                     newState.fuelTeleportCost = 40;
                 } else if (newState.fuelTeleportCost >= 25) {
@@ -545,10 +568,10 @@ let potentialRelics = [
             let tradeString2 = (val === 0) ? "1" : val
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.silverMaxFuel += 1;
-                newState.playerRelicArray.push(silverMaxFuel)
+                if(add){newState.playerRelicArray.push(silverMaxFuel)}
             })
             await changeState(stateObj);
             return stateObj
@@ -618,7 +641,7 @@ let potentialRelics = [
         imgPath: "img/relics/lasercapacity.png",
         levelRelic: true,
         shopRelic: false,
-        multiplePossible: true,
+        multiplePossible: false,
     },
 
     laserRecaptureRelic = {
@@ -630,10 +653,10 @@ let potentialRelics = [
             let tradeString2 = (val === 0) ? "1 laser" : val + " lasers"
             return tradeString + tradeString2
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.laserGemRefill += 1;
-                newState.playerRelicArray.push(laserRecaptureRelic)
+                if(add){newState.playerRelicArray.push(laserRecaptureRelic)}
             })
             await changeState(stateObj);
             return stateObj
@@ -692,11 +715,10 @@ let potentialRelics = [
             let tradeString = "All fuel upgrades are 50% more powerful "
             return tradeString
         },
-        text: "All fuel upgrades are 50% more powerful",
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.overallFuelModifier += 0.5;
-                newState.playerRelicArray.push(fuelMult)
+                if(add){newState.playerRelicArray.push(fuelMult)}
             })
             await changeState(stateObj);
             return stateObj
@@ -714,10 +736,10 @@ let potentialRelics = [
             let tradeString = "All hull upgrades are 50% more powerful "
             return tradeString
         },
-        relicFunc: async (stateObj) => {
+        relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
                 newState.overallHullModifier += 0.5;
-                newState.playerRelicArray.push(hulllMult)
+                if(add){newState.playerRelicArray.push(hulllMult)}
             })
             await changeState(stateObj);
             return stateObj
