@@ -1200,7 +1200,7 @@ async function buyRelic4Func(stateObj) {
         newState.storeRelic4 = false;
 
     })
-    document.getElementById("ore-relic-div").classList.add("store-clicked")
+    document.querySelector(".ore-relic-div").classList.add("store-clicked")
     await pause(300)
     await changeState(stateObj);
 }
