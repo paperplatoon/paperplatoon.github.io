@@ -45,7 +45,7 @@ let gameStartState = {
     blackDiamondInventory: 0,
     
 
-    bankedCash: 10000,
+    bankedCash: 100,
     
     numberLasers: 1,
     laserCapacity: 2,
