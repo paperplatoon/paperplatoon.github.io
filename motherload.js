@@ -45,7 +45,7 @@ let gameStartState = {
     blackDiamondInventory: 0,
     
 
-    bankedCash: 100,
+    bankedCash: 10000,
     
     numberLasers: 1,
     laserCapacity: 2,
@@ -686,6 +686,13 @@ async function renderScreen(stateObj) {
 async function leaveStore(stateObj) {
     stateObj.inStore = false;
     stateObj.sellingItems = false;
+    stateObj.viewingInventory = false;
+    await changeState(stateObj);
+}
+
+async function seeSellItems(stateObj) {
+    stateObj.inStore = false;
+    stateObj.sellingItems = true;
     stateObj.viewingInventory = false;
     await changeState(stateObj);
 }

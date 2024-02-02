@@ -146,13 +146,13 @@ let potentialRelics = [
             return tradeString
         },
         storeText: (stateObj) => {
-            let val = stateObj.halfDamageFullFuel
-            let tradeString = "Take " +  Math.ceil(((1-val)*0.65)*100) + "% less damage if Fuel Tank above 50%"
+            let val = stateObj.halfDamageFullFuel * .65
+            let tradeString = "Take " +  Math.ceil((1-val)*100) + "% less damage if Fuel Tank above 50%"
             return tradeString
         },
         relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                newState.halfDamageFullFuel = Math.floor(newState.halfDamageFullFuel * 0.65);
+                newState.halfDamageFullFuel = newState.halfDamageFullFuel * 0.65;
                 if (add) {newState.playerRelicArray.push(halfDamageFuel)}
             })
             await changeState(stateObj);
@@ -253,7 +253,7 @@ let potentialRelics = [
         },
         relicFunc: async (stateObj, add=true) => {
             stateObj = immer.produce(stateObj, (newState) => {
-                    newState.weaponsPriceModifier = Math.floor(0.5 * newState.weaponsPriceModifier);
+                    newState.weaponsPriceModifier = 0.5 * newState.weaponsPriceModifier;
                     if(add){newState.playerRelicArray.push(weaponsPriceRelic)}
             })
             await changeState(stateObj);
@@ -326,12 +326,12 @@ let potentialRelics = [
         varName: "silverHealingRelic",
         text: (stateObj) => {
             let val = stateObj.silverHealing
-            let tradeString = "Mining silver ore repairs Hull Armor by " + val + ("(if damaged")
+            let tradeString = "Mining silver ore repairs Hull Armor by " + val + (" (if damaged")
             return tradeString
         },
         storeText: (stateObj) => {
             let val = stateObj.silverHealing
-            let tradeString = "Mining silver ore repairs Hull Armor by " + (val+5) + ("(if damaged")
+            let tradeString = "Mining silver ore repairs Hull Armor by " + (val+5) + (" (if damaged)")
             return tradeString
         },
         relicFunc: async (stateObj, add=true) => {
@@ -708,13 +708,13 @@ let potentialRelics = [
         name: "Laser Recapture",
         varName: "laserRecapture",
         text: (stateObj) => {
-            let val = stateObj.silverMaxFuel
+            let val = stateObj.laserGemRefill
             let tradeString = "Mining a gem with a laser refills " + val + "laser"
             let tradeString2 = (val > 1) ? "s" :  ""
             return tradeString + tradeString2
         },
         storeText: (stateObj) => {
-            let val = stateObj.silverMaxFuel
+            let val = stateObj.laserGemRefill
             let tradeString = "Mining a gem with a laser refills " + (val+1) + "laser"
             let tradeString2 = (val > 0) ? "s" :  ""
             return tradeString + tradeString2
@@ -782,12 +782,12 @@ let potentialRelics = [
         varName: "rubyLocator",
         text: (stateObj) => {
             let val = (1-stateObj.overallFuelModifier)*100;
-            let tradeString = "All fuel upgrades are " + val + "% more powerful "
+            let tradeString = "All fuel upgrades are " + Math.floor(val) + "% more powerful "
             return tradeString
         },
         storeText: (stateObj) => {
             let val = (1-stateObj.overallFuelModifier + 0.5)*100;
-            let tradeString = "All fuel upgrades are " + val + "% more powerful "
+            let tradeString = "All fuel upgrades are " + Math.floor(val) + "% more powerful "
             return tradeString
         },
         relicFunc: async (stateObj, add=true) => {
@@ -808,13 +808,13 @@ let potentialRelics = [
         name: "Hull Multiplier",
         varName: "rubyLocator",
         text: (stateObj) => {
-            let val = (1-stateObj.overallhullModifier)*100;
-            let tradeString = "All hull upgrades are " + Math.floor(val*100) + "% more powerful "
+            let val = (1-stateObj.overallHullModifier)*100;
+            let tradeString = "All hull upgrades are " + Math.floor(val) + "% more powerful "
             return tradeString
         },
         storeText: (stateObj) => {
-            let val = (1-stateObj.overallhullModifier + 0.5)*100;
-            let tradeString = "All hull upgrades are " + Math.floor(val*100) + "% more powerful "
+            let val = (1-stateObj.overallHullModifier + 0.5)*100;
+            let tradeString = "All hull upgrades are " + Math.floor(val) + "% more powerful "
             return tradeString
         },
         relicFunc: async (stateObj, add=true) => {

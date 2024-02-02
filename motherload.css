@@ -148,6 +148,13 @@ html, body {
     flex-direction: row;
   }
 
+  .column {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
   #goldText {
     position: absolute;
     color: black;
@@ -412,7 +419,6 @@ html, body {
 }
 
 .sell-row, .inv-row {
-  width: 40vw;
   padding: 0.5vh 1vw;
   display: flex;
   justify-content: left;
@@ -424,6 +430,10 @@ html, body {
   background-color: rgba(187, 186, 186, 0.861); 
 }
 
+.sell-row {
+  width: 20vw;
+}
+
 .inv-row {
   width: 50vw;
 }
@@ -431,8 +441,8 @@ html, body {
 .selling-items-div, .start-div, .choose-robot-div {
   display: flex;
   flex-direction: column;
-  width: 60vw;
-  height: 78vh;
+  width: 80vw;
+  height: 75vh;
   justify-content: center;
   align-items: center;
   border: 0.8vw dashed rgba(71, 71, 71, 0.726);
@@ -443,6 +453,32 @@ html, body {
   font-family: monospace;
   box-shadow: 1vw 1vw 1vw rgba(113, 113, 113, 0.619);
   transition: 1s all;
+}
+
+.selling-items-div {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.sell-ore-div, .trade-ore-div {
+  width: 25vw;
+  height: 50vh;
+  display: flex;
+  justify-content: start;
+  border: 1px dashed grey;
+  margin: 1vh;
+}
+
+.trade-ore-div {
+  width: 50vw;
+}
+
+.sell-title, .sell-button {
+  margin: 1vh 0vh;
+}
+
+.trade-relics-div {
+  flex-wrap: wrap;
 }
 
 .choose-robot-div {
@@ -468,9 +504,9 @@ html, body {
   transition: 1s all;
 }
 
-.hull-gold-upgrade-div, .fuel-gold-upgrade-div, .sell-empty, .ruby-relic-div, .ore-relic-div {
-  width: 40vw;
-  height: 5vh;
+.ruby-relic-div, .ore-relic-div {
+  width: 25vw;
+  height: 20vh;
   display: flex;
   margin-top: 1vh;
   padding: 0.5vh 0.5vw;
@@ -484,7 +520,7 @@ html, body {
 }
 
 .sell-button, .ruby-relic-hover, .diamond-relic-hover, .choose-robot-button, .ore-relic-hover {
-  width: 30vw;
+  width: 20vw;
   height: 5vh;
   display: flex;
   padding: 0.5vh 0.5vw;
@@ -499,10 +535,6 @@ html, body {
 
 .choose-robot-button {
   width: 18vw;
-}
-
-.ruby-relic-div, #ore-relic-div {
-  height: 6.5vh;
 }
 
 .hull-gold-upgrade-hover, .fuel-gold-upgrade-hover {
@@ -581,7 +613,6 @@ body:has(.sell-button:hover) .sell-row {
 
 body:has(.sell-button:hover) .selling-items-div {
   box-shadow: 1vw 1vw 1vw rgba(159, 159, 159, 0.619);
-  animation: flash 1s infinite;
 }
 
 body:has(#store-fuel-div:hover) #empty-fuel-bar {
@@ -771,6 +802,11 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
   .relic-option {
     width: 17.5vw;
     height: 18vh;
+  }
+  .trade-relic-option {
+    width: 20vw;
+    height: 18vh;
+    margin-right: 1vw;
   }
 
   .next-level-option {
@@ -971,6 +1007,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
     color: rgb(58, 0, 0);
     height: 10vh;
     width: 15vw;
+    margin: 0vw 1vw;
   }
 
   .return-to-map:hover {
