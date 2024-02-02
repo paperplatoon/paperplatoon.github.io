@@ -119,7 +119,7 @@ let potentialRelics = [
         },
         storeText: (stateObj) => {
             let val = stateObj.enemyDamageModifier
-            let tradeString = "Enemies deal " + Math.ceil((1-val-0.25)*100) + "% less damage"
+            let tradeString = "Enemies deal " + Math.ceil((1-val+0.25)*100) + "% less damage"
             return tradeString
         },
         relicFunc: async (stateObj, add=true) => {

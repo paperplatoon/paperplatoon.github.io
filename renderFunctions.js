@@ -745,10 +745,11 @@ function renderInventory(stateObj) {
 
   let sellDiv = document.createElement("Div")
   sellDiv.classList.add("viewing-inv-div")
+  sellDiv.classList.add("column")
 
   let sellInventoryDiv = document.createElement("Div")
   sellInventoryDiv.classList.add("selling-div")
-  sellInventoryDiv.classList.add("centered")
+  sellInventoryDiv.classList.add("column")
 
   let maxTextDiv = document.createElement("Div")
   maxTextDiv.textContent = "Current Capacity: " + stateObj.currentInventory + "/" + stateObj.inventoryMax

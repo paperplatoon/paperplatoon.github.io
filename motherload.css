@@ -422,7 +422,7 @@ html, body {
   padding: 0.5vh 1vw;
   display: flex;
   justify-content: left;
-  font-size: 1.8vmin;
+  font-size: 1vw;
   align-items: center;
   transition: 1s all; 
   border-top: 0.2vh solid grey;
@@ -462,7 +462,7 @@ html, body {
 
 .sell-ore-div, .trade-ore-div {
   width: 25vw;
-  height: 50vh;
+  height: 55vh;
   display: flex;
   justify-content: start;
   border: 1px dashed grey;
@@ -470,7 +470,7 @@ html, body {
 }
 
 .trade-ore-div {
-  width: 50vw;
+  width: 46vw;
 }
 
 .sell-title, .sell-button {
@@ -510,13 +510,14 @@ html, body {
   display: flex;
   margin-top: 1vh;
   padding: 0.5vh 0.5vw;
-  font-size: 2vmin;
+  font-size: 1vw;
   justify-content: center;
   align-items: center;
   text-align: center;
   background: grey;
   color: rgb(203, 203, 203);
   font-family: monospace;
+  cursor: not-allowed;
 }
 
 .sell-button, .ruby-relic-hover, .diamond-relic-hover, .choose-robot-button, .ore-relic-hover {
@@ -759,7 +760,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
   .store-option, .next-level-option {
     width: 16vw;
     height: 8vh;
-    font-size: 2.5vmin;
+    font-size: 1.4vw;
     background-color: rgba(78, 152, 152, 0.867);
     margin: 0.5vw;
     padding: 1vh;
@@ -775,7 +776,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
   }
 
   .store-title {
-    font-size: 3.5vmin;
+    font-size: 2vw;
     margin-top: 1vh;
     height: 7vh;
     width: 19vw;
@@ -807,6 +808,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
     width: 20vw;
     height: 18vh;
     margin-right: 1vw;
+    justify-content: space-evenly;
   }
 
   .next-level-option {
