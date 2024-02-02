@@ -4,13 +4,21 @@ function renderTopBarStats(stateObj) {
     let topBarDiv = document.createElement("Div")
     topBarDiv.classList.add("top-stats-bar")
 
+    let scoreLevelDiv = document.createElement("Div")
+    scoreLevelDiv.classList.add("score-level-div")
+    scoreLevelDiv.classList.add("centered")
+
+    let scoreDiv = document.createElement("Div")
+    scoreDiv.classList.add("score-div")
+    scoreDiv.textContent = stateObj.score;
+    scoreDiv.classList.add("centered")
+
     let levelDiv = document.createElement("Div")
     levelDiv.classList.add("level-div")
     levelDiv.textContent = "Level " + (stateObj.currentLevel+1);
     levelDiv.classList.add("centered")
-    levelDiv.onclick = function() {
-        console.log("clicked level div")
-    }
+
+    scoreLevelDiv.append(levelDiv, scoreDiv)
 
     let barsDiv = document.createElement("Div")
     barsDiv.classList.add("bars-div")
@@ -177,15 +185,7 @@ function renderTopBarStats(stateObj) {
         bombDiv.classList.add("upgraded-stat")
     }
 
-    let bombDistanceDiv = document.createElement("Div")
-    bombString2 = " \u00A0 [Distance: " + stateObj.bombDistance + "]"
-    bombDistanceDiv.textContent = bombString2
-    bombDistanceDiv.setAttribute("id", "bomb-distance-text");
-    if (stateObj.bombDistance > 2) {
-        bombDistanceDiv.classList.add("upgraded-stat")
-    }
-
-    bombDiv.append(currentBombsDiv, bombDistanceDiv)
+    bombDiv.append(currentBombsDiv)
 
     let weaponsDiv = document.createElement("Div")
     weaponsDiv.classList.add("all-weapons-div")
@@ -206,7 +206,7 @@ function renderTopBarStats(stateObj) {
     }
     dirtDiv.textContent = dirtString
 
-    topBarDiv.append(levelDiv, cashDiv, barsDiv, weaponsDiv,dirtDiv)
+    topBarDiv.append(scoreLevelDiv, cashDiv, barsDiv, weaponsDiv,dirtDiv)
 
     for (let i=0; i < stateObj.playerRelicArray.length; i++) {
       let relic = stateObj.playerRelicArray[i];
@@ -352,7 +352,7 @@ function renderSellingItems(stateObj) {
   let tradeRelicRubyDiv = document.createElement("Div")
   if (stateObj.storeRelic1) {
     tradeRelicRubyDiv.classList.add("ruby-relic-div")
-    let tradeString = stateObj.storeRelic1.name + " - " + stateObj.storeRelic1.text(stateObj) + " (Costs "
+    let tradeString = stateObj.storeRelic1.name + " - " + stateObj.storeRelic1.storeText(stateObj) + " (Costs "
     if (rubyPrice > 0) {
       tradeString += rubyPrice + " rubies)"
       if (stateObj.rubyInventory >= rubyPrice) {
@@ -379,8 +379,8 @@ function renderSellingItems(stateObj) {
     let allowedOreValues = ["1", "2", "3", "4", "stone-5", "stone-6", "stone-7", "5", "6", "7"]
     let currentOres = stateObj.gameMap.filter(str => allowedOreValues.includes(str))
     
-    let tradeString = stateObj.storeRelic4.name + " - " + stateObj.storeRelic4.text(stateObj) + ". "
-    tradeString += "(Mine all ore: " + (stateObj.totalLevelOre-currentOres.length) + "/" + stateObj.totalLevelOre + ")"
+    let tradeString = stateObj.storeRelic4.name + " - " + stateObj.storeRelic4.storeText(stateObj) + ". "
+    tradeString += "(Mine all ore to collect: " + (stateObj.totalLevelOre-currentOres.length) + "/" + stateObj.totalLevelOre + ")"
       if (currentOres.length === 0) {
         oreRelicDiv.classList.add("ore-relic-hover")
         oreRelicDiv.onclick = async function () {
@@ -430,7 +430,7 @@ function renderSellingItems(stateObj) {
     let upgradeDiv = document.createElement("Div")
     upgradeDiv.classList.add("ruby-relic-div")
     upgradeDiv.classList.add("upgrade-relic-div")
-    let tradeString = storeArr[i].name + " - UPGRADE - " + storeArr[i].text(stateObj) + " (Costs "
+    let tradeString = storeArr[i].name + " - UPGRADE - " + storeArr[i].storeText(stateObj) + " (Costs "
     if (rubyPrice > 0) {
       tradeString += rubyPrice + " rubies)"
       if (stateObj.rubyInventory >= rubyPrice) {
@@ -467,9 +467,15 @@ function lostTheGame() {
   lostDiv.classList.add("selling-items-div")
 
   let lostTextDiv = document.createElement("H3")
-  lostTextDiv.textContent = "You lost the game! Press OK to try again"
+  lostTextDiv.textContent = state.lossString
 
-  lostDiv.append(lostTextDiv)
+  let lostTextDiv1 = document.createElement("H3")
+  lostTextDiv1.textContent = "Final Score: " + state.score;
+
+  let lostTextDiv2 = document.createElement("H3")
+  lostTextDiv2.textContent = "Press OK to try again"
+
+  lostDiv.append(lostTextDiv, lostTextDiv1, lostTextDiv2)
 
   let lostButtonDiv = document.createElement("Div")
   lostButtonDiv.classList.add("sell-button")
@@ -633,10 +639,6 @@ function renderStart(stateObj) {
   let lostDiv = document.createElement("Div")
   lostDiv.classList.add("start-div")
 
-  let textDiv1 = document.createElement("H3")
-  textDiv1.classList.add("padding-width")
-  textDiv1.textContent = "Use arrow keys or WASD to move around and mine ore"
-
   let textDiv2 = document.createElement("H3")
   textDiv2.classList.add("padding-width")
   textDiv2.textContent = "Sell and trade ore at the shop to upgrade your ship"
@@ -651,9 +653,9 @@ function renderStart(stateObj) {
 
   let textDiv6 = document.createElement("H3")
   textDiv6.classList.add("padding-width")
-  textDiv6.textContent = "Press 'H' at any time to see this screen again"
+  textDiv6.textContent = "Press 'H' to view this screen again"
 
-  lostDiv.append(textDiv1, textDiv2, textDiv4, textDiv7, textDiv6)
+  lostDiv.append(textDiv2, textDiv4, textDiv7, textDiv6)
 
   let startButton = document.createElement("Div")
   startButton.classList.add("sell-button")
@@ -1024,6 +1026,7 @@ function renderMap(stateObj) {
     if (squareIndex !== stateObj.currentPosition) {
       //mapSquareDiv.textContent = squareIndex
     }
+    mapSquareDiv.classList.add("centered")
     
       mapDiv.append(mapSquareDiv)
   }
@@ -1304,7 +1307,7 @@ function renderStore(stateObj) {
       let bombText2 = document.createElement("Div")
       bombText2.classList.add("store-option-text")
       bombText1.textContent = "Buy a bomb [" + stateObj.bombCurrentTotal + "/" + stateObj.bombCapacity + "]" 
-      let purchaseCostBomb = Math.floor(stateObj.bombCost * (stateObj.currentLevel+1) * stateObj.weaponsPriceModifier * (1-stateObj.cheaperShops))
+      let purchaseCostBomb = Math.floor(stateObj.bombCost * stateObj.weaponsPriceModifier * (1-stateObj.cheaperShops))
       bombText2.textContent = "$" + purchaseCostBomb
       buyBombDiv.append(bombText1, bombText2)
       buyBombDiv.onclick = function () {
@@ -1380,10 +1383,13 @@ function renderStore(stateObj) {
       relicText1.classList.add("store-option-text")
       let relicText2 = document.createElement("Div")
       relicText2.classList.add("store-option-text")
-      relicText1.textContent = stateObj.storeRelic3.name + " - " + stateObj.storeRelic3.text(stateObj)
+      relicText1.textContent = stateObj.storeRelic3.storeText(stateObj)
       let relicPrice = Math.ceil(stateObj.floorValues[stateObj.currentLevel].storeRelicPrice * (1-stateObj.cheaperShops))
       relicText2.textContent = "$" + relicPrice
-      buyRelic1Div.append(relicText1, relicText2)
+      let relicImg = document.createElement("Img");
+      relicImg.classList.add("store-relic-img")
+      relicImg.src = stateObj.storeRelic3.imgPath
+      buyRelic1Div.append(relicText1, relicImg, relicText2)
       if (stateObj.bankedCash >= relicPrice) {
           buyRelic1Div.classList.add("store-clickable")
           buyRelic1Div.onclick = function () {
@@ -1401,10 +1407,13 @@ function renderStore(stateObj) {
       relicText1.classList.add("store-option-text")
       let relicText2 = document.createElement("Div")
       relicText2.classList.add("store-option-text")
-      relicText1.textContent = stateObj.storeRelic2.name + " - " + stateObj.storeRelic2.text(stateObj)
+      relicText1.textContent = stateObj.storeRelic2.storeText(stateObj)
       let relicPrice2 = Math.ceil(stateObj.floorValues[stateObj.currentLevel].storeRelicPrice * (1-stateObj.cheaperShops))
       relicText2.textContent = "$" + relicPrice2
-      buyRelic2Div.append(relicText1, relicText2)
+      let relicImg = document.createElement("Img");
+      relicImg.classList.add("store-relic-img")
+      relicImg.src = stateObj.storeRelic2.imgPath
+      buyRelic2Div.append(relicText1, relicImg, relicText2)
       if (stateObj.bankedCash >= relicPrice2) {
           buyRelic2Div.classList.add("store-clickable")
           buyRelic2Div.onclick = function () {
@@ -1414,16 +1423,81 @@ function renderStore(stateObj) {
   }
 
   let buyNothingDiv = document.createElement("Div")
-  buyNothingDiv.classList.add("store-option")
+  document.createElement("Div")
   buyNothingDiv.setAttribute("id", "store-return-map-div")
   buyNothingDiv.classList.add("return-to-map")
+  buyNothingDiv.classList.add("centered")
   buyNothingDiv.textContent = "Return to Map"
   buyNothingDiv.onclick = function () {
       leaveStore(stateObj)
   }
 
-  storeDiv.append(fillFuelDiv, repairDiv, buyLaserDiv, buyBombDiv, laserUpgradeDiv, 
-      bombUpgradeDiv, fuelUpgradeDiv, hullUpgradeDiv, inventoryUpgradeDiv, buyRelic1Div, buyRelic2Div, buyNothingDiv)
+  let fuelSubDiv = document.createElement("Div")
+  fuelSubDiv.classList.add("store-sub-div")
+  let fuelTitle = document.createElement("Div")
+  fuelTitle.classList.add("row")
+  fuelTitle.classList.add("store-title")
+  let fuelSubTitle = document.createElement("Div")
+  let fuelImgDiv = document.createElement("Div")
+  fuelImgDiv.classList.add("centered")
+  fuelImgDiv.classList.add("store-sub-img")
+  let fuelImg = document.createElement("Img");
+  fuelImg.src = "img/fueltank.png"
+  fuelImg.classList.add("max-100")
+  fuelImgDiv.append(fuelImg)
+  fuelSubTitle.textContent = "Fueling Station"
+  fuelSubTitle.classList.add("centered")
+  fuelTitle.append(fuelSubTitle, fuelImgDiv)
+  fuelSubDiv.append(fuelTitle, fillFuelDiv, fuelUpgradeDiv)
+
+  let hullSubDiv = document.createElement("Div")
+  hullSubDiv.classList.add("store-sub-div")
+  let hullTitle = document.createElement("Div")
+  hullTitle.classList.add("row")
+  hullTitle.classList.add("store-title")
+  let hullSubTitle = document.createElement("Div")
+  let hullImgDiv = document.createElement("Div")
+  hullImgDiv.classList.add("centered")
+  hullImgDiv.classList.add("store-sub-img")
+  let hullImg = document.createElement("Img");
+  hullImg.src = "img/redshield.png"
+  hullImg.classList.add("max-100")
+  hullImgDiv.append(hullImg)
+  hullSubTitle.textContent = "Armor Station"
+  hullSubTitle.classList.add("centered")
+  hullTitle.append(hullSubTitle, hullImgDiv)
+  hullSubDiv.append(hullTitle, repairDiv, hullUpgradeDiv, inventoryUpgradeDiv)
+
+  let weaponsSubDiv = document.createElement("Div")
+  weaponsSubDiv.classList.add("store-sub-div")
+  let weaponsTitle = document.createElement("Div")
+  weaponsTitle.classList.add("row")
+  weaponsTitle.classList.add("store-title")
+  let weaponSubTitle = document.createElement("Div")
+  let weaponImgDiv = document.createElement("Div")
+  weaponImgDiv.classList.add("centered")
+  weaponImgDiv.classList.add("store-sub-img")
+  let weaponImg = document.createElement("Img");
+  weaponImg.src = "img/missile.png"
+  weaponImg.classList.add("max-100")
+  weaponImgDiv.append(weaponImg)
+  weaponSubTitle.textContent = "Weapons Depot"
+  weaponSubTitle.classList.add("centered")
+  weaponsTitle.append(weaponSubTitle, weaponImgDiv)
+  weaponsSubDiv.append(weaponsTitle, buyLaserDiv, laserUpgradeDiv, buyBombDiv, bombUpgradeDiv)
+
+  let relicsSubDiv = document.createElement("Div")
+  relicsSubDiv.classList.add("store-sub-div")
+  let relicTitle = document.createElement("Div")
+  relicTitle.classList.add("row")
+  relicTitle.classList.add("store-title")
+  relicTitle.textContent = "Relic Shop"
+  relicsSubDiv.append(relicTitle, buyRelic1Div, buyRelic2Div)
+
+  
+  
+
+  storeDiv.append(fuelSubDiv, hullSubDiv, weaponsSubDiv, relicsSubDiv, buyNothingDiv)
 
   return storeDiv
 }

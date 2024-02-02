@@ -45,7 +45,7 @@ html, body {
 .all-weapons-div {
   display: flex;
   flex-direction: column;
-  width: 24vw;
+  width: 18vw;
   height: 8vh;
   margin-top: 1vh;
   background-color: rgba(216, 108, 108, 0.668);
@@ -89,13 +89,22 @@ html, body {
     width: 23vw;
   }
 
-  .level-div {
+  .level-div, .score-div {
     background-color: rgb(208, 205, 205);
     border: 0.5vh solid grey;
     width: 3.5vw;
     height: 4vh;
-    font-size: 2vmin;
-    margin-top: 4vh;
+    font-size: 1vw;
+    margin-top: 0.3vh;
+  }
+
+  .score-div {
+    width: 5vw;
+    font-size: 1.3vw;
+  }
+
+  .score-level-div {
+    flex-direction: column;
   }
 
   .bars-text-div {
@@ -106,7 +115,7 @@ html, body {
     width: 23vw;
     height: 10vh;
     margin-top: 0.5vh;
-    font-size: 2.1vmin;
+    font-size: 1.1vw;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -130,6 +139,13 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
   }
 
   #goldText {
@@ -343,6 +359,12 @@ html, body {
     object-fit: contain;
   }
 
+  .store-relic-img {
+    height: 8vh;
+    width: auto;
+    object-fit: contain;
+  }
+
   #weapons-price-popup, #thorns-popup, #enemy-damage-popup, 
   #enemy-damage-fuel-popup, #kill-enemies-fuel-popup, #dirt-fuel-popup,
   #bomb-timer-popup, #money-dirt-popup, #laser-piercing-popup, #kill-enemies-heal-popup,
@@ -373,9 +395,20 @@ html, body {
 }
 
 .store-img, .exit-img {
-  width: 9vw;
+  height: 9vw;
   height: 9vh;
   object-fit: contain;
+}
+
+.store-sub-img {
+  height: 7vh;
+  width: auto;
+  object-fit: contain;
+}
+
+.max-100 {
+  max-height: 100%;
+  max-width: 100%;
 }
 
 .sell-row, .inv-row {
@@ -447,6 +480,7 @@ html, body {
   text-align: center;
   background: grey;
   color: rgb(203, 203, 203);
+  font-family: monospace;
 }
 
 .sell-button, .ruby-relic-hover, .diamond-relic-hover, .choose-robot-button, .ore-relic-hover {
@@ -513,6 +547,7 @@ body:has(.ruby-relic-hover:hover) .ruby-sell-row {
   border-top: 0.2vh solid white;
   background-color: rgb(78, 78, 78);
   color: white;
+  animation: flash 1s infinite;
 }
 
 body:has(.diamond-relic-hover:hover) .diamond-sell-row {
@@ -523,6 +558,7 @@ body:has(.diamond-relic-hover:hover) .diamond-sell-row {
   border-top: 0.2vh solid white;
   background-color: rgb(78, 78, 78);
   color: white;
+  animation: flash 1s infinite;
 }
 
 body:has(.sell-button:hover) .sell-row {
@@ -545,10 +581,12 @@ body:has(.sell-button:hover) .sell-row {
 
 body:has(.sell-button:hover) .selling-items-div {
   box-shadow: 1vw 1vw 1vw rgba(159, 159, 159, 0.619);
+  animation: flash 1s infinite;
 }
 
 body:has(#store-fuel-div:hover) #empty-fuel-bar {
   background-color: rgba(197, 185, 16, 0.6);
+  animation: flash 1s infinite;
 }
 
 body:has(.hull-gold-upgrade-hover:hover) #empty-hull-bar {
@@ -558,6 +596,7 @@ body:has(.hull-gold-upgrade-hover:hover) #empty-hull-bar {
 
 body:has(.fuel-gold-upgrade-hover:hover) #empty-fuel-bar {
   background-color: rgba(197, 185, 16, 0.6);
+  animation: flash 1s infinite;
 }
 
 body:has(#store-fuel-div:hover) #fuel-opening-text {
@@ -567,14 +606,17 @@ body:has(#store-fuel-div:hover) #fuel-opening-text {
 
 body:has(#store-repair-div:hover) #empty-hull-bar {
   background-color: rgba(201, 20, 20, 0.6);
+  animation: flash 1s infinite;
 }
 
-body:has(.store-clickable#store-bomb-capacity-upgrade-div:hover) #current-bombs-text {
+body:has(.store-clickable#store-bomb-capacity-upgrade-div:hover) #current-bombs-text,
+body:has(.store-clickable#store-buy-bomb-div:hover) #current-bombs-text {
   color: rgb(115, 115, 115);
   animation: flash 1s infinite;
 }
 
-body:has(.store-clickable#store-laser-capacity-upgrade-div:hover) #current-lasers-text {
+body:has(.store-clickable#store-laser-capacity-upgrade-div:hover) #current-lasers-text,
+body:has(.store-clickable#store-buy-laser-div:hover) #current-lasers-text {
   color: rgb(115, 115, 115);
   animation: flash 1s infinite;
 }
@@ -585,7 +627,10 @@ body:has(.store-clickable#store-laser-capacity-upgrade-div:hover) #current-laser
   transition: 0.5s all
 }
 
-body:has(.store-clickable#store-fuel-upgrade-div:hover) #max-fuel-text {
+body:has(.store-clickable#store-fuel-upgrade-div:hover) #max-fuel-text,
+body:has(.store-clickable#store-fuel-upgrade-div:hover) #empty-fuel-bar,
+body:has(.store-clickable#store-fuel-upgrade-div:hover) #full-fuel-bar,
+body:has(.store-clickable#store-fuel-upgrade-div:hover) #low-fuel-bar {
   font-size: 120%;
   color: green;
   -webkit-animation: flash 1s;
@@ -593,14 +638,19 @@ body:has(.store-clickable#store-fuel-upgrade-div:hover) #max-fuel-text {
 }
 
 
-body:has(.store-clickable#store-hull-upgrade-div:hover) #hull-integrity-text {
+body:has(.store-clickable#store-hull-upgrade-div:hover) #hull-integrity-text,
+body:has(.store-clickable#store-hull-upgrade-div:hover) #empty-hull-bar,
+body:has(.store-clickable#store-hull-upgrade-div:hover) #full-hull-bar,
+body:has(.store-clickable#store-hull-upgrade-div:hover) #low-hull-bar {
   font-size: 120%;
   color: green;
   -webkit-animation: flash 1s;
   animation: flash 1s infinite;
 }
 
-body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-text {
+body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-text,
+body:has(.store-clickable#store-inventory-upgrade-div:hover) #empty-inv-bar,
+body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
   font-size: 120%;
   color: green;
   -webkit-animation: flash 1s;
@@ -651,7 +701,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
   .store-div {
     margin: auto;
     margin-top: 15vh;
-    height: 90vh;
+    height: 80vh;
     width: 95vw;
     background-image: url(img/store-inside.jpg);
     background-size: cover;
@@ -676,11 +726,11 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
   }
 
   .store-option, .next-level-option {
-    width: 9vw;
-    height: 20vh;
-    font-size: 3vmin;
-    background-color: rgb(122, 253, 253);
-    margin: 1vw;
+    width: 16vw;
+    height: 8vh;
+    font-size: 2.5vmin;
+    background-color: rgba(78, 152, 152, 0.867);
+    margin: 0.5vw;
     padding: 1vh;
     justify-content: space-around;
     display: flex;
@@ -688,8 +738,39 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
     transition: 0.4s all;
   }
 
+  .next-level-option {
+    background-color: rgba(87, 202, 202, 0.995);
+    color: rgba(156, 234, 218, 0.976);
+  }
+
+  .store-title {
+    font-size: 3.5vmin;
+    margin-top: 1vh;
+    height: 7vh;
+    width: 19vw;
+    color: rgb(243, 243, 243);
+    background-color: rgba(81, 81, 81, 0.81);
+    padding: 0.2vw;
+  }
+
+
+
+
+  .store-sub-div {
+    height: 55vh;
+    width: 20vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    flex-wrap: wrap;
+    border: 2px dashed grey;
+    margin: 1vw; 
+  }
+
   .relic-option {
-    width: 15vw;
+    width: 17.5vw;
+    height: 18vh;
   }
 
   .next-level-option {
@@ -700,14 +781,19 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
   }
 
   .store-option-text {
-    color: rgb(200, 200, 200);
+    color: rgb(0, 105, 105);
     display: flex;
     justify-content: center;
     text-align: center;
   }
 
-  .store-clickable .store-option-text {
-    color: rgb(0, 105, 105);
+  .store-clickable {
+    background-color: rgba(87, 202, 202, 0.995);
+    color: rgba(156, 234, 218, 0.976);
+  }
+
+  #store-buy-laser-div, #store-buy-bomb-div, #store-laser-capacity-upgrade-div, #store-bomb-capacity-upgrade-div {
+    height: 6vh;
   }
 
   #store-fuel-div {
@@ -778,7 +864,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
     background-color: green;
     color: rgb(0, 84, 6);
     margin-top: 1vh;
-    font-size: 3vh;
+    font-size: 1.5vw;
     border: 1vh dashed rgba(255, 237, 220, 0.967);
     background: linear-gradient(to right, rgb(50, 201, 50) 0%, rgb(108, 238, 108) 20%, rgb(113, 232, 113) 40%, rgb(151, 238, 151) 70%, rgb(159, 245, 159) 75%, rgb(59, 216, 59));
     font-family: Impact, Haettenschweiler, 'Arial Narrow', sans-serif;
@@ -869,7 +955,6 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
   .store-clickable:hover {
     background-color: rgb(2, 196, 196);
     border: 6px solid rgb(0, 147, 147);
-    height: 18vh;
     cursor: pointer;
   }
 
@@ -883,7 +968,9 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #inventory-size-tex
 
   .return-to-map {
     background-color: rgb(206, 64, 64);
-    color: rgb(58, 0, 0)
+    color: rgb(58, 0, 0);
+    height: 10vh;
+    width: 15vw;
   }
 
   .return-to-map:hover {
