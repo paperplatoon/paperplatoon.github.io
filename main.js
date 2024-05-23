@@ -1,15 +1,12 @@
 
 //if big blind reaches player, we auto go to the flop
+//big blind's cards change after flop?
 //bug when clicking callDiv as small blind -> currentBet is only 2?
 //raise div doesn't work if player is big blind lmfao
 //implement bet slider
 //separate out top pair vs middle pair vs bottom pair for hand ranks
 //give each player an individual willDraw level
 //isHandDraw doesn't seem to be working, at least for flush draws....
-
-
-
-
 
 async function updateState(newStateObj) {
     state = {...newStateObj}
@@ -110,7 +107,6 @@ async function playerFolds(stateObj, playerIndex) {
 
 
 async function putInBet(stateObj, playerIndex, betSize) {
-
     stateObj = immer.produce(stateObj, (newState) => {
         let playerBet = newState.players[playerIndex].currentBet
         let extraMoney = betSize- playerBet
@@ -125,6 +121,8 @@ async function putInBet(stateObj, playerIndex, betSize) {
     })
     
     await updateState(stateObj)
+    document.querySelector(".pot-div").classList.add("money-in-pot")
+    await pause(800)
     return stateObj;
 }
 
@@ -142,11 +140,9 @@ async function putInBlinds(stateObj) {
 
     stateObj = await makeCurrentPlayer(stateObj, "SB")
     stateObj = await putInBet(stateObj, SBIndex, 1)
-    await pause(500)
 
     stateObj = await makeCurrentPlayer(stateObj, "BB")
     stateObj = await putInBet(stateObj, BBIndex, 3)
-    await pause(500)
     stateObj = await makeCurrentPlayer(stateObj, "UTG")
     return stateObj
 }
@@ -494,7 +490,7 @@ async function renderPokerTable(stateObj) {
         { top: '30%', left: '-20%' },
         { top: '-20%', left: '10%' },
         { top: '-20%', left: '70%' },
-        { top: '70%', left: '90%' }
+        { top: '70%', left: '70%' }
     ];
 
     for (let i = 0; i < 6; i++) {
@@ -568,6 +564,7 @@ async function resetHand(stateObj) {
         newState.currentBet = 0
         newState.groupSuspicion = 0
         newState.publicCards = []
+        newState.gameStarted = true
         newState.actionOnPlayer = false;
     })
     return stateObj

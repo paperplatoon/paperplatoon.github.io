@@ -71,6 +71,9 @@ function createPlayerCardsDiv(player, cardFunctionString) {
         } else {
             cardDiv.classList.add("not-visible") 
         }      
+        if (player.currentHand.length > 1) {
+            cardDiv.classList.add(player.currentHand[j][1])
+        }
         playerCardsDiv.appendChild(cardDiv);
     }
     return playerCardsDiv
@@ -149,8 +152,8 @@ function createPokerTableDiv(stateObj) {
 function createPotDiv(stateObj) {
     const potDiv = document.createElement('div');
     potDiv.classList.add('playerNameDiv');
+    potDiv.classList.add('pot-div');
     potDiv.textContent = "Pot: " + stateObj.currentPot;
-
     return potDiv
 }
 function createPublicCardsDiv(stateObj) {
@@ -159,6 +162,7 @@ function createPublicCardsDiv(stateObj) {
     for (let i=-0; i < stateObj.publicCards.length; i++) {
         const cardDiv = document.createElement('div');
         cardDiv.classList.add('cardDiv');
+        cardDiv.classList.add(stateObj.publicCards[i][1])
         cardDiv.textContent = stateObj.publicCards[i]
         publicCardsDiv.append(cardDiv)
     }

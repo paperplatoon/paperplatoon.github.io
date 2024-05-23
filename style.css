@@ -27,7 +27,7 @@
 }
 
 .playerDiv {
-    width: 15vw;
+    width: 25vw;
     height: 15vh;
     position: absolute;
     background-color: #f0f0f0;
@@ -74,7 +74,7 @@
 
 .playerTopRowDiv, .playerCardsDiv {
     display: flex;
-    width: 14vw;
+    width: 25vw;
     flex-direction: row;
     justify-content: space-evenly;
 }
@@ -110,8 +110,10 @@
 
 
 .cardDiv {
-    width: calc(15vw / 3);
+    width: 11vw;
     height: 8vh;
+    font-size: 6vmin;
+    line-height: 8vh;
     background-color: white;
     border: 1px solid #000;
     display: inline-block;
@@ -144,3 +146,30 @@
     justify-content: center;
     vertical-align: middle;
 }
+
+.money-in-pot {
+    animation: potMoney 0.8s forwards;
+  }
+  
+  @keyframes potMoney {
+    0% { opacity: 1; transform: scale(1); }
+    30% { opacity: 0; transform: scale(0.7); }
+    70% { opacity: 1; transform: scale(1.5);}
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .c {
+    color: blue;
+  }
+
+  .s {
+    color: black;
+  }
+
+  .d {
+    color: green;
+  }
+
+  .h {
+    color: red;
+  }

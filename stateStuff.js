@@ -11,6 +11,7 @@ state = {
     currentDealer: 5,
     currentPlayer: "SB",
     actionOnPlayer: false,
+    gameStarted: false,
 
     currentDeck: [],
     //currentScreen: "chooseVisibleCard",
