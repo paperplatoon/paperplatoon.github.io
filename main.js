@@ -72,13 +72,13 @@ async function dealPublicCards(stateObj, numberCards) {
             player.currentBet = 0
             player.hasChecked = false;
             if (player.currentSuspicion > 1) {
-                player.currentSuspicion -= 1
+                player.currentSuspicion -= 2
             } else {
                 player.currentSuspicion = 0
             }
             if (player.name === "player") {
                 if (player.currentSuspicion > 1) {
-                    player.currentSuspicion -= 2
+                    player.currentSuspicion -= 3
                 } else {
                     player.currentSuspicion = 0
                 }
@@ -439,18 +439,21 @@ async function postFlopAction(stateObj) {
 async function makeCardVisible(stateObj, player, cardNum) {
     const currentPlayerIndex = stateObj.players.findIndex(loopPlayer => loopPlayer.name === player.name)
     const playerIndex = stateObj.players.findIndex(loopPlayer => loopPlayer.name === "player")
-    stateObj = immer.produce(stateObj, (newState) => {
-        let modifier = (player.isStillInHand) ? 2 : 1
-        if (cardNum === 0) {
-            newState.players[currentPlayerIndex].leftCardVisible = true
-            newState.players[currentPlayerIndex].currentSuspicion += 3 * modifier
-            newState.players[playerIndex].currentSuspicion += 1 * modifier
-        } else {
-            newState.players[currentPlayerIndex].rightCardVisible = true
-            newState.players[currentPlayerIndex].currentSuspicion += 3 * modifier
-            newState.players[playerIndex].currentSuspicion += 1 * modifier
-        }
-    })
+    if (player.name !== "player") {
+        stateObj = immer.produce(stateObj, (newState) => {
+            let modifier = (player.isStillInHand) ? 2 : 1
+            if (cardNum === 0) {
+                newState.players[currentPlayerIndex].leftCardVisible = true
+                newState.players[currentPlayerIndex].currentSuspicion += 3 * modifier
+                newState.players[playerIndex].currentSuspicion += 1 * modifier
+            } else {
+                newState.players[currentPlayerIndex].rightCardVisible = true
+                newState.players[currentPlayerIndex].currentSuspicion += 3 * modifier
+                newState.players[playerIndex].currentSuspicion += 1 * modifier 
+            }
+        })
+    }
+    
     stateObj = await updateState(stateObj)
     return stateObj
 }
@@ -461,11 +464,31 @@ async function swapHandWithDeck(stateObj, player, cardNum) {
 
     stateObj = immer.produce(stateObj, (newState) => {
         randomCardIndex = Math.floor(Math.random() * stateObj.currentDeck.length)
-        let modifier = (player.isStillInHand) ? 2 : 1
+        let modifier = (player.isStillInHand || player.name === "player") ? 2 : 1
         let playerCardToSwap = player.currentHand[cardNum]
         newState.players[currentPlayerIndex].currentHand[cardNum] = newState.currentDeck[randomCardIndex]
         newState.currentDeck[randomCardIndex] = playerCardToSwap
         newState.players[currentPlayerIndex].currentSuspicion += 1 * modifier
+        newState.players[playerIndex].currentSuspicion += 1 * modifier
+    })
+    stateObj = await updateState(stateObj)
+    return stateObj
+}
+
+async function swapWithPlayerLowestCard(stateObj, player, cardNum) {
+    const currentPlayerIndex = stateObj.players.findIndex(loopPlayer => loopPlayer.name === player.name)
+    const playerIndex = stateObj.players.findIndex(loopPlayer => loopPlayer.name === "player")
+
+    stateObj = immer.produce(stateObj, (newState) => {
+        let playHand = newState.players[playerIndex].currentHand
+        let playerCardIndex = (getCardRank(playHand[0]) > getCardRank(playHand[1])) ? 1 : 0
+        let playerCardToSwap = playHand[playerCardIndex]
+        let NPCCardToSwap = newState.players[currentPlayerIndex].currentHand[cardNum]
+
+        let modifier = (player.isStillInHand || player.name === "player") ? 2 : 1
+        newState.players[currentPlayerIndex].currentHand[cardNum] = playerCardToSwap
+        newState.players[playerIndex].currentHand[playerCardIndex] = NPCCardToSwap
+        newState.players[currentPlayerIndex].currentSuspicion += Math.floor(1.5 * modifier)
         newState.players[playerIndex].currentSuspicion += 1 * modifier
     })
     stateObj = await updateState(stateObj)
@@ -498,6 +521,8 @@ async function renderPokerTable(stateObj) {
             playerDiv = createPlayerDiv(state.players[i], positions[i].top, positions[i].left, "chooseToTurnVisible")
         } else if (stateObj.currentScreen === "chooseToSwap") {
             playerDiv = createPlayerDiv(state.players[i], positions[i].top, positions[i].left, "chooseToSwap")
+        } else if (stateObj.currentScreen === "swapPlayerNPC") {
+            playerDiv = createPlayerDiv(state.players[i], positions[i].top, positions[i].left, "swapPlayerNPC")
         }
         
         tableDiv.appendChild(playerDiv);
@@ -525,7 +550,8 @@ async function renderPokerTable(stateObj) {
     const playerSpellsDiv = createDiv('player-spells-div')
     const seeCardDiv = createSeeCardDiv(stateObj)
     const swapCardDiv = createSwapCardDiv(stateObj)
-    playerSpellsDiv.append(seeCardDiv, swapCardDiv)
+    const swapPlayerNPCDiv = createSwapPlayerCardDiv(stateObj)
+    playerSpellsDiv.append(seeCardDiv, swapCardDiv, swapPlayerNPCDiv)
 
     const topDiv = createDiv("top-screenhalf-div")
     topDiv.append(playerActionsDiv, playerSpellsDiv)

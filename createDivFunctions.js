@@ -64,6 +64,16 @@ function createPlayerCardsDiv(player, cardFunctionString) {
                     await swapHandWithDeck(state, player, 1);
                 };
             }
+        } else if (cardFunctionString === "swapPlayerNPC") {
+            if (j===0) {
+                cardDiv.onclick = async function() {
+                    await swapWithPlayerLowestCard(state, player, 0);
+                };
+            } else {
+                cardDiv.onclick = async function() {
+                    await swapWithPlayerLowestCard(state, player, 1);
+                };
+            }
         }
         //if cards are visible, show their value; if not, add the invisible class
         if ( (j===0 && player.leftCardVisible) ||  (j===1 && player.rightCardVisible) ) {
@@ -226,6 +236,16 @@ function createSwapCardDiv(stateObj) {
     seeCardDiv.textContent = "Swap Hole Card - [2/2]"
     seeCardDiv.onclick = async function() {
         await changeCurrentScreen(stateObj, "chooseToSwap")
+    }
+    return seeCardDiv
+}
+
+function createSwapPlayerCardDiv(stateObj) {
+    let seeCardDiv = document.createElement('div');
+    seeCardDiv.classList.add('spell-div', 'centered');
+    seeCardDiv.textContent = "Swap Card With Lowest Player Card - [3/2]"
+    seeCardDiv.onclick = async function() {
+        await changeCurrentScreen(stateObj, "swapPlayerNPC")
     }
     return seeCardDiv
 }
