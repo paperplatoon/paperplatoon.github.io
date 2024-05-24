@@ -158,6 +158,16 @@
     100% { opacity: 1; transform: scale(1); }
   }
 
+  .winner {
+    animation: winner 5s forwards 5;
+  }
+  
+  @keyframes winner {
+    0% { opacity: 1; background-color: gold; }
+    50% { opacity: 0.6; background-color: white; }
+    100% { opacity: 1; background-color: gold; }
+  }
+
   .c {
     color: blue;
   }

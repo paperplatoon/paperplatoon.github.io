@@ -424,6 +424,7 @@ async function determineHandWinner(stateObj) {
         newState.currentPlayer = stateObj.players[winnerIndex].currentSeat
     })
     await updateState(stateObj)
+    document.querySelectorAll(".playerDiv")[winnerIndex].classList.add("winner")
     await pause(6000)
     return stateObj
 }
