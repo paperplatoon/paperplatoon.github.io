@@ -21,7 +21,7 @@ function createPlayerDiv(player, positionTop, positionLeft, cardFunctionString) 
 
     const playerBottomRowDiv = createDiv('playerTopRowDiv')
     const playerStackDiv = createDiv('playerNameDiv', player.stackSize)
-    const playerBetDiv =  (player.hasChecked) ? createDiv('playerNameDiv', "Check") : createDiv('playerNameDiv', player.currentBet)
+    const playerBetDiv =  player.currentBet
     
     playerBottomRowDiv.append(playerStackDiv, playerBetDiv)
 

@@ -360,7 +360,7 @@ async function postFlopAction(stateObj) {
                                 console.log(player.name + " continuation bets with nothing cuz they're reckless")
                             } else {
                                 console.log(player.name + " is checking with a bad hand, even though they're reckless")
-                                stateObj = await playerChecks(stateObj, playerInd)
+                                stateObj = await playerFolds(stateObj, playerInd)
                             }
                         } else {
                             console.log(player.name + " is calling with a decent hand")
