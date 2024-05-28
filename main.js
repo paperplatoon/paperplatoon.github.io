@@ -1,5 +1,8 @@
 
 //if big blind reaches player, we auto go to the flop
+
+//action seems to stop at playing after clicking divs
+
 //big blind's cards change after flop?
 //bug when clicking callDiv as small blind -> currentBet is only 2?
 //raise div doesn't work if player is big blind lmfao
@@ -109,13 +112,16 @@ async function playerFolds(stateObj, playerIndex) {
 async function putInBet(stateObj, playerIndex, betSize) {
     stateObj = immer.produce(stateObj, (newState) => {
         let playerBet = newState.players[playerIndex].currentBet
-        let extraMoney = betSize- playerBet
+        let extraMoney = betSize - playerBet
         //is the player putting in all their money?
         extraMoney = (newState.players[playerIndex].stackSize >= (extraMoney)) ? extraMoney : newState.players[playerIndex].stackSize;
         newState.players[playerIndex].stackSize -= extraMoney;
         newState.players[playerIndex].currentBet += extraMoney
         //is the current bet larger
-        newState.currentBet = (newState.players[playerIndex].currentBet > newState.currentBet) ? newState.players[playerIndex].currentBet : newState.currentBet
+        if (newState.players[playerIndex].currentBet > newState.currentBet) {
+            newState.currentBet = newState.players[playerIndex].currentBet
+            newState.lastBettor = newState.players[playerIndex].currentSeat
+        }
         newState.currentPot += extraMoney;
         console.log(stateObj.players[playerIndex].name + " has put in " + extraMoney)
     })
@@ -151,6 +157,8 @@ async function preFlopAction(stateObj) {
     console.log('starting preflop action')
     if (stateObj.actionOnPlayer === false) {
         for (let i=0; i < stateObj.players.length; i++) {
+            console.log("players are " + stateObj.players)
+            console.log("current player is " + stateObj.currentPlayer)
             const playerInd = stateObj.players.findIndex(player => player.currentSeat === stateObj.currentPlayer);
             player = stateObj.players[playerInd];
             if (player.currentBet === stateObj.currentBet) { //if the current players bet has matched the current bet, then it's time for the flop
@@ -167,40 +175,23 @@ async function preFlopAction(stateObj) {
                     if (player.name === "player" && player.currentSeat === "BB"){
                         console.log("as big blind, player has check option")
                         stateObj = await actionOnPlayer(stateObj, true)
-                        return stateObj
+                        return true
                     } else {
                         console.log("preflop action closed - time to see a flop")
+                        console.log("stateObj before dealing cards" + stateObj)
                         stateObj = await dealPublicCards(stateObj, 3)
                         stateObj = await postFlopAction(stateObj)
-                        return stateObj
+                        return true
                     }  
                 }
             } else if (player.isStillInHand === false) {
                 //skip the player because they're no longer in the hand
             } else if (player.name === "player") {
+                // console.log("stateObj after moving action to player cards" + JSON.stringify(stateObj))
                 stateObj = await actionOnPlayer(stateObj, true)
-                return stateObj
+                return true
             } else {
                 //limp
-    // "limpArray": lowSuitedConnectors.concat(suitedKings, suitedQueens, highOffsuitAces, highKings, lowSuitedConnectors, highSingleGapSuited, mediumSingleGapSuited),
-    // "callwithJunkPreFlopPercentage":  Math.random() * 0.1,
-    // "tooRichForJunkCallPreflopThreshold": Math.floor(Math.random() * (9 - 3 + 1) + 3),
-    // "trapPreflopPercentage": Math.random() * 0.3,
-    // //raising
-    // "raiseFirstInArray": premiumHands.concat(goodPocketPairs, suitedBroadway, suitedAces, offsuitBroadway, mediumSuitedConnectors, lowMediumPocketPairs),
-    // "callRaisePreFlopArray": mediumSuitedConnectors.concat(lowMediumPocketPairs, suitedKings, offsuitBroadway, suitedAces),
-    // "reRaisePreflopArray": goodPocketPairs.concat(suitedBroadway, premiumHands),
-    // "WontRaisewithReRaiseThreshold": Math.floor(Math.random() * (60 - 30 + 1) + 30),
-    // "fourBetPreflopArray": premiumHands,
-    // "WontFourBetThreshold": Math.floor(Math.random() * (175 - 75 + 1) + 75),
-    // "wontCallRaiseThreshold": Math.floor(Math.random() * (50 - 30 + 1) + 30),
-    // //flop
-    // "RankcontinueOnFlopWithArray": [],
-    // "tooRichForJunkCallFlopThreshold": Math.floor(Math.random() * (20 - 5 + 1) + 5),
-    // "chanceOfRaisingWithDraw": Math.random() * 0.3,
-    // "chanceofCallingWithDraw": Math.random() * 0.75,
-    // "ThresholdForFoldingEvenWithDraw": Math.floor(Math.random() * (65 - 30 + 1) + 30),
-    // "ThresholdForFoldWithLessThanTrips": Math.floor(Math.random() * (100 - 45 + 1) + 45),
                 //if no raise yet
                 const callThreshold = player.playerDetails['callwithJunkPreFlopPercentage']
                 const callValue = Math.random()
@@ -225,7 +216,9 @@ async function preFlopAction(stateObj) {
                             stateObj = await putInBet(stateObj, playerInd, moneyIn)
                             console.log(player.name + " is limping with crap")
                         } else {
+                            console.log("player is folding preflop when bet is 3")
                             stateObj = await playerFolds(stateObj, playerInd)
+                            console.log("player has folded")
                         }
                     }
                 } else if (stateObj.currentBet < player.playerDetails['WontRaisewithReRaiseThreshold']) {
@@ -269,12 +262,11 @@ async function preFlopAction(stateObj) {
                             stateObj = await playerFolds(stateObj, playerInd)
                     }
                 }
-            }
-            stateObj = await nextPlayer(stateObj)
-            await pause(500)
-            await updateState(stateObj) 
+                stateObj = await nextPlayer(stateObj)
+                await pause(500)
+                stateObj = await updateState(stateObj) 
+            }    
         }
-        stateObj = await updateState(stateObj)
     }
     return stateObj
     
@@ -295,12 +287,13 @@ async function postFlopAction(stateObj) {
                 }
                 if (stateObj.publicCards.length < 5) {
                     stateObj = await dealPublicCards(stateObj, 1)
-                    stateObj = await postFlopAction(stateObj)
+                    await postFlopAction(stateObj)
+                    return stateObj
                 } else {
                     stateObj = await determineHandWinner(stateObj)
-                    stateObj = await newHand(stateObj)
+                    await newHand(stateObj)
+                    return stateObj
                 }
-                return stateObj
             } else if (player.isStillInHand === false) {
                 //skip the player because they're no longer in the hand
             } else if (player.name === "player") {
@@ -425,12 +418,12 @@ async function postFlopAction(stateObj) {
                         stateObj = await playerFolds(stateObj, playerInd)
                     }
                 }
+                stateObj = await nextPlayer(stateObj)
+                await pause(500)
+                stateObj = await updateState(stateObj) 
             }
-            stateObj = await nextPlayer(stateObj)
-            await pause(500)
-            await updateState(stateObj) 
         }
-        await updateState(stateObj)
+        stateObj = await updateState(stateObj)
     }
     return stateObj  
 }
@@ -444,11 +437,11 @@ async function makeCardVisible(stateObj, player, cardNum) {
             let modifier = (player.isStillInHand) ? 2 : 1
             if (cardNum === 0) {
                 newState.players[currentPlayerIndex].leftCardVisible = true
-                newState.players[currentPlayerIndex].currentSuspicion += 3 * modifier
+                newState.players[currentPlayerIndex].currentSuspicion += Math.floor(2.5 * modifier)
                 newState.players[playerIndex].currentSuspicion += 1 * modifier
             } else {
                 newState.players[currentPlayerIndex].rightCardVisible = true
-                newState.players[currentPlayerIndex].currentSuspicion += 3 * modifier
+                newState.players[currentPlayerIndex].currentSuspicion += Math.floor(2.5 * modifier)
                 newState.players[playerIndex].currentSuspicion += 1 * modifier 
             }
         })
@@ -468,7 +461,7 @@ async function swapHandWithDeck(stateObj, player, cardNum) {
         let playerCardToSwap = player.currentHand[cardNum]
         newState.players[currentPlayerIndex].currentHand[cardNum] = newState.currentDeck[randomCardIndex]
         newState.currentDeck[randomCardIndex] = playerCardToSwap
-        newState.players[currentPlayerIndex].currentSuspicion += 1 * modifier
+        newState.players[currentPlayerIndex].currentSuspicion += 2 * modifier
         newState.players[playerIndex].currentSuspicion += 1 * modifier
     })
     stateObj = await updateState(stateObj)
@@ -488,8 +481,8 @@ async function swapWithPlayerLowestCard(stateObj, player, cardNum) {
         let modifier = (player.isStillInHand || player.name === "player") ? 2 : 1
         newState.players[currentPlayerIndex].currentHand[cardNum] = playerCardToSwap
         newState.players[playerIndex].currentHand[playerCardIndex] = NPCCardToSwap
-        newState.players[currentPlayerIndex].currentSuspicion += Math.floor(1.5 * modifier)
-        newState.players[playerIndex].currentSuspicion += 1 * modifier
+        newState.players[currentPlayerIndex].currentSuspicion += Math.floor(3 * modifier)
+        newState.players[playerIndex].currentSuspicion += 2 * modifier
     })
     stateObj = await updateState(stateObj)
     return stateObj
@@ -508,12 +501,12 @@ async function renderPokerTable(stateObj) {
 
     // Create player divs and card divs
     const positions = [
-        { top: '100%', left: '40%' },
-        { top: '75%', left: '0%' },
-        { top: '30%', left: '-20%' },
-        { top: '-20%', left: '10%' },
-        { top: '-20%', left: '70%' },
-        { top: '70%', left: '70%' }
+        { top: '100%', left: '35%' },
+        { top: '65%', left: '-5%' },
+        { top: '10%', left: '-15%' },
+        { top: '-35%', left: '27%' },
+        { top: '0%', left: '78%' },
+        { top: '70%', left: '74%' }
     ];
 
     for (let i = 0; i < 6; i++) {
@@ -609,8 +602,8 @@ async function newHand(stateObj, firstHand=false) {
     stateObj = await dealToEachPlayer(stateObj)
     stateObj = await dealToEachPlayer(stateObj)
     stateObj = await putInBlinds(stateObj)
-    stateObj = await preFlopAction(stateObj)
-    await renderScreen(stateObj)
+    console.log("before PFA, stateObj is " + stateObj)
+    await preFlopAction(stateObj)
 }
 
 

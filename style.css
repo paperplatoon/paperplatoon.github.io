@@ -57,6 +57,7 @@
     width: 50vw; 
     height: 7vh;
     line-height: 7vh;
+    font-size: 3vmin;
     margin: 4px;
     cursor: pointer;
 }
@@ -119,6 +120,7 @@
     display: inline-block;
     margin-left: 0.2vw;
 }
+
 
 .dealer {
     background-color: grey;

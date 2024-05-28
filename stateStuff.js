@@ -10,6 +10,7 @@ state = {
     currentPot: 0,
     currentDealer: 5,
     currentPlayer: "SB",
+    lastBettor: "BB",
     actionOnPlayer: false,
     gameStarted: false,
 
@@ -37,7 +38,7 @@ function Player() {
     this.currentSeat = false;
     this.currentSuspicion = 0;
     this.maxSuspicion = 10;
-    this.stackSize = 1000; // Arbitrary starting amount
+    this.stackSize = 400; // Arbitrary starting amount
     this.isStillInHand = true;
     this.currentBet = 0;
     this.hasChecked = false;

@@ -328,7 +328,7 @@ async function moveToNextPlayer(stateObj, playerIndex) {
     stateObj = immer.produce(stateObj, (newState) => {
         player = newState.players[playerIndex]
         const playerSeatIndex = seatPositions.findIndex(seatPosition => seatPosition === player.currentSeat)
-        player.currentSeat = (playerSeatIndex === 5) ? "Dealer" : seatPositions[(playerSeatIndex+1)]
+        player.currentSeat = (playerSeatIndex === (seatPositions.length-1)) ? seatPositions[0] : seatPositions[(playerSeatIndex+1)]
     })
     return stateObj
 } 
@@ -347,8 +347,9 @@ async function nextPlayer(stateObj) {
     stateObj = immer.produce(stateObj, async (newState) => {
         //find the seatPositions index of the current Player
         let currentPlayerIndex = seatPositions.findIndex(seatPosition => seatPosition === newState.currentPlayer)
-        newState.currentPlayer = (currentPlayerIndex === 5) ? "Dealer" : seatPositions[(currentPlayerIndex+1)] 
+        newState.currentPlayer = (currentPlayerIndex === (seatPositions.length-1)) ? seatPositions[0] : seatPositions[(currentPlayerIndex+1)] 
     })
+    console.log("current player is " + stateObj.currentPlayer)
     return stateObj
 }
 
@@ -377,10 +378,10 @@ async function actionOnPlayer(stateObj, changeStatus) {
 }
 
 async function playerFolds(stateObj, playerIndex) {
+    console.log("triggering playerFolds") 
     stateObj = immer.produce(stateObj, async (newState) => {
         newState.players[playerIndex].isStillInHand = false
         newState.players[playerIndex].currentSuspicion = 0
-        console.log(newState.players[playerIndex].name + " folds") 
     })
     await updateState(stateObj)
     return stateObj
@@ -425,7 +426,7 @@ async function determineHandWinner(stateObj) {
     })
     await updateState(stateObj)
     document.querySelectorAll(".playerDiv")[winnerIndex].classList.add("winner")
-    await pause(6000)
+    await pause(4000)
     return stateObj
 }
 
@@ -443,13 +444,24 @@ async function givePotToPlayer(stateObj, playerIndex) {
 
 async function checkForDeath(stateObj) {
     if (stateObj.groupSuspicion >= stateObj.maxGroupSuspicion) {
-        alert("The group as a whole became too suspicious! You lost. Click OK to try again");
+        alert("The group as a whole became too suspicious! You have lost. Click OK to try again");
         window.location.reload();
     }
     stateObj.players.forEach(player => {
         if (player.currentSuspicion >= player.maxSuspicion) {
-            alert(player.name + " became too suspicious! You lost. Click OK to try again");
+            alert(player.name + " became too suspicious! You have lost. Click OK to try again");
             window.location.reload();
+        }
+        if (player.stackSize <= 0) {
+            seatPosIndex = seatPositions.findIndex(seatPosition => seatPosition === player.currentSeat)
+            stateObj = immer.produce(stateObj, (newState) => {
+                newState.players.splice(seatPosIndex, 1)
+            })
+            seatPositions.pop()
+            if (player.name === "player") {
+                alert("You got stacked! You have lost. Click OK to try again");
+        window.location.reload();
+            }
         }
     })
 }
