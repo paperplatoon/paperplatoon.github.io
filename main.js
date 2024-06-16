@@ -1,611 +1,441 @@
+//fix player monsters reset at end of fight
 
-//if big blind reaches player, we auto go to the flop
+const Status = {
+    pickMutationReward: renderChooseMutationReward,
+    inFight: createScreenDiv,
+    choosingMonsterOrder: renderChooseMonsterOrder,
+    choosingMoveReward: renderChooseMoveReward,
+  };
 
-//action seems to stop at playing after clicking divs
+state = {
+    player: {
+        name: "Player",
+        fightMonsterArray: [],
+        fullMonsterArray: [otter, snake],
 
-//big blind's cards change after flop?
-//bug when clicking callDiv as small blind -> currentBet is only 2?
-//raise div doesn't work if player is big blind lmfao
-//implement bet slider
-//separate out top pair vs middle pair vs bottom pair for hand ranks
-//give each player an individual willDraw level
-//isHandDraw doesn't seem to be working, at least for flush draws....
+        
+        handMutationArray: [],
+        fullMutationArray: [...startingMutationArray],
+        temporaryFullMutationArray: [...startingMutationArray],
+    },
+
+    opponent: {
+        name: "Opponent",
+        fightMonsterArray: [chipmunk, vampireBat],
+    },
+    targetedMonster: 0,
+    targetedPlayerMonster: 0,
+    playerUsedMutationThisTurn: false,
+    playerCaptureBalls: 1,
+    currentLevel: 0,
+    selectedMutationAction: false,
+    selectedMutationIndex: false,
+    doesMoveQualify: false,
+
+    playerStartingMutations: 4,
+    status: Status.inFight,
+}
+
 
 async function updateState(newStateObj) {
+    newStateObj = await checkForDeath(newStateObj)
     state = {...newStateObj}
-    await checkForDeath(newStateObj)
-    await renderScreen(state)
+    newStateObj.status(state)
     return state
 }
 
-async function renderScreen(stateObj) {
-    await renderPokerTable(stateObj)
+function shuffleArray(array) {
+    return array
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
 }
 
-async function startGame() {
-    await newHand(state, true)
+async function pause(timeValue) {
+    return new Promise(res => setTimeout(res, timeValue))
 }
 
-async function createDeckAndShuffle(stateObj) {
-    console.log('shuffling')
-    let fullDeck = [];
-    let ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
-    let suits = ['h', 'c', 'd', 's']; // Hearts, Clubs, Diamonds, Spades
 
-    suits.forEach(suit => {
-        ranks.forEach(rank => {
-            fullDeck.push(rank + suit);
-        });
-    });
 
-    fullDeck = shuffle(fullDeck)
-    stateObj = immer.produce(stateObj, (newState) => {
-        state.currentDeck = fullDeck
+
+
+async function dealDamage(stateObj, monsterIndex, moveIndex, isPlayer, extraDamage=0) {
+    let targetOpponentIndex = Math.floor(Math.random() * stateObj.player.fightMonsterArray.length)
+    stateObj = immer.produce(stateObj, (newState) => {   
+        let targetMonster = (isPlayer) ? newState.opponent.fightMonsterArray[newState.targetedMonster] : newState.player.fightMonsterArray[targetOpponentIndex]
+        let userMonster = (isPlayer) ? newState.player.fightMonsterArray[monsterIndex] : newState.opponent.fightMonsterArray[monsterIndex]
+        let move = userMonster.moves[moveIndex]
+        let damage = calcMonsterDamage(userMonster, move)
+        damage += extraDamage
+        userMonster.nextAttackDamage = 0
+        targetMonster.currentHP -= (damage * move.damageTimes)  
     })
-    await updateState(stateObj)
-    return stateObj 
+    if (isPlayer) {
+        document.querySelectorAll(".player-side-div .avatar")[monsterIndex].classList.remove("player-pulse")
+        document.querySelectorAll(".player-side-div .avatar")[monsterIndex].classList.add("player-windup")
+        document.querySelectorAll(".opponent-side-div .avatar")[stateObj.targetedMonster].classList.add("opponent-impact")
+        await pause(500)
+        document.querySelectorAll(".player-side-div .avatar")[monsterIndex].classList.remove("player-windup")
+        document.querySelectorAll(".opponent-side-div .avatar")[stateObj.targetedMonster].classList.remove("opponent-impact")
+    } else {
+        document.querySelectorAll(".opponent-side-div .avatar")[monsterIndex].classList.add("opponent-windup")
+        document.querySelectorAll(".player-side-div .avatar")[targetOpponentIndex].classList.add("player-impact")
+        document.querySelectorAll(".player-side-div .avatar")[targetOpponentIndex].classList.remove("player-pulse")
+        await pause(800)
+        document.querySelectorAll(".opponent-side-div .avatar")[monsterIndex].classList.remove("opponent-windup")
+        document.querySelectorAll(".player-side-div .avatar")[targetOpponentIndex].classList.remove("player-impact")
+    }
+    
+    return stateObj
 }
 
-async function dealToEachPlayer(stateObj) {
-    console.log("dealing")
-    for (i = 0; i < stateObj.players.length; i++) {
+async function dealDamageBoth(stateObj, monsterIndex, moveIndex, isPlayer, extraDamage=0) {
+    stateObj = immer.produce(stateObj, (newState) => {   
+        let targetArray = (isPlayer) ? newState.opponent.fightMonsterArray : newState.player.fightMonsterArray
+        let userMonster = (isPlayer) ? newState.player.fightMonsterArray[monsterIndex] : newState.opponent.fightMonsterArray[monsterIndex]
+        let move = userMonster.moves[moveIndex]
+        let damage = calcMonsterDamage(userMonster, move)
+        damage += extraDamage
+        userMonster.nextAttackDamage = 0
+        for (let i = 0; i < targetArray.length; i++) {
+            targetArray[i].currentHP -= (damage * move.damageTimes) 
+        }
+    })
+    if (isPlayer) {
+        document.querySelectorAll(".player-side-div .avatar")[monsterIndex].classList.remove("player-pulse")
+        document.querySelectorAll(".player-side-div .avatar")[monsterIndex].classList.add("player-windup")
+        for (let i = 0; i < stateObj.opponent.fightMonsterArray.length; i++) {
+            document.querySelectorAll(".opponent-side-div .avatar")[i].classList.add("opponent-impact")
+        }
+        await pause(500)
+        document.querySelectorAll(".player-side-div .avatar")[monsterIndex].classList.remove("player-windup")
+        for (let i = 0; i < stateObj.opponent.fightMonsterArray.length; i++) {
+            document.querySelectorAll(".opponent-side-div .avatar")[i].classList.remove("opponent-impact")
+        }
+    } else {
+        document.querySelectorAll(".opponent-side-div .avatar")[monsterIndex].classList.add("opponent-windup")
+        for (let i = 0; i < stateObj.player.fightMonsterArray.length; i++) {
+            document.querySelectorAll(".player-side-div .avatar")[i].classList.add("player-impact")
+            document.querySelectorAll(".player-side-div .avatar")[i].classList.remove("player-pulse")
+        }
+        await pause(800)
+        document.querySelectorAll(".opponent-side-div .avatar")[monsterIndex].classList.remove("opponent-windup")
+        for (let i = 0; i < stateObj.player.fightMonsterArray.length; i++) {
+            document.querySelectorAll(".player-side-div .avatar")[i].classList.remove("player-impact")
+        }
+    }
+    
+    return stateObj
+}
+
+
+
+function calcMonsterDamage(monster, move) {
+    return (move.damage + monster.nextAttackDamage + monster.strength)
+}
+
+
+
+
+
+
+async function playerUsedMutation(stateObj, index, monsterIndex)  {
+    stateObj = immer.produce(stateObj, (newState) => {   
+        newState.playerUsedMutationThisTurn = true  
+        let removeIndex = newState.player.fullMutationArray.findIndex(mutation => mutation.name === newState.player.handMutationArray[index].name)
+        newState.player.handMutationArray.splice(index, 1)
+        newState.player.fullMutationArray.splice(removeIndex, 1)
+        newState.selectedMutationAction = false;
+        newState.selectedMutationIndex = false;
+        newState.doesMoveQualify = false;
+        newState.player.fightMonsterArray[monsterIndex].mutations += 1
+      })
+    return stateObj
+}
+
+function randomIntegerInRange(min, max) {
+    return Math.floor(Math.random() * (max-min + 1) + min)
+}
+
+
+
+async function drawMutationCard(stateObj) {
+    if (stateObj.player.fullMutationArray.length > 0) {
         stateObj = immer.produce(stateObj, (newState) => {
-            newState.players[i].currentHand.push(newState.currentDeck[0])
-            newState.currentDeck.splice(0, 1)
+            newState.player.handMutationArray.push(stateObj.player.temporaryFullMutationArray[0])
+            newState.player.temporaryFullMutationArray.splice(0, 1)
         })
-        await pause(100)
         await updateState(stateObj)
     }
     return stateObj
 }
 
-async function dealPublicCards(stateObj, numberCards) {
-    console.log("dealing " + numberCards + " cards")
-    stateObj = await makeCurrentPlayer(stateObj, "SB")
-
+async function resetPlayerTurn(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.currentBet = 0;
-        if (newState.groupSuspicion > 2) {
-            newState.groupSuspicion -= 2
-        } else {
-            newState.groupSuspicion = 0
-        }
-        
-        newState.players.forEach(player => {
-            player.currentBet = 0
-            player.hasChecked = false;
-            if (player.currentSuspicion > 1) {
-                player.currentSuspicion -= 2
-            } else {
-                player.currentSuspicion = 0
-            }
-            if (player.name === "player") {
-                if (player.currentSuspicion > 1) {
-                    player.currentSuspicion -= 3
-                } else {
-                    player.currentSuspicion = 0
-                }
-            }
-        })
+        newState.playerUsedMutationThisTurn = false;
+        newState.player.fightMonsterArray.forEach(monster => {
+            monster.hasMoved = false;
+        });
+        newState.opponent.fightMonsterArray.forEach(monster => {
+            monster.hasMoved = false;
+        });
     })
-    
-    for (let i=0; i < numberCards; i++) {
-        stateObj = immer.produce(stateObj, (newState) => {
-            newState.publicCards.push(newState.currentDeck[0])
-            newState.currentDeck.splice(0, 1) 
-        })
-        await pause(100)
-        await updateState(stateObj)     
+    return stateObj
+}
+
+function pickEnemyMove(stateObj, monsterIndex) {
+    let monster = stateObj.opponent.fightMonsterArray[monsterIndex]
+    let currentMoveIndex = 0
+    for (let i=0; i < monster.moves.length; i++) {
+        if (monster.moves[i].energyReq <= monster.currentEnergy) {
+            currentMoveIndex = i
+        }
     }
-    return stateObj
+    return currentMoveIndex
 }
 
-async function playerFolds(stateObj, playerIndex) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.players[playerIndex].isStillInHand = false
-    })
+async function enemyTurn(stateObj) {
+    for (let i =0; i < stateObj.opponent.fightMonsterArray.length; i++) {
+        enemyMoveIndex = pickEnemyMove(stateObj, i)
+        stateObj = await stateObj.opponent.fightMonsterArray[i].moves[enemyMoveIndex].action(stateObj, i, enemyMoveIndex, false)
+    }
+    stateObj = await resetPlayerTurn(stateObj)
     await updateState(stateObj)
-    return stateObj
 }
 
+async function chooseEnemy(stateObj) {
+    const [index1, index2] = getUniqueRandomIndexes(enemyArray, 2);
 
-async function putInBet(stateObj, playerIndex, betSize) {
     stateObj = immer.produce(stateObj, (newState) => {
-        let playerBet = newState.players[playerIndex].currentBet
-        let extraMoney = betSize - playerBet
-        //is the player putting in all their money?
-        extraMoney = (newState.players[playerIndex].stackSize >= (extraMoney)) ? extraMoney : newState.players[playerIndex].stackSize;
-        newState.players[playerIndex].stackSize -= extraMoney;
-        newState.players[playerIndex].currentBet += extraMoney
-        //is the current bet larger
-        if (newState.players[playerIndex].currentBet > newState.currentBet) {
-            newState.currentBet = newState.players[playerIndex].currentBet
-            newState.lastBettor = newState.players[playerIndex].currentSeat
+        newState.opponent.fightMonsterArray = [{...enemyArray[index1]}, {...enemyArray[index2]}];
+        newState.player.fightMonsterArray = [{...newState.player.fullMonsterArray[0]}, {...newState.player.fullMonsterArray[1]}];
+        let increaseBy = ((newState.currentLevel) * 10 * 2);
+        for (let i = 0; i < newState.opponent.fightMonsterArray.length; i++) {
+            newState.opponent.fightMonsterArray[i].maxHP += increaseBy;
+            newState.opponent.fightMonsterArray[i].currentHP += increaseBy
         }
-        newState.currentPot += extraMoney;
-        console.log(stateObj.players[playerIndex].name + " has put in " + extraMoney)
-    })
-    
-    await updateState(stateObj)
-    document.querySelector(".pot-div").classList.add("money-in-pot")
-    await pause(800)
+    });
+
     return stateObj;
 }
 
-async function makeCurrentPlayer(stateObj, playerIndex) {
-    stateObj = immer.produce(stateObj, (newState) => {
-        newState.currentPlayer = playerIndex
-    })
-    stateObj = await updateState(stateObj)
-    return stateObj
-}
-
-async function putInBlinds(stateObj) {
-    const SBIndex = stateObj.players.findIndex(player => player.currentSeat === "SB")
-    const BBIndex = stateObj.players.findIndex(player => player.currentSeat === "BB")
-
-    stateObj = await makeCurrentPlayer(stateObj, "SB")
-    stateObj = await putInBet(stateObj, SBIndex, 1)
-
-    stateObj = await makeCurrentPlayer(stateObj, "BB")
-    stateObj = await putInBet(stateObj, BBIndex, 3)
-    stateObj = await makeCurrentPlayer(stateObj, "UTG")
-    return stateObj
-}
-
-async function preFlopAction(stateObj) { 
-    console.log('starting preflop action')
-    if (stateObj.actionOnPlayer === false) {
-        for (let i=0; i < stateObj.players.length; i++) {
-            console.log("players are " + stateObj.players)
-            console.log("current player is " + stateObj.currentPlayer)
-            const playerInd = stateObj.players.findIndex(player => player.currentSeat === stateObj.currentPlayer);
-            player = stateObj.players[playerInd];
-            if (player.currentBet === stateObj.currentBet) { //if the current players bet has matched the current bet, then it's time for the flop
-                let playersStillInHand = stateObj.players.filter(player => player.isStillInHand);
-                if (playersStillInHand.length === 1) {  //if everyone's folded, player has won the pot
-                    console.log("currentPlayer wins the pot as everyone folds")
-                    stateObj = immer.produce(stateObj, (newState) => {
-                        newState.players[playerInd].stackSize += newState.currentPot
-                        newState.currentPot = 0
-                    })
-                    stateObj = await newHand(stateObj)
-                    return stateObj
-                } else { //otherwise, it's time to see a flop
-                    if (player.name === "player" && player.currentSeat === "BB"){
-                        console.log("as big blind, player has check option")
-                        stateObj = await actionOnPlayer(stateObj, true)
-                        return true
-                    } else {
-                        console.log("preflop action closed - time to see a flop")
-                        console.log("stateObj before dealing cards" + stateObj)
-                        stateObj = await dealPublicCards(stateObj, 3)
-                        stateObj = await postFlopAction(stateObj)
-                        return true
-                    }  
-                }
-            } else if (player.isStillInHand === false) {
-                //skip the player because they're no longer in the hand
-            } else if (player.name === "player") {
-                // console.log("stateObj after moving action to player cards" + JSON.stringify(stateObj))
-                stateObj = await actionOnPlayer(stateObj, true)
-                return true
-            } else {
-                //limp
-                //if no raise yet
-                const callThreshold = player.playerDetails['callwithJunkPreFlopPercentage']
-                const callValue = Math.random()
-                //console.log(player.name + " has a call value of " + callValue.toFixed(2) + " and a threshold of " + callThreshold.toFixed(2))
-                const willCall = callValue < player.callwithJunkPreFlopPercentage
-                let moneyIn = stateObj.currentBet
-                if (stateObj.currentBet === 3) {
-                    //####FIX - SHOULD INSTEAD CONSTRUCT EACH PLAYER TO HAVE A FOURBET AND RFI RANGE 
-                    if (isHandInRange(player.currentHand, player.playerDetails['raiseFirstInArray'])) {
-                        if (callValue < player.playerDetails['trapPreflopPercentage']) {
-                            stateObj = await putInBet(stateObj, playerInd, moneyIn)
-                            console.log(player.name + " is trapping")
-                        } else {
-                            stateObj = await putInBet(stateObj, playerInd, moneyIn*4)
-                            console.log(player.name + " is raising with RFI")
-                        }
-                    } else if (isHandInRange(player.currentHand, player.playerDetails['limpArray'])) {
-                        stateObj = await putInBet(stateObj, playerInd, moneyIn)
-                        console.log(player.name + " is limping")
-                    } else {
-                        if (willCall) {
-                            stateObj = await putInBet(stateObj, playerInd, moneyIn)
-                            console.log(player.name + " is limping with crap")
-                        } else {
-                            console.log("player is folding preflop when bet is 3")
-                            stateObj = await playerFolds(stateObj, playerInd)
-                            console.log("player has folded")
-                        }
-                    }
-                } else if (stateObj.currentBet < player.playerDetails['WontRaisewithReRaiseThreshold']) {
-                    if (isHandInRange(player.currentHand, player.playerDetails['reRaisePreflopArray'])) {
-                        if (callValue < player.playerDetails['trapPreflopPercentage']) {
-                            console.log(player.name + " is trapping instead of re raising")
-                            stateObj = await putInBet(stateObj, playerInd, moneyIn)
-                        } else {
-                            console.log(player.name + " is raising with re-raise range")
-                            stateObj = await putInBet(stateObj, playerInd, moneyIn*4)
-                        }
-                    } else if (isHandInRange(player.currentHand, player.playerDetails['callRaisePreFlopArray'])) {
-                        stateObj = await putInBet(stateObj, playerInd, moneyIn)
-                        console.log(player.name + " is calling with their range")
-                    } else if ((callValue*2 < callThreshold && stateObj.currentBet < player.playerDetails['tooRichForJunkCallPreflopThreshold'])) {
-                        stateObj = await putInBet(stateObj, playerInd, moneyIn)
-                        console.log(player.name + " is calling with crap cuz of cheap price")
-                    } else {
-                        stateObj = await playerFolds(stateObj, playerInd)
-                    }
-                } else if (stateObj.currentBet < player.playerDetails['WontFourBetThreshold']) {
-                    if (isHandInRange(player.currentHand, player.playerDetails['fourBetPreflopArray'])) {
-                        if (callValue < player.playerDetails['trapPreflopPercentage']) {
-                            console.log(player.name + " is trapping with a 4bet hand")
-                            stateObj = await putInBet(stateObj, playerInd, moneyIn)
-                        } else {
-                            console.log(player.name + " is raising with a 4bet hand")
-                            stateObj = await putInBet(stateObj, playerInd, moneyIn*4)
-                        }
-                    } else if (isHandInRange(player.currentHand, player.playerDetails['reRaisePreflopArray'])) {
-                        stateObj = await putInBet(stateObj, playerInd, moneyIn)
-                        console.log(player.name + " is calling with a really good hand bc the pot is pricey")
-                    }else {
-                        stateObj = await playerFolds(stateObj, playerInd)
-                    }
-                } else {
-                    if (isHandInRange(player.currentHand, player.playerDetails['fourBetPreflopArray'])) {
-                        console.log(player.name + " is calling with a premium")
-                            stateObj = await putInBet(stateObj, playerInd, moneyIn)
-                    } else {
-                            stateObj = await playerFolds(stateObj, playerInd)
-                    }
-                }
-                stateObj = await nextPlayer(stateObj)
-                await pause(500)
-                stateObj = await updateState(stateObj) 
-            }    
+function getUniqueRandomIndexes(array, count) {
+    let indexes = [];
+    while (indexes.length < count) {
+        let index = Math.floor(Math.random() * array.length);
+        if (!indexes.includes(index)) {
+            indexes.push(index);
         }
     }
-    return stateObj
-    
+    return indexes;
 }
 
-async function postFlopAction(stateObj) {
-    console.log('starting postflop action')
-    if (stateObj.actionOnPlayer === false) {
-        //reset bets to 0 for the flop 
-        for (let i=0; i < stateObj.players.length; i++) {
-            const playerInd = stateObj.players.findIndex(player => player.currentSeat === stateObj.currentPlayer);
-            player = stateObj.players[playerInd];
-            if ( (player.currentBet === stateObj.currentBet && stateObj.currentBet !== 0) || (player.hasChecked === true && stateObj.currentBet === 0)) {
-                let playersStillInHand = stateObj.players.filter(player => player.isStillInHand);
-                if (playersStillInHand.length ===1) {
-                    stateObj = await determineHandWinner(stateObj)
-                    stateObj = await newHand(stateObj)
-                }
-                if (stateObj.publicCards.length < 5) {
-                    stateObj = await dealPublicCards(stateObj, 1)
-                    await postFlopAction(stateObj)
-                    return stateObj
-                } else {
-                    stateObj = await determineHandWinner(stateObj)
-                    await newHand(stateObj)
-                    return stateObj
-                }
-            } else if (player.isStillInHand === false) {
-                //skip the player because they're no longer in the hand
-            } else if (player.name === "player") {
-                console.log("you found the player so postflop action stopped")
-                // console.log("postflopoption:", JSON.stringify(stateObj));
-                return stateObj
-            } else {
-                playerHandRank = getBestPokerHand(player.currentHand.concat(stateObj.publicCards))[1]
-                console.log(player.name + " hand rank is " + playerHandRank)
-                const bluffOrTrap = Math.random()
-                console.log(player.name + " rank to continue on flop is " + player.playerDetails['MinRankToContinueOnFlop'] + " and rank to raise flop is " + player.playerDetails['minRankToRaiseOnFlop'] )
-                if (stateObj.currentBet === 0) {
-                    if (playerHandRank >= player.playerDetails['MinRankToContinueOnFlop']) {
-                        //even if player has good hand, they trap sometimes
-                        if (bluffOrTrap > player.playerDetails['trapFlopPercentage']) {
-                            if (stateObj.currentPot >= player.playerDetails['ThresholdForFoldWithLessThanTrips']) {
-                                console.log(player.name + " is betting out with a decent hand for cheap cuz pot is high ")
-                                stateObj = await putInBet(stateObj, playerInd, Math.floor(stateObj.currentPot/3.5))    
-                            } else {
-                                console.log(player.name + " is betting out with a decent hand")
-                                stateObj = await putInBet(stateObj, playerInd, stateObj.currentPot/2)
-                            }
-                        } else {
-                            console.log(player.name + " is checking to trap")
-                            stateObj = await playerChecks(stateObj, playerInd)
-                        }
-                    } else {
-                        //if player has bad hand, they bluff at pot sometimes
-                        if (bluffOrTrap < player.playerDetails['BluffFlopPercentage']) {
-                            if (stateObj.currentPot >= player.playerDetails['ThresholdForFoldWithLessThanTrips']) {
-                                console.log(player.name + " is bluffing cheap cuz the pot is high")
-                                stateObj = await putInBet(stateObj, playerInd, Math.floor(stateObj.currentPot/3.5))    
-                            } else {
-                                console.log(player.name + " is bluffing")
-                                stateObj = await putInBet(stateObj, playerInd, stateObj.currentPot/2)
-                            }
-                        } else {
-                            console.log(player.name + " is checking with a bad hand")
-                            stateObj = await playerChecks(stateObj, playerInd)
-                        }
-                    }
-                } else if (stateObj.currentBet < player.playerDetails['tooRichForJunkCallFlopThreshold']) {
-                    if (playerHandRank >= player.playerDetails['minRankToRaiseOnFlop']) {
-                        //even if player has good hand, they trap sometimes
-                        if (bluffOrTrap > player.playerDetails['trapFlopPercentage']) {
-                            console.log(player.name + " is raising with a good hand")
-                                stateObj = await putInBet(stateObj, playerInd, Math.floor(stateObj.currentBet * Math.floor(Math.random() * (3 - 2 + 1) + 2)))
-                        } else {
-                            console.log(player.name + " is trapping with a good raise hand")
-                            stateObj = await putInBet(stateObj, playerInd, stateObj.currentBet)
-                        }
-                    } else if (playerHandRank >= player.playerDetails['MinRankToContinueOnFlop']) {
-                        //player always calls small bet if they have a good hand but not great
-                        if (playerHandRank === 1) {
-                            if (bluffOrTrap < 0.5) {
-                                stateObj = await putInBet(stateObj, playerInd, stateObj.currentBet)
-                                console.log(player.name + " continuation bets with nothing cuz they're reckless")
-                            } else {
-                                console.log(player.name + " is checking with a bad hand, even though they're reckless")
-                                stateObj = await playerFolds(stateObj, playerInd)
-                            }
-                        } else {
-                            console.log(player.name + " is calling with a decent hand")
-                            stateObj = await putInBet(stateObj, playerInd, stateObj.currentBet)
-                        }
-                    } else {
-                        //if player has bad hand, they bluff at pot sometimes
-                        //YOU ARE HERE
-                        if ((bluffOrTrap * 3) < player.playerDetails['BluffFlopPercentage']) {
-                            console.log(player.name + " is raising as a bluff with a crap hand")
-                                stateObj = await putInBet(stateObj, playerInd, Math.floor(stateObj.currentBet * Math.floor(Math.random() * (3 - 2 + 1) + 2)))   
-                        } else {
-                            console.log(player.name + " is hero calling with a bad hand cuz the pot is cheap")
-                            if (bluffOrTrap < player.playerDetails['HeroCallPercentage']) {
-                                stateObj = await putInBet(stateObj, playerInd, stateObj.currentBet)
-                            } else {
-                                console.log(player.name + " is folding even tho pot is cheap")
-                                stateObj = await playerFolds(stateObj, playerInd)
-                            }
-                        }
-                    }
-                } else if (stateObj.currentBet < player.playerDetails['ThresholdForFoldWithLessThanTrips']) {
-                    if (playerHandRank >= player.playerDetails['minRankToRaiseOnFlop']) {
-                        if (playerHandRank === 1) {
-                            if (bluffOrTrap < 0.5) {
-                                stateObj = await putInBet(stateObj, playerInd, stateObj.currentBet)
-                                console.log(player.name + " calls bets with nothing cuz they're reckless")
-                            } else {
-                                console.log(player.name + " is folding with nothing even though they're reckless")
-                                stateObj = await playerFolds(stateObj, playerInd)
-                            }
-                        } else {
-                            console.log(player.name + " is calling with a decent hand")
-                            stateObj = await putInBet(stateObj, playerInd, stateObj.currentBet)
-                        }
-                    } else if (playerHandRank >= player.playerDetails['MinRankToContinueOnFlop']) {
-                        if ((bluffOrTrap * 2) < player.playerDetails['HeroCallPercentage']) {
-                            console.log(player.name + " is hero calling even though the pot is big bc they have a decent hand")
-                            stateObj = await putInBet(stateObj, playerInd, stateObj.currentBet)
-                        } else {
-                            console.log(player.name + " is folding even with a decent hand cuz pot is big")
-                            stateObj = await playerFolds(stateObj, playerInd)
-                        }
-                    } else {
-                        console.log(player.name + " is folding with crap")
-                        stateObj = await playerFolds(stateObj, playerInd)
-                    }
-                } else {
-                    if (playerHandRank >= player.playerDetails['minRankToRaiseOnFlop']) {
-                        console.log(player.name + " is calling even tho bet is huge cuz they have a good hand")
-                        stateObj = await putInBet(stateObj, playerInd, stateObj.currentBet)
-                    } else if (playerHandRank >= player.playerDetails['MinRankToContinueOnFlop']) {
-                        if ((bluffOrTrap * 4) < player.playerDetails['HeroCallPercentage']) {
-                            console.log(player.name + " is hero calling with a decent hand even tho pot is huge")
-                            stateObj = await putInBet(stateObj, playerInd, stateObj.currentBet)
-                        } else {
-                            console.log(player.name + " is folding with a decent hand cuz pot is huge")
-                            stateObj = await playerFolds(stateObj, playerInd)
-                        }
-                    } else {
-                        console.log(player.name + " is folding with crap")
-                        stateObj = await playerFolds(stateObj, playerInd)
-                    }
-                }
-                stateObj = await nextPlayer(stateObj)
-                await pause(500)
-                stateObj = await updateState(stateObj) 
-            }
-        }
-        stateObj = await updateState(stateObj)
-    }
-    return stateObj  
-}
-    
-
-async function makeCardVisible(stateObj, player, cardNum) {
-    const currentPlayerIndex = stateObj.players.findIndex(loopPlayer => loopPlayer.name === player.name)
-    const playerIndex = stateObj.players.findIndex(loopPlayer => loopPlayer.name === "player")
-    if (player.name !== "player") {
-        stateObj = immer.produce(stateObj, (newState) => {
-            let modifier = (player.isStillInHand) ? 2 : 1
-            if (cardNum === 0) {
-                newState.players[currentPlayerIndex].leftCardVisible = true
-                newState.players[currentPlayerIndex].currentSuspicion += Math.floor(2.5 * modifier)
-                newState.players[playerIndex].currentSuspicion += 1 * modifier
-            } else {
-                newState.players[currentPlayerIndex].rightCardVisible = true
-                newState.players[currentPlayerIndex].currentSuspicion += Math.floor(2.5 * modifier)
-                newState.players[playerIndex].currentSuspicion += 1 * modifier 
-            }
-        })
-    }
-    
-    stateObj = await updateState(stateObj)
-    return stateObj
-}
-
-async function swapHandWithDeck(stateObj, player, cardNum) {
-    const currentPlayerIndex = stateObj.players.findIndex(loopPlayer => loopPlayer.name === player.name)
-    const playerIndex = stateObj.players.findIndex(loopPlayer => loopPlayer.name === "player")
-
-    stateObj = immer.produce(stateObj, (newState) => {
-        randomCardIndex = Math.floor(Math.random() * stateObj.currentDeck.length)
-        let modifier = (player.isStillInHand || player.name === "player") ? 2 : 1
-        let playerCardToSwap = player.currentHand[cardNum]
-        newState.players[currentPlayerIndex].currentHand[cardNum] = newState.currentDeck[randomCardIndex]
-        newState.currentDeck[randomCardIndex] = playerCardToSwap
-        newState.players[currentPlayerIndex].currentSuspicion += 2 * modifier
-        newState.players[playerIndex].currentSuspicion += 1 * modifier
-    })
-    stateObj = await updateState(stateObj)
-    return stateObj
-}
-
-async function swapWithPlayerLowestCard(stateObj, player, cardNum) {
-    const currentPlayerIndex = stateObj.players.findIndex(loopPlayer => loopPlayer.name === player.name)
-    const playerIndex = stateObj.players.findIndex(loopPlayer => loopPlayer.name === "player")
-
-    stateObj = immer.produce(stateObj, (newState) => {
-        let playHand = newState.players[playerIndex].currentHand
-        let playerCardIndex = (getCardRank(playHand[0]) > getCardRank(playHand[1])) ? 1 : 0
-        let playerCardToSwap = playHand[playerCardIndex]
-        let NPCCardToSwap = newState.players[currentPlayerIndex].currentHand[cardNum]
-
-        let modifier = (player.isStillInHand || player.name === "player") ? 2 : 1
-        newState.players[currentPlayerIndex].currentHand[cardNum] = playerCardToSwap
-        newState.players[playerIndex].currentHand[playerCardIndex] = NPCCardToSwap
-        newState.players[currentPlayerIndex].currentSuspicion += Math.floor(3 * modifier)
-        newState.players[playerIndex].currentSuspicion += 2 * modifier
-    })
-    stateObj = await updateState(stateObj)
-    return stateObj
-}
-
-
-async function renderPokerTable(stateObj) {
-    document.body.innerHTML = ''
-    screenDiv = createDiv("screen-div")
-    screenDiv.classList.add("centered")
-
-    const tableDiv = document.createElement('div');
-    tableDiv.id = 'tableDiv';
-    
-
-
-    // Create player divs and card divs
-    const positions = [
-        { top: '100%', left: '35%' },
-        { top: '65%', left: '-5%' },
-        { top: '10%', left: '-15%' },
-        { top: '-35%', left: '27%' },
-        { top: '0%', left: '78%' },
-        { top: '70%', left: '74%' }
-    ];
-
-    for (let i = 0; i < 6; i++) {
-        if (stateObj.currentScreen === "chooseVisibleCard") {
-            playerDiv = createPlayerDiv(state.players[i], positions[i].top, positions[i].left, "chooseToTurnVisible")
-        } else if (stateObj.currentScreen === "chooseToSwap") {
-            playerDiv = createPlayerDiv(state.players[i], positions[i].top, positions[i].left, "chooseToSwap")
-        } else if (stateObj.currentScreen === "swapPlayerNPC") {
-            playerDiv = createPlayerDiv(state.players[i], positions[i].top, positions[i].left, "swapPlayerNPC")
-        }
-        
-        tableDiv.appendChild(playerDiv);
-    }
-
-    const potDiv = createPotDiv(stateObj)
-    const publicCardsDiv = createPublicCardsDiv(stateObj)
-    let foldDiv = createFoldDiv(stateObj)
-    const callDiv = createCallDiv(stateObj)
-    const betDiv = createBetDiv(stateObj)
-    let RaiseDiv = createRaiseDiv(stateObj)
-    const checkDiv = createCheckDiv(stateObj)
-
-    
-    const playerActionsDiv = createDiv('player-actions-div')    
-    const playerIndex = stateObj.players.findIndex(player => player.name === "player") 
-    if (stateObj.currentBet === 0 && stateObj.publicCards.length > 0) {
-        playerActionsDiv.append(checkDiv, betDiv)
-    } else if (stateObj.players[playerIndex] == "BB" && stateObj.currentBet === 3) {
-        playerActionsDiv.append(checkDiv, RaiseDiv)
+function getRandomMutationPool() {
+    const rand = Math.random();
+    if (rand < 0.75) {
+        return commonMutationPool;
+    } else if (rand < 0.95) {
+        return uncommonMutationPool;
     } else {
-        playerActionsDiv.append(foldDiv, callDiv, RaiseDiv)
+        return rareMutationPool;
     }
-
-    const playerSpellsDiv = createDiv('player-spells-div')
-    const seeCardDiv = createSeeCardDiv(stateObj)
-    const swapCardDiv = createSwapCardDiv(stateObj)
-    const swapPlayerNPCDiv = createSwapPlayerCardDiv(stateObj)
-    playerSpellsDiv.append(seeCardDiv, swapCardDiv, swapPlayerNPCDiv)
-
-    const topDiv = createDiv("top-screenhalf-div")
-    topDiv.append(playerActionsDiv, playerSpellsDiv)
-
-    tableDiv.append(publicCardsDiv, potDiv)
-
-    screenDiv.append(topDiv, tableDiv)
-    document.body.append(screenDiv)
 }
 
-async function resetHand(stateObj) {
-    if (stateObj.currentPot > 0) {
-        stateObj = immer.produce(stateObj, (newState) => {
-            const indices = stateObj.players.map((obj, index) => obj.isStillInHand ? index : null).filter(index => index !== null);
-            winnerindex = indices[Math.floor(Math.random() * indices.length)]
-            newState.players[winnerindex].stackSize += newState.currentPot
-            console.log (newState.currentPot + " pot given to " + newState.players[winnerindex].name)
-        })
+function pickRewardMutations() {
+    const selectedMutations = [];
+    const pickedMutations = new Set();
+
+    while (selectedMutations.length < 3) {
+        const mutationPool = getRandomMutationPool();
+        const mutationIndex = Math.floor(Math.random() * mutationPool.length);
+        const mutation = mutationPool[mutationIndex];
+
+        if (!pickedMutations.has(mutation)) {
+            selectedMutations.push(mutation);
+            pickedMutations.add(mutation);
+        }
     }
+    return selectedMutations;
+}
+
+async function pickStartingMutations(stateObj) {
+    for (let i=0; i < stateObj.playerStartingMutations; i++) {
+        stateObj = await drawMutationCard(stateObj)
+        await pause(300)
+    }
+    return stateObj
+}
+
+async function resetPlayerStats(stateObj) {
     stateObj = immer.produce(stateObj, (newState) => {
-        newState.players.forEach(player => {
-            player.currentBet = 0
-            player.isStillInHand = true
-            player.currentHand = []
-            player.hasChecked = false;
-            player.currentSuspicion = 0;
-            if (player.name !== "player") {
-                player.leftCardVisible = false;
-                player.rightCardVisible = false
+        newState.targetedPlayerMonster = 0
+        newState.targetedMonster = 0
+        newState.playerUsedMutationThisTurn = false
+        newState.player.fightMonsterArray.forEach(monster => {
+            monster.hasMoved = false;
+            monster.currentHP = monster.maxHP
+            monster.currentEnergy = monster.startCombatWithEnergy;
+            monster.nextAttackDamage = 0;
+        })
+        //shuffle and pick mutations
+        newState.player.handMutationArray = [];
+        newState.player.fullMutationArray = shuffleArray(newState.player.fullMutationArray)
+        newState.player.temporaryFullMutationArray = [...newState.player.fullMutationArray]
+    })
+    stateObj = await pickStartingMutations(stateObj)
+    return stateObj
+}
+
+async function startEncounter(stateObj) {
+    stateObj = await chooseEnemy(stateObj)
+    stateObj = await resetPlayerStats(stateObj)
+    stateObj = await updateState(stateObj)
+    return stateObj
+}
+
+async function checkForDeath(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        for (let i = newState.player.fightMonsterArray.length - 1; i >= 0; i--) {
+            let monster = newState.player.fightMonsterArray[i];
+            if (monster.currentHP <= 0) {
+                console.log(monster.name + " fainted!");
+                newState.player.fightMonsterArray.splice(i, 1);
+                newState.targetedPlayerMonster = 0
             }
+        }
+
+        for (let i = newState.opponent.fightMonsterArray.length - 1; i >= 0; i--) {
+            let monster = newState.opponent.fightMonsterArray[i];
+            if (monster.currentHP <= 0) {
+                console.log(monster.name + " fainted!");
+                newState.opponent.fightMonsterArray.splice(i, 1);
+                newState.targetedMonster = 0
+            }
+        }
+    })
+
+    if (stateObj.player.fightMonsterArray.length < 1) {
+        console.log("player lost!")
+        stateObj = await startEncounter(stateObj)
+    } else if (stateObj.opponent.fightMonsterArray.length < 1 && stateObj.status === Status.inFight) {
+        console.log("player won!")
+        stateObj = immer.produce(stateObj, (newState) => {
+            newState.currentLevel +=1
             
         })
-        
-        //
-        newState.currentPot = 0
-        newState.currentBet = 0
-        newState.groupSuspicion = 0
-        newState.publicCards = []
-        newState.gameStarted = true
-        newState.actionOnPlayer = false;
-    })
+        stateObj = await changeStatus(stateObj, Status.pickMutationReward)
+    }
     return stateObj
 }
 
+async function changeStatus(stateObj, newStatus) {
+    stateObj = immer.produce(stateObj, (newState) => {
+      newState.status = newStatus;
+    })
+    return stateObj;
+  }
 
-async function newHand(stateObj, firstHand=false) {
+function renderChooseMutationReward(stateObj) {
+    rewardArray = pickRewardMutations()
+  
+    document.body.innerHTML = ""
+    renderPickMutationList(stateObj, rewardArray);
+    // skipToTownButton(stateObj, "I choose not to add any of these cards to my deck (+5 gold)", ".remove-div", cardSkip=true);
+};
 
-    stateObj = await resetHand(stateObj)
-    if (!firstHand) {
-        stateObj = await moveButton(stateObj)
-    }
-    stateObj = await updateState(stateObj)
-    
-    stateObj = await createDeckAndShuffle(stateObj)
-    stateObj = await dealToEachPlayer(stateObj)
-    stateObj = await dealToEachPlayer(stateObj)
-    stateObj = await putInBlinds(stateObj)
-    console.log("before PFA, stateObj is " + stateObj)
-    await preFlopAction(stateObj)
+function renderPickMutationList(stateObj, mutationArray) {
+    mutationArray.forEach(function (mutationObj, index) {
+      renderPickMutation(stateObj, mutationArray, index)
+    })
+}
+
+//await makeMonster(stateObj, index, 0)
+async function makeMonster(stateObj, monsterIndex, indexToChange) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newMonster = newState.player.fullMonsterArray[monsterIndex]
+        oldMonster = newState.player.fullMonsterArray[indexToChange]
+        newState.player.fullMonsterArray[indexToChange] = newMonster
+        newState.player.fullMonsterArray[monsterIndex] = oldMonster
+    })
+    await updateState(stateObj)
+}
+
+async function addMutation(stateObj, mutationArray, index) {
+    console.log('firing add mutation')
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.player.fullMutationArray.push(mutationArray[index])
+    })
+    stateObj = await changeStatus(stateObj, Status.choosingMoveReward)
+    await updateState(stateObj)
 }
 
 
-startGame()
 
+async function giveMonsterMove(stateObj, index, monster, potentialMove){
+    console.log('firing give move')
+    let findMoveIndex = 0
+    for (let i=0; i < monster.moves.length; i++) {
+        if (potentialMove.energyReq > monster.moves[i].energyReq) {
+            findMoveIndex = i+1
+        }
+    }
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.player.fightMonsterArray[index].moves.splice(findMoveIndex, 0, potentialMove)
+
+        for (let i=0; i < stateObj.player.fightMonsterArray.length; i++) {
+            let fullArrayIndex = newState.player.fullMonsterArray.findIndex(monster => monster.id === newState.player.fightMonsterArray[i].id)
+            newState.player.fullMonsterArray[fullArrayIndex] = newState.player.fightMonsterArray[i]
+        }
+    })
+    
+    await updateState(stateObj)
+    stateObj = await changeStatus(stateObj, Status.inFight)
+    await startEncounter(stateObj)
+}
+
+function renderChooseMonsterOrder(stateObj) {
+    document.body.innerHTML = ""
+    renderPickMonsterOrder(stateObj);
+    returnButton = createReturnToFightDiv(stateObj)
+    document.body.append(returnButton)
+    // skipToTownButton(stateObj, "I choose not to add any of these cards to my deck (+5 gold)", ".remove-div", cardSkip=true);
+};
+
+function renderPickMonsterOrder(stateObj) {
+    let monstersDiv = createDiv(["pick-monsters-div", "row"])
+    stateObj.player.fullMonsterArray.forEach(function (monsterObj, index) {
+      monstersDiv.append(renderPickMonster(stateObj, index))
+    })
+
+    document.body.append(monstersDiv)
+}
+
+function renderChooseMoveReward(stateObj) {
+    document.body.innerHTML = ""
+    renderPickNewMonsterMove(stateObj);
+    returnButton = createReturnToFightDiv(stateObj)
+    document.body.append(returnButton)
+    // skipToTownButton(stateObj, "I choose not to add any of these cards to my deck (+5 gold)", ".remove-div", cardSkip=true);
+};
+
+function renderPickNewMonsterMove(stateObj) {
+    let monstersDiv = createDiv(["pick-monsters-div", "row"])
+    stateObj.player.fullMonsterArray.forEach(function (monsterObj, index) {
+      monstersDiv.append(renderPickNewMove(stateObj, index))
+    })
+
+    document.body.append(monstersDiv)
+}
+
+async function catchTargetMonster(stateObj) {
+    stateObj = immer.produce(stateObj, (newState) => {
+        newState.playerCaptureBalls -= 1;
+        newState.player.fullMonsterArray.push(newState.opponent.fightMonsterArray[newState.targetedMonster])
+        newState.opponent.fightMonsterArray.splice(newState.targetedMonster, 1)
+        newState.targetedMonster = 0
+    })
+    await updateState(stateObj)
+} 
+
+
+startEncounter(state)

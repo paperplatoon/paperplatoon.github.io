@@ -1,187 +1,267 @@
-#tableDiv {
-    width: 75vw;
-    height: 35vh;
-    background-color: green;
-    border-radius: 50%;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20vh;
-}
-
-.top-screenhalf-div {
-    width: 90vw;
-    height: 20vh;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-}
-
-.screen-div {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-}
-
-.playerDiv {
-    width: 25vw;
-    height: 15vh;
-    position: absolute;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.action-div {
-    background-color: #5ca0f2;
-    background-image: linear-gradient(315deg, #2983f2 0%, #319ee6 0%);
-    color: rgb(0, 0, 0);
-    width: 18vw; 
-    height: 5vh;
+.move-div {
+    background-color: rgb(83, 83, 83);
+    color: rgb(217, 217, 217);
     text-align: center;
-    line-height: 5vh;
-    margin: 4px;
-    cursor: pointer;
+    transition: 0.5s;
+    background-size: 200% auto;
+    border-radius: 10px;
+    width: 20vw;
+    height: 10vh;
+    margin: 0.5vmin;
+    font-size: 2.5vmin;
 }
 
-.spell-div {
-    background-color: #5ca0f2;
-    background-image: linear-gradient(315deg, #2983f2 0%, #bdeaef 74%);
-    color: rgb(2, 0, 24);
-    width: 50vw; 
-    height: 7vh;
-    line-height: 7vh;
-    font-size: 3vmin;
-    margin: 4px;
-    cursor: pointer;
+.player-move {
+    background-image: linear-gradient(to right, #1673ac 0%, #1eabec  51%, #166190  100%);
+    color: white;
+}
+
+.enemy-move {
+    background: linear-gradient(90deg, rgb(198, 0, 0) 0%, rgb(231, 90, 90) 51%, rgb(186, 0, 0) 100%);
+    background-size: 200% auto;
+    color: white;
+    animation: moveBackground 3s infinite;
+}
+
+@keyframes moveBackground {
+    0% { background-position: left center; }
+    50% { background-position: right center; }
+    100% { background-position: left center; }
 }
 
 
 
-.player-actions-div, .player-spells-div {
-    width: auto;
-    height: 20vh;
-    justify-content: center;
+@media (hover: hover) {
+    .player-move:hover {
+        background-position: right center; /* change the direction of the change here */
+        text-decoration: none;
+        cursor: pointer;
+    }
+}
+
+
+
+.column {
     display: flex;
     flex-direction: column;
-}
-
-
-.playerTopRowDiv, .playerCardsDiv {
-    display: flex;
-    width: 25vw;
-    flex-direction: row;
-    justify-content: space-evenly;
-}
-
-.player-suspicion {
-    position: absolute;
-    top: -4vh;
-    left: -1px;
-    height: 2.5vh;
-    color: black;
-    background-color: rgba(231, 122, 255, 0.903);
-    border: 1px dashed black;
-}
-
-.table-suspicion {
-    height: 60vw;
-    background-color: rgba(94, 0, 128, 0.546);
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 100;
-}
-
-.fold {
-    opacity: 0.5;
-}
-
-.active-player {
-    background-color: rgba(0, 255, 255, 0.36);
-}
-
-
-.cardDiv {
-    width: 11vw;
-    height: 8vh;
-    font-size: 6vmin;
-    line-height: 8vh;
-    background-color: white;
-    border: 1px solid #000;
-    display: inline-block;
-    margin-left: 0.2vw;
-}
-
-
-.dealer {
-    background-color: grey;
-}
-
-.raise {
-    background-color: rgba(42, 213, 42, 0.892);
-}
-
-.fold {
-    background-color: rgba(213, 42, 42, 0.892);
-}
-
-.call {
-    background-color: rgba(213, 190, 42, 0.892);
-}
-
-.not-visible {
-    background-color: brown;
 }
 
 .centered {
     display: flex;
-    text-align: center;
     justify-content: center;
-    vertical-align: middle;
+    align-items: center;
+    text-align: center;
 }
 
-.money-in-pot {
-    animation: potMoney 0.8s forwards;
-  }
-  
-  @keyframes potMoney {
-    0% { opacity: 1; transform: scale(1); }
-    30% { opacity: 0; transform: scale(0.7); }
-    70% { opacity: 1; transform: scale(1.5);}
-    100% { opacity: 1; transform: scale(1); }
+.player-targeted {
+    border: 5px dashed blue;
+}
+
+.opponent-targeted {
+    border: 5px dashed red;
+}
+
+.avatar {
+    width: 22vmin;
+    height: 22vmin;
+    max-width: 9vw;
+    margin: 0.2vmin;
+    flex-shrink: -1;
+    border-radius: 2px;
+    opacity: 1;
   }
 
-  .winner {
-    animation: winner 5s forwards 5;
-  }
-  
-  @keyframes winner {
-    0% { opacity: 1; background-color: gold; }
-    50% { opacity: 0.6; background-color: white; }
-    100% { opacity: 1; background-color: gold; }
+.space-evenly {
+    justify-content: space-evenly;
+}
+
+.monster-div {
+    margin: 2vmin;
+}
+
+.single-energy-div {
+    border-radius: 50%;
+    background-color: white;
+    width: 2vmin;
+    height: 2vmin;
+    margin: 0.2vmin;
+}
+
+.gain-energy-text {
+    color: rgb(155, 235, 155);
+}
+
+.cost-energy-text {
+    color: rgb(235, 155, 155);
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    vertical-align: center;
+}
+
+.move-text-div {
+    margin-top: 0.8vh;
+}
+
+.current-monster-energy-div {
+    padding: 0.5vmin;
+    background-color: purple;
+    color: white;
+    border-radius: 3px;
+}
+
+.mutation-div {
+    background-color: rgb(171, 171, 171);
+    font-family: monospace;
+    height: 10vh;
+    width: 23vw;
+    margin: 1vmin;
+    padding: 0.5vmin;
+    transition: 0.5s all;
+}
+
+.mutation-name {
+    font-size: 2.5vmin;
+}
+
+.mutation-text {
+    font-size: 2.1vmin;
+}
+
+.mutation-div-active {
+    background: linear-gradient(10deg, rgba(32,207,0,1) 0%, rgba(131,255,96,1) 16%, rgba(59,219,0,1) 65%, rgba(0,255,29,1) 100%);
+}
+
+@media (hover: hover) {
+    .mutation-div-active:hover, .end-turn-button:hover {
+        background: linear-gradient(10deg, rgb(19, 125, 0) 0%, rgb(54, 108, 39) 16%, rgb(44, 163, 1)65%, rgb(0, 123, 14) 100%);
+        color: rgb(211, 255, 220);
+        cursor: pointer;
+        
+        
+    }
+
+    .mutation-div-active:hover {
+        border: 5px dotted rgb(0, 255, 0);
+        scale: 1.1;
+    }
+}
+
+.mutations-array-div {
+    margin-top: 20vh;
+    height: 10vh;
+    width: 97vw;
+}
+
+.end-turn-button {
+    height: 10vh;
+    width: 10vw;
+    background-color: rgb(87, 248, 87);
+
+}
+
+.monsters-div {
+    height: 60vh;
+    width: 95vw;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.side-div {
+    height: 85vh;
+}
+
+.change-status-button, .choose-monster-button {
+    width: 20vw;
+    height: 3.5vh;
+    padding: 0.5vmin;
+    background-color: rgb(0, 68, 104);
+    color: rgb(232, 232, 232);
+    text-align: center;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    transition: all 0.5s;
+    margin: 1vmin
+}
+
+.move-to-pick {
+    background: linear-gradient(90deg, rgb(198, 0, 0) 0%, rgb(231, 90, 90) 51%, rgb(186, 0, 0) 100%);
+    background-size: 200% auto;
+    color: rgb(0, 28, 0);
+    cursor: pointer;
+}
+
+@media (hover: hover) {
+    .change-status-button:hover, .choose-monster-button:hover {
+        background-color: rgb(0, 108, 165);
+        color: rgb(255, 255, 255);
+    }
+
+    .move-to-pick:hover {
+        scale: 1.1;
+        background-position: right center;
+        border: 2px solid grey
+    }
+}
+
+.player-windup {
+    animation: playerWindup 0.5s forwards ;
   }
 
-  .c {
-    color: blue;
+@keyframes playerWindup {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-30px); }
+    50% { transform: translateX(100px); }
+    75% { transform: translateX(10px); }
+    100% { transform: translateX(0); }
+}
+
+.opponent-impact {
+    animation: opponentImpact 0.5s forwards ;
   }
 
-  .s {
-    color: black;
-  }
+@keyframes opponentImpact {
+    0% { transform: translateX(0); }
+    80% { transform: translateX(0); }
+    90% { transform: translateX(60px); }
+    100% { transform: translateX(0); }
+}
 
-  .d {
-    color: green;
-  }
+.opponent-windup {
+    animation: opponentWindup 0.8s forwards ;
+}
 
-  .h {
-    color: red;
-  }
+@keyframes opponentWindup {
+    0% { transform: translateX(0); }
+    40% { transform: translateX(20px); }
+    60% { transform: translateX(-100px); }
+    75% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+}
+
+.player-impact {
+animation: playerImpact 0.8s forwards ;
+}
+
+@keyframes playerImpact {
+0% { transform: translateX(0); }
+85% { transform: translateX(0); }
+92% { transform: translateX(-40px); }
+100% { transform: translateX(0); }
+}
+
+.player-pulse {
+    animation: player-pulse 2s infinite;
+}
+
+@keyframes player-pulse {
+    0% { border: 5px dashed blue; }
+    50% { border: 5px dashed rgba(0, 0, 255, 0.24);}
+    100% { border: 5px dashed blue;  }
+}
