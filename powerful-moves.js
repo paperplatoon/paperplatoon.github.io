@@ -166,7 +166,7 @@ powerFeed = {
     }
     return textString
   },
-  energyReq: 1,
+  energyReq: 6,
   energyGained: 0,
   damage: 30,
   damageTimes: 1,
