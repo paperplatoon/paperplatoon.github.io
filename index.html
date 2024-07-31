@@ -1,42 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <title>Poker Roguelike</title>
-</head>
+<html>
+    <head>
+        <title>Motherload demo</title>
+        <link rel="stylesheet" type="text/css" href="motherload.css">
+        <meta name="color-profile" content="sRGB">
+    </head>
+
 <body>
-    <!-- <h1>Poker Hand Evaluation</h1>
-    <div>
-        <label for="cards">Enter 7 cards (e.g., 2H for 2 of Hearts):</label><br>
-        <input type="text" id="cards" name="cards" size="50"><br>
-        <button onclick="evaluateHand()">Evaluate Hand</button>
-    </div> -->
-    <div id="result"></div>
+    <div id="app">
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/immer/9.0.16/immer.umd.development.min.js"></script>
-    <script>
-        
-        
-        function evaluateHand() {
-            let input = document.getElementById("cards").value;
-            let cards = input.split(" ");
-            let result = getBestPokerHand(cards);
-            textString = "Best Hand: " + result[0]
-            textString += "\n Hand rank: " + result[1]
-            document.getElementById("result").innerText = textString;
-        }
-
-        // Poker hand evaluation logic here...
-        // Make sure to include the evaluatePokerHand function from the previous example
-    </script>
-    <script type="text/javascript" src="calcFunctions.js"></script>
-    <script type="text/javascript" src="createDivFunctions.js"></script>
-    <script type="text/javascript" src="pokerHands.js"></script>
-    <script type="text/javascript" src="pokerRanges.js"></script>
-    <script type="text/javascript" src="stateStuff.js"></script>
-    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript" src="relics.js"></script>
+    <script type="text/javascript" src="roulette.js"></script>
+    <script type="text/javascript" src="levelChoices.js"></script>
+    <script type="text/javascript" src="createDivs.js"></script>
+    <script type="text/javascript" src="renderFunctions.js"></script>
+    <script type="text/javascript" src="motherload.js"></script>
+    
 </body>
-</html>

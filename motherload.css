@@ -23,6 +23,7 @@ html, body {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    align-items: center;
     height: 12vh;
     position: fixed;
     top: 0;
@@ -44,10 +45,13 @@ html, body {
 
 .all-weapons-div {
   display: flex;
-  flex-direction: column;
-  width: 18vw;
-  height: 8vh;
-  margin-top: 1vh;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 8vw;
+  height: 6vh;
+  padding: 0.5vw;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   background-color: rgba(216, 108, 108, 0.668);
   background: repeating-linear-gradient(
     135deg,
@@ -57,6 +61,13 @@ html, body {
     #d15e5e55 10%
   );
   border: 1vh dashed rgba(90, 0, 0, 0.737);
+}
+
+.craft-ammo-div {
+  background-color: rgb(157, 157, 157);
+  padding: 1vh;
+  border: 0.2vh solid rgb(88, 88, 88);
+  cursor: pointer;
 }
 
 .weapons-div {
@@ -72,6 +83,20 @@ html, body {
     height: 12vh; */
     width:  10.5vw;
     height: 10vh;
+    color: mediumspringgreen;
+    transition: background-color 1500ms ease-out;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+    object-fit: cover;
+    /* border: 0.5px solid rgba(97, 48, 0, 0.756); */
+  }
+
+  .map-square-fish {
+    /* width: 13.5vw;
+    height: 12vh; */
+    width:  7.1vw;
+    height: 6.5vh;
     color: mediumspringgreen;
     transition: background-color 1500ms ease-out;
     /* display: flex;
@@ -139,6 +164,15 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+  }
+
+  .space-between-column {
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .row {
@@ -262,8 +296,8 @@ html, body {
 
 .player-here {
   position: relative;
-  width:  10.5vw;
-  height: 10vh;
+  /* width:  10.5vw;
+  height: 10vh; */
 
 }
   .player-img {
@@ -341,18 +375,60 @@ html, body {
 
   .bronze-img, .enemy-img, .dirt-img, .stone-img,  .silver-img, .gold-img, .ruby-img, .amethyst-img, .diamond-img, .blkdiamond-img,
   .stone-amethyst-img, .stone-diamond-img, .stone-blkdiamond-img, .crate-img {
-    width:  10.5vw;
-    height: 10vh;
     object-fit: cover;
+    height: 100%;
+    width: 100%;
   }
 
-  .relic-div, .relics-div {
+  .craft-button-row, .bronze-fuel-row, .gold-repair-row, .scrap-inv-row, .breakdown-button-row {
+    position: absolute;
+    text-align: center;
+    right: -14vw; /* Move 10vw to the right */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    padding: 0.1vmin;
+    border-radius: 5%;
+    border: 1px solid black;
+    width: 12vw;
+    height: 2vh;
+    background-color: rgb(4, 255, 0);
+    cursor: pointer;
+  }
+
+  .breakdown-button-row {
+    right: 34vw;
+  }
+
+  .craft-button-row:hover, .bronze-fuel-row:hover, .gold-repair-row:hover, .scrap-inv-row:hover, .breakdown-button-row:hover {
+    color: white;
+    background-color: rgb(3, 171, 0);
+  }
+
+  .bar-relic-div {
     display: flex;
     flex-direction: row;
-    height: 10vh;
-    width: 3vw;
+    height: 9vh;
+    border: 0.6vh solid rgb(41, 41, 41);
+    width: 4.5vw;
     justify-content: center;
     align-items: center;
+  }
+
+  .bar-relic-upgrades-1 {
+    border: 0.75vh solid rgba(223, 153, 88, 0.797);
+  }
+
+  .bar-relic-upgrades-2 {
+    border: 1vh solid rgba(187, 187, 187, 0.735);
+  }
+
+  .bar-relic-upgrades-3 {
+    border: 1.25vh solid rgba(203, 190, 77, 0.735);
+  }
+
+  .bar-relic-upgrades-4 {
+    border: 1.5vh solid rgba(205, 78, 78, 0.735);
   }
 
   .relics-div {
@@ -402,9 +478,15 @@ html, body {
 }
 
 .store-img, .exit-img {
-  height: 9vw;
-  height: 9vh;
-  object-fit: contain;
+  object-fit: cover;
+  height: 10vh;
+  width: auto;
+}
+
+.store-img-fish, .exit-img-fish {
+  object-fit: cover;
+  height: 8vh;
+  width: auto;
 }
 
 .store-sub-img {
@@ -423,6 +505,7 @@ html, body {
   display: flex;
   justify-content: left;
   font-size: 1vw;
+  position: relative;
   align-items: center;
   transition: 1s all; 
   border-top: 0.2vh solid grey;
@@ -435,10 +518,10 @@ html, body {
 }
 
 .inv-row {
-  width: 50vw;
+  width: 30vw;
 }
 
-.selling-items-div, .start-div, .choose-robot-div {
+.selling-items-div, .start-div, .choose-robot-div, .lost-div {
   display: flex;
   flex-direction: column;
   width: 80vw;
@@ -492,7 +575,7 @@ html, body {
   flex-direction: column;
   width: 70vw;
   height: 60vh;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   border: 0.8vw dashed rgba(71, 71, 71, 0.726);
   outline: 0.3vw dashed rgba(139, 137, 11, 0.526);
@@ -504,7 +587,7 @@ html, body {
   transition: 1s all;
 }
 
-.ruby-relic-div, .ore-relic-div {
+.ruby-relic-div, .ore-relic-div, .kill-enemy-div {
   width: 25vw;
   height: 20vh;
   display: flex;
@@ -518,6 +601,46 @@ html, body {
   color: rgb(203, 203, 203);
   font-family: monospace;
   cursor: not-allowed;
+}
+
+.swap-relic-div, .to-swap-relic-div {
+  height: 30vh;
+  width: 15vw;
+  margin: 1vh;
+  padding: 0.5vh;
+  background: linear-gradient(to right, rgb(50, 201, 50) 0%, rgb(108, 238, 108) 20%, rgb(113, 232, 113) 40%, rgb(151, 238, 151) 70%, rgb(159, 245, 159) 75%, rgb(59, 216, 59));
+  transition: 0.5s all;
+  cursor: pointer;
+}
+
+.swap-relic-div:hover {
+  background: linear-gradient(to right, rgb(17, 69, 17) 0%, rgb(41, 90, 41) 20%, rgb(39, 80, 39) 40%, rgb(54, 86, 54) 70%, rgb(52, 81, 52) 75%, rgb(19, 70, 19));
+  color: white;
+}
+
+.to-swap-relic-div {
+  border: 1vh solid black;
+  height: 18vh;
+  width: 25vw;
+}
+
+.scrap-button-relic {
+  height: 18vh;
+  width: 11vw;
+  background: rgb(221, 55, 55);
+  color: black;
+  transition: 0.5s all;
+  cursor: pointer;
+  
+}
+
+.scrap-button-relic:hover {
+  background: rgb(138, 0, 0);
+  color: white;
+  height: 17vh;
+  width: 11vw;
+  border: 1vh solid rgb(203, 27, 27)
+
 }
 
 .sell-button, .ruby-relic-hover, .diamond-relic-hover, .choose-robot-button, .ore-relic-hover {
@@ -535,7 +658,7 @@ html, body {
 }
 
 .choose-robot-button {
-  width: 18vw;
+  height: 19vh;
 }
 
 .hull-gold-upgrade-hover, .fuel-gold-upgrade-hover {
@@ -560,6 +683,10 @@ html, body {
   cursor: pointer;
   font-weight: 1300;
   color: white;
+}
+
+.ruby-relic-hover:hover,  .ore-relic-hover:hover {
+  height: 19vh;
 }
 
 body:has(.hull-gold-upgrade-hover:hover) .gold-sell-row {
@@ -745,6 +872,10 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
     transition: 2s all;
   }
 
+  .inventory-div {
+    justify-content: start;
+  }
+
   .start-div {
     justify-content: left;
     text-align: left;
@@ -758,7 +889,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
   }
 
   .store-option, .next-level-option {
-    width: 16vw;
+    width: 20vw;
     height: 8vh;
     font-size: 1.4vw;
     background-color: rgba(78, 152, 152, 0.867);
@@ -768,6 +899,67 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
     display: flex;
     flex-direction: column;
     transition: 0.4s all;
+  }
+
+  .roulette-option {
+    width: 20vw;
+    height: 25vh;
+    font-size: 1.4vw;
+    background-color: rgba(153, 238, 230, 0.977);
+    margin: 2vw;
+    padding: 1vh;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    transition: 0.4s all;
+    font-family: monospace;
+  }
+
+  .roulette-title {
+    font-size: 1.8vw;
+    width: 100%;
+    padding: 0.5vh 0.2vw;
+  }
+
+  .roulette-rarity {
+    font-size: 1vw;
+    padding: 0.2vh 0.4vw;
+  }
+
+  .roulette-option:hover {
+    background-color: rgba(13, 72, 66, 0.977);
+    width: 18vw;
+    height: 23vh;
+    color: rgba(133, 235, 225, 0.977);
+    cursor: pointer;
+    border: 3px solid rgb(0, 144, 120)
+  }
+
+  .roulette-title-common, .roulette-rarity-common {
+    background-color: rgba(223, 153, 88, 0.797);
+  }
+
+  .roulette-title-uncommon, .roulette-rarity-uncommon {
+    background-color: rgba(187, 187, 187, 0.735);
+  }
+
+  .roulette-title-rare, .roulette-rarity-rare {
+    background-color: rgba(203, 190, 77, 0.735);
+  }
+
+  .roulette-title-legendary, .roulette-rarity-legendary {
+    background-color: rgba(205, 78, 78, 0.735);
+  }
+
+  .roulette-choice-pick {
+    font-size: 5vw;
+    text-align: center;
+    width: 100%;
+    padding: 2vh 2vw;
+    margin: 1vw;
+    color: rgb(226, 253, 255);
+    background-color: rgba(105, 105, 105, 0.605);
   }
 
   .next-level-option {
@@ -786,11 +978,25 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
   }
 
 
+  .flex-row-centered {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .flex-column-centered {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
 
 
   .store-sub-div {
     height: 55vh;
-    width: 20vw;
+    width: 25vw;
     display: flex;
     flex-direction: column;
     justify-content: start;
@@ -827,7 +1033,7 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
 
   .store-clickable {
     background-color: rgba(87, 202, 202, 0.995);
-    color: rgba(156, 234, 218, 0.976);
+    /* color: rgba(156, 234, 218, 0.976); */
   }
 
   #store-buy-laser-div, #store-buy-bomb-div, #store-laser-capacity-upgrade-div, #store-bomb-capacity-upgrade-div {
@@ -841,7 +1047,6 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
   .store-clickable:hover#store-fuel-div,
   .store-clickable:hover#store-fuel-upgrade-div {
     border: 1vh solid rgb(249, 170, 1);
-    color: rgb(249, 170, 1);
   }
 
   .store-clickable:hover#store-repair-div,
@@ -872,8 +1077,12 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
     animation: storeClicked 0.3s linear
   }
 
-  .emphasis {
-    animation: emphasis 0.5s linear
+  .text-emphasis {
+    animation: text-emphasis 0.5s linear;
+  }
+
+  .brief-emphasis {
+    animation: emphasis 0.3s linear
   }
 
   .taking-damage {
@@ -953,6 +1162,21 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
     }
   }
 
+  @keyframes text-emphasis {
+    0% {
+      scale: 1;
+      color: lightgreen;
+    }
+    50% {
+      scale: 1.3;
+      color: green;
+    }
+    100% {
+      scale: 1;
+      color: lightgreen;
+    }
+  }
+
   @keyframes damage {
     0% {
       scale: 1,
@@ -990,9 +1214,11 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
   }
 
 
-  .store-clickable:hover {
-    background-color: rgb(2, 196, 196);
-    border: 6px solid rgb(0, 147, 147);
+  .store-clickable.store-option:hover {
+    /* background-color: rgb(0, 95, 95); */
+    background-color: rgb(146, 232, 206);
+    color: rgb(255, 255, 255);
+    border: 2px solid rgb(0, 100, 147);
     cursor: pointer;
   }
 
@@ -1024,7 +1250,6 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
     width: 30vw;
     height: 4.5vh;
     padding: 0.5vh 0.5vw;
-    margin-top: 1vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1104,4 +1329,73 @@ body:has(.store-clickable#store-inventory-upgrade-div:hover) #current-inv-bar  {
     width: 12vw;
     height: auto;
     object-fit: cover;
+  }
+
+  .poison-dirt {
+    filter: hue-rotate(220deg)
+  }
+
+  .fuel-tank {
+    display: flex;
+    width: 20vw; /* Adjust as needed */
+    height: 5vh; /* Adjust as needed */
+  }
+  
+  .tank-section {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .tank-section:first-child {
+    border-radius: 25px 0 0 25px;
+  }
+  
+  .tank-section:last-child {
+    border-radius: 0 25px 25px 0;
+  }
+  
+  .tank-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #323232; /* Default color */
+  }
+  
+  .tank-section:first-child .tank-fill {
+    border-radius: 25px 0 0 25px;
+  }
+  
+  .tank-section:last-child .tank-fill {
+    border-radius: 0 25px 25px 0;
+  }
+
+  .inventory-bar-vis-div {
+    display: flex;
+    width: 50vw;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1vh;
+  }
+
+  .fortyvw {
+    width: 40vw;
+  }
+  
+  /* Fuel colors */
+  .fuel-1 { background-color: #cd7f32; } /* Bronze */
+  .fuel-2 { background-color: #c0c0c0; } /* Silver */
+  .fuel-3 { background-color: #baa321; } /* Gold */
+  .fuel-4 { background-color: #9b0a0a; } /* Red */
+
+  .margin-top-10 {
+    margin-top: 8vh;
+  }
+
+  .flex-columns {
+    display: flex;
+    flex-direction: column;
   }
